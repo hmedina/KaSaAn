@@ -41,7 +41,7 @@ def get_sorted_snapshots(folder, prefix):
     # Now reconstruct the name of the snapshot, including the folder
     sorted_snapshots = []
     for i in snapshot_indexes:
-        sorted_snapshots.append(folder + '/snap_' + str(i) + '.ka')
+        sorted_snapshots.append(folder + '/' + prefix + str(i) + '.ka')
 
     return sorted_snapshots, snapshot_indexes
 

@@ -9,10 +9,10 @@
 
 A(a), A(a) <-> A(a!1), A(a!1) @ 'γon' /2 {'pf'}, 'γoff' /2
 B(b), B(b) <-> B(b!1), B(b!1) @ 'γon' /2 {'pf'}, 'γoff' /2
-C(c), C(c) <-> C(c!1), C(c!1) @ 'γon' /2 {'pf'}, 'γoff' /2
+
 A(b), B(a) <-> A(b!1), B(a!1) @ 'γon' {'pf'}, 'γoff'
 A(c), C(a) <-> A(c!1), C(a!1) @ 'γon' {'pf'}, 'γoff'
 B(c), C(b) <-> B(c!1), C(b!1) @ 'γon' {'pf'}, 'γoff'
 
 %init: 50 * 'nanoAvoVol' (A(), B(), C())
-%mod: repeat ([E] [mod] 100) = 0 do $SNAPSHOT "snap_".[E].".ka" until [false]
+%mod: repeat ([E] [mod] 100) = 0 do $SNAPSHOT "val2-tri_".[E].".ka" until [false]

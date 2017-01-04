@@ -14,7 +14,7 @@ import statistics
 
 
 # Acquire data of times series distribution
-my_snaps, snap_indexes = gss('snapshots', 'snap_')
+my_snaps, snap_indexes = gss('snapshots', 'val2-tri_')
 my_dist = tsd(my_snaps)
 
 # Get mean & standard deviation of samples
@@ -37,6 +37,5 @@ axes[1].plot(snap_indexes, my_gc_fraction)
 axes[1].set_xlabel('Event number')
 axes[1].set_ylabel('Reaction mixture fraction taken up by the giant component')
 axes[1].set_title('Growth of the giant component')
-axes[1].set_yscale('log')
 
 plt.show()
