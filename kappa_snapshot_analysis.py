@@ -9,7 +9,7 @@ class KappaComplex:
     def __init__(self, kappa_expression):
         self.kappa_expression = kappa_expression
 
-    def get_number_of_agent(self, agent_query):
+    def get_number_of_given_agent(self, agent_query):
         """Returns the number of times a given agent appears in the complex. It supports specifying parts of the
         signature for the agent, specifically state information. I.e. looking for 'A(s~x)' is supported."""
         # Get agent name & signature, and make sure input is a valid kappa expression
@@ -26,6 +26,11 @@ class KappaComplex:
         """Returns the number of bonds in the complex."""
         matches = re.findall('!\d+', self.kappa_expression)
         return int(len(matches) / 2)
+
+    def get_size_of_complex(self):
+        """Returns the size, in agents, of this complex."""
+        matches = re.findall('\([\w!,~]*\)', self.kappa_expression)
+        return int(len(matches))
 
     def get_constituent_agents(self):
         """Returns the set of agents that make up the complex."""
