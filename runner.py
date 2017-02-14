@@ -1,14 +1,12 @@
 #! python.exe
-import re
+from kappa_snapshot_analysis import KappaSnapshot
 
+# Read the file & create the inner representation of the snapshot
+mySnap = KappaSnapshot('snap.ka')
 
+# To display the expression of the first complex with abundance of 1
+print(mySnap.get_complexes_with_abundance(1)[0].kappa_expression)
 
-snap_file_name = 'snap.ka'
-with open(snap_file_name, 'r') as kf:
-    raw_complex_size = []
-    raw_complex_num = []
-    for line in kf:
-        if (line[0] != '#') & (line != '\n'):
-            ka_complex = re.search('%init:\s(\d+)\s(.+)', line)
-    # Make sure we have both length & abundance of each complex
-    assert len(raw_complex_size) == len(raw_complex_num)
+# To display the complex with the most elements & its size
+print(mySnap.get_largest_complex().kappa_expression)
+print(mySnap.get_largest_complex().get_size_of_complex())

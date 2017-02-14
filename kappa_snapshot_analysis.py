@@ -3,8 +3,8 @@ import re
 
 
 class KappaComplex:
-    """Class for representing  Kappa complexes. I.e. 'A(b!1),B(a!1,c!2),C(b!2,a!3),A(c!3,s~x)'. Notice these must be
-    connected components. E.g. each line of a kappa snapshot is a KappaComplex."""
+    """Class for representing Kappa complexes. I.e. 'A(b!1),B(a!1,c!2),C(b!2,a!3),A(c!3,s~x)'. Notice these must be
+    connected components. E.g. each line of a kappa snapshot contains a KappaComplex."""
 
     def __init__(self, kappa_expression):
         self.kappa_expression = kappa_expression
@@ -40,4 +40,49 @@ class KappaComplex:
         return agents
 
 
-# TODO class KappaSnapshot:
+class KappaSnapshot:
+    """Class for representing Kappa snapshots. A snapshot is represented as a dictionary, where the kappa expression
+    serves as the key, and the abundance serves as the value. Many of the methods for this class are simple re-namings
+     of the Dict() class', but with more informative names for kappa entities."""
+
+    def __init__(self, snapshot_file_name):
+        self.snapshot = dict()
+        with open(snapshot_file_name, 'r') as kf:
+            for line in kf:
+                if (line[0] != '#') & (line != '\n'):
+                    kappa_dump = re.search('^%init:\s(\d+)\s(.+)', line)
+                    complex_abundance = int(kappa_dump.group(1))
+                    complex_expression = KappaComplex(kappa_dump.group(2))
+                    self.snapshot[complex_expression] = complex_abundance
+
+    def get_all_complexes(self):
+        return list(self.snapshot.keys())
+
+    def get_all_abundances(self):
+        return list(self.snapshot.values())
+
+    def get_all_complexes_and_abundances(self):
+        return list(self.snapshot.items())
+
+    def get_complexes_with_abundance(self, query_abundance):
+        result_complexes = []
+        for complex_expression, complex_abundance in self.snapshot.items():
+            if query_abundance == complex_abundance:
+                result_complexes.append(complex_expression)
+        return result_complexes
+
+    def get_largest_complex(self):
+        max_size = 0
+        largest_complex = None
+        for complex_expression in self.get_all_complexes():
+            current_size = complex_expression.get_size_of_complex()
+            if current_size > max_size:
+                largest_complex = complex_expression
+                max_size = current_size
+        return largest_complex
+
+    def get_most_abundant_complexes(self):
+        max_abundance = max(self.get_all_abundances())
+        return self.get_complexes_with_abundance(max_abundance)
+
+    # TODO def get_size_distribution(self):
