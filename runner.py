@@ -1,5 +1,7 @@
 #! python.exe
-from kappa_snapshot_analysis import KappaSnapshot
+import kappa_snapshot_analysis
+from importlib import reload
+reload(kappa_snapshot_analysis); from kappa_snapshot_analysis import KappaSnapshot
 
 # Read the file & create the inner representation of the snapshot
 mySnap = KappaSnapshot('snap.ka')
