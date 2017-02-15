@@ -1,5 +1,6 @@
 #! python.exe
 import re
+import matplotlib.pyplot
 
 
 class KappaComplex:
@@ -56,42 +57,63 @@ class KappaSnapshot:
                     self.snapshot[complex_expression] = complex_abundance
 
     def get_all_complexes(self):
-        """Returns a list with all the complexes in the snapshot. These complexes are not strings, but belong to class
-        KappaComplex."""
+        """Returns a list of KappaComplexes with all the complexes in the snapshot."""
         return list(self.snapshot.keys())
 
     def get_all_abundances(self):
-        """Returns a list with all the abundances declared in the snapshot. These are integer values."""
+        """Returns a list of integers with all the abundances in the snapshot."""
         return list(self.snapshot.values())
 
     def get_all_complexes_and_abundances(self):
-        """Returns a dictionary where the keys belong to class KappaComplex and the values are the abundances of the
+        """Returns a dictionary where the keys are KappaComplexes and the values are int abundances of the
         corresponding complex."""
         return list(self.snapshot.items())
 
     def get_complexes_with_abundance(self, query_abundance):
-        """Allows one to get the list of complexes present at a query abundance. For example, get all the dimers."""
+        """Returns a list of KappaComplexes present in the snapshot at the query abundance. For example, get all
+        elements present in single copy."""
         result_complexes = []
-        for complex_expression, complex_abundance in self.snapshot.items():
+        for complex_expression, complex_abundance in self.get_all_complexes_and_abundances():
             if query_abundance == complex_abundance:
                 result_complexes.append(complex_expression)
         return result_complexes
 
-    def get_largest_complex(self):
-        """Returns the largest complex, measured in number of constituting agents, found in the snapshot."""
-        max_size = 0
-        largest_complex = None
+    def get_complexes_of_size(self, query_size):
+        """Returns the list of complexes that are of the query size. For example, get all the dimers."""
+        result_complexes = []
+        for complex_expression, complex_abundance in self.get_all_complexes_and_abundances():
+            if query_size == complex_expression.get_size_of_complex():
+                result_complexes.append(complex_expression)
+        return result_complexes
+
+    def get_largest_complexes(self):
+        """Returns a list of KappaComplexes with the largest complexes, measured in number of constituting agents."""
+        max_known_size = 0
         for complex_expression in self.get_all_complexes():
             current_size = complex_expression.get_size_of_complex()
-            if current_size > max_size:
-                largest_complex = complex_expression
-                max_size = current_size
-        return largest_complex
+            if current_size > max_known_size:
+                max_known_size = current_size
+        return self.get_complexes_of_size(max_known_size)
+
+    def get_smallest_complexes(self):
+        """Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents."""
+        min_known_size = self.get_largest_complexes()[0].get_size_of_complex() + 1
+        for complex_expression in self.get_all_complexes():
+            current_size = complex_expression.get_size_of_complex()
+            if current_size < min_known_size:
+                min_known_size = current_size
+        return self.get_complexes_of_size(min_known_size)
 
     def get_most_abundant_complexes(self):
         """Returns the list of complexes found to be the most abundant. These could be the monomers for example."""
         max_abundance = max(self.get_all_abundances())
         return self.get_complexes_with_abundance(max_abundance)
+
+    def get_least_abundant_complexes(self):
+        """Returns the list of complexes found to be the least abundant. For example, this would be the giant component,
+        or the set of largest entities."""
+        min_abundance = min(self.get_all_abundances())
+        return self.get_complexes_with_abundance(min_abundance)
 
     def get_size_distribution(self):
         """Returns a dictionary where the key is the size of a complex and the value is the amount of complexes with
@@ -104,3 +126,31 @@ class KappaSnapshot:
             else:
                 size_dist[current_size] = complex_abundance
         return size_dist
+
+    def plot_size_distribution(self):
+        """"Plots the size distribution of complexes in the snapshot."""
+        size_distribution = self.get_size_distribution()
+        polymer_sizes = list(size_distribution.keys())
+        polymer_abundances = list(size_distribution.values())
+        matplotlib.pyplot.plot(polymer_sizes, polymer_abundances)
+
+        matplotlib.pyplot.xlabel('Complex size')
+        matplotlib.pyplot.ylabel('Complex abundance')
+        matplotlib.pyplot.title('Distribution of complex sizes')
+        matplotlib.pyplot.grid(True)
+        matplotlib.pyplot.show()
+
+    def plot_mass_distribution(self):
+        """Plots the mass distribution of protomers in the snapshot: a monomer counts as one, a dimer as two, a trimer
+        as three, and so on. Thus, 5 trimers have a mass of 15."""
+        size_distribution = self.get_size_distribution()
+        polymer_sizes = list(size_distribution.keys())
+        polymer_abundances = list(size_distribution.values())
+        polymer_mass = [a * b for a, b in zip(polymer_sizes, polymer_abundances)]
+        matplotlib.pyplot.plot(polymer_sizes, polymer_mass)
+
+        matplotlib.pyplot.xlabel('Complex size')
+        matplotlib.pyplot.ylabel('Complex mass')
+        matplotlib.pyplot.title('Distribution of protomer mass in complexes')
+        matplotlib.pyplot.grid(True)
+        matplotlib.pyplot.show()
