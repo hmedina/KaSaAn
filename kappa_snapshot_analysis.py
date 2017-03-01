@@ -3,25 +3,65 @@ import re
 import matplotlib.pyplot
 
 
+def site_contains_site(host, query):
+    """Helper function for the KappaAgent class."""
+    h_matches = re.match('^([a-zA-Z]\w*)(~\w+)?(!\d+)?', host)
+    h_site_name = h_matches.group(1) if h_matches.group(1) else None
+    h_site_state = h_matches.group(2) if h_matches.group(2) else None
+    h_site_bond = h_matches.group(3) if h_matches.group(3) else None
+
+    q_matches = re.match('^([a-zA-Z]\w*)([?~]\w*)?([?!][_\d]*)?', query)
+    q_site_name = q_matches.group(1) if q_matches.group(1) else None
+    q_site_state = q_matches.group(2) if q_matches.group(2) else None
+    q_site_bond = q_matches.group(3) if q_matches.group(3) else None
+
+    sites_match = False
+    if q_site_name == h_site_name:
+        if q_site_state == '?':
+            sites_match = True
+        elif q_site_state == h_site_state:
+            if q_site_bond == '?':
+                sites_match = True
+            elif q_site_bond == h_site_bond:
+                sites_match = True
+            elif q_site_bond == '!_' and h_site_bond:
+                sites_match = True
+    return sites_match
+
+
+class KappaAgent:
+    """Class for representing Kappa gents. I.e. 'A(b!1)' or 'A(s~a,a!_,b)'."""
+    def __init__(self, kappa_expression):
+        # Remove spaces in the expression
+        kappa_expression = kappa_expression.replace(' ', '')
+
+        # Check if kappa expression is valid
+        matches = re.match('([a-zA-Z]\w*)\(([^)]*)\)', kappa_expression)
+        assert matches, 'Invalid kappa expression >' + kappa_expression + '<'
+
+        # Assign results to variables
+        self.agent_name = matches.group(1)
+        self.agent_signature = matches.group(2).split(',')
+        self.kappa_expression = kappa_expression
+
+    def contains_site(self, query_site):
+        """Return true or false, depending on whether the agent contains the query site."""
+        assert query_site != '', 'Site requested is an empty string'
+        matches = False
+        for s_site in self.agent_signature:
+            if site_contains_site(s_site, query_site):
+                matches = True
+                break
+        return matches
+
+
 class KappaComplex:
     """Class for representing Kappa complexes. I.e. 'A(b!1),B(a!1,c!2),C(b!2,a!3),A(c!3,s~x)'. Notice these must be
     connected components. E.g. each line of a kappa snapshot contains a KappaComplex."""
 
     def __init__(self, kappa_expression):
-        self.kappa_expression = kappa_expression
-
-    def get_number_of_given_agent(self, kappa_query):
-        """Returns the number of times a given agent appears in the complex. It supports specifying parts of the
-        signature for the agent, specifically state information. I.e. looking for 'A(s~x)' is supported."""
-
-        # Get agent name & signature, and make sure input is a valid kappa expression
-        matches = re.match('([a-zA-Z]+\w*)\(\)', kappa_query)
-        assert matches, 'Invalid query >' + kappa_query + '<, only agent name + parentheses "A()" accepted.'
-        query_name = matches.group(1)
-
-        # Pad known signature with pattern to match against user unmentioned sites stated in snapshot
-        matches = re.findall(query_name + '\([^)]*\)', self.kappa_expression)
-        return len(matches)
+        """The constructor also removes spaces from the expression."""
+        self.kappa_expression = kappa_expression.replace(' ', '')
 
     def get_number_of_bonds(self):
         """Returns the number of bonds in the complex."""
@@ -34,11 +74,37 @@ class KappaComplex:
         matches = re.findall('\([^)]*\)', self.kappa_expression)
         return int(len(matches))
 
-    def get_constituent_agents(self):
+    def get_agent_types(self):
         """Returns the set of agents that make up the complex."""
-        matches = re.findall('([a-zA-Z]+\w*)\([^)]*\)', self.kappa_expression)
+        matches = re.findall('([a-zA-Z]\w*)\([^)]*\)', self.kappa_expression)
         agents = set(matches)
         return agents
+
+    def get_agents(self):
+        """Returns a list of KappaAgents of the agents in this complex."""
+        agent_list = self.kappa_expression.split('),')
+        agent_list = [KappaAgent(item + ')') for item in agent_list]
+        return agent_list
+
+    def get_embeddings_of(self, raw_query):
+        """Returns the number of embeddings the query has on the KappaComplex."""
+        kappa_query = KappaComplex(raw_query)
+        match_number = 0
+        # First, we iterate over the agents in our complex
+        for s_agent in self.get_agents():
+            # Secondly, we iterate over the agents in the query
+            for q_agent in kappa_query.get_agents():
+                # If agent names match, we move to evaluate sites
+                if s_agent.agent_name == q_agent.agent_name:
+                    match_score = 0
+                    # Thirdly, we iterate over the query's sites
+                    for q_site in q_agent.agent_signature:
+                        if s_agent.contains_site(q_site):
+                            match_score += 1
+                    # This counter keeps track of how many fully-matched queries we've embedded
+                    if match_score == len(q_agent.agent_signature):
+                        match_number += 1
+        return match_number
 
 
 class KappaSnapshot:

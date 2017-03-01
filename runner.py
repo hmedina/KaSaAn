@@ -6,28 +6,21 @@ from kappa_snapshot_analysis import KappaSnapshot
 # reload(kappa_snapshot_analysis); from kappa_snapshot_analysis import KappaSnapshot
 
 # Read the file & create the inner representation of the snapshot
-mySnap = KappaSnapshot('snap.ka')
+mySnap = KappaSnapshot('snapshots/snap.ka')
 
 # To display the expression of the first complex with abundance of 3
+print('The expression of the first complex with abundance of 3:')
 print(mySnap.get_complexes_with_abundance(3)[0].kappa_expression)
 
-# To display the complex with the most elements & its size
-print(mySnap.get_largest_complexes().kappa_expression)
-print(mySnap.get_largest_complexes().get_size_of_complex())
+# To display all the complexes with the maximum number of elements & their size
+print('All the complexes with the maximum number of elements & their size:')
+print([[item.kappa_expression, item.get_size_of_complex()] for item in list(mySnap.get_largest_complexes())])
 
-# To display or plot the size distribution
+# To display all the complexes with the least number of elements & their size
+print('All the complexes with the least number of elements & their size:')
+print([[item.kappa_expression, item.get_size_of_complex()] for item in list(mySnap.get_smallest_complexes())])
+
+# To display the size distribution, and plot the mass distribution
+print('Size distribution of complexes:')
 print(mySnap.get_size_distribution())
-
-import matplotlib.pyplot as plt
-import numpy as np
-
-t = np.arange(0.0, 2.0, 0.01)
-s = 1 + np.sin(2*np.pi*t)
-plt.plot(t, s)
-
-plt.xlabel('time (s)')
-plt.ylabel('voltage (mV)')
-plt.title('About as simple as it gets, folks')
-plt.grid(True)
-plt.savefig("test.png")
-plt.show()
+mySnap.plot_mass_distribution()
