@@ -86,8 +86,9 @@ class KappaComplex:
         agent_list = [KappaAgent(item + ')') for item in agent_list]
         return agent_list
 
-    def get_embeddings_of_agent(self, raw_query):
-        """Returns the number of embeddings the query agent has on the KappaComplex. Does not follow bonds."""
+    def get_number_of_embeddings_of_agent(self, raw_query):
+        """Returns the number of embeddings the query agent has on the KappaComplex. Does not follow bonds,
+        i.e. the query must be a single-agent."""
         kappa_query = KappaComplex(raw_query)
         match_number = 0
         # First, we iterate over the agents in our complex
@@ -105,6 +106,10 @@ class KappaComplex:
                     if match_score == len(q_agent.agent_signature):
                         match_number += 1
         return match_number
+
+    def get_number_of_embeddings_of_complex(self, raw_query):
+        """Returns the number of embedding the query complex has on the KappaComplex."""
+        raise NotImplemented
 
 
 class KappaSnapshot:
