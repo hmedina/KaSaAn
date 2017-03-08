@@ -3,10 +3,11 @@ from kappa_snapshot_analysis import KappaSnapshot
 
 # Use this code in the interactive python console to re-load the class definition
 # import kappa_snapshot_analysis; from importlib import reload
-# reload(kappa_snapshot_analysis); from kappa_snapshot_analysis import KappaSnapshot
+# reload(kappa_snapshot_analysis); from kappa_snapshot_analysis import *
 
 # Read the file & create the inner representation of the snapshot
-mySnap = KappaSnapshot('snapshots/snap.ka')
+mySnap = KappaSnapshot('models/10.ka')
+mySnap.plot_mass_distribution()
 
 # To display the expression of the first complex with abundance of 3
 print('The expression of the first complex with abundance of 3:')

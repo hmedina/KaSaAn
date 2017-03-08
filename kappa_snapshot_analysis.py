@@ -40,19 +40,31 @@ class KappaAgent:
         assert matches, 'Invalid kappa expression >' + kappa_expression + '<'
 
         # Assign results to variables
-        self.agent_name = matches.group(1)
-        self.agent_signature = matches.group(2).split(',')
         self.kappa_expression = kappa_expression
+        self.agent_name = matches.group(1)
+        if matches.group(2) == '':
+            self.agent_signature = []
+        else:
+            self.agent_signature = matches.group(2).split(',')
 
     def contains_site(self, query_site):
         """Return true or false, depending on whether the agent contains the query site."""
-        assert query_site != '', 'Site requested is an empty string'
         matches = False
         for s_site in self.agent_signature:
             if site_contains_site(s_site, query_site):
                 matches = True
                 break
         return matches
+
+    def get_bond_identifiers(self):
+        """Return the list of bonds ending/starting at this agent, e.g. for 'A(a,b!1,c!2,d~a)' these would be the list
+        of ['1','2']."""
+        agent_bonds = []
+        for item in self.agent_signature:
+            matches = re.match('[a-zA-Z]\w*!(\d+)', item)
+            if matches:
+                agent_bonds.append(matches.group(1))
+        return agent_bonds
 
 
 class KappaComplex:
@@ -88,7 +100,7 @@ class KappaComplex:
 
     def get_number_of_embeddings_of_agent(self, query):
         """Returns the number of embeddings the query agent has on the KappaComplex. Does not follow bonds,
-        i.e. the query must be a single-agent."""
+        so effectively the query must be a single-agent."""
         kappa_query = KappaComplex(query)
         match_number = 0
         # First, we iterate over the agents in our complex
@@ -121,7 +133,7 @@ class KappaSnapshot:
         self.snapshot = dict()
         with open(snapshot_file_name, 'r') as kf:
             for line in kf:
-                if (line[0] != '#') & (line != '\n'):
+                if line[0:6] == '%init:':
                     kappa_dump = re.search('^%init:\s(\d+)\s(.+)', line)
                     complex_abundance = int(kappa_dump.group(1))
                     complex_expression = KappaComplex(kappa_dump.group(2))
@@ -136,9 +148,16 @@ class KappaSnapshot:
         return list(self.snapshot.values())
 
     def get_all_complexes_and_abundances(self):
-        """Returns a dictionary where the keys are KappaComplexes and the values are int abundances of the
-        corresponding complex."""
+        """Returns a list of tuples, where the first element is a KappaComplex and the second is an int with the
+        abundance of the corresponding complex."""
         return list(self.snapshot.items())
+
+    def get_total_mass(self):
+        """Returns an int with the total mass of the snapshot, measured in number of agents."""
+        total_mass = 0
+        for i_complex, i_abundance in self.get_all_complexes_and_abundances():
+            total_mass += i_complex.get_size_of_complex() * i_abundance
+        return total_mass
 
     def get_complexes_with_abundance(self, query_abundance):
         """Returns a list of KappaComplexes present in the snapshot at the query abundance. For example, get all
@@ -201,10 +220,16 @@ class KappaSnapshot:
     def plot_size_distribution(self):
         """"Plots the size distribution of complexes in the snapshot."""
         size_distribution = self.get_size_distribution()
-        polymer_sizes = list(size_distribution.keys())
-        polymer_abundances = list(size_distribution.values())
-        matplotlib.pyplot.plot(polymer_sizes, polymer_abundances)
+        # Cast into a list of tuples from a dictionary
+        size_distribution = size_distribution.items()
 
+        # Sort the list by polymer size & get x,y vectors for plotting
+        sorted_size_distribution = sorted(size_distribution, key=lambda x: x[0])
+        polymer_sizes = [item[0] for item in sorted_size_distribution]
+        polymer_abundances = [item[1] for item in sorted_size_distribution]
+
+        # Plot and annotate axes
+        matplotlib.pyplot.plot(polymer_sizes, polymer_abundances, '.')
         matplotlib.pyplot.xlabel('Complex size')
         matplotlib.pyplot.ylabel('Complex abundance')
         matplotlib.pyplot.title('Distribution of complex sizes')
@@ -213,13 +238,18 @@ class KappaSnapshot:
 
     def plot_mass_distribution(self):
         """Plots the mass distribution of protomers in the snapshot: a monomer counts as one, a dimer as two, a trimer
-        as three, and so on. Thus, 5 trimers have a mass of 15."""
+        as three, and so on. Thus, five trimers have a mass of 15."""
         size_distribution = self.get_size_distribution()
-        polymer_sizes = list(size_distribution.keys())
-        polymer_abundances = list(size_distribution.values())
-        polymer_mass = [a * b for a, b in zip(polymer_sizes, polymer_abundances)]
-        matplotlib.pyplot.plot(polymer_sizes, polymer_mass)
+        # Cast into a list of tuples from a dictionary
+        size_distribution = size_distribution.items()
 
+        # Sort the list by polymer size & get x,y vectors for plotting
+        sorted_size_distribution = sorted(size_distribution, key=lambda x: x[0])
+        polymer_sizes = [item[0] for item in sorted_size_distribution]
+        polymer_mass = [item[1] * item[0] for item in sorted_size_distribution]
+
+        # Plot and annotate axes
+        matplotlib.pyplot.plot(polymer_sizes, polymer_mass, '.')
         matplotlib.pyplot.xlabel('Complex size')
         matplotlib.pyplot.ylabel('Complex mass')
         matplotlib.pyplot.title('Distribution of protomer mass in complexes')
