@@ -1,4 +1,4 @@
-#! python.exe
+#! /usr/bin/python3
 from kappa_snapshot_analysis import KappaSnapshot
 
 # Use this code in the interactive python console to re-load the class definition

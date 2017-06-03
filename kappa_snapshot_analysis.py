@@ -1,4 +1,4 @@
-#! python.exe
+#! /usr/bin/python3
 import re
 import matplotlib.pyplot
 
