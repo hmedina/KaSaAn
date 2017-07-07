@@ -14,4 +14,4 @@ B(d),D(b) <-> B(d!1),D(b!1) @ 1.0e-4 {1.0}, 1.0e-2
 C(d),D(c) <-> C(d!1),D(c!1) @ 1.0e-4 {1.0}, 1.0e-2
 
 %init: 2500 (A(), B(), C(), D())
-#%mod: [T] > 10 do ( $SNAPSHOT "cyclic_polyvalent_snap_10.ka"; $STOP )
+%mod: [T] > 50 do ( $SNAPSHOT "cyclic_polyvalent_snap.ka"; $STOP )
