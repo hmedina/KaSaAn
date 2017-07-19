@@ -2,7 +2,7 @@
 
 ## Overview
 This provides several tools to analyze Kappa snapshots. Concretely, it implements three classes, a KappaSnapshot is
-composed of one or more entities of KappaComplex, themselves composed of one or more entities of KappaAgent.
+composed of one or more entities of KappaComplex, themselves composed of one or more entities of KappaAgent. Since tokens are not instances of either, there is no support for tokens: they are ignored.
 
 Several of these methods return objects of the appropriate class. For example, a KappaSnapshot's 
 `get_largest_complexes()` returns a list of KappaComplexes.
