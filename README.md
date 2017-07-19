@@ -107,18 +107,18 @@ def is_there_a_giant_component(file_name):
     else:
         print('There are multiple complexes at the maximum size.')
 ```
-Applying this function to `snapshots/linear_polymer_snap.ka` we get:
+Applying this function to `models/linear_polymer_snap.ka` we get:
 ```
-There is no giant component. Biggest single entity is of size: 52
+There is no giant component. Biggest single entity is of size: 70
 ```
 
-Applying it to `snapshots/cyclic_polyvalent_snap.ka` we get:
+Applying it to `models/cyclic_polyvalent_snap.ka` we get:
 ```
 There is a giant component of size: 2048
 It is composed of:
-D: 522
-A: 503
-B: 510
-C: 513
+C: 903
+D: 915
+B: 908
+A: 912
 ```
 Worth noting, both snapshots have the same total mass of 10,000.

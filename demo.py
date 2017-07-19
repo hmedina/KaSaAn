@@ -6,7 +6,7 @@ from kappa_snapshot_analysis import KappaSnapshot
 # reload(kappa_snapshot_analysis); from kappa_snapshot_analysis import *
 
 # Read the file & create the inner representation of the snapshot
-mySnap = KappaSnapshot('models/10.ka')
+mySnap = KappaSnapshot('models/linear_polymer_snap.ka')
 mySnap.plot_mass_distribution()
 
 # To display the expression of the first complex with abundance of 3
