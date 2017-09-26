@@ -1,0 +1,7 @@
+# Snapshot [Event: 8897]
+# "uuid" : "681037202"
+%def: "T0" "9.00137"
+
+%init: 239 /*2 agents*/ A(a!1), A(a!1)
+%init: 22 /*1 agents*/ A(a)
+%init: 239 X

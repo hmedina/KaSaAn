@@ -2,10 +2,13 @@
 
 ## Overview
 This provides several tools to analyze Kappa snapshots. Concretely, it implements three classes, a KappaSnapshot is
-composed of one or more entities of KappaComplex, themselves composed of one or more entities of KappaAgent. Since tokens are not instances of either, there is no support for tokens: they are ignored.
+composed of one or more entities of KappaComplex, themselves composed of one or more entities of KappaAgent. Since
+tokens are not instances of either, there is no support for tokens: they are ignored.
 
 Several of these methods return objects of the appropriate class. For example, a KappaSnapshot's 
-`get_largest_complexes()` returns a list of KappaComplexes.
+`get_largest_complexes()` returns a list of KappaComplexes. To access the raw string of a complex or agent, use the 
+`kappa_expression` internal variable. E.g. to get the raw kappa of the largest complex:
+ `foo.get_largest_complexes()[0].kappa_expression`
 
 ## Classes
 

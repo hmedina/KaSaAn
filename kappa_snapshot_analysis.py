@@ -133,10 +133,13 @@ class KappaSnapshot:
         self.snapshot = dict()
         with open(snapshot_file_name, 'r') as kf:
             for line in kf:
-                if re.search('^%init:\s\d+\s.+', line):
-                    kappa_dump = re.search('^%init:\s(\d+)\s(.+)', line)
+                if re.search('^%init:\s\d+\s(/\*.+\*/)?.+\)', line):
+                    kappa_dump = re.search('^%init:\s(\d+)\s(/\*.+\*/)?(.+\))', line)
                     complex_abundance = int(kappa_dump.group(1))
-                    complex_expression = KappaComplex(kappa_dump.group(2))
+                    if kappa_dump.group(3):
+                        complex_expression = KappaComplex(kappa_dump.group(3))
+                    else:
+                        complex_expression = KappaComplex(kappa_dump.group(2))
                     self.snapshot[complex_expression] = complex_abundance
 
     def get_all_complexes(self):
