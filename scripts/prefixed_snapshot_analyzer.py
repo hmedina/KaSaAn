@@ -14,14 +14,19 @@ def snapshot_analyzer(base_directory, snap_prefix, verbosity):
     assert snap_num >= 2, "Problem: less than 2 snapshots were found."
 
     # For each snapshot, get the size distribution & update the results dictionary {size: abundance}
+    # Also get the number of species in that snapshot and save it to another dictionary {snapshot name: species number}
     cum_dist = {}
+    species_num = {}
     for snap_name in snap_names:
-        dist = KappaSnapshot(snap_name).get_size_distribution()
-        for key in dist.keys():
+        current_snapshot = KappaSnapshot(snap_name)
+        species_num[snap_name] = sum(current_snapshot.get_all_abundances())
+        size_dist = current_snapshot.get_size_distribution()
+        for key in size_dist.keys():
             if key in cum_dist:
-                cum_dist[key] += dist[key]
+                cum_dist[key] += size_dist[key]
             else:
-                cum_dist[key] = dist[key]
+                cum_dist[key] = size_dist[key]
+
 
     # Save the cumulative distribution to file
     cum_dist_file_name = base_directory + snap_prefix + 'distribution_cumulative.csv'
@@ -44,13 +49,25 @@ def snapshot_analyzer(base_directory, snap_prefix, verbosity):
     if verbosity:
         print('Mean distribution written to file: ' + mean_dist_file_name)
 
+    # Save the number of species in each snapshot to a file
+    num_species_file_name = base_directory + snap_prefix + 'species_number.csv'
+    with open(num_species_file_name, 'w') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(['Snapshot Number', 'Species In Snapshot'])
+        for key, value in species_num.items():
+            writer.writerow([key, value])
+    if verbosity:
+        print('Number of species distribution written to file: ' + num_species_file_name)
+
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='Get cumulative and mean abundance of complexes based on snapshots sharing a common prefix,'
-                    ' like "t_one_snap_7.ka" having the prefix "t_one_". Snapshots must contain the word "snap" and end'
-                    ' in ".ka". Two files will be produced in the same directory as the snapshots are. They will be'
-                    ' prefixed accordingly: [prefix]distribution_cumulative.csv and [prefix]distribution_mean.csv')
+        description='Get cumulative and mean distribution of complex sizes, plus distribution of number of species,'
+                    ' based on snapshots sharing a common prefix, like "t_one_snap_7.ka" having the prefix "t_one_".'
+                    ' Snapshots must contain the word "snap" and end in ".ka". Two files will be produced in the same'
+                    ' directory as the snapshots are. They will be prefixed accordingly:'
+                    ' [prefix]distribution_cumulative.csv and [prefix]distribution_mean.csv')
     parser.add_argument('-p', '--prefix', type=str, default='',
                         help='Prefix identifying snapshots to analyze, precedes the string "snap"; e.g. "foo_" is the'
                              ' prefix for "foo_snap_76.ka".')
