@@ -17,9 +17,11 @@ def snapshot_analyzer(base_directory, snap_prefix, verbosity):
     # Also get the number of species in that snapshot and save it to another dictionary {snapshot name: species number}
     cum_dist = {}
     species_num = {}
+    lc_size = {}
     for snap_name in snap_names:
         current_snapshot = KappaSnapshot(snap_name)
         species_num[snap_name] = sum(current_snapshot.get_all_abundances())
+        lc_size[snap_name] = current_snapshot.get_largest_complexes()[0].get_size_of_complex()
         size_dist = current_snapshot.get_size_distribution()
         for key in size_dist.keys():
             if key in cum_dist:
@@ -60,14 +62,25 @@ def snapshot_analyzer(base_directory, snap_prefix, verbosity):
         print('Number of species distribution written to file: ' + num_species_file_name)
 
 
+    # Save the largest-complex statistics to file
+    largest_complex_stats_file_name = base_directory + snap_prefix + 'largest_complex_stats.csv'
+    with open(largest_complex_stats_file_name, 'w') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(['Snapshot Number', 'Largest Complex(es) Size'])
+        for key, value in lc_size.items():
+            writer.writerow([key, value])
+    if verbosity:
+        print('Largest complex sizes written to file: ' + largest_complex_stats_file_name)
+
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Get cumulative and mean distribution of complex sizes, plus distribution of number of species,'
                     ' based on snapshots sharing a common prefix, like "t_one_snap_7.ka" having the prefix "t_one_".'
-                    ' Snapshots must contain the word "snap" and end in ".ka". Two files will be produced in the same'
-                    ' directory as the snapshots are. They will be prefixed accordingly:'
-                    ' [prefix]distribution_cumulative.csv and [prefix]distribution_mean.csv')
+                    ' Snapshots must contain the word "snap" and end in ".ka". Files will be produced in the same'
+                    ' directory as the snapshots are. They will be prefixed accordingly, e.g. '
+                    ' [prefix]distribution_cumulative.csv')
     parser.add_argument('-p', '--prefix', type=str, default='',
                         help='Prefix identifying snapshots to analyze, precedes the string "snap"; e.g. "foo_" is the'
                              ' prefix for "foo_snap_76.ka".')
