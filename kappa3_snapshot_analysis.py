@@ -1,4 +1,8 @@
 #! /usr/bin/python3
+""" This is are the core functions and definitions used to analyze snapshots. The parser is compatible with Kappa syntax
+ 3, but not with Kappa syntax 4. This file is provided as support for the legacy format, but will (most likely) not see
+ further development. """
+
 import re
 import matplotlib.pyplot
 
