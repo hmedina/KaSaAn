@@ -231,6 +231,12 @@ class KappaSnapshot:
         """Returns a list of integers with all the abundances in the snapshot."""
         return list(self.snapshot.values())
 
+    def get_all_sizes(self):
+        """Returns a list of integers with all the complex sizes visible in the snapshot, one item per complex (i.e. can
+        contain repeat numbers if they correspond to different complexes)."""
+        sizes = [c.get_size_of_complex() for c in self.get_all_complexes()]
+        return sizes
+
     def get_all_complexes_and_abundances(self):
         """Returns a list of tuples, where the first element is a KappaComplex and the second is an int with the
         abundance of the corresponding complex."""

@@ -35,6 +35,8 @@ Currently implemented methods:
     * Returns a list of KappaComplexes with all the complexes in the snapshot (i.e. one complex per snapshot line)
   * `get_all_abundances()`
     * Returns a list integers with all the abundances in the snapshot.
+  * `get_all_sizes()`
+    * Returns a list of integers with all the complex sizes visible in the snapshot, one item per complex (i.e. can contain repeat numbers if they correspond to different complexes)
   * `get_all_complexes_and_abundances()`
     * Returns a list of tuples of the KappaComplexes and their abundances.
   * `get_total_mass()`
