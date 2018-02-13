@@ -57,10 +57,10 @@ def site_contains_site(host, query):
 
 
 class KappaAgent:
-    """Class for representing Kappa gents. I.e. <<A(b[1])>> or <<A(s{a}[.] a[1] b[.])>>."""
+    """Class for representing Kappa agents. I.e. <<A(b[1])>> or <<A(s{a}[.] a[1] b[.])>>."""
     def __init__(self, kappa_expression):
         # Check if kappa expression's name & overall structure is valid
-        matches = re.match('([a-zA-Z]\w*)\(([^)]*)\)', kappa_expression)
+        matches = re.match('([a-zA-Z]\w*)\(([^)]*)\)', kappa_expression.strip())
         assert matches, 'Invalid kappa expression <<' + kappa_expression + '>>'
 
         # Assign results to variables
@@ -119,8 +119,8 @@ class KappaComplex:
 
     def get_agents(self):
         """Returns a list of KappaAgents, filled with agents plus their signatures, present in this complex."""
-        agent_list = self.kappa_expression.split('), ')
-        agent_list = [KappaAgent(item + ')') for item in agent_list]
+        agent_list = self.kappa_expression.split(', ')
+        agent_list = [KappaAgent(item) for item in agent_list]
         return agent_list
 
     def get_number_of_embeddings_of_agent(self, query):
