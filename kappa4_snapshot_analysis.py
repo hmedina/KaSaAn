@@ -237,6 +237,13 @@ class KappaSnapshot:
         sizes = [c.get_size_of_complex() for c in self.get_all_complexes()]
         return sizes
 
+    def get_agent_types_present(self):
+        """Returns a set with the names of the agents present in the snapshot."""
+        agent_types = set()
+        for c in self.get_all_complexes():
+            agent_types.update(c.get_agent_types())
+        return agent_types
+
     def get_all_complexes_and_abundances(self):
         """Returns a list of tuples, where the first element is a KappaComplex and the second is an int with the
         abundance of the corresponding complex."""
