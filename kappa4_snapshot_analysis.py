@@ -146,6 +146,14 @@ class KappaComplex:
                         match_number += 1
         return match_number
 
+    def get_complex_composition(self):
+        """Returns a dictionary where the key is an agent name, and the value the number of times that agent appears in
+        this complex."""
+        composition = {}
+        for agent in self.get_agent_types():
+            composition[agent] = self.get_number_of_embeddings_of_agent(agent + '()')
+        return composition
+
     def get_number_of_embeddings_of_complex(self, query):
         """Returns the number of embedding the query complex has on the KappaComplex. Follows bonds. WIP"""
         raise NotImplemented

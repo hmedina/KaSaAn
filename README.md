@@ -78,6 +78,8 @@ Currently implemented methods:
     * Returns a list of KappaAgents, with the agents that make up the complex (includes agent signature)
   * `get_number_of_embeddings_of_agent(query)`
     * Returns the number of embeddings a given query `agent(signature)` has on the complex. Single agents only.
+  * `get_complex_composition(self)`
+    * Returns a dictionary where the key is an agent name, and the value the number of times that agent appears in this complex.
   
 ### KappaAgent
 This class represents individual Kappa agents. To get the raw Kappa
