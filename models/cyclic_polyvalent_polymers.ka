@@ -16,4 +16,7 @@ C(d[.]),D(c[.]) <-> C(d[1]),D(c[1]) @ 1.0e-4 {1.0}, 1.0e-2
 %init: 2500 (A(), B(), C(), D())
 
 %def: "seed" "1"
-%mod: alarm 10 do $STOP "cyclic_polyvalent_polymers_snap.ka" ;
+%mod: alarm 10 do (
+    $SNAPSHOT "cyclic_polyvalent_polymers_snap.ka" ;
+    $SNAPSHOT "cyclic_polyvalent_polymers_snap.json" ;
+    $STOP )

@@ -1,7 +1,7 @@
-// Snapshot [Event: 1256]
-// "uuid" : "418507417"
-%def: "T0" "1"
+// Snapshot [Event: 9953]
+// "uuid" : "912920752"
+%def: "T0" "10"
 
-%init: 238 /*2 agents*/ A(a[1]), A(a[1])
-%init: 24 /*1 agents*/ A(a[.])
-%init: 238 X
+%init: 241 /*2 agents*/ A(a[1]), A(a[1])
+%init: 18 /*1 agents*/ A(a[.])
+%init: 241 X

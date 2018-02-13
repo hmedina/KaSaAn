@@ -4,4 +4,7 @@ A(a[.]),A(a[.]) <-> A(a[1]),A(a[1]) | 1 X @ 1,1
 %init: 500 A()
 
 %def: "seed" "1"
-%mod: alarm 1 do $STOP "dimerization_with_tokens_snap.ka" ;
+%mod: alarm 10 do (
+    $SNAPSHOT "dimerization_with_tokens_snap.ka" ;
+    $SNAPSHOT "dimerization_with_tokens_snap.json" ;
+    $STOP )
