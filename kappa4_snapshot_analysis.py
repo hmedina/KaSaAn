@@ -1,5 +1,5 @@
 #! /usr/bin/python3
-""" This is are the core functions and definitions used to analyze snapshots. The parser is compatible with Kappa syntax
+""" These are the core functions and definitions used to analyze snapshots. The parser is compatible with Kappa syntax
  4, and is intended as the working & supported version. """
 
 import re
