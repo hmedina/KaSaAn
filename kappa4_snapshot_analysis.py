@@ -215,6 +215,13 @@ class KappaSnapshot:
                         tmp = re.search('^//\sSnapshot\s\[Event:\s(\d+)\]', line)
                         self.snapshot_event = tmp.group(1)
 
+    def get_snapshot_time(self):
+        """Returns a float with the time at which this snapshot was taken."""
+        return float(self.snapshot_time)
+
+    def get_snapshot_event(self):
+        """Returns an integer with the event number the snapshot was taken at."""
+        return int(self.snapshot_event)
 
     def get_all_complexes(self):
         """Returns a list of KappaComplexes with all the complexes in the snapshot."""

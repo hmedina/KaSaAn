@@ -27,6 +27,10 @@ suitable for Kappa. These serve as foundation for more advanced methods.
 Currently, the constructor reads from a plain text-file.
 
 Currently implemented methods:
+  * `get_snapshot_time()`
+     * Returns a float with the time at which this snapshot was taken.
+  * `get_snapshot_event()`
+     * Returns an integer with the event number the snapshot was taken at.
   * `get_all_complexes()`
     * Returns a list of KappaComplexes with all the complexes in the snapshot (i.e. one complex per snapshot line)
   * `get_all_abundances()`
