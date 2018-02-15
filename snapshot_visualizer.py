@@ -21,28 +21,26 @@ def process_snapshot(snapshot):
     return data
 
 
-def colorize_agents(snapshot):
+def colorize_agents(agent_list):
     # Generate & associate colors as a dictionary {Agent: Color}
-    agent_types = list(snapshot.get_agent_types_present())
-    num_agents = len(agent_types)
+    num_agents = len(agent_list)
     agent_colors = {}
     # Use a built-in palette unless there are too many agents
     if num_agents <= len(mpl.rcParams['axes.prop_cycle']):
         for agent in range(num_agents):
-            agent_colors[agent_types[agent]] = 'C' + str(agent)
+            agent_colors[agent_list[agent]] = 'C' + str(agent)
     else:
         # ToDO test this color scheme for snapshots with over 10 agents
         h = numpy.linspace(start=0, stop=1, num=num_agents, endpoint=False)
         for agent in range(num_agents):
-            agent_colors[agent_types[agent]] = colorsys.hsv_to_rgb(h[agent], 0.5, 0.5)
-
+            agent_colors[agent_list[agent]] = colorsys.hsv_to_rgb(h[agent], 0.5, 0.5)
     return agent_colors
 
 
-def snapshot_composition(unsorted_data, agent_coloring_scheme, vis_mode, x_res, y_res):
+def snapshot_composition(data, color_scheme, vis_mode, x_res, y_res):
     assert vis_mode == 'size' or vis_mode == 'count' or vis_mode == 'mass', 'Problem: unknown mode <<' + vis_mode + '>>'
 
-    species_num = len(unsorted_data)
+    species_num = len(data)
 
     # Define & organize the data that we'll be plotting
     area_and_composition = []
@@ -70,13 +68,21 @@ def snapshot_composition(unsorted_data, agent_coloring_scheme, vis_mode, x_res, 
 
     # Determine the rectangles that make up each species, i.e. composition
     agent_patches = []
+    species_patches = []
     for species in range(species_num):
+        # Define the box that represents this species as a whole
+        species_canvas = species_canvases[species]
+        s = matplotlib.patches.Rectangle(xy=[species_canvas['x'],species_canvas['y']],
+                                         width=species_canvas['dx'],
+                                         height=species_canvas['dy'],
+                                         facecolor='#00000000',
+                                         edgecolor='#000000ff')
+        species_patches.append(s)
         # Determine the agent composition of this species
         composition = comps[species]
         agent_count = [composition[k] for k in sorted(composition, key=composition.get, reverse=True)]
         agent_type = [k for k in sorted(composition, key=composition.get, reverse=True)]
         # Calculate the sub-rectangles to draw on this rectangle / canvas
-        species_canvas = species_canvases[species]
         normalized_agent_count = squarify.normalize_sizes(sizes=agent_count,
                                                           dx=species_canvas['dx'],
                                                           dy=species_canvas['dy'])
@@ -91,10 +97,10 @@ def snapshot_composition(unsorted_data, agent_coloring_scheme, vis_mode, x_res, 
             r = matplotlib.patches.Rectangle(xy=[agent_rectangle['x'],agent_rectangle['y']],
                                              width=agent_rectangle['dx'],
                                              height=agent_rectangle['dy'],
-                                             facecolor=agent_coloring_scheme[agent_type[a]])
+                                             facecolor=color_scheme[agent_type[a]])
             agent_patches.append(r)
 
-    agent_collection = PatchCollection(agent_patches, match_original=True)
+    agent_collection = PatchCollection(agent_patches + species_patches, match_original=True)
     return agent_collection
 
 
@@ -126,17 +132,23 @@ def composition_legend(color_scheme, x_res, y_res, axis):
 
 my_snap = KappaSnapshot('models/cyclic_polyvalent_polymers_snap.ka')
 my_data = process_snapshot(my_snap)
-my_color_scheme = colorize_agents(my_snap)
+my_color_scheme = colorize_agents(list(my_snap.get_agent_types_present()))
 
 # Composition resolution in each axis
 res_w = 800
 res_h = 600
 
 # Plot
+mode = 'mass' # size count mass
+
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1, aspect=1)
-ax.add_collection(snapshot_composition(my_data, my_color_scheme, 'size', res_w, res_h))
-
+ax.add_collection(snapshot_composition(data=my_data,
+                                       color_scheme=my_color_scheme,
+                                       vis_mode=mode,
+                                       x_res=res_w,
+                                       y_res=res_h))
+plt.title(s='Area proportional to ' + mode + ' of species')
 ax = composition_legend(my_color_scheme, res_w, res_h, ax)
 
 ax.axis('off')
