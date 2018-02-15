@@ -9,94 +9,135 @@ import numpy
 from matplotlib.collections import PatchCollection
 from kappa4_snapshot_analysis import KappaSnapshot
 
-# Read and process data
+
+def process_snapshot(snapshot):
+    # Extract the relevant information from a snapshot: size, abundance, & compositions
+    data = []
+    for kappa_complex, abundance in snapshot.get_all_complexes_and_abundances():
+        size = kappa_complex.get_size_of_complex()
+        composition = kappa_complex.get_complex_composition()
+        data.append([size, abundance, composition])
+
+    return data
+
+
+def colorize_agents(snapshot):
+    # Generate & associate colors as a dictionary {Agent: Color}
+    agent_types = list(snapshot.get_agent_types_present())
+    num_agents = len(agent_types)
+    agent_colors = {}
+    # Use a built-in palette unless there are too many agents
+    if num_agents <= len(mpl.rcParams['axes.prop_cycle']):
+        for agent in range(num_agents):
+            agent_colors[agent_types[agent]] = 'C' + str(agent)
+    else:
+        # ToDO test this color scheme for snapshots with over 10 agents
+        h = numpy.linspace(start=0, stop=1, num=num_agents, endpoint=False)
+        for agent in range(num_agents):
+            agent_colors[agent_types[agent]] = colorsys.hsv_to_rgb(h[agent], 0.5, 0.5)
+
+    return agent_colors
+
+
+def snapshot_composition(unsorted_data, agent_coloring_scheme, vis_mode, x_res, y_res):
+    assert vis_mode == 'size' or vis_mode == 'count' or vis_mode == 'mass', 'Problem: unknown mode <<' + vis_mode + '>>'
+
+    species_num = len(unsorted_data)
+
+    # Define & organize the data that we'll be plotting
+    area_and_composition = []
+    for species in range(species_num):
+        species_entry = my_data[species]
+        species_size = species_entry[0]
+        species_abundance = species_entry[1]
+        species_mass = species_entry[0] * species_entry[1]
+        species_composition = species_entry[2]
+        if vis_mode == 'size':
+            area_and_composition.append([species_size, species_composition])
+        elif vis_mode == 'count':
+            area_and_composition.append([species_abundance, species_composition])
+        else:
+            area_and_composition.append([species_mass, species_composition])
+
+    # Sort the data decreasing by magnitude
+    sorted_area_and_composition = sorted(area_and_composition, key=lambda foo: foo[0], reverse=True)
+
+    # Normalize the data by specified x/y resolution
+    areas = [a[0] for a in sorted_area_and_composition]
+    comps = [a[1] for a in sorted_area_and_composition]
+    areas = squarify.normalize_sizes(sizes=areas, dy=y_res, dx=x_res)
+    species_canvases = squarify.padded_squarify(sizes=areas, x=0, y=0, dy=y_res, dx=x_res)
+
+    # Determine the rectangles that make up each species, i.e. composition
+    agent_patches = []
+    for species in range(species_num):
+        # Determine the agent composition of this species
+        composition = comps[species]
+        agent_count = [composition[k] for k in sorted(composition, key=composition.get, reverse=True)]
+        agent_type = [k for k in sorted(composition, key=composition.get, reverse=True)]
+        # Calculate the sub-rectangles to draw on this rectangle / canvas
+        species_canvas = species_canvases[species]
+        normalized_agent_count = squarify.normalize_sizes(sizes=agent_count,
+                                                          dx=species_canvas['dx'],
+                                                          dy=species_canvas['dy'])
+        agent_rectangles = squarify.squarify(sizes=normalized_agent_count,
+                                             x=species_canvas['x'],
+                                             y=species_canvas['y'],
+                                             dy=species_canvas['dy'],
+                                             dx=species_canvas['dx'])
+        # Draw the rectangles using the appropriate color (determined by the agent type)
+        for a in range(len(agent_type)):
+            agent_rectangle = agent_rectangles[a]
+            r = matplotlib.patches.Rectangle(xy=[agent_rectangle['x'],agent_rectangle['y']],
+                                             width=agent_rectangle['dx'],
+                                             height=agent_rectangle['dy'],
+                                             facecolor=agent_coloring_scheme[agent_type[a]])
+            agent_patches.append(r)
+
+    agent_collection = PatchCollection(agent_patches, match_original=True)
+    return agent_collection
+
+
+def composition_legend(color_scheme, x_res, y_res, axis):
+    # Make a list of colored rectangles + agent names
+    num_agents = len(color_scheme)
+    y_positions = numpy.linspace(start=0, stop=y_res, endpoint=False, num=num_agents+1)
+    # Dumb var to get nicely laid-out text entries
+    position = 0
+    for agent, color in color_scheme.items():
+        x_dim = x_res * 0.1
+        y_dim = y_res * 0.5 / num_agents
+        x_pos = x_res * 1.1
+        y_pos = y_positions[position + 1] - y_dim / 2
+        r = matplotlib.patches.Rectangle(xy=[x_pos, y_pos],
+                                         width=x_dim,
+                                         height=y_dim,
+                                         edgecolor='#000000',
+                                         facecolor=color)
+        axis.add_patch(r)
+        axis.text(x=x_res * 1.2,
+                  y=y_positions[position + 1],
+                  s=agent,
+                  verticalalignment='center')
+        position += 1
+
+    return axis
+
+
 my_snap = KappaSnapshot('models/cyclic_polyvalent_polymers_snap.ka')
+my_data = process_snapshot(my_snap)
+my_color_scheme = colorize_agents(my_snap)
 
-# Generate & associate colors as a dictionary {Agent: Color}
-agent_types = list(my_snap.get_agent_types_present())
-num_agents = len(agent_types)
-agent_colors = {}
-if num_agents <= len(mpl.rcParams['axes.prop_cycle']):
-    for agent in range(num_agents):
-        agent_colors[agent_types[agent]] = 'C' + str(agent)
-else:
-    # ToDO test this color scheme for snapshots with over 10 agents
-    h = numpy.linspace(start=0, stop=1, num=num_agents, endpoint=False)
-    for agent in range(num_agents):
-        agent_colors[agent_types[agent]] = colorsys.hsv_to_rgb(h[agent], 0.5, 0.5)
+# Composition resolution in each axis
+res_w = 800
+res_h = 600
 
-my_data = []
-for my_complex, my_abundance in my_snap.get_all_complexes_and_abundances():
-    my_size = my_complex.get_size_of_complex()
-    my_composition = my_complex.get_complex_composition()
-    my_data.append([my_size, my_abundance, my_composition])
+# Plot
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1, aspect=1)
+ax.add_collection(snapshot_composition(my_data, my_color_scheme, 'size', res_w, res_h))
 
-num_species = len(my_data)
-
-# Sort data
-size_sort = sorted(my_data, key=lambda foo: foo[0], reverse=True)
-abundance_sort = sorted(my_data, key=lambda foo: foo[1], reverse=True)
-mass_sort = sorted(my_data, key=lambda foo: foo[0] * foo[1], reverse=True)
-
-# Define mass resolution: my_width * my_height = total "pixels" of mass
-my_width = 1000
-my_height = 1000
-my_x = 0
-my_y = 0
-
-# Normalize the species by the different metrics: size|abundance|mass
-my_sizes = [item[0] for item in size_sort]
-#my_abundances = [item[1] for item in size_sort]
-#my_masses = [item[0] * item[1] for item in size_sort]
-my_sizes = squarify.normalize_sizes(sizes=my_sizes, dy=my_width, dx=my_height)
-#my_abundances = squarify.normalize_sizes(sizes=my_abundances, dy=my_width, dx=my_height)
-#my_masses = squarify.normalize_sizes(sizes=my_masses, dy=my_width, dx=my_height)
-
-# Determine the "species canvases" i.e. the rectangle that represents a single species and holds the sub-rectangles that
-# represent its composition
-species_canvases = squarify.padded_squarify(sizes=my_sizes, x=my_x, y=my_y, dy=my_width, dx=my_height)
-#abundances_rects = squarify.padded_squarify(sizes=my_abundances, x=my_x, y=my_y, dy=my_width, dx=my_height)
-#masses_rects = squarify.padded_squarify(sizes=my_masses, x=my_x, y=my_y, dy=my_width, dx=my_height)
-
-
-agent_patches = []
-for species in range(num_species):
-    # Determine the agent composition of this species
-    composition = size_sort[species][2]
-    agent_count = [composition[k] for k in sorted(composition, key=composition.get, reverse=True)]
-    agent_type = [k for k in sorted(composition, key=composition.get, reverse=True)]
-    # Calculate the sub-rectangles to draw on this rectangle / canvas
-    species_canvas = species_canvases[species]
-    normalized_agent_count = squarify.normalize_sizes(sizes=agent_count,
-                                                      dx=species_canvas['dx'],
-                                                      dy=species_canvas['dy'])
-    agent_rectangles = squarify.squarify(sizes=normalized_agent_count,
-                                         x=species_canvas['x'],
-                                         y=species_canvas['y'],
-                                         dy=species_canvas['dy'],
-                                         dx=species_canvas['dx'])
-    # Draw the rectangles using the appropriate color (determined by the agent type)
-    for agent in range(len(agent_rectangles)):
-        agent_rectangle = agent_rectangles[agent]
-        r = matplotlib.patches.Rectangle(xy=[agent_rectangle['x'],agent_rectangle['y']],
-                                         width=agent_rectangle['dx'],
-                                         height=agent_rectangle['dy'],
-                                         facecolor=agent_colors[agent_types[agent]])
-        agent_patches.append(r)
-
-agent_collection = PatchCollection(agent_patches, match_original=True)
-
-# Create rectangle containers for the species themselves
-species_patches = []
-for c in species_canvases:
-    r = matplotlib.patches.Rectangle(xy=[c['x'],c['y']], width=c['dx'], height=c['dy'], color='#88888888')
-    species_patches.append(r)
-
-species_collection = PatchCollection(species_patches, match_original=True)
-
-fig, ax = plt.subplots(1)
-ax.add_collection(species_collection)
-ax.add_collection(agent_collection)
+ax = composition_legend(my_color_scheme, res_w, res_h, ax)
 
 ax.axis('off')
 ax.axis('equal')
