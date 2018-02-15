@@ -1,0 +1,142 @@
+%agent: Aa(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ab(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ac(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ad(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ae(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Af(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ag(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ah(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ai(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Aj(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ak(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Al(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Am(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: An(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ao(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ap(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Aq(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ar(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: As(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: At(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Au(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Av(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Aw(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ax(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Ay(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+%agent: Az(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
+// A-n
+Aa(a[.]),Aa(a[.]) <-> Aa(a[1]),Aa(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(b[.]),Ab(a[.]) <-> Aa(b[1]),Ab(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(c[.]),Ac(a[.]) <-> Aa(c[1]),Ac(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(d[.]),Ad(a[.]) <-> Aa(d[1]),Ad(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(e[.]),Ae(a[.]) <-> Aa(e[1]),Ae(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(f[.]),Af(a[.]) <-> Aa(f[1]),Af(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(g[.]),Ag(a[.]) <-> Aa(g[1]),Ag(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(h[.]),Ah(a[.]) <-> Aa(h[1]),Ah(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(i[.]),Ai(a[.]) <-> Aa(i[1]),Ai(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(j[.]),Aj(a[.]) <-> Aa(j[1]),Aj(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(k[.]),Ak(a[.]) <-> Aa(k[1]),Ak(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(l[.]),Al(a[.]) <-> Aa(l[1]),Al(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(m[.]),Am(a[.]) <-> Aa(m[1]),Am(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(n[.]),An(a[.]) <-> Aa(n[1]),An(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(o[.]),Ao(a[.]) <-> Aa(o[1]),Ao(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(p[.]),Ap(a[.]) <-> Aa(p[1]),Ap(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(q[.]),Aq(a[.]) <-> Aa(q[1]),Aq(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(r[.]),Ar(a[.]) <-> Aa(r[1]),Ar(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(s[.]),As(a[.]) <-> Aa(s[1]),As(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(t[.]),At(a[.]) <-> Aa(t[1]),At(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(u[.]),Au(a[.]) <-> Aa(u[1]),Au(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(v[.]),Av(a[.]) <-> Aa(v[1]),Av(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(w[.]),Aw(a[.]) <-> Aa(w[1]),Aw(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(x[.]),Ax(a[.]) <-> Aa(x[1]),Ax(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(y[.]),Ay(a[.]) <-> Aa(y[1]),Ay(a[1]) @ 1e-4 {1e-2}, 1e-2
+Aa(z[.]),Az(a[.]) <-> Aa(z[1]),Az(a[1]) @ 1e-4 {1e-2}, 1e-2
+// B-n
+Ab(a[.]),Aa(b[.]) <-> Ab(a[1]),Aa(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(b[.]),Ab(b[.]) <-> Ab(b[1]),Ab(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(c[.]),Ac(b[.]) <-> Ab(c[1]),Ac(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(d[.]),Ad(b[.]) <-> Ab(d[1]),Ad(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(e[.]),Ae(b[.]) <-> Ab(e[1]),Ae(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(f[.]),Af(b[.]) <-> Ab(f[1]),Af(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(g[.]),Ag(b[.]) <-> Ab(g[1]),Ag(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(h[.]),Ah(b[.]) <-> Ab(h[1]),Ah(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(i[.]),Ai(b[.]) <-> Ab(i[1]),Ai(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(j[.]),Aj(b[.]) <-> Ab(j[1]),Aj(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(k[.]),Ak(b[.]) <-> Ab(k[1]),Ak(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(l[.]),Al(b[.]) <-> Ab(l[1]),Al(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(m[.]),Am(b[.]) <-> Ab(m[1]),Am(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(n[.]),An(b[.]) <-> Ab(n[1]),An(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(o[.]),Ao(b[.]) <-> Ab(o[1]),Ao(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(p[.]),Ap(b[.]) <-> Ab(p[1]),Ap(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(q[.]),Aq(b[.]) <-> Ab(q[1]),Aq(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(r[.]),Ar(b[.]) <-> Ab(r[1]),Ar(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(s[.]),As(b[.]) <-> Ab(s[1]),As(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(t[.]),At(b[.]) <-> Ab(t[1]),At(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(u[.]),Au(b[.]) <-> Ab(u[1]),Au(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(v[.]),Av(b[.]) <-> Ab(v[1]),Av(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(w[.]),Aw(b[.]) <-> Ab(w[1]),Aw(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(x[.]),Ax(b[.]) <-> Ab(x[1]),Ax(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(y[.]),Ay(b[.]) <-> Ab(y[1]),Ay(b[1]) @ 1e-4 {1e-2}, 1e-2
+Ab(z[.]),Az(b[.]) <-> Ab(z[1]),Az(b[1]) @ 1e-4 {1e-2}, 1e-2
+// C-n
+Ac(a[.]),Aa(c[.]) <-> Ac(a[1]),Aa(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(b[.]),Ab(c[.]) <-> Ac(b[1]),Ab(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(c[.]),Ac(c[.]) <-> Ac(c[1]),Ac(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(d[.]),Ad(c[.]) <-> Ac(d[1]),Ad(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(e[.]),Ae(c[.]) <-> Ac(e[1]),Ae(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(f[.]),Af(c[.]) <-> Ac(f[1]),Af(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(g[.]),Ag(c[.]) <-> Ac(g[1]),Ag(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(h[.]),Ah(c[.]) <-> Ac(h[1]),Ah(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(i[.]),Ai(c[.]) <-> Ac(i[1]),Ai(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(j[.]),Aj(c[.]) <-> Ac(j[1]),Aj(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(k[.]),Ak(c[.]) <-> Ac(k[1]),Ak(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(l[.]),Al(c[.]) <-> Ac(l[1]),Al(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(m[.]),Am(c[.]) <-> Ac(m[1]),Am(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(n[.]),An(c[.]) <-> Ac(n[1]),An(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(o[.]),Ao(c[.]) <-> Ac(o[1]),Ao(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(p[.]),Ap(c[.]) <-> Ac(p[1]),Ap(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(q[.]),Aq(c[.]) <-> Ac(q[1]),Aq(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(r[.]),Ar(c[.]) <-> Ac(r[1]),Ar(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(s[.]),As(c[.]) <-> Ac(s[1]),As(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(t[.]),At(c[.]) <-> Ac(t[1]),At(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(u[.]),Au(c[.]) <-> Ac(u[1]),Au(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(v[.]),Av(c[.]) <-> Ac(v[1]),Av(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(w[.]),Aw(c[.]) <-> Ac(w[1]),Aw(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(x[.]),Ax(c[.]) <-> Ac(x[1]),Ax(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(y[.]),Ay(c[.]) <-> Ac(y[1]),Ay(c[1]) @ 1e-4 {1e-2}, 1e-2
+Ac(z[.]),Az(c[.]) <-> Ac(z[1]),Az(c[1]) @ 1e-4 {1e-2}, 1e-2
+// D-n
+Ad(a[.]),Aa(d[.]) <-> Ad(a[1]),Aa(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(b[.]),Ab(d[.]) <-> Ad(b[1]),Ab(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(c[.]),Ac(d[.]) <-> Ad(c[1]),Ac(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(d[.]),Ad(d[.]) <-> Ad(d[1]),Ad(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(e[.]),Ae(d[.]) <-> Ad(e[1]),Ae(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(f[.]),Af(d[.]) <-> Ad(f[1]),Af(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(g[.]),Ag(d[.]) <-> Ad(g[1]),Ag(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(h[.]),Ah(d[.]) <-> Ad(h[1]),Ah(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(i[.]),Ai(d[.]) <-> Ad(i[1]),Ai(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(j[.]),Aj(d[.]) <-> Ad(j[1]),Aj(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(k[.]),Ak(d[.]) <-> Ad(k[1]),Ak(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(l[.]),Al(d[.]) <-> Ad(l[1]),Al(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(m[.]),Am(d[.]) <-> Ad(m[1]),Am(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(n[.]),An(d[.]) <-> Ad(n[1]),An(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(o[.]),Ao(d[.]) <-> Ad(o[1]),Ao(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(p[.]),Ap(d[.]) <-> Ad(p[1]),Ap(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(q[.]),Aq(d[.]) <-> Ad(q[1]),Aq(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(r[.]),Ar(d[.]) <-> Ad(r[1]),Ar(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(s[.]),As(d[.]) <-> Ad(s[1]),As(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(t[.]),At(d[.]) <-> Ad(t[1]),At(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(u[.]),Au(d[.]) <-> Ad(u[1]),Au(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(v[.]),Av(d[.]) <-> Ad(v[1]),Av(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(w[.]),Aw(d[.]) <-> Ad(w[1]),Aw(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(x[.]),Ax(d[.]) <-> Ad(x[1]),Ax(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(y[.]),Ay(d[.]) <-> Ad(y[1]),Ay(d[1]) @ 1e-4 {1e-2}, 1e-2
+Ad(z[.]),Az(d[.]) <-> Ad(z[1]),Az(d[1]) @ 1e-4 {1e-2}, 1e-2
+
+%init: 1000 (Aa(),Ab(),Ac(),Ad(),Ae(),Af(),Ag(),Ah(),Ai(),Aj(),Ak(),Al(),Am(),An(),Ao(),Ap(),Aq(),Ar(),As(),At(),Au(),Av(),Aw(),Ax(),Ay(),Az())
+
+%def: "seed" "1"
+%mod: alarm 10 do (
+	$SNAPSHOT "alphabet_soup_snap.ka" ;
+    $SNAPSHOT "alphabet_soup_snap.json" ;
+    $STOP )
