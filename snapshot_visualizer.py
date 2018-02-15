@@ -8,6 +8,7 @@ import colorsys
 import numpy
 from matplotlib.collections import PatchCollection
 from kappa4_snapshot_analysis import KappaSnapshot
+from operator import itemgetter
 
 
 def process_snapshot(snapshot):
@@ -30,10 +31,9 @@ def colorize_agents(agent_list):
         for agent in range(num_agents):
             agent_colors[agent_list[agent]] = 'C' + str(agent)
     else:
-        # ToDO test this color scheme for snapshots with over 10 agents
         h = numpy.linspace(start=0, stop=1, num=num_agents, endpoint=False)
         for agent in range(num_agents):
-            agent_colors[agent_list[agent]] = colorsys.hsv_to_rgb(h[agent], 0.5, 0.5)
+            agent_colors[agent_list[agent]] = colorsys.hsv_to_rgb(h[agent], 0.5, 0.75)
     return agent_colors
 
 
@@ -110,7 +110,7 @@ def composition_legend(color_scheme, x_res, y_res, axis):
     y_positions = numpy.linspace(start=0, stop=y_res, endpoint=False, num=num_agents+1)
     # Dumb var to get nicely laid-out text entries
     position = 0
-    for agent, color in color_scheme.items():
+    for agent, color in sorted(color_scheme.items(), key=itemgetter(0), reverse=True):
         x_dim = x_res * 0.1
         y_dim = y_res * 0.5 / num_agents
         x_pos = x_res * 1.1
@@ -130,7 +130,7 @@ def composition_legend(color_scheme, x_res, y_res, axis):
     return axis
 
 
-my_snap = KappaSnapshot('models/cyclic_polyvalent_polymers_snap.ka')
+my_snap = KappaSnapshot('models/foo.ka')
 my_data = process_snapshot(my_snap)
 my_color_scheme = colorize_agents(list(my_snap.get_agent_types_present()))
 
