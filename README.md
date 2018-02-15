@@ -2,7 +2,9 @@
 
 ## Overview
 This provides several tools to analyze Kappa snapshots. Concretely, it
-implements three classes, a KappaSnapshot is composed of one or more
+implements three classes, and a whole-mix visualizer.
+
+A KappaSnapshot is composed of one or more
 entities of KappaComplex, themselves composed of one or more entities of
 KappaAgent. Since tokens are not instances of either, there is no
 support for tokens: they are ignored.
@@ -145,3 +147,61 @@ D: 284
 B: 280
 ```
 Worth noting, both snapshots have the same total mass of 10,000.
+
+We can view the composition of both mixtures:
+```
+$ ./snapshot_visualizer.py -sf ./models/linear_polymer_snap.ka -vm mass -of ./models/linear_polymer_snap_mass.png
+```
+![Linear system composition](./models/linear_polymer_snap_mass.png)
+```
+$ ./snapshot_visualizer.py -sf ./models/cyclic_polyvalent_polymers_snap.ka -vm mass -of ./models/cyclic_polyvalent_polymers_snap_mass.png
+```
+![Cyclic system composition](./models/cyclic_polyvalent_polymers_snap_mass.png)
+
+### What is my mixture doing? Is it all aggregating? What's the composition like?
+
+The model alphabet soup contains 28 agents (Aa-Az), with many
+dimerization and scaffolding opportunities. We can view the snapshot
+(presumed to be taken at steady state) to observe what is the mixture
+composition.
+
+#### Count
+
+We sort the molecular species by count (aka frequency, or abundance):
+```
+$ ./snapshot_visualizer.py -sf ./models/alphabet_soup_snap.ka -vm count -of ./models/alphabet_soup_snap_count.png
+```
+![Visualization by species count](./models/alphabet_soup_snap_count.png)
+
+Each black box represents a species, with the area taken proportional to
+the number of times that species is present in the mixture. Here we can
+see the mixture is composed of a large set of species at very similar
+abundance levels (e.g. a gazillion types of dimers).
+
+#### Size
+
+If we sort the molecular species by size:
+```
+$ ./snapshot_visualizer.py -sf ./models/alphabet_soup_snap.ka -vm size -of ./models/alphabet_soup_snap_size.png
+```
+![Visualization by species size](./models/alphabet_soup_snap_size.png)
+
+When sorting by size of the species, keep in mind that a single species
+is surrounded by a black box. In this image, an enormous species
+dominates the view. The next largest species is a very distant second.
+
+#### Mass
+
+If we sort the molecular species by the product of their size times
+their abundance:
+```
+$ ./snapshot_visualizer.py -sf ./models/alphabet_soup_snap.ka -vm mass -of ./models/alphabet_soup_snap_mass.png
+```
+![Visualization by species mass](./models/alphabet_soup_snap_mass.png)
+
+When sorting by the mass of species, we are asking "what is the bulk of
+my mixture doing?". I.e. is my mixture dominated by a very large number
+of small species, or a very small number of large species? Here we see
+there is a giant component that dominates the bulk of the mixture,
+having recruited ~4/5ths of the entire mixture (i.e. its area is ~4/5ths
+of the entire patchwork / mixture).
