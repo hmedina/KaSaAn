@@ -105,12 +105,28 @@ def snapshot_composition(data, color_scheme, vis_mode, x_res, y_res):
     return agent_collection
 
 
-def composition_legend(color_scheme, x_res, y_res, axis):
+def composition_legend(data, color_scheme, vis_mode, x_res, y_res, axis):
     # Make a list of colored rectangles + agent names
     num_agents = len(color_scheme)
     y_positions = numpy.linspace(start=0, stop=y_res, endpoint=False, num=num_agents+1)
     # Dumb var to get nicely laid-out text entries
     position = 0
+    # Add entry for largest box at the bottom
+    assert vis_mode == 'size' or vis_mode == 'count' or vis_mode == 'mass', 'Problem: unknown mode <<' + vis_mode + '>>'
+    if vis_mode == 'size':
+        sizes = [item[0] for item in data]
+        l_entry = 'Biggest size: ' + str(max(sizes))
+    elif vis_mode == 'count':
+        counts = [item[1] for item in data]
+        l_entry = 'Largest count: ' + str(max(counts))
+    else:
+        masses = [item[0] * item[1] for item in data]
+        l_entry = 'Greatest mass: ' + str(max(masses))
+    axis.text(x=x_res * 1.1,
+              y=y_positions[0],
+              s=l_entry,
+              verticalalignment='center')
+    # Add agent entries with their colors (as composition key)
     for agent, color in sorted(color_scheme.items(), key=itemgetter(0), reverse=True):
         x_dim = x_res * 0.1
         y_dim = y_res * 0.5 / num_agents
@@ -163,12 +179,12 @@ if __name__ == '__main__':
         my_color_scheme = colorize_agents(list(my_snapshot.get_agent_types_present()))
 
     # Define figure definition & resolution
-    w_h_ratio = 2/3
+    h_w_ratio = 2/3
     res_w = 1200
-    res_h = res_w * w_h_ratio
+    res_h = res_w * h_w_ratio
 
     fig_width = 8 # Width of default figure box, in inches [?!]
-    fig = plt.figure(figsize=[fig_width, fig_width * w_h_ratio])
+    fig = plt.figure(figsize=[fig_width, fig_width * h_w_ratio])
     ax = fig.add_subplot(1, 1, 1, aspect=1)
 
     # Define composition & view mode
@@ -179,7 +195,12 @@ if __name__ == '__main__':
                                            x_res=res_w,
                                            y_res=res_h))
     plt.title(s='Area proportional to ' + my_vis_mode + ' of species')
-    ax = composition_legend(my_color_scheme, res_w, res_h, ax)
+    ax = composition_legend(data=my_data,
+                            color_scheme=my_color_scheme,
+                            vis_mode=my_vis_mode,
+                            x_res=res_w,
+                            y_res=res_h,
+                            axis=ax)
 
     ax.axis('off')
     ax.axis('equal')
