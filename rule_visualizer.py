@@ -446,7 +446,6 @@ my_spline_offset = my_rad_to_site         #distance between point & control-poin
 
 # Get the agent list
 my_expression, my_rule_name, my_rule_rates, my_rule_comment = process_rule(my_rule)
-plt.title(my_rule_name)
 
 # Assign the theta angles
 my_agent_list = process_expression(my_expression)
@@ -460,9 +459,14 @@ my_bond_list = pair_bond_termini(my_bond_termini)
 my_fig = plt.figure()
 my_ax = my_fig.add_subplot(1, 1, 1, aspect=1)
 my_ax.axis('off')
-my_ax.axis('equal')
-my_ax.set_xlim(left=-my_rad_to_agent, right=my_rad_to_agent)
-my_ax.set_ylim(bottom=-my_rad_to_agent, top=my_rad_to_agent)
+margin_distance = my_rad_to_agent + 2 * my_rad_to_site
+my_ax.set_xlim(left=-margin_distance, right=margin_distance)
+my_ax.set_ylim(bottom=-margin_distance, top=margin_distance)
+
+# Annotate figure with rule name & rates
+plt.title(my_rule_name, loc='left')
+pretty_print_rates = '@ ' + my_rule_rates[0] + ('{' + my_rule_rates[1] + '}' if len(my_rule_rates) > 1 else '')
+plt.title(pretty_print_rates, loc='right')
 
 # Draw stuff
 my_ax = draw_agent_labels(my_agent_list, my_ax)
