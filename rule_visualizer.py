@@ -84,6 +84,8 @@ def process_expression(kappa_expression):
     return agent_list
 
 # ToDo: deal with wildcards
+# ToDo: deal with agent creation & deletion
+# ToDo: miniflagpole for bond-sites with internal state
 
 
 def define_thetas_and_radii(agent_list, base_radius_to_agent=1):
@@ -475,10 +477,19 @@ my_ax = draw_bond_splines(my_bond_list, my_rad_to_site, my_spline_offset, my_ax)
 my_ax = draw_flagpole(my_agent_list, my_rad_to_site, my_ax)
 
 plt.show()
-# To view the snapshot:
+
+# To view the complex from a snapshot:
 #plt.close()
+#my_fig = plt.figure()
+#my_ax = my_fig.add_subplot(1, 1, 1, aspect=1)
+#my_ax.axis('off')
 #my_agent_list = process_expression(my_complex)
 #my_agent_list = process_expression(my_expression)
 #my_agent_list = define_thetas_and_radii(my_agent_list, my_rad_to_agent)
 #my_bond_termini = get_bond_termini(my_agent_list)
 #my_bond_list = pair_bond_termini(my_bond_termini)
+#my_ax = draw_agent_labels(my_agent_list, my_ax)
+#my_ax = draw_site_wedges(my_agent_list, my_rad_to_site, my_wedge_width, my_ax)
+#my_ax = draw_bond_splines(my_bond_list, my_rad_to_site, my_spline_offset, my_ax)
+#my_ax = draw_flagpole(my_agent_list, my_rad_to_sit)
+#plt.show()
