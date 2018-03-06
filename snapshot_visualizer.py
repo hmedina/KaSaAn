@@ -212,7 +212,7 @@ def snapshot_composition_with_legend(data, color_scheme, target_axis, vis_mode, 
     return target_axis
 
 
-def render_snapshot(snapshot_file, color_scheme=None, vis_mode='all', output_file=None):
+def render_snapshot(snapshot_file, color_scheme=None, vis_mode='all'):
     # Process the snapshot
     my_snapshot = KappaSnapshot(snapshot_file)
     my_data = process_snapshot(my_snapshot)
@@ -229,15 +229,15 @@ def render_snapshot(snapshot_file, color_scheme=None, vis_mode='all', output_fil
     res_h = res_w * h_w_ratio
 
     fig_width = 8 # Width of default figure box, in inches [?!]
-    fig = plt.figure(figsize=[fig_width, fig_width * h_w_ratio])
+    figure = plt.figure(figsize=[fig_width, fig_width * h_w_ratio])
 
     # If visualizing all, then we need three subplots (for mass, size, count), plus the area for the legend
     if vis_mode == 'all':
         # Define all three axes
-        ax_mass = fig.add_subplot(221, aspect=1)
-        ax_size = fig.add_subplot(222, aspect=1)
-        ax_count = fig.add_subplot(223, aspect=1)
-        ax_legend = fig.add_subplot(224)
+        ax_mass = figure.add_subplot(221, aspect=1)
+        ax_size = figure.add_subplot(222, aspect=1)
+        ax_count = figure.add_subplot(223, aspect=1)
+        ax_legend = figure.add_subplot(224)
         # Draw data onto axes
         ax_mass, my_max_mass = snapshot_composition_simple(data=my_data, color_scheme=my_color_scheme, vis_mode='mass', target_axis=ax_mass, x_res=res_w, y_res=res_h)
         ax_size, my_max_size = snapshot_composition_simple(data=my_data, color_scheme=my_color_scheme, vis_mode='size', target_axis=ax_size, x_res=res_w, y_res=res_h)
@@ -257,18 +257,15 @@ def render_snapshot(snapshot_file, color_scheme=None, vis_mode='all', output_fil
         ax_size.axis('tight')
         ax_count.axis('tight')
     else:
-        ax = fig.add_subplot(111, aspect=1)
+        ax = figure.add_subplot(111, aspect=1)
         plt.title(s='Area proportional to ' + vis_mode + ' of species')
         ax = snapshot_composition_with_legend(data=my_data, color_scheme=my_color_scheme, target_axis=ax,
                                               vis_mode=vis_mode, x_res=res_w, y_res=res_h)
         ax.axis('off')
         ax.axis('tight')
 
-    # Either save figure to file, or plot it
-    if output_file:
-        plt.savefig(args.output_file, bbox_inches='tight')
-    else:
-        plt.show()
+    return figure
+
 
 
 if __name__ == '__main__':
@@ -292,7 +289,12 @@ if __name__ == '__main__':
                              ' MatPlotLib).')
     args = parser.parse_args()
 
-    render_snapshot(snapshot_file=args.snapshot_file,
+    fig = render_snapshot(snapshot_file=args.snapshot_file,
                     color_scheme=args.coloring_scheme,
-                    vis_mode=args.visualization_mode,
-                    output_file=args.output_file)
+                    vis_mode=args.visualization_mode)
+
+    # Either save figure to file, or plot it
+    if args.output_file:
+        plt.savefig(args.output_file, bbox_inches='tight')
+    else:
+        plt.show()
