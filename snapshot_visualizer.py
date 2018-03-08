@@ -34,7 +34,7 @@ def colorize_agents(agent_list):
     else:
         h = numpy.linspace(start=0, stop=1, num=num_agents, endpoint=False)
         for agent in range(num_agents):
-            agent_colors[agent_list[agent]] = colorsys.hsv_to_rgb(h[agent], 0.5, 0.75)
+            agent_colors[agent_list[agent]] = colorsys.hsv_to_rgb(h[agent], 0.7, 0.75)
     return agent_colors
 
 
