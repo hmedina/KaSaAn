@@ -214,8 +214,8 @@ class KappaSnapshot:
                         self.snapshot[complex_expression] = complex_abundance
 
                     # Determine if this line is the time definition line, if so get snapshot's time
-                    elif re.search('^%def:\s\"T0\"\s\"\d+\"', line):
-                        tmp = re.search('%def:\s\"T0\"\s\"(\d+)\"', line)
+                    elif re.search('^%def:\s\"T0\"\s\"\d+\.?\d*\"', line):
+                        tmp = re.search('%def:\s\"T0\"\s\"(\d+\.?\d*)\"', line)
                         self.snapshot_time = tmp.group(1)
 
                     # Determine if this is the even definition line, if so get snapshot's event number
