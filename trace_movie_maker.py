@@ -44,10 +44,14 @@ def define_agent_list_and_max_mass(snap_list):
 
 
 # Master function
-def movie_from_snapshots(directory, vis_mode, fig_width, xy_ratio, rescale_mass, legend_cols, frame_int):
+def movie_from_snapshots(directory, vis_mode, fig_width, xy_ratio, dont_scale_mass, legend_cols, frame_int, verbose):
     # Find the snapshots in the directory; determine agent set; colorize it
     snapshots = find_snapshot_files(directory)
+    if verbose:
+        print('Found ' + str(len(snapshots)) + ' snapshots in directory ' + directory)
     my_agent_list, my_max_mass = define_agent_list_and_max_mass(snapshots)
+    if verbose:
+        print('Trace contains ' + str(len(my_agent_list)) + ' agents in total.')
     color_scheme = colorize_agents(my_agent_list)
 
     # Define figure & sizes
@@ -55,7 +59,7 @@ def movie_from_snapshots(directory, vis_mode, fig_width, xy_ratio, rescale_mass,
     y_res = x_res * xy_ratio
     fig = plt.figure(figsize=[fig_width, fig_width/2])
     data_ax = fig.add_subplot(121, aspect=1)
-    legend_ax = fig.add_subplot(122, aspect=1)
+    legend_ax = fig.add_subplot(122)
     data_ax.set_xlim(left=0, right=x_res)
     data_ax.set_ylim(bottom=0, top=y_res)
     data_ax.axis('off')
@@ -64,7 +68,9 @@ def movie_from_snapshots(directory, vis_mode, fig_width, xy_ratio, rescale_mass,
     artist_list = []
     for snap in snapshots:
         ars = []
-        snap_scale = snap.get_total_mass() / my_max_mass if rescale_mass else 1
+        snap_scale = snap.get_total_mass() / my_max_mass if not dont_scale_mass else 1
+        if verbose:
+            print('Now processing snapshot ' + snap.get_snapshot_file_name())
         data = process_snapshot(snap)
         rectangles, maxi = snapshot_composition_simple(data=data, color_scheme=color_scheme, vis_mode=vis_mode,
                                                        x_res=x_res * snap_scale, y_res=y_res * snap_scale)
@@ -91,6 +97,8 @@ def movie_from_snapshots(directory, vis_mode, fig_width, xy_ratio, rescale_mass,
     legend_ax.axis('off')
 
     # Make movie out of list
+    if verbose:
+        print('Now collecting rectangles into an animation.')
     ani = animation.ArtistAnimation(fig=fig, artists=artist_list, interval=frame_int, repeat_delay=2000)
 
     return ani
@@ -100,24 +108,30 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Make a movie out of a set of snapshot files, and save it to disk.')
     parser.add_argument('-d', '--directory', type=str, default='./',
                         help='Directory where the snapshots are located. These should be named "snapshot.#.ka", i.e.'
-                             'the default naming scheme used by the Kappa Trace Query Language Engine.')
-    parser.add_argument('-v', '--vis_mode', type=str, default='mass', choices=['mass', 'count', 'size'],
-                        help='Specify the type of visualization to render.')
+                             'the default naming scheme used by the Kappa Trace Query Language Engine. Default uses '
+                             'current directory.')
+    parser.add_argument('-m', '--vis_mode', type=str, default='mass', choices=['mass', 'count', 'size'],
+                        help='Specify the type of visualization to render. Default uses mass.')
     parser.add_argument('-o', '--output_file', type=str, default='',
-                        help='Optional name of file for saving the movie.')
+                        help='Optional name of file for saving the movie. If unset, the movie will be shown instead,'
+                             'using a TK window.')
     parser.add_argument('-w', '--fig_width', type=int, default=16,
                         help='Number of inches for the width of the plot. Figure will be 2 times this value wide, with'
-                             'the plot being this value wide and the legend being this value wide.')
+                             'the plot being this value wide and the legend being this value wide. Default value is 16.')
     parser.add_argument('-r', '--XY_ratio', type=float, default=1.0,
-                        help='X to Y ratio of the plot. Set to one for isometric view.')
-    parser.add_argument('-s', '--scale_mass', type=bool, default=True,
-                        help='Rescale each snapshot to the total mass? If true, a pixel will represent a specific amount'
-                             'of mass, consistently across all snapshots, regardless of how the mixture may increase'
-                             'or decrease in size.')
+                        help='X to Y ratio of the plot. Default value is 1: isometric view.')
+    parser.add_argument('-s', '--do_not_scale_mass', action='store_true',
+                        help='Rescale each snapshot to use the total plot area? If specified, each snapshot will be'
+                             'viewed using the entire plot area: the amount of mass a pixel will represent will not be '
+                             'consistent across snapshots (unless there is neither creation nor deletion of agents in'
+                             'the model).')
     parser.add_argument('-l', '--legend_columns', type=int, default=2,
-                        help='Number of columns in the legend. Increase this number to have more entries per row.')
+                        help='Number of columns in the legend. Increase this number to have more entries per row.'
+                             'Default value is 2.')
     parser.add_argument('-f', '--frame_interval', type=int, default=500,
                         help='Number of mili-seconds between frames in the animation.')
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='Display information about number of snapshots found.')
     args = parser.parse_args()
 
 
@@ -125,12 +139,15 @@ if __name__ == '__main__':
                                         vis_mode=args.vis_mode,
                                         fig_width=args.fig_width,
                                         xy_ratio=args.XY_ratio,
-                                        rescale_mass=args.scale_mass,
+                                        dont_scale_mass=args.do_not_scale_mass,
                                         legend_cols=args.legend_columns,
-                                        frame_int=args.frame_interval)
+                                        frame_int=args.frame_interval,
+                                        verbose=args.verbose)
 
     # Save to file, or show the figure
     if args.output_file:
+        if args.verbose:
+            print('Now saving animation to file.')
         my_animation.save(args.output_file)
     else:
         plt.show()
