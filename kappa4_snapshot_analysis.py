@@ -12,7 +12,7 @@ def site_contains_site(host, query):
     this function supports Kappa4 wildcards: <<#>> for <<whatever state>>, <<_>> for <<bound to whatever>>."""
 
     # Breakout the structure of the site: name{internal}[bond]{internal}
-    h_matches = re.match('^([a-zA-Z]\w*)({\w+})?(\[\d+\]|\[\.\])?({\w+})?', host)
+    h_matches = re.match('^([a-zA-Z][\w\-_]*)({\w+})?(\[\d+\]|\[\.\])?({\w+})?', host)
     h_site_name = h_matches.group(1) if h_matches.group(1) else None
     h_site_bond = h_matches.group(3)[1:-1] if h_matches.group(3) else None
     # Since internal and binding states can be stated in any order, I accommodate the ambiguity by first trying to match
@@ -25,7 +25,7 @@ def site_contains_site(host, query):
         h_site_state = None
 
     # Breakout the structure of the site (can have wildcards): name{internal}[bond]{internal}
-    q_matches = re.match('^([a-zA-Z]\w*)({\w+}|{#})?(\[\d+\]|\[\.\]|\[_\]|\[#\])?({\w+}|{#})?', query)
+    q_matches = re.match('^([a-zA-Z][\w\-_]*)({\w+}|{#})?(\[\d+\]|\[\.\]|\[_\]|\[#\])?({\w+}|{#})?', query)
     q_site_name = q_matches.group(1) if q_matches.group(1) else None
     q_site_bond = q_matches.group(3)[1:-1] if q_matches.group(3) else None
     # Since internal and binding states can be stated in any order, I accommodate the ambiguity by first trying to match
@@ -60,7 +60,7 @@ class KappaAgent:
     """Class for representing Kappa agents. I.e. <<A(b[1])>> or <<A(s{a}[.] a[1] b[.])>>."""
     def __init__(self, kappa_expression):
         # Check if kappa expression's name & overall structure is valid
-        matches = re.match('([a-zA-Z]\w*)\(([^)]*)\)', kappa_expression.strip())
+        matches = re.match('([a-zA-Z][\w\-_]*)\(([^)]*)\)', kappa_expression.strip())
         assert matches, 'Invalid kappa expression <<' + kappa_expression + '>>'
 
         # Assign results to variables
@@ -113,7 +113,7 @@ class KappaComplex:
     def get_agent_types(self):
         """Returns the set of agents that make up the complex. This works by counting the number of non-digit-leading
         words that have a set of open/close parenthesis directly after them."""
-        matches = re.findall('([a-zA-Z]\w*)\([^)]*\)', self.kappa_expression)
+        matches = re.findall('([a-zA-Z][\w\-_]*)\([^)]*\)', self.kappa_expression)
         agents = set(matches)
         return agents
 
@@ -165,6 +165,7 @@ class KappaSnapshot:
      of the Dict() class', but with more informative names for kappa entities."""
 
     def __init__(self, snapshot_file_name):
+        self.file_name = snapshot_file_name
         self.snapshot = dict()
         building_complex = False
         # Due to the way Kappa4 breaks snapshot files into many lines, the bulk of this parsing operation is just to
@@ -222,6 +223,12 @@ class KappaSnapshot:
                     elif re.search('^//\sSnapshot\s\[Event:\s\d+\]', line):
                         tmp = re.search('^//\sSnapshot\s\[Event:\s(\d+)\]', line)
                         self.snapshot_event = tmp.group(1)
+
+
+    def get_snapshot_file_name(self):
+        """Returns a string with the name of the file this snapshot came from."""
+        return str(self.file_name)
+
 
     def get_snapshot_time(self):
         """Returns a float with the time at which this snapshot was taken."""

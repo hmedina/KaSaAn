@@ -29,6 +29,8 @@ suitable for Kappa. These serve as foundation for more advanced methods.
 Currently, the constructor reads from a plain text-file.
 
 Currently implemented methods:
+  * `get_snapshot_file_name()`
+     * Returns a string with the name of the file this snapshot came from.
   * `get_snapshot_time()`
      * Returns a float with the time at which this snapshot was taken.
   * `get_snapshot_event()`
