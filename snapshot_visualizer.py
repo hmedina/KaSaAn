@@ -27,10 +27,15 @@ def colorize_agents(agent_list):
     # Generate & associate colors as a dictionary {Agent: Color}
     num_agents = len(agent_list)
     agent_colors = {}
-    # Use a built-in palette unless there are too many agents
+    # Use built-in palettes: for 10 or less use the default colors
     if num_agents <= len(mpl.rcParams['axes.prop_cycle']):
         for agent in range(num_agents):
             agent_colors[agent_list[agent]] = 'C' + str(agent)
+    # For 20 or more agents, use the tab20 colormap
+    elif num_agents <= 20:
+        for agent in range(num_agents):
+            agent_colors[agent_list[agent]] = plt.cm.tab20(agent)
+    # For more than 20, pick linearly spaced values on HSV space
     else:
         h = numpy.linspace(start=0, stop=1, num=num_agents, endpoint=False)
         for agent in range(num_agents):
@@ -147,7 +152,10 @@ def render_snapshot(snapshot_file, color_scheme=None, vis_mode='all'):
     if color_scheme:
         my_color_scheme = color_scheme
     else:
-        my_color_scheme = colorize_agents(list(my_snapshot.get_agent_types_present()))
+        agent_list = list(my_snapshot.get_agent_types_present())
+        if agent_list > 20:
+            print('Over 20 agents found: color palette might be ugly. Try googling <<iwanthue>> for a tool to generate optimally distinct colors.')
+        my_color_scheme = colorize_agents(agent_list)
 
     # Define figure definition & resolution
     h_w_ratio = 2/3
