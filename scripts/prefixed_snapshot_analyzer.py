@@ -84,7 +84,7 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--prefix', type=str, default='',
                         help='Prefix identifying snapshots to analyze, precedes the string "snap"; e.g. "foo_" is the'
                              ' prefix for "foo_snap_76.ka".')
-    parser.add_argument('-d', '--working_directory', type=str, default='/.',
+    parser.add_argument('-d', '--working_directory', type=str, default='./',
                         help='The directory where snapshots are held, and where distribution files will be saved to.')
     parser.add_argument('-v', '--verbosity', action='store_true',
                         help='Print extra information, like number of snapshots found, directory understood, and'
