@@ -13,6 +13,7 @@ from operator import itemgetter
 import argparse
 
 
+
 def process_snapshot(snapshot):
     # Extract the relevant information from a snapshot: size, abundance, & compositions
     data = []
@@ -41,7 +42,7 @@ def colorize_agents(agent_list):
         for agent in range(num_agents):
             agent_colors[agent_list[agent]] = colorsys.hsv_to_rgb(h[agent], 0.7, 0.75)
     return agent_colors
-
+    # ToDo use colormath spaces to get better distinguishable colors; e.g. in LuvColor space
 
 def snapshot_composition_simple(data, color_scheme, vis_mode, x_res, y_res):
     assert vis_mode == 'size' or vis_mode == 'count' or vis_mode == 'mass', 'Problem: unknown mode <<' + vis_mode + '>>'
