@@ -1,5 +1,6 @@
 #! /usr/bin/python3
-from kappa4_snapshot_analysis import KappaSnapshot
+
+from KaSaAn import KappaSnapshot
 
 # Use this code in the interactive python console to re-load the class definition
 # import kappa4_snapshot_analysis; from importlib import reload
@@ -31,7 +32,3 @@ print([[item.kappa_expression, item.get_size_of_complex()] for item in list(mySn
 print('\nTo get the size distribution of complexes:')
 print(">>> mySnap.get_size_distribution()")
 print(mySnap.get_size_distribution())
-
-print('\nTo plot the mass distribution of complexes (via MatPlotLib):')
-print(">>> mySnap.plot_mass_distribution()")
-mySnap.plot_mass_distribution()

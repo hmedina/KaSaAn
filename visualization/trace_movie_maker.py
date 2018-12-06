@@ -5,8 +5,8 @@ import re
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.collections import PatchCollection
-from snapshot_visualizer import process_snapshot, snapshot_composition_simple, colorize_agents, snapshot_legend_simple
-from kappa4_snapshot_analysis import KappaSnapshot
+from visualization.snapshot_visualizer import process_snapshot, snapshot_composition_simple, colorize_agents, snapshot_legend_simple
+from KaSaAn import KappaSnapshot
 import argparse
 
 

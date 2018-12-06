@@ -8,7 +8,7 @@ import matplotlib as mpl
 import colorsys
 import numpy
 from matplotlib.collections import PatchCollection
-from kappa4_snapshot_analysis import KappaSnapshot
+from KaSaAn import KappaSnapshot
 from operator import itemgetter
 import argparse
 
@@ -154,7 +154,7 @@ def render_snapshot(snapshot_file, color_scheme=None, vis_mode='all'):
         my_color_scheme = color_scheme
     else:
         agent_list = list(my_snapshot.get_agent_types_present())
-        if agent_list > 20:
+        if len(agent_list) > 20:
             print('Over 20 agents found: color palette might be ugly. Try googling <<iwanthue>> for a tool to generate optimally distinct colors.')
         my_color_scheme = colorize_agents(agent_list)
 

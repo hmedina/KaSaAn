@@ -1,5 +1,5 @@
 #! /usr/bin/python3
-from kappa4_snapshot_analysis import KappaSnapshot
+from ..KaSaAn.KappaSnapshot import KappaSnapshot
 import glob
 import csv
 import argparse
