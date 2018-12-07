@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 
-from ..KaSaAn.KappaSnapshot import KappaSnapshot
+from KaSaAn import KappaSnapshot
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse

@@ -96,6 +96,14 @@ Currently implemented methods:
     `A(a,b!1,c!2,d~a)` these would be the list `['1','2']`.
   
 
+## Requirements
+For snapshot analysis: none.
+
+For visualization of rules, snapshots, or traces: 
+* matplotlib
+* squarify
+
+
 ## Examples
 
 ### Is there a giant component, and if so what's its composition?
