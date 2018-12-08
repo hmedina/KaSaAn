@@ -101,7 +101,7 @@ class KappaAgent:
                 break
         return matches
 
-    def get_bond_identifiers(self) -> list:
+    def get_bond_identifiers(self) -> List[str]:
         """Return the list of bonds ending/starting at this agent, e.g. for <<A(a[.] b[1] c[2] d{a}[.])>> these would
          be the list ['1','2']."""
         agent_bonds = []
