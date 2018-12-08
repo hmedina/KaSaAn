@@ -80,20 +80,23 @@ Currently implemented methods:
   * `get_number_of_embeddings_of_agent(query)`
     * Returns the number of embeddings a given query `agent(signature)` has on the complex. Single agents only.
   * `get_complex_composition(self)`
-    * Returns a dictionary where the key is an agent name, and the value the number of times that agent appears in this complex.
+    * Returns a dictionary where the key is an agent name, and the value the number of times that agent appears in this
+     complex.
  
   
 ### KappaAgent
-This class represents individual Kappa agents. To get the raw Kappa
-expression, access the instance variable `KappaExpression`, i.e. `some_agent.KappaExpression`
+This class represents individual Kappa agents.
 
 Currently implemented methods:
   * `contains_site(query_site)`
-    * Returns true if the agent contains `query_site`. It supports state identifiers (e.g. `s~a`) and wild-cards
-    (e.g. `s!_`).
+    * Returns true if the agent contains `query_site`. Use this to check for site name alone (i.e. no internal or bond
+     state data), e.g. `my_agent.contains_site(foo)`
+  * `contains_site_with_states(query_site)`
+    * Returns true if the agent contains `query_site`, included is the check against internal and bond states, e.g.
+     `my_agent.contains_site_with_states(foo{bar}[.])`
   * `get_bond_identifiers()`
     * Returns a list of strings with the bond identifiers that start/end at this agent. For example, for the KappaAgent
-    `A(a,b!1,c!2,d~a)` these would be the list `['1','2']`.
+    `A(a[.] b[1] c[2] d{a}[.])` these would be the list `['1','2']`.
   
 
 ## Requirements

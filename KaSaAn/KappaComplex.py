@@ -52,7 +52,7 @@ class KappaComplex:
                     match_score = 0
                     # Thirdly, we iterate over the query's sites
                     for q_site in q_agent.agent_signature:
-                        if s_agent.contains_site(q_site):
+                        if s_agent.contains_site_with_states(q_site):
                             match_score += 1
                     # This counter keeps track of how many fully-matched queries we've embedded
                     if match_score == len(q_agent.agent_signature):
