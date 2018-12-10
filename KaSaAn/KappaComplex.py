@@ -13,10 +13,10 @@ class KappaComplex:
     def __init__(self, expression: str):
         self.kappa_expression = expression.strip()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'KappaComplex("{0}")'.format(self.kappa_expression)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.kappa_expression
 
     def get_number_of_bonds(self) -> int:

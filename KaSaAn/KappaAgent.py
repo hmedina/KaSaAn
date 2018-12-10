@@ -77,10 +77,10 @@ class KappaAgent:
             # by whitespace
             self.agent_signature = agent_signature.replace(',', ' ').split()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'KappaAgent("{0}")'.format(self.kappa_expression)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.kappa_expression
 
     def contains_site_with_states(self, query_site: str) -> bool:
