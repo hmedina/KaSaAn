@@ -2,6 +2,7 @@
 
 import re
 from .KappaComplex import KappaComplex
+from typing import List, Set, ItemsView, Dict
 
 
 class KappaSnapshot:
@@ -9,7 +10,7 @@ class KappaSnapshot:
     serves as the key, and the abundance serves as the value. Many of the methods for this class are simple re-namings
      of the Dict() class', but with more informative names for kappa entities."""
 
-    def __init__(self, snapshot_file_name):
+    def __init__(self, snapshot_file_name: str):
         self.file_name = snapshot_file_name
         self.snapshot = dict()
         building_complex = False
@@ -62,61 +63,68 @@ class KappaSnapshot:
                     # Determine if this line is the time definition line, if so get snapshot's time
                     elif re.search('^%def:\s\"T0\"\s\"\d+\.?\d*\"', line):
                         tmp = re.search('%def:\s\"T0\"\s\"(\d+\.?\d*)\"', line)
-                        self.snapshot_time = tmp.group(1)
+                        self.snapshot_time = float(tmp.group(1))
 
-                    # Determine if this is the even definition line, if so get snapshot's event number
+                    # Determine if this is the event definition line, if so get snapshot's event number
                     elif re.search('^//\sSnapshot\s\[Event:\s\d+\]', line):
                         tmp = re.search('^//\sSnapshot\s\[Event:\s(\d+)\]', line)
-                        self.snapshot_event = tmp.group(1)
+                        self.snapshot_event = int(tmp.group(1))
 
+    def __repr__(self) -> str:
+        return 'KappaSnapshot("{0}")'.format(self.file_name)
 
-    def get_snapshot_file_name(self):
+    def __str__(self) -> str:
+        snap_str = ''
+        for c, a in self.snapshot.items():
+            snap_str += c.kappa_expression + ' : ' + str(a) + '\n'
+        return snap_str
+
+    def get_snapshot_file_name(self) -> str:
         """Returns a string with the name of the file this snapshot came from."""
-        return str(self.file_name)
+        return self.file_name
 
-
-    def get_snapshot_time(self):
+    def get_snapshot_time(self) -> float:
         """Returns a float with the time at which this snapshot was taken."""
-        return float(self.snapshot_time)
+        return self.snapshot_time
 
-    def get_snapshot_event(self):
+    def get_snapshot_event(self) -> int:
         """Returns an integer with the event number the snapshot was taken at."""
-        return int(self.snapshot_event)
+        return self.snapshot_event
 
-    def get_all_complexes(self):
+    def get_all_complexes(self) -> List[KappaComplex]:
         """Returns a list of KappaComplexes with all the complexes in the snapshot."""
         return list(self.snapshot.keys())
 
-    def get_all_abundances(self):
+    def get_all_abundances(self) -> List[int]:
         """Returns a list of integers with all the abundances in the snapshot."""
         return list(self.snapshot.values())
 
-    def get_all_sizes(self):
+    def get_all_sizes(self) -> List[int]:
         """Returns a list of integers with all the complex sizes visible in the snapshot, one item per complex (i.e. can
         contain repeat numbers if they correspond to different complexes)."""
         sizes = [c.get_size_of_complex() for c in self.get_all_complexes()]
         return sizes
 
-    def get_agent_types_present(self):
+    def get_agent_types_present(self) -> Set[str]:
         """Returns a set with the names of the agents present in the snapshot."""
         agent_types = set()
         for c in self.get_all_complexes():
             agent_types.update(c.get_agent_types())
         return agent_types
 
-    def get_all_complexes_and_abundances(self):
+    def get_all_complexes_and_abundances(self) -> ItemsView[KappaComplex, int]:
         """Returns a list of tuples, where the first element is a KappaComplex and the second is an int with the
         abundance of the corresponding complex."""
-        return list(self.snapshot.items())
+        return self.snapshot.items()
 
-    def get_total_mass(self):
+    def get_total_mass(self) -> int:
         """Returns an int with the total mass of the snapshot, measured in number of agents."""
         total_mass = 0
         for i_complex, i_abundance in self.get_all_complexes_and_abundances():
             total_mass += i_complex.get_size_of_complex() * i_abundance
         return total_mass
 
-    def get_complexes_with_abundance(self, query_abundance):
+    def get_complexes_with_abundance(self, query_abundance: int) -> List[KappaComplex]:
         """Returns a list of KappaComplexes present in the snapshot at the query abundance. For example, get all
         elements present in single copy."""
         result_complexes = []
@@ -125,16 +133,16 @@ class KappaSnapshot:
                 result_complexes.append(complex_expression)
         return result_complexes
 
-    def get_complexes_of_size(self, query_size):
+    def get_complexes_of_size(self, query_size: int) -> List[KappaComplex]:
         """Returns the list of complexes that are of the query size. For example, get all the dimers."""
         result_complexes = []
-        for complex_expression, complex_abundance in self.get_all_complexes_and_abundances():
+        for complex_expression in self.get_all_complexes():
             if query_size == complex_expression.get_size_of_complex():
                 result_complexes.append(complex_expression)
         return result_complexes
 
-    def get_largest_complexes(self):
-        """Returns a list of KappaComplexes with the largest complexes, measured in number of constituting agents."""
+    def get_largest_complexes(self) -> List[KappaComplex]:
+        """Returns a list of KappaComplexes of the largest size, measured in number of constituting agents."""
         max_known_size = 0
         for complex_expression in self.get_all_complexes():
             current_size = complex_expression.get_size_of_complex()
@@ -142,7 +150,7 @@ class KappaSnapshot:
                 max_known_size = current_size
         return self.get_complexes_of_size(max_known_size)
 
-    def get_smallest_complexes(self):
+    def get_smallest_complexes(self) -> List[KappaComplex]:
         """Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents."""
         min_known_size = self.get_largest_complexes()[0].get_size_of_complex() + 1
         for complex_expression in self.get_all_complexes():
@@ -151,18 +159,18 @@ class KappaSnapshot:
                 min_known_size = current_size
         return self.get_complexes_of_size(min_known_size)
 
-    def get_most_abundant_complexes(self):
+    def get_most_abundant_complexes(self) -> List[KappaComplex]:
         """Returns the list of complexes found to be the most abundant. These could be the monomers for example."""
         max_abundance = max(self.get_all_abundances())
         return self.get_complexes_with_abundance(max_abundance)
 
-    def get_least_abundant_complexes(self):
+    def get_least_abundant_complexes(self) -> List[KappaComplex]:
         """Returns the list of complexes found to be the least abundant. For example, this would be the giant component,
         or the set of largest entities."""
         min_abundance = min(self.get_all_abundances())
         return self.get_complexes_with_abundance(min_abundance)
 
-    def get_size_distribution(self):
+    def get_size_distribution(self) -> Dict[int, int]:
         """Returns a dictionary where the key is the size of a complex and the value is the amount of complexes with
         that size. For example, {1:3, 4:5} indicates the mixture contains only three monomers and five tetramers."""
         size_dist = dict()
