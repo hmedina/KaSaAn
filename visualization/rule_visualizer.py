@@ -6,12 +6,13 @@ import matplotlib.pyplot as plt
 import matplotlib.patches
 from matplotlib.collections import PatchCollection
 import matplotlib.path as mpath
+from typing import Tuple, List, Dict
 
 
 ########################################################################################################################
 # Functions
 ########################################################################################################################
-def process_rule(kappa_rule):
+def process_rule(kappa_rule: str) -> Tuple[str, str, list, str]:
     # This function digests a kappa rule into its constituent components
     # Remove trailing comment and leading/trialing whitespaces
     digested_rule = kappa_rule.split('//')
@@ -35,7 +36,7 @@ def process_rule(kappa_rule):
     return rule_expr, rule_name, rule_rates, rule_comment
 
 
-def process_expression(kappa_expression):
+def process_expression(kappa_expression: str) -> List[dict]:
     # Uniform separation of agents
     kappa_expression = kappa_expression.replace('),', ') ')
     kappa_expression = re.sub(pattern='\s\s+', repl=' ', string=kappa_expression)
@@ -88,7 +89,7 @@ def process_expression(kappa_expression):
 # ToDo: miniflagpole for bond-sites with internal state
 
 
-def define_thetas_and_radii(agent_list, base_radius_to_agent=1):
+def define_thetas_and_radii(agent_list: List[dict], base_radius_to_agent: float =1) -> List[dict]:
     # Layout in a hexagonal pattern: 6, 12, 18, 24 etc. per level
     layout_level = 1
     layout_base = 6
@@ -125,7 +126,7 @@ def define_thetas_and_radii(agent_list, base_radius_to_agent=1):
     return agent_list
 
 
-def get_bond_termini(agent_list):
+def get_bond_termini(agent_list: List[dict]) -> List[dict]:
     # Read through the agent list and get the bond termini
     bond_termini_list = []
     for agent in agent_list:
@@ -177,7 +178,7 @@ def get_bond_termini(agent_list):
     return bond_termini_list
 
 
-def pair_bond_termini(bond_termini_list):
+def pair_bond_termini(bond_termini_list: List[dict]) -> Dict[str, dict]:
     # Populate a dictionary, where the key is the bond identifier, and the values are the thetas and radii of where the
     # bond should point to
     bond_list = {}
@@ -200,7 +201,7 @@ def pair_bond_termini(bond_termini_list):
     return bond_list
 
 
-def draw_agent_labels(agent_list, axis, with_identifiers=False):
+def draw_agent_labels(agent_list: List[dict], axis: plt.axis, with_identifiers: bool = False):
     # Draw a name for each agent, i.e. their name + optionally an identifier
     agent_num = len(agent_list)
     for i in range(agent_num):
@@ -216,7 +217,8 @@ def draw_agent_labels(agent_list, axis, with_identifiers=False):
     return axis
 
 
-def draw_site_wedges(agent_list, radius_to_site, wedge_width, axis, with_identifiers=False):
+def draw_site_wedges(agent_list: List[dict], radius_to_site: float, wedge_width: float, axis: plt.axis,
+                     with_identifiers: bool = False) -> plt.axis:
     site_wedges = []
     agent_num = len(agent_list)
     for i in range(agent_num):
@@ -277,7 +279,7 @@ def draw_site_wedges(agent_list, radius_to_site, wedge_width, axis, with_identif
 # ToDo: deal with +10 color scheme
 
 
-def draw_bond_splines(bond_list, radius_to_site, spline_offset, axis):
+def draw_bond_splines(bond_list: Dict[str, dict], radius_to_site: float, spline_offset: float, axis: plt.axis) -> plt.axis:
     # Each bond gets represented as a quadratic spline, where the points are:
     # A | terminus | sits at the "surface" of the first agent
     # D | terminus | sits at the "surface" of the second agent
@@ -327,7 +329,7 @@ def draw_bond_splines(bond_list, radius_to_site, spline_offset, axis):
     return axis
 
 
-def draw_flagpole(agent_list, radius_to_site, axis):
+def draw_flagpole(agent_list: List[dict], radius_to_site: float, axis: plt.axis) -> plt.axis:
     flagpole_base_length = radius_to_site / 4
     for agent in agent_list:
         if agent['state_sites']:

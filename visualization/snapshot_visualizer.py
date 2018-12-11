@@ -11,10 +11,11 @@ from matplotlib.collections import PatchCollection
 from KaSaAn import KappaSnapshot
 from operator import itemgetter
 import argparse
+from typing import List, Set, Tuple
 
 
 
-def process_snapshot(snapshot):
+def process_snapshot(snapshot: KappaSnapshot) -> List[dict]:
     # Extract the relevant information from a snapshot: size, abundance, & compositions
     data = []
     for kappa_complex, abundance in snapshot.get_all_complexes_and_abundances():
@@ -24,8 +25,9 @@ def process_snapshot(snapshot):
     return data
 
 
-def colorize_agents(agent_list):
+def colorize_agents(agents: Set[str]) -> dict:
     # Generate & associate colors as a dictionary {Agent: Color}
+    agent_list = list(agents)
     num_agents = len(agent_list)
     agent_colors = {}
     # Use built-in palettes: for 10 or less use the default colors
@@ -34,8 +36,9 @@ def colorize_agents(agent_list):
             agent_colors[agent_list[agent]] = 'C' + str(agent)
     # For 20 or more agents, use the tab20 colormap
     elif num_agents <= 20:
+        colormap = plt.get_cmap('tab20')
         for agent in range(num_agents):
-            agent_colors[agent_list[agent]] = plt.cm.tab20(agent)
+            agent_colors[agent_list[agent]] = colormap(agent)
     # For more than 20, pick linearly spaced values on HSV space
     else:
         h = numpy.linspace(start=0, stop=1, num=num_agents, endpoint=False)
@@ -44,7 +47,8 @@ def colorize_agents(agent_list):
     return agent_colors
     # ToDo use colormath spaces to get better distinguishable colors; e.g. in LuvColor space
 
-def snapshot_composition_simple(data, color_scheme, vis_mode, x_res, y_res):
+
+def snapshot_composition_simple(data: List[dict], color_scheme: dict, vis_mode: str, x_res: float, y_res: float) -> Tuple[List[matplotlib.patches.Rectangle], int]:
     assert vis_mode == 'size' or vis_mode == 'count' or vis_mode == 'mass', 'Problem: unknown mode <<' + vis_mode + '>>'
     species_num = len(data)
 
@@ -73,7 +77,7 @@ def snapshot_composition_simple(data, color_scheme, vis_mode, x_res, y_res):
     for species in range(species_num):
         # Define the box that represents this species as a whole
         species_canvas = species_canvases[species]
-        s = matplotlib.patches.Rectangle(xy=[species_canvas['x'],species_canvas['y']],
+        s = matplotlib.patches.Rectangle(xy=(species_canvas['x'], species_canvas['y']),
                                          width=species_canvas['dx'],
                                          height=species_canvas['dy'],
                                          facecolor='#00000000',
@@ -95,7 +99,7 @@ def snapshot_composition_simple(data, color_scheme, vis_mode, x_res, y_res):
         # Draw the rectangles using the appropriate color (determined by the agent type)
         for a in range(len(agent_type)):
             agent_rectangle = agent_rectangles[a]
-            r = matplotlib.patches.Rectangle(xy=[agent_rectangle['x'],agent_rectangle['y']],
+            r = matplotlib.patches.Rectangle(xy=(agent_rectangle['x'],agent_rectangle['y']),
                                              width=agent_rectangle['dx'],
                                              height=agent_rectangle['dy'],
                                              facecolor=color_scheme[agent_type[a]])
@@ -107,7 +111,7 @@ def snapshot_composition_simple(data, color_scheme, vis_mode, x_res, y_res):
     return patch_list, max_value
 
 
-def snapshot_legend_simple(color_scheme, col_num):
+def snapshot_legend_simple(color_scheme: dict, col_num: int) -> Tuple[list, list]:
     # Add agent entries with their colors (as composition key)
     position = 0 #var to track indexing
     x_dim = 0.5 #size of rectangle serving as color key
@@ -116,7 +120,7 @@ def snapshot_legend_simple(color_scheme, col_num):
     text_list = []
     for agent, color in sorted(color_scheme.items(), key=itemgetter(0), reverse=False):
         y_pos, x_pos = divmod(position, col_num)
-        legend_entry_rect = matplotlib.patches.Rectangle(xy=[x_pos, -y_pos], width=x_dim, height=y_dim, edgecolor='#000000', fc=color)
+        legend_entry_rect = matplotlib.patches.Rectangle(xy=(x_pos, -y_pos), width=x_dim, height=y_dim, edgecolor='#000000', fc=color)
         legend_entry_text = matplotlib.text.Text(x=x_pos + x_dim, y=-y_pos, text=agent, verticalalignment='baseline')
         rect_list.append(legend_entry_rect)
         text_list.append(legend_entry_text)
@@ -125,7 +129,7 @@ def snapshot_legend_simple(color_scheme, col_num):
     return rect_list, text_list
 
 
-def snapshot_legend_maxima(vis_mode, max_mass, max_size, max_count):
+def snapshot_legend_maxima(vis_mode: str, max_mass: int, max_size: int, max_count: int) -> List[matplotlib.text.Text]:
     if vis_mode == 'all':
         # Add entries for maxima at the top
         max_mass_text = matplotlib.text.Text(x=0, y=4, text='Max mass: ' + str(max_mass), verticalalignment='top')
@@ -137,13 +141,13 @@ def snapshot_legend_maxima(vis_mode, max_mass, max_size, max_count):
     return text_list
 
 
-def snapshot_legend_maximum(max_data, vis_mode):
+def snapshot_legend_maximum(max_data: int, vis_mode: str) -> matplotlib.text.Text:
     #Same as snapshot_legend_maxima, but for a single maximum
     max_text = matplotlib.text.Text(x=0, y=2, text='Max ' + vis_mode + ': ' + str(max_data), verticalalignment='top')
     return max_text
 
 
-def render_snapshot(snapshot_file, color_scheme=None, vis_mode='all'):
+def render_snapshot(snapshot_file: str, color_scheme: dict = None, vis_mode: str ='all') -> plt.figure:
     # Process the snapshot
     my_snapshot = KappaSnapshot(snapshot_file)
     my_data = process_snapshot(my_snapshot)
@@ -153,7 +157,7 @@ def render_snapshot(snapshot_file, color_scheme=None, vis_mode='all'):
     if color_scheme:
         my_color_scheme = color_scheme
     else:
-        agent_list = list(my_snapshot.get_agent_types_present())
+        agent_list = my_snapshot.get_agent_types_present()
         if len(agent_list) > 20:
             print('Over 20 agents found: color palette might be ugly. Try googling <<iwanthue>> for a tool to generate optimally distinct colors.')
         my_color_scheme = colorize_agents(agent_list)

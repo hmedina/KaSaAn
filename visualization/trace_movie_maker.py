@@ -8,6 +8,7 @@ from matplotlib.collections import PatchCollection
 from visualization.snapshot_visualizer import process_snapshot, snapshot_composition_simple, colorize_agents, snapshot_legend_simple
 from KaSaAn import KappaSnapshot
 import argparse
+from typing import List, Tuple, Set
 
 
 # Helper function to sort file names
@@ -19,7 +20,7 @@ def numerical_sort(value):
 
 
 # Get & sort the file names
-def find_snapshot_files(base_dir='./'):
+def find_snapshot_files(base_dir: str = './') -> List[KappaSnapshot]:
     # In case we're fed a directory name, without the trailing slash, append it
     if base_dir[-1] != '/':
         base_dir += '/'
@@ -32,7 +33,7 @@ def find_snapshot_files(base_dir='./'):
 
 
 # Define consistent coloring scheme & maximum mass
-def define_agent_list_and_max_mass(snap_list):
+def define_agent_list_and_max_mass(snap_list: List[KappaSnapshot]) -> Tuple[Set[str], int]:
     max_mass = 0
     agent_set = set()
     for snap in snap_list:
@@ -40,11 +41,12 @@ def define_agent_list_and_max_mass(snap_list):
         if max_mass < snap.get_total_mass():
             max_mass = snap.get_total_mass()
 
-    return list(agent_set), max_mass
+    return agent_set, max_mass
 
 
 # Master function
-def movie_from_snapshots(directory, vis_mode, fig_width, xy_ratio, dont_scale_mass, legend_cols, frame_int, verbose):
+def movie_from_snapshots(directory: str, vis_mode: str, fig_width: int, xy_ratio: float, dont_scale_mass: bool,
+                         legend_cols: int, frame_int: int, verbose: bool):
     # Find the snapshots in the directory; determine agent set; colorize it
     snapshots = find_snapshot_files(directory)
     if verbose:
