@@ -4,9 +4,10 @@ from KaSaAn import KappaSnapshot
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
+from typing import Iterator, Tuple
 
 
-def filtered_dist(snapshot_file_name, agent_of_interest):
+def filtered_dist(snapshot_file_name: str, agent_of_interest: str) -> Iterator[Tuple[int, int]]:
     """Given a specific agent of interest, get the filtered size distribution in the snapshot. If the agent appears 5
     times in a complex, interspersed with other agents, it will be reported as a pentamer. The abundance will be that of
     the parent species. This function returns a list of A,B pairs, where A corresponds to the abundance in the species
@@ -24,7 +25,8 @@ def filtered_dist(snapshot_file_name, agent_of_interest):
     return zip(abundance_in_species, abundance_of_species)
 
 
-def plot_filtered_dist(snapshot_file_name, agent_of_interest, perfect_bins, cumulative_bins, plot_raw_counts):
+def plot_filtered_dist(snapshot_file_name: str, agent_of_interest: str, perfect_bins: bool, cumulative_bins: bool,
+                       plot_raw_counts: bool):
     # Unpack data, get maximer value, flatten into a vector
     abundance_in_species, abundance_of_species = zip(*filtered_dist(snapshot_file_name, agent_of_interest))
     if not plot_raw_counts:

@@ -5,7 +5,7 @@ import csv
 import argparse
 
 
-def snapshot_analyzer(base_directory, snap_prefix, verbosity):
+def snapshot_analyzer(base_directory: str, snap_prefix: str, verbosity: bool):
     # Get the file names of snapshots in specified directory that fit the pattern [prefix]snap[number].ka
     snap_names = glob.glob(base_directory + snap_prefix + 'snap*.ka')
     snap_num = len(snap_names)
