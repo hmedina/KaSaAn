@@ -33,6 +33,8 @@ Currently implemented methods:
      * Returns a string with the name of the file this snapshot came from.
   * `get_snapshot_time()`
      * Returns a float with the time at which this snapshot was taken.
+  * `get_snapshot_uuid()`
+     * Returns a string with the snapshot's UUID.
   * `get_snapshot_event()`
      * Returns an integer with the event number the snapshot was taken at.
   * `get_all_complexes()`

@@ -12,72 +12,43 @@ class KappaSnapshot:
 
     def __init__(self, snapshot_file_name: str):
         self.file_name = snapshot_file_name
-        self.snapshot = dict()
-        building_complex = False
-        # Due to the way Kappa4 breaks snapshot files into many lines, the bulk of this parsing operation is just to
-        # reconstruct broken-up complexes. I've divided the operation into two modes, signaled by the boolean
-        # <<building_complex>>. When true, the line reads append to generate an expression, eventually setting the flag
-        # back to false.
+        self.snapshot: Dict[KappaComplex, int] = dict()
+        self.raw_view = str()
 
+        # read file into a single string
         with open(snapshot_file_name, 'r') as kf:
-            for line in kf:
+            self.raw_view = kf.read()
+        # remove newlines, split by "%init:" keyword
+        digest: List[str] = self.raw_view.replace('\n', '').split('%init: ')
 
-                if building_complex:
-                    # Determine if this line is the continuation of a complex (i.e. starts in spaces, ends in a comma)
-                    if re.search('^\s\s.+\),$', line):
-                        kappa_dump = re.search('^\s(\s.+\),)$', line)
-                        complex_expression += kappa_dump.group(1)
-
-                    # Determine if this line is the termination fo a complex (i.e. starts in spaces, ends in a closing
-                    # parenthesis).
-                    elif re.search('^\s\s.+\)$', line):
-                        kappa_dump = re.search('^\s(\s.+\))$', line)
-                        complex_expression += kappa_dump.group(1)
-                        # Transform the string into a KappaComplex
-                        complex_expression = KappaComplex(complex_expression)
-                        self.snapshot[complex_expression] = complex_abundance
-                        building_complex = False
-
-                else:
-                    # Determine if this line is the beginning of a complex (i.e. ends in a comma)
-                    if re.search('^%init:\s\d+\s/\*.+\*/?.+\),$', line):
-                        kappa_dump = re.search('^%init:\s(\d+)\s(/\*.+\*/)?\s(.+\),)', line)
-                        complex_abundance = int(kappa_dump.group(1))
-                        if kappa_dump.group(3):
-                            complex_expression = kappa_dump.group(3)
-                        else:
-                            complex_expression = kappa_dump.group(2)
-                        building_complex = True
-
-                    # Determine if this line is an entire complex (i.e. starts with an init and ends in a closing
-                    # parenthesis)
-                    elif re.search('^%init:\s\d+\s(/\*.+\*/)?.+\)$', line):
-                        kappa_dump = re.search('^%init:\s(\d+)\s(/\*.+\*/)?(.+\))', line)
-                        complex_abundance = int(kappa_dump.group(1))
-                        if kappa_dump.group(3):
-                            complex_expression = KappaComplex(kappa_dump.group(3))
-                        else:
-                            complex_expression = KappaComplex(kappa_dump.group(2))
-                        self.snapshot[complex_expression] = complex_abundance
-
-                    # Determine if this line is the time definition line, if so get snapshot's time
-                    elif re.search('^%def:\s\"T0\"\s\"\d+\.?\d*\"', line):
-                        tmp = re.search('%def:\s\"T0\"\s\"(\d+\.?\d*)\"', line)
-                        self.snapshot_time = float(tmp.group(1))
-
-                    # Determine if this is the event definition line, if so get snapshot's event number
-                    elif re.search('^//\sSnapshot\s\[Event:\s\d+\]', line):
-                        tmp = re.search('^//\sSnapshot\s\[Event:\s(\d+)\]', line)
-                        self.snapshot_event = int(tmp.group(1))
+        # parse header and get event, uuid, time
+        try:
+            g = re.match('//\sSnapshot\s\[Event:\s(\d+)\]//\s\"uuid\"\s:\s\"(\w+)\"%def:\s\"T0\"\s\"([\d.]+)\"', digest[0])
+            self.snapshot_event = int(g.group(1))
+            self.snapshot_uuid = str(g.group(2))
+            self.snapshot_time = float(g.group(3))
+        except AttributeError:
+            print('\nParsing error: Snapshot time, uuid, & T0 not found in <' + digest[0] + '>')
+        # parse the complexes into instances of KappaComplexes, get their abundance, cross-check their size
+        for entry in digest[1:]:
+            try:
+                g = re.match('^(\d+)\s/\*(\d+)\sagents\*/\s(.+)$', entry)
+                abundance = int(g.group(1))
+                size = int(g.group(2))
+                species = KappaComplex(g.group(3))
+                if not size == species.get_size_of_complex():
+                    raise ValueError('Size mismatch: snapshot declares <' + str(size) +
+                                     '>, I counted <' + str(species.get_size_of_complex()) + '>')
+                # assign the complex as a key to the dictionary
+                self.snapshot[species] = abundance
+            except AttributeError:
+                print('Parsing error: abundance, length, & complex not found at <' + entry + '>')
 
     def __repr__(self) -> str:
         return 'KappaSnapshot("{0}")'.format(self.file_name)
 
     def __str__(self) -> str:
-        snap_str = ''
-        for c, a in self.snapshot.items():
-            snap_str += c.kappa_expression + ' : ' + str(a) + '\n'
-        return snap_str
+        return self.raw_view
 
     def get_snapshot_file_name(self) -> str:
         """Returns a string with the name of the file this snapshot came from."""
@@ -86,6 +57,10 @@ class KappaSnapshot:
     def get_snapshot_time(self) -> float:
         """Returns a float with the time at which this snapshot was taken."""
         return self.snapshot_time
+
+    def get_snapshot_uuid(self) -> str:
+        """Returns the UUID (Universally unique identifier) of the snapshot."""
+        return self.snapshot_uuid
 
     def get_snapshot_event(self) -> int:
         """Returns an integer with the event number the snapshot was taken at."""
