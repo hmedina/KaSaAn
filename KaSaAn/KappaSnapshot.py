@@ -1,54 +1,58 @@
 #! /usr/bin/python3
 
 import re
-from .KappaComplex import KappaComplex
+from .KappaComplex import KappaComplex, KappaAgent
 from typing import List, Set, ItemsView, Dict
+from .KappaError import SnapshotParseError
 
 
 class KappaSnapshot:
     """Class for representing Kappa snapshots. A snapshot is represented as a dictionary, where the kappa expression
     serves as the key, and the abundance serves as the value. Many of the methods for this class are simple re-namings
-     of the Dict() class', but with more informative names for kappa entities."""
+     of the Dict() class', but with more informative names for Kappa entities."""
 
     def __init__(self, snapshot_file_name: str):
-        self.file_name = snapshot_file_name
-        self.snapshot: Dict[KappaComplex, int] = dict()
-        self.raw_view = str()
+        self.file_name: str
+        self.snapshot: Dict[KappaComplex, int]
+        self.raw_expression: str
+        self.kappa_expression: str
 
+        self.file_name = snapshot_file_name
+        self.snapshot = dict()
         # read file into a single string
         with open(snapshot_file_name, 'r') as kf:
-            self.raw_view = kf.read()
+            self.raw_expression = kf.read()
         # remove newlines, split by "%init:" keyword
-        digest: List[str] = self.raw_view.replace('\n', '').split('%init: ')
-
+        digest: List[str] = self.raw_expression.replace('\n', '').split('%init: ')
         # parse header and get event, uuid, time
-        try:
-            g = re.match('//\sSnapshot\s\[Event:\s(\d+)\]//\s\"uuid\"\s:\s\"(\w+)\"%def:\s\"T0\"\s\"([\d.]+)\"', digest[0])
-            self.snapshot_event = int(g.group(1))
-            self.snapshot_uuid = str(g.group(2))
-            self.snapshot_time = float(g.group(3))
-        except AttributeError:
-            print('\nParsing error: Snapshot time, uuid, & T0 not found in <' + digest[0] + '>')
+        g = re.match('//\sSnapshot\s\[Event:\s(\d+)\]//\s\"uuid\"\s:\s\"(\w+)\"%def:\s\"T0\"\s\"([\d.]+)\"', digest[0])
+        if not g:
+            raise SnapshotParseError('Snapshot header <' + digest[0] + '> could not be parsed.')
+        self.snapshot_event = int(g.group(1))
+        self.snapshot_uuid = str(g.group(2))
+        self.snapshot_time = float(g.group(3))
         # parse the complexes into instances of KappaComplexes, get their abundance, cross-check their size
         for entry in digest[1:]:
-            try:
-                g = re.match('^(\d+)\s/\*(\d+)\sagents\*/\s(.+)$', entry)
-                abundance = int(g.group(1))
-                size = int(g.group(2))
-                species = KappaComplex(g.group(3))
-                if not size == species.get_size_of_complex():
-                    raise ValueError('Size mismatch: snapshot declares <' + str(size) +
-                                     '>, I counted <' + str(species.get_size_of_complex()) + '>')
-                # assign the complex as a key to the dictionary
-                self.snapshot[species] = abundance
-            except AttributeError:
-                print('Parsing error: abundance, length, & complex not found at <' + entry + '>')
+            g = re.match('^(\d+)\s/\*(\d+)\sagents\*/\s(.+)$', entry)
+            if not g:
+                raise SnapshotParseError('Abundance, length, & complex not found in <' + entry + '>')
+            abundance = int(g.group(1))
+            size = int(g.group(2))
+            species = KappaComplex(g.group(3))
+            if not size == species.get_size_of_complex():
+                raise SnapshotParseError('Size mismatch: snapshot declares <' + str(size) +
+                                         '>, I counted <' + str(species.get_size_of_complex()) + '>')
+            # assign the complex as a key to the dictionary
+            self.snapshot[species] = abundance
+        # canonicalize the kappa expression
+        self.kappa_expression = '\n'.join(['%init: ' + str(self.snapshot[item]) + ' ' + str(item)
+                                           for item in self.snapshot.keys()])
 
     def __repr__(self) -> str:
         return 'KappaSnapshot("{0}")'.format(self.file_name)
 
     def __str__(self) -> str:
-        return self.raw_view
+        return self.kappa_expression
 
     def get_snapshot_file_name(self) -> str:
         """Returns a string with the name of the file this snapshot came from."""
@@ -80,7 +84,7 @@ class KappaSnapshot:
         sizes = [c.get_size_of_complex() for c in self.get_all_complexes()]
         return sizes
 
-    def get_agent_types_present(self) -> Set[str]:
+    def get_agent_types_present(self) -> Set[KappaAgent]:
         """Returns a set with the names of the agents present in the snapshot."""
         agent_types = set()
         for c in self.get_all_complexes():

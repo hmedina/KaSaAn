@@ -2,80 +2,39 @@
 
 import re
 from typing import List
-
-
-def site_contains_site(host: str, query: str) -> bool:
-    """Helper function for the KappaAgent class. It deconstructs a query and a target into three components: name,
-    internal state, and bond state. It then compares these three to determine if target contains query. For the query,
-    this function supports Kappa4 wildcards: <<#>> for <<whatever state>>, <<_>> for <<bound to whatever>>."""
-
-    # Breakout the structure of the site: name{internal}[bond]{internal}
-    h_matches = re.match('^([a-zA-Z][\w\-_]*)({\w+})?(\[\d+\]|\[\.\])?({\w+})?', host)
-    h_site_name = h_matches.group(1) if h_matches.group(1) else None
-    h_site_bond = h_matches.group(3)[1:-1] if h_matches.group(3) else None
-    # Since internal and binding states can be stated in any order, I accommodate the ambiguity by first trying to match
-    # against group 2, then against group 4
-    if h_matches.group(2):
-        h_site_state = h_matches.group(2)[1:-1]
-    elif h_matches.group(4):
-        h_site_state = h_matches.group(4)[1:-1]
-    else:
-        h_site_state = None
-
-    # Breakout the structure of the site (can have wildcards): name{internal}[bond]{internal}
-    q_matches = re.match('^([a-zA-Z][\w\-_]*)({\w+}|{#})?(\[\d+\]|\[\.\]|\[_\]|\[#\])?({\w+}|{#})?', query)
-    q_site_name = q_matches.group(1) if q_matches.group(1) else None
-    q_site_bond = q_matches.group(3)[1:-1] if q_matches.group(3) else None
-    # Since internal and binding states can be stated in any order, I accommodate the ambiguity by first trying to match
-    # against group 2, then against group 4
-    if q_matches.group(2):
-        q_site_state = q_matches.group(2)[1:-1]
-    elif q_matches.group(4):
-        q_site_state = q_matches.group(4)[1:-1]
-    else:
-        q_site_state = None
-
-    #print('H: ' + h_site_name + ' | ' + h_site_state + ' | ' + h_site_bond)
-    #print('Q: ' + q_site_name + ' | ' + q_site_state + ' | ' + q_site_bond)
-
-    # Begin matching query against host
-    sites_match = False
-    if q_site_name == h_site_name:
-        # Check if internal states match
-        if q_site_state == '#' or q_site_state == h_site_state:
-            # Check if bond states match
-            if q_site_bond == '#':
-                sites_match = True
-            elif q_site_bond == '_' and h_site_bond != '.':
-                sites_match = True
-            elif q_site_bond == h_site_bond:
-                sites_match = True
-
-    return sites_match
+from .KappaSite import KappaSite
+from .KappaError import AgentParseError, SiteParseError
 
 
 class KappaAgent:
     """Class for representing Kappa agents. I.e. <<A(b[1])>> or <<A(s{a}[.] a[1] b[.])>>."""
-    kappa_expression: str
-    agent_name: str
-    agent_signature: List[str]
-
 
     def __init__(self, expression: str):
-        # Check if kappa expression's name & overall structure is valid
-        matches = re.match('([a-zA-Z][\w\-_]*)\(([^)]*)\)', expression.strip())
-        assert matches, 'Invalid kappa expression <<' + expression + '>>'
+        self.raw_expression: str
+        self.agent_name: str
+        self.agent_signature: List[KappaSite]
+        self.kappa_expression: str
 
-        # Assign results to variables
-        self.kappa_expression = expression
+        # Check if kappa expression's name & overall structure is valid
+        matches = re.match('^([a-zA-Z][\w\-_]*)\(([^()]*)\)$', expression.strip())
+        if not matches:
+            matches = re.match('^([a-zA-Z][\w\-_]*)\(([^()]*)\)$', expression.strip() + '()')
+        if not matches:
+            raise AgentParseError('Invalid agent declaration <' + expression + '>')
+        self.raw_expression = expression
+
+        # assign stuff to variables
         self.agent_name = matches.group(1)
-        if matches.group(2) == '':
-            self.agent_signature = []
+        ag_signature = matches.group(2)
+        if ag_signature == '':
+            site_list = []
         else:
-            agent_signature = matches.group(2)
-            # as Kappa4 allows commas or whitespace as separators, I first swap all commas for spaces, then split
-            # by whitespace
-            self.agent_signature = agent_signature.replace(',', ' ').split()
+            # Kappa4 allows commas or whitespace as separators:
+            # swap all commas for spaces, then split by whitespace, then sort alphabetically
+            site_list = sorted(ag_signature.replace(',', ' ').split())
+        self.agent_signature = [KappaSite(site) for site in site_list]
+        # canonicalize the kappa expression
+        self.kappa_expression = self.agent_name + '(' + ' '.join([str(site) for site in self.agent_signature]) + ')'
 
     def __repr__(self) -> str:
         return 'KappaAgent("{0}")'.format(self.kappa_expression)
@@ -83,30 +42,57 @@ class KappaAgent:
     def __str__(self) -> str:
         return self.kappa_expression
 
-    def contains_site_with_states(self, query_site: str) -> bool:
-        """Return true or false, depending on whether the agent contains the query site and the specified states."""
-        matches = False
-        for s_site in self.agent_signature:
-            if site_contains_site(s_site, query_site):
-                matches = True
-                break
-        return matches
+    def __eq__(self, other) -> bool:
+        # make it a KappaAgent if it's not one already
+        if not type(other) is KappaAgent:
+            other = KappaAgent(other)
+        # as the kappa expression has been canonicalized, equality testing is straightforward
+        if self.kappa_expression == other.kappa_expression:
+            return True
+        else:
+            return False
 
-    def contains_site(self, query_site: str) -> bool:
-        """Return true or false, depending on whether the agent contains the query site."""
-        matches = False
-        for s_site in self.agent_signature:
-            if site_contains_site(s_site, query_site + '[#]{#}'):
-                matches = True
-                break
-        return matches
+    def __hash__(self) -> int:
+        return hash(self.kappa_expression)
+
+    def __contains__(self, item) -> bool:
+        # type parsing: try to make it an Agent, if that fails try a Site, if that tails, raise exception
+        if (not type(item) is KappaSite) and (not type(item) is KappaAgent):
+            try:
+                try:
+                    item = KappaAgent(item)
+                except AgentParseError:
+                    item = KappaSite(item)
+            except SiteParseError:
+                raise ValueError('Could not parse <' + item + '> as an Agent nor as a Site')
+        # once item has been typed, or if it was properly typed, then we can decide what comparison to do
+        if type(item) is KappaSite:
+            for site in self.agent_signature:
+                if item in site:
+                    return True
+        elif type(item) is KappaAgent:
+            if item.agent_name ==  self.agent_name:
+                counter  = 0
+                for site in item.agent_signature:
+                    if site in self:
+                        counter += 1
+                if counter == len(item.agent_signature):
+                    return True
+
+    def get_agent_name(self) -> str:
+        """Return a string with the agent's name."""
+        return self.agent_name
+
+    def get_agent_signature(self) -> List[KappaSite]:
+        """Return a list of strings with the agent's signature."""
+        return self.agent_signature
 
     def get_bond_identifiers(self) -> List[str]:
         """Return the list of bonds ending/starting at this agent, e.g. for <<A(a[.] b[1] c[2] d{a}[.])>> these would
          be the list ['1','2']."""
         agent_bonds = []
         for item in self.agent_signature:
-            matches = re.match('[a-zA-Z]\w*({[^}]+})?\[(\d+)\]', item)
-            if matches:
-                agent_bonds.append(matches.group(2))
+            g = re.match('(\d+)', item.bond_state)
+            if g:
+                agent_bonds.append(g.group(1))
         return agent_bonds
