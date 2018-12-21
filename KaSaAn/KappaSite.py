@@ -1,97 +1,124 @@
 #! /usr/bin/python3
 import re
-from functools import total_ordering
-from .KappaError import SiteParseError
+from .KappaEntity import KappaEntity
+from .KappaError import PortParseError, CounterParseError
+from abc import abstractmethod
 
 
-class KappaSite:
-    """Class for representing Kappa sites; e.g. 's[3]', 'g[.]{b}', 'k[_]{#}'."""
+class KappaSite(KappaEntity):
+    @abstractmethod
+    def __init__(self):
+        pass
+
+
+class KappaPort(KappaSite):
+    """Class for representing traditional Kappa Sites, e.g. 's[3]', 'g[.]{b}', or 'k[_]{#}'."""
 
     def __init__(self, expression: str):
-        self.raw_expression: str
-        self.site_name: str
-        self.bond_state: str
-        self.int_state: str
-        self.kappa_expression: str
+        self._raw_expression: str
+        self._port_name: str
+        self._bond_state: str
+        self._int_state: str
+        self._kappa_expression: str
 
-        self.raw_expression = expression
+        self._raw_expression = expression
+
+        # define patterns that make up a site
+        port_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+        int_state_pat = '(?:{(\w+|#|=\d+)})?'
+        bnd_state_pat = '\[(.|_|#|\d+)\]'
+        port_pat = '^' + port_name_pat + int_state_pat + bnd_state_pat + int_state_pat + '$'
         # parse assuming full site declaration, with bond state declared
-        g = re.match('^([a-zA-Z]\w*)(?:{(\w+|#)})?\[(.|_|#|\d+)\](?:{(\w+|#)})?$', self.raw_expression.strip())
+        g = re.match(port_pat, expression.strip())
         # if that fails, try parsing with bond state explicitly declared as a wildcard
         if not g:
-            g = re.match('^([a-zA-Z]\w*)(?:{(\w+|#)})?\[(.|_|#|\d+)\](?:{(\w+|#)})?$', self.raw_expression.strip() + '[#]')
+            g = re.match(port_pat, expression.strip() + '[#]')
         # if that fails, throw an error
         if not g:
-            raise SiteParseError('Invalid site declaration <' + expression + '>')
-        # assuming we survived, assign stuff to variables
-        self.site_name = g.group(1)
-        self.bond_state = g.group(3)
-        # for internal states, unless specified, it will default to wildcard '#'
+            raise PortParseError('Invalid port declaration <' + expression + '>')
+        # assuming it parsed, assign capturing groups to variables
+        self._port_name = g.group(1)
+        self._bond_state = g.group(3)
+        # internal states, unless specified, will default to wildcard '#'
         if g.group(2):
-            self.int_state = g.group(2)
+            self._int_state = g.group(2)
         elif g.group(4):
-            self.int_state = g.group(4)
+            self._int_state = g.group(4)
         else:
-            self.int_state = '#'
+            self._int_state = '#'
         # canonicalize the kappa expression
-        self.kappa_expression = self.site_name + '[' + self.bond_state + ']{' + self.int_state + '}'
-
-    def __repr__(self) -> str:
-        return 'KappaSite("{0}")'.format(self.kappa_expression)
-
-    def __str__(self) -> str:
-        return self.kappa_expression
-
-    def __hash__(self) -> int:
-        return hash(self.kappa_expression)
-
-    def __eq__(self, other) -> bool:
-        # make it a KappaSite if it's not one already
-        if not type(other) is KappaSite:
-            other = KappaSite(other)
-        # as kappa_expressions have been canonicalized, they're sufficient for equality testing
-        return True if self.kappa_expression == other.kappa_expression else False
-
-    def __lt__(self, other) -> bool:
-        # make it a KappaSite if it's not one already
-        if not type(other) is KappaSite:
-            other = KappaSite(other)
-        # as kappa_expression have been canonicalized, they're sufficient for comparison testing
-        return True if self.kappa_expression < other.kappa_expression else False
-
-    @total_ordering
+        self._kappa_expression = self._port_name + '[' + self._bond_state + ']{' + self._int_state + '}'
 
     def __contains__(self, item) -> bool:
-        # make it a KappaSite if it's not one already
-        if not type(item) is KappaSite:
-            item = KappaSite(item)
+        # we can't compare ports to counters
+        if type(item) is KappaCounter:
+            raise PortParseError('Can not check for containment of supplied counter <' + item +
+                                 '> in port <' + self._kappa_expression + '>')
+        # make it a KappaPort if it's not one already
+        elif not type(item) is KappaPort:
+            item = KappaPort(item)
         # check if item is in self, Kappa-wise
         contains = False
-        if self.site_name == item.site_name:
-            if item.int_state == '#':
-                if item.bond_state == '#':
+        if self._port_name == item._port_name:
+            if item._int_state == '#':
+                if item._bond_state == '#':
                     contains = True
-                elif (item.bond_state == '_') & (self.bond_state != '.'):
+                elif (item._bond_state == '_') & (self._bond_state != '.'):
                     contains = True
-                elif item.bond_state == self.bond_state:
+                elif item._bond_state == self._bond_state:
                     contains = True
-            elif item.int_state == self.int_state:
-                if item.bond_state == '#':
+            elif item._int_state == self._int_state:
+                if item._bond_state == '#':
                     contains = True
-                elif (item.bond_state == '_') & (self.bond_state != '.'):
+                elif (item._bond_state == '_') & (self._bond_state != '.'):
                     contains = True
-                elif item.bond_state == self.bond_state:
+                elif item._bond_state == self._bond_state:
                     contains = True
         return contains
 
-    def get_site_name(self) -> str:
-        """Returns a string with the name of the site."""
-        return self.site_name
+    def get_port_name(self) -> str:
+        """Returns a string with the port's name."""
+        return self._port_name
 
-    def get_site_internal_state(self) -> str:
-        """Returns a string with the site's internal state."""
-        return self.int_state
+    def get_port_int_state(self) -> str:
+        """Returns a string with the port's internal state."""
+        return self._int_state
 
-    def get_site_bond_state(self) -> str:
-        """Returns a string with the site's bond state."""
-        return self.bond_state
+    def get_port_bond_state(self) -> str:
+        """Returns a string with the port's bond state."""
+        return self._bond_state
+
+
+class KappaCounter(KappaSite):
+    """"Class for representing counters, pseudo-Kappa sites, e.g. 'c{=5}'."""
+
+    def __init__(self, expression: str):
+        self._raw_expression: str
+        self._counter_name: str
+        self._counter_value: int
+        self._kappa_expression: str
+
+        self._raw_expression = expression
+
+        # define patterns that make up a site
+        site_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+        cnt_state_pat = '{=(\d+)}'
+        counter_pat = '^' + site_name_pat + cnt_state_pat + '$'
+        # parse the counter
+        g = re.match(counter_pat, expression.strip())
+        if not g:
+            raise CounterParseError('Invalid counter declaration <' + expression + '>')
+        # assign capturing groups to variables
+        self._counter_name = g.group(1)
+        self._counter_value = int(g.group(2))
+        # canonicalize the kappa expression
+        self._kappa_expression = self._counter_name + '{=' + str(self._counter_value) + '}'
+
+    def get_counter_name(self) -> str:
+        """Returns a string with the counter's name."""
+        return self._counter_name
+
+    def get_counter_value(self) -> int:
+        """Returns an integer with the counter's value."""
+        return self._counter_value
+
