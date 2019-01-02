@@ -48,7 +48,7 @@ class KappaComplex(KappaEntity):
         """Returns the set of agent names that make up the complex."""
         return self._agent_types
 
-    def get_agents(self) -> List[KappaAgent]:
+    def get_all_agents(self) -> List[KappaAgent]:
         """Returns a list of KappaAgents, filled with agents plus their signatures, present in this complex."""
         # replace commas with spaces, then split string into a list at closing parenthesis
         return self._agents

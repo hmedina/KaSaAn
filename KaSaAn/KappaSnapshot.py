@@ -2,7 +2,8 @@
 
 import re
 from .KappaEntity import KappaEntity
-from .KappaComplex import KappaComplex, KappaAgent
+from .KappaComplex import KappaComplex
+from .KappaAgent import KappaAgent
 from typing import List, Set, ItemsView, Dict
 from .KappaError import SnapshotParseError
 
