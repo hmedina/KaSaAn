@@ -2,31 +2,34 @@
 
 ## Overview
 This provides several tools to analyze Kappa snapshots. Concretely, it
-implements three classes, and a whole-mix visualizer.
+implements Kappa-centric classes, and a whole-mix visualizer.
 
-A KappaSnapshot is composed of one or more
-entities of KappaComplex, themselves composed of one or more entities of
-KappaAgent. Since tokens are not instances of either, there is no
-support for tokens: they are ignored.
+Snapshots are represented as instances of the class KappaSnapshot. Within snapshots, molecular species are represented
+as instances of the class KappaComplex. Within complexes, proteins/agents are represented as instances of the class
+KappaAgent. Within agents, sites are represented as instances of either KappaPort (i.e. sites with internal state and/or
+bond state), or KappaCounter (i.e. sites with a numeric value that can be tested and used for dynamic rule rates).
 
-Several of these methods return objects of the appropriate class. For
-example, a KappaSnapshot's `get_largest_complexes()` returns a list of
-KappaComplexes. To access the raw string of a complex or agent, use the
-`kappa_expression` internal variable. E.g. to get the raw kappa of the
-largest complex: `foo.get_largest_complexes()[0].kappa_expression`
+In other words, a KappaSnapshot is composed of one or more entities of KappaComplex, themselves composed of one or more
+entities of KappaAgent, themselves composed of one or more entities of KappaPort and/or KappaCounter. Since tokens are
+not instances of any of the above classes, there is no support for tokens: they are ignored, or cause a parse
+exception being thrown.
 
-This tool is compatible with Kappa syntax 4.
+Several of these methods return objects of the appropriate class. For example, a KappaSnapshot's
+`get_largest_complexes()` returns a list of KappaComplexes. 
+
+This tool is compatible with KaSim syntax 4.
 
 
 ## Classes
 
 
 ### KappaSnapshot
-This class is a glorified dictionary, where the keys are KappaComplexes,
-and the values are the abundances of those complexes. The basic methods
-are re-writings of the core dictionary methods with more explicit names
-suitable for Kappa. These serve as foundation for more advanced methods.
-Currently, the constructor reads from a plain text-file.
+This class represents KappaSnapshots. It contains a dictionary, where
+the keys are KappaComplexes, and the values are the abundances of those
+complexes. The basic methods are re-writings of the core dictionary
+methods with more explicit names suitable for Kappa. These serve as
+foundation for more advanced methods. Currently, the initializer can
+only read from a plain text-file.
 
 Currently implemented methods:
   * `get_snapshot_file_name()`
@@ -38,125 +41,161 @@ Currently implemented methods:
   * `get_snapshot_event()`
      * Returns an integer with the event number the snapshot was taken at.
   * `get_all_complexes()`
-    * Returns a list of KappaComplexes with all the complexes in the snapshot (i.e. one complex per snapshot line)
+    * Returns a list of KappaComplexes with all the complexes in the snapshot (i.e. one complex per snapshot line).
   * `get_all_abundances()`
     * Returns a list integers with all the abundances in the snapshot.
   * `get_all_sizes()`
-    * Returns a list of integers with all the complex sizes visible in the snapshot, one item per complex (i.e. can contain repeat numbers if they correspond to different complexes)
+    * Returns a list of integers with all the complex sizes visible in the snapshot, one item per complex (i.e. can contain repeat numbers if they correspond to different complexes).
   * `get_all_complexes_and_abundances()`
-    * Returns a list of tuples of the KappaComplexes and their abundances.
+    * Returns a list of tuples (technically an ItemsView object) of the KappaComplexes and their abundances.
   * `get_total_mass()`
-    * Returns an int with the total mass in the snapshot (i.e. the number of agents)
+    * Returns an int with the total mass in the snapshot (i.e. the number of agents).
   * `def get_agent_types_present():`
-    * Returns a set with the names of the agents present in the snapshot
+    * Returns a set of KappaAgents of the names of the agents present in the snapshot (i.e. ignores agent signatures).
   * `get_complexes_with_abundance(query_abundance)`
-    * Returns a list of KappaComplexes present at abundance `query_abundance`
+    * Returns a list of KappaComplexes present at abundance `query_abundance` (integer: number of molecules).
   * `get_complexes_of_size(query_size)`
-    * Returns a list of KappaComplexes of size (in agents) `query_size`
+    * Returns a list of KappaComplexes of size `query_size` (integer: number of agents).
   * `get_largest_complexes()`
-    * Returns the largest (or a list of multiple) KappaComplex(es)
+    * Returns a list of the largest KappaComplexes.
   * `get_smallest_complexes()`
-    * Returns the smallest (or a list of multiple) KappaComplex(es)
+    * Returns a list of the smallest KappaComplexes.
   * `get_most_abundant_complexes()`
-    * Returns the KappaComplex (or list of) present at the highest concentration
+    * Returns a list of the most abundant KappaComplexes.
   * `get_least_abundant_complexes()`
-    * Returns the KappaComplex (or list of) present at the lowest concentration (typically 1)
+    * Returns a list of the least abundant KappaComplexes.
   * `get_size_distribution()`
-    * Returns a list of integers with the size distribution of complexes in the snapshot
+    * Returns a list of integers with the size distribution of complexes in the snapshot.
+
+```
+>>> from KaSaAn import KappaSnapshot
+>>> foo = KappaSnapshot('E_10000.ka')
+>>> print(foo)
+%init: 5 B(s[1]{#}), S(a[.]{#} b[1]{#} m[.]{#} n[.]{#})
+%init: 45 B(s[.]{#})
+%init: 24 A(s[1]{#}), S(a[1]{#} b[.]{#} m[.]{#} n[.]{#})
+%init: 476 A(s[.]{#})
+%init: 2 S(a[.]{#} b[.]{#} m[.]{#} n[1]{#}), S(a[.]{#} b[.]{#} m[1]{#} n[.]{#})
+%init: 108 S(a[.]{#} b[.]{#} m[.]{#} n[.]{#})
+>>> foo.get_size_distribution()
+{2: 31, 1: 629}
+```
 
 
 ### KappaComplex
 This class represents Kappa complexes. Most of the methods return an
-instance of KappaAgent. To get the raw Kappa expression, access the
-instance variable KappaExpression.
+instance of KappaAgent.
 
 Currently implemented methods:
   * `get_number_of_bonds()`
-    * Returns an integer with the number of bonds present in the complex
+    * Returns an integer with the number of bonds present in the complex.
   * `get_size_of_complex()`
-    * Returns an integer with the number of agents present in the complex
+    * Returns an integer with the number of agents present in the complex.
   * `get_agent_types()`
-    * Returns a list of the unique agent names that make up the complex
-  * `get_agents()`
-    * Returns a list of KappaAgents, with the agents that make up the complex (includes agent signature)
+    * Returns a set of KappaAgents, with the agent names that make up the complex.
+  * `get_all_agents()`
+    * Returns a list of KappaAgents, with all the agents that make up the complex (includes agent signature).
   * `get_number_of_embeddings_of_agent(query)`
-    * Returns the number of embeddings a given query `agent(signature)` has on the complex. Single agents only.
+    * Returns an integer with the number of embeddings a given query `agent(signature)` has on the complex. The query
+    must be a KappaAgent, KappaSite, or KappaCounter, or a string that can be parsed into any of those.
   * `get_complex_composition(self)`
     * Returns a dictionary where the key is an agent name, and the value the number of times that agent appears in this
      complex.
+
+```
+>>> bar = foo.get_largest_complexes()[0]
+>>> print(bar)
+B(s[1]{#}), S(a[.]{#} b[1]{#} m[.]{#} n[.]{#})
+>>> bar.get_number_of_embeddings_of_agent('S(b[_])')
+1
+```
  
   
 ### KappaAgent
-This class represents individual Kappa agents.
+This class represents individual Kappa agents. It supports checking for containment through the `in` keyword. The query
+must be a KappaAgent, KappaSite, or KappaCounter, or a string that can be parsed into any of those.
 
 Currently implemented methods:
-  * `contains_site(query_site)`
-    * Returns true if the agent contains `query_site`. Use this to check for site name alone (i.e. no internal or bond
-     state data), e.g. `my_agent.contains_site(foo)`
-  * `contains_site_with_states(query_site)`
+  * `get_agent_name()`
+    * Returns a string with the agent's name.
+  * `get_agent_signature()`
     * Returns true if the agent contains `query_site`, included is the check against internal and bond states, e.g.
      `my_agent.contains_site_with_states(foo{bar}[.])`
   * `get_bond_identifiers()`
     * Returns a list of strings with the bond identifiers that start/end at this agent. For example, for the KappaAgent
     `A(a[.] b[1] c[2] d{a}[.])` these would be the list `['1','2']`.
-  
+ 
+```
+>>> baz = bar.get_all_agents()[1]
+>>> print(baz)
+S(a[.]{#} b[1]{#} m[.]{#} n[.]{#})
+>>> 'm[#]' in baz
+True
+>>> 'n[_]' in baz
+False
+```
+
+
+### KappaPort
+This class represents "vanilla" Kappa sites, i.e. sites capable of having internal states and bond states, unlike
+counter sites. It supports checking for containment through the `in` keyword. The query
+must be a KappaSite, or a string that can be parsed into one.
+
+Currently implemented methods:
+  * `get_port_name()`
+    * Returns a string with the name of the port.
+  * `get_port_int_state()`
+    * Returns a string with the internal state of the port, or hash sign (i.e. wildcard) if undeclared.
+  * `get_port_bond_state()`
+    * Returns a string with the bond identifier of the port, a period if unbound, or a hash sign (i.e. wildcard)
+    if undeclared.
+    
+```
+>>> fitz = baz.get_agent_signature()[0]
+>>> print(fitz)
+a[.]{#}
+>>> fitz.get_port_int_state()
+'#'
+>>> 'a[_]' in fitz
+False
+>>> 'a[#]' in fitz
+True
+```
+
+
+### KappaCounter
+This class represents counter Kappa "sites", i.e. sites that hold a numeric value in an instance-specific manner, which
+can be used as a variable in rule rates (e.g. level of phosphorylation of a protein).
+
+Currently implemented methods:
+  * `get_counter_name()`
+    * Returns a string with the name of the counter.
+  * `get_counter_value()`
+    * Returns an integer with the value of the counter.
+    
+```
+>>> from KaSaAn import KappaCounter
+>>> botz = KappaCounter('g{=5}')
+>>> print(botz)
+g{=5}
+>>> botz.get_counter_value() > 4
+True
+>>> botz.get_counter_value() > 6
+False
+```
+
 
 ## Requirements
 For snapshot analysis: none.
 
-For visualization of rules, snapshots, or traces: 
+For visualization scripts (of rules, snapshots, or traces): 
 * matplotlib
 * squarify
 
 
 ## Examples
 
-### Is there a giant component, and if so what's its composition?
-Models `models/linear_polymer.ka` and `models/cyclic_polyvalent_polymers.ka` are different. We can explore one aspect
-by looking at their capacity to generate giant components. For the sake of the example, let's assume that a "giant
-component" is a complex that takes up at least a tenth of the reaction mixture (i.e. over one out of 10 agents belong to
-it). We can analyze snapshots generated by each model to determine what's the difference.
 
-```python
-from KaSaAn import KappaSnapshot
-
-def is_there_a_giant_component(file_name):
-    my_snap = KappaSnapshot(file_name)
-    my_largest_complexes = my_snap.get_largest_complexes()
-    
-    # There could be multiple complexes of equal max-size (e.g. multiple types of 135-mers).
-    if len(my_largest_complexes) == 1:
-        my_giant_component = my_largest_complexes[0]
-        
-        # If there's one, does it dominate 1/5th the mix?
-        if my_giant_component.get_size_of_complex() > my_snap.get_total_mass() / 10:
-            print('There is a giant component of size: ' + str(my_giant_component.get_size_of_complex()))
-            
-            # What's its composition?
-            print('It is composed of:')
-            my_types = my_giant_component.get_agent_types()
-            for i_type in my_types:
-                print(i_type + ': ' + str(my_giant_component.get_number_of_embeddings_of_agent(i_type + '()')))
-        else:
-            print('There is no giant component. Biggest single entity is of size: ' + str(my_giant_component.get_size_of_complex()))
-    else:
-        print('There are multiple complexes at the maximum size.')
-```
-Applying this function to `models/linear_polymer_snap.ka` we get:
-```
-There is no giant component. Biggest single entity is of size: 51
-```
-
-Applying it to `models/cyclic_polyvalent_polymers_snap.ka` we get:
-```
-There is a giant component of size: 1122
-It is composed of:
-C: 279
-A: 279
-D: 284
-B: 280
-```
-Worth noting, both snapshots have the same total mass of 10,000.
 
 We can view the composition of both mixtures:
 ```
