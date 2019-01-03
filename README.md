@@ -191,51 +191,39 @@ False
 ```
 
 
-## Requirements
-For snapshot analysis: none.
-
-For visualization scripts (of rules, snapshots, or traces): 
-* matplotlib
-* squarify
+## Visualization
+Scripts are provided for visualization of different Kappa entities: snapshots, traces, and rules.
 
 
-## Examples
+### Snapshot visualization
+These scripts use the patchwork / treemap layout. Each molecular species is displayed as a box with a black boundary.
+Within each species, its composition is displayed as boxes corresponding to the abundance of agents in that species: an
+agent's abundance within that complex is proportional to the area it occupies within the species. All areas are set to
+the same scale, so the size of the box of one agent type in one species can be compared to the size of the box of a
+different agent type in a different species.
+ 
+Three ways of determining an species's weight are offered: by count (i.e. how many of it there are), by size
+(i.e. how many agents it has), and by mass (i.e. the product of the count times the size).
 
+Giant species tend to be rare; tiny species tend to be frequent; when
+thinking about the state of the mixture (i.e. "where are my agents?"),
+it may be useful to resolve the size vs. rarity trade-off through
+their product, hence the `mass` mode is presented.
 
-
-We can view the composition of both mixtures:
-```
-$ ./visualization/snapshot_visualizer.py -sf ./models/linear_polymer_snap.ka -vm mass -of ./models/linear_polymer_snap_mass.png
-```
-![Linear system composition](./models/linear_polymer_snap_mass.png)
-```
-$ ./visualization/snapshot_visualizer.py -sf ./models/cyclic_polyvalent_polymers_snap.ka -vm mass -of ./models/cyclic_polyvalent_polymers_snap_mass.png
-```
-![Cyclic system composition](./models/cyclic_polyvalent_polymers_snap_mass.png)
-
-### What is my mixture doing? Is it all aggregating? What's the composition like?
-
-The model alphabet soup contains 28 agents (Aa-Az), with many
-dimerization and scaffolding opportunities. We can view the snapshot
-(presumed to be taken at steady state) to observe what is the mixture
-composition.
 
 #### Count
-
-We sort the molecular species by count (aka frequency, or abundance):
 ```
 $ ./visualization/snapshot_visualizer.py -sf ./models/alphabet_soup_snap.ka -vm count -of ./models/alphabet_soup_snap_count.png
 ```
 ![Visualization by species count](./models/alphabet_soup_snap_count.png)
 
-Each black box represents a species, with the area taken proportional to
+Each black-bounded box represents a species, with its area proportional to
 the number of times that species is present in the mixture. Here we can
 see the mixture is composed of a large set of species at very similar
 abundance levels (e.g. a gazillion types of dimers).
 
-#### Size
 
-If we sort the molecular species by size:
+#### Size
 ```
 $ ./visualization/snapshot_visualizer.py -sf ./models/alphabet_soup_snap.ka -vm size -of ./models/alphabet_soup_snap_size.png
 ```
@@ -244,11 +232,10 @@ $ ./visualization/snapshot_visualizer.py -sf ./models/alphabet_soup_snap.ka -vm 
 When sorting by size of the species, keep in mind that a single species
 is surrounded by a black box. In this image, an enormous species
 dominates the view. The next largest species is a very distant second.
+There is one type of species that is very large.
+
 
 #### Mass
-
-If we sort the molecular species by the product of their size times
-their abundance:
 ```
 $ ./visualization/snapshot_visualizer.py -sf ./models/alphabet_soup_snap.ka -vm mass -of ./models/alphabet_soup_snap_mass.png
 ```
@@ -260,3 +247,27 @@ of small species, or a very small number of large species? Here we see
 there is a giant component that dominates the bulk of the mixture,
 having recruited ~4/5ths of the entire mixture (i.e. its area is ~4/5ths
 of the entire patchwork / mixture).
+
+
+#### All
+```
+$ ./visualization/snapshot_visualizer.py -sf ./models/alphabet_soup_snap.ka -vm all -of ./models/alphabet_soup_snap_all.png
+```
+![Visualization by species count, size, and mass](./models/alphabet_soup_snap_all.png)
+
+It is difficult to view this entity when viewing by `count` alone, as there
+is a very low number of copies of it (probably only one). When viewing
+by `size`, it however is the only species that is appreciable. When
+viewed by `mass`, it is clear it is an important species.
+
+
+
+
+## Requirements
+Python 3.7 or above.
+
+For snapshot analysis: none.
+
+For visualization scripts (of rules, snapshots, or traces): 
+* matplotlib 3.0.2
+* squarify 0.3.0

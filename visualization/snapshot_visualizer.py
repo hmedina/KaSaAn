@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /usr/local/bin/python3
 
 import squarify
 import matplotlib.pyplot as plt
@@ -8,10 +8,10 @@ import matplotlib as mpl
 import colorsys
 import numpy
 from matplotlib.collections import PatchCollection
-from KaSaAn import KappaSnapshot
+from KaSaAn import KappaSnapshot, KappaAgent
 from operator import itemgetter
 import argparse
-from typing import List, Set, Tuple
+from typing import List, Dict, Tuple, Any
 
 
 
@@ -25,9 +25,8 @@ def process_snapshot(snapshot: KappaSnapshot) -> List[dict]:
     return data
 
 
-def colorize_agents(agents: Set[str]) -> dict:
+def colorize_agents(agent_list: List[KappaAgent]) -> Dict[KappaAgent, Any]:
     # Generate & associate colors as a dictionary {Agent: Color}
-    agent_list = list(agents)
     num_agents = len(agent_list)
     agent_colors = {}
     # Use built-in palettes: for 10 or less use the default colors
@@ -48,7 +47,7 @@ def colorize_agents(agents: Set[str]) -> dict:
     # ToDo use colormath spaces to get better distinguishable colors; e.g. in LuvColor space
 
 
-def snapshot_composition_simple(data: List[dict], color_scheme: dict, vis_mode: str, x_res: float, y_res: float) -> Tuple[List[matplotlib.patches.Rectangle], int]:
+def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent, Any], vis_mode: str, x_res: float, y_res: float) -> Tuple[List[matplotlib.patches.Rectangle], int]:
     assert vis_mode == 'size' or vis_mode == 'count' or vis_mode == 'mass', 'Problem: unknown mode <<' + vis_mode + '>>'
     species_num = len(data)
 
@@ -111,7 +110,7 @@ def snapshot_composition_simple(data: List[dict], color_scheme: dict, vis_mode: 
     return patch_list, max_value
 
 
-def snapshot_legend_simple(color_scheme: dict, col_num: int) -> Tuple[list, list]:
+def snapshot_legend_simple(color_scheme: Dict[KappaAgent, Any], col_num: int) -> Tuple[list, list]:
     # Add agent entries with their colors (as composition key)
     position = 0 #var to track indexing
     x_dim = 0.5 #size of rectangle serving as color key
@@ -121,7 +120,7 @@ def snapshot_legend_simple(color_scheme: dict, col_num: int) -> Tuple[list, list
     for agent, color in sorted(color_scheme.items(), key=itemgetter(0), reverse=False):
         y_pos, x_pos = divmod(position, col_num)
         legend_entry_rect = matplotlib.patches.Rectangle(xy=(x_pos, -y_pos), width=x_dim, height=y_dim, edgecolor='#000000', fc=color)
-        legend_entry_text = matplotlib.text.Text(x=x_pos + x_dim, y=-y_pos, text=agent, verticalalignment='baseline')
+        legend_entry_text = matplotlib.text.Text(x=x_pos + x_dim, y=-y_pos, text=agent.get_agent_name(), verticalalignment='baseline')
         rect_list.append(legend_entry_rect)
         text_list.append(legend_entry_text)
         position += 1
@@ -147,7 +146,7 @@ def snapshot_legend_maximum(max_data: int, vis_mode: str) -> matplotlib.text.Tex
     return max_text
 
 
-def render_snapshot(snapshot_file: str, color_scheme: dict = None, vis_mode: str ='all') -> plt.figure:
+def render_snapshot(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = None, vis_mode: str ='all') -> plt.figure:
     # Process the snapshot
     my_snapshot = KappaSnapshot(snapshot_file)
     my_data = process_snapshot(my_snapshot)
@@ -157,7 +156,7 @@ def render_snapshot(snapshot_file: str, color_scheme: dict = None, vis_mode: str
     if color_scheme:
         my_color_scheme = color_scheme
     else:
-        agent_list = my_snapshot.get_agent_types_present()
+        agent_list = [agent for agent in my_snapshot.get_agent_types_present()]
         if len(agent_list) > 20:
             print('Over 20 agents found: color palette might be ugly. Try googling <<iwanthue>> for a tool to generate optimally distinct colors.')
         my_color_scheme = colorize_agents(agent_list)
@@ -205,7 +204,7 @@ def render_snapshot(snapshot_file: str, color_scheme: dict = None, vis_mode: str
     else:
         ax_data = figure.add_subplot(121, aspect=1)
         ax_legend = figure.add_subplot(122, aspect=1)
-        plt.title(s='Area proportional to ' + vis_mode + ' of species')
+        plt.title(label='Area proportional to ' + vis_mode + ' of species')
         rectangles_data, my_max_data = snapshot_composition_simple(data=my_data, color_scheme=my_color_scheme, vis_mode=vis_mode, x_res=res_w, y_res=res_h)
         ax_data.add_collection(PatchCollection(rectangles_data, match_original=True))
         ax_data.axis('off')
