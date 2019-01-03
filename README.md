@@ -8,11 +8,11 @@ Snapshots are represented as instances of the class KappaSnapshot. Within snapsh
 as instances of the class KappaComplex. Within complexes, proteins/agents are represented as instances of the class
 KappaAgent. Within agents, sites are represented as instances of either KappaPort (i.e. sites with internal state and/or
 bond state), or KappaCounter (i.e. sites with a numeric value that can be tested and used for dynamic rule rates).
+Tokens are represented as instances of the class KappaToken.
 
-In other words, a KappaSnapshot is composed of one or more entities of KappaComplex, themselves composed of one or more
-entities of KappaAgent, themselves composed of one or more entities of KappaPort and/or KappaCounter. Since tokens are
-not instances of any of the above classes, there is no support for tokens: they are ignored, or cause a parse
-exception being thrown.
+In other words, in addition to KappaTokens, a KappaSnapshot is composed of one or more entities of KappaComplex,
+themselves composed of one or more entities of KappaAgent, themselves composed of one or more entities of KappaPort
+and/or KappaCounter.
 
 Several of these methods return objects of the appropriate class. For example, a KappaSnapshot's
 `get_largest_complexes()` returns a list of KappaComplexes. 
@@ -66,6 +66,12 @@ Currently implemented methods:
     * Returns a list of the least abundant KappaComplexes.
   * `get_size_distribution()`
     * Returns a list of integers with the size distribution of complexes in the snapshot.
+  * `get_all_tokens()`
+    * Returns a dictionary where the key is a KappaToken, and the value the numeric value of the token in this snapshot.
+  * `get_value_of_token(query_token)`
+    * Returns a float with the numeric value of `query_token`.
+  * `get_tokens_present()`
+    * Returns a list of KappaTokens with the tokens present in the snapshot.
 
 ```
 >>> from KaSaAn import KappaSnapshot

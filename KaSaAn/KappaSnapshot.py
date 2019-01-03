@@ -3,9 +3,9 @@
 import re
 from .KappaEntity import KappaEntity
 from .KappaComplex import KappaComplex
-from .KappaAgent import KappaAgent
+from .KappaAgent import KappaAgent, KappaToken
 from typing import List, Set, ItemsView, Dict
-from .KappaError import SnapshotParseError
+from .KappaError import SnapshotAgentParseError, SnapshotTokenParseError, SnapshotParseError
 
 
 class KappaSnapshot(KappaEntity):
@@ -15,7 +15,8 @@ class KappaSnapshot(KappaEntity):
 
     def __init__(self, snapshot_file_name: str):
         self._file_name: str
-        self._snapshot: Dict[KappaComplex, int]
+        self._complexes: Dict[KappaComplex, int]
+        self._tokens: Dict[KappaToken, float]
         self._raw_expression: str
         self._kappa_expression: str
         self._snapshot_event: int
@@ -23,7 +24,8 @@ class KappaSnapshot(KappaEntity):
         self._snapshot_time: float
 
         self._file_name = snapshot_file_name
-        self._snapshot = dict()
+        self._complexes = dict()
+        self._tokens = dict()
         # read file into a single string
         with open(snapshot_file_name, 'r') as kf:
             self._raw_expression = kf.read()
@@ -38,20 +40,41 @@ class KappaSnapshot(KappaEntity):
         self._snapshot_time = float(g.group(3))
         # parse the complexes into instances of KappaComplexes, get their abundance, cross-check their size
         for entry in digest[1:]:
-            g = re.match('^(\d+)\s/\*(\d+)\sagents\*/\s(.+)$', entry)
-            if not g:
-                raise SnapshotParseError('Abundance, length, & complex not found in <' + entry + '>')
-            abundance = int(g.group(1))
-            size = int(g.group(2))
-            species = KappaComplex(g.group(3))
-            if not size == species.get_size_of_complex():
-                raise SnapshotParseError('Size mismatch: snapshot declares <' + str(size) +
+            try:
+                try:
+                    # try to parse as a KappaComplex line, with agents
+                    g = re.match('^(\d+)\s/\*(\d+)\sagents\*/\s(.+)$', entry)
+                    if not g:
+                        raise SnapshotAgentParseError('Abundance, length, & complex not found in <' + entry + '>')
+                    abundance = int(g.group(1))
+                    size = int(g.group(2))
+                    species = KappaComplex(g.group(3))
+                    if not size == species.get_size_of_complex():
+                        raise ValueError('Size mismatch: snapshot declares <' + str(size) +
                                          '>, I counted <' + str(species.get_size_of_complex()) + '>')
-            # assign the complex as a key to the dictionary
-            self._snapshot[species] = abundance
-        # canonicalize the kappa expression
-        self._kappa_expression = '\n'.join(['%init: ' + str(self._snapshot[item]) + ' ' + str(item)
-                                            for item in self._snapshot.keys()])
+                    # assign the complex as a key to the dictionary
+                    self._complexes[species] = abundance
+                except SnapshotAgentParseError:
+                    # try to parse as a token line instead
+                    tk_value_pat = '((?:(?:\d+\.\d+)|(?:\d+\.)|(?:\.\d+)|(?:\d+))[eE]?[+-]?\d?)'
+                    tk_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+                    tk_pat = '^' + tk_value_pat + '\s' + tk_name_pat + '$'
+                    g = re.match(tk_pat, entry)
+                    if not g:
+                        raise SnapshotTokenParseError('Abundance & token name not found in <' + entry + '>')
+                    # assign the token as a key to the dictionary
+                    tk_name = KappaToken(g.group(2))
+                    tk_value = float(g.group(1))
+                    self._tokens[tk_name] = tk_value
+            except SnapshotTokenParseError:
+                raise SnapshotParseError('Could not parse as either complex line nor token line <' + entry + '>')
+        # canonicalize the kappa expression: tokens
+        self._kappa_expression = '\n'.join(['%init: ' + str(self._tokens[tk]) + ' ' + str(tk)
+                                            for tk in self._tokens.keys()])
+        self._kappa_expression += '\n' if self._tokens else ''
+        # canonicalize the kappa expression: complexes
+        self._kappa_expression += '\n'.join(['%init: ' + str(self._complexes[cx]) + ' ' + str(cx)
+                                            for cx in self._complexes.keys()])
 
     def get_snapshot_file_name(self) -> str:
         """Returns a string with the name of the file this snapshot came from."""
@@ -71,34 +94,34 @@ class KappaSnapshot(KappaEntity):
 
     def get_all_complexes(self) -> List[KappaComplex]:
         """Returns a list of KappaComplexes with all the complexes in the snapshot."""
-        return list(self._snapshot.keys())
+        return list(self._complexes.keys())
 
     def get_all_abundances(self) -> List[int]:
         """Returns a list of integers with all the abundances in the snapshot."""
-        return list(self._snapshot.values())
+        return list(self._complexes.values())
 
     def get_all_sizes(self) -> List[int]:
         """Returns a list of integers with all the complex sizes visible in the snapshot, one item per complex (i.e. can
         contain repeat numbers if they correspond to different complexes)."""
-        sizes = [key.get_size_of_complex() for key in self._snapshot.keys()]
+        sizes = [key.get_size_of_complex() for key in self._complexes.keys()]
         return sizes
 
     def get_agent_types_present(self) -> Set[KappaAgent]:
         """Returns a set with the names of the agents present in the snapshot."""
         agent_types = set()
-        for key in self._snapshot.keys():
+        for key in self._complexes.keys():
             agent_types.update(key.get_agent_types())
         return agent_types
 
     def get_all_complexes_and_abundances(self) -> ItemsView[KappaComplex, int]:
         """Returns a list of tuples, where the first element is a KappaComplex and the second is an int with the
         abundance of the corresponding complex."""
-        return self._snapshot.items()
+        return self._complexes.items()
 
     def get_total_mass(self) -> int:
         """Returns an int with the total mass of the snapshot, measured in number of agents."""
         total_mass = 0
-        for i_complex, i_abundance in self._snapshot.items():
+        for i_complex, i_abundance in self._complexes.items():
             total_mass += i_complex.get_size_of_complex() * i_abundance
         return total_mass
 
@@ -106,7 +129,7 @@ class KappaSnapshot(KappaEntity):
         """Returns a list of KappaComplexes present in the snapshot at the query abundance. For example, get all
         elements present in single copy."""
         result_complexes = []
-        for complex_expression, complex_abundance in self._snapshot.items():
+        for complex_expression, complex_abundance in self._complexes.items():
             if query_abundance == complex_abundance:
                 result_complexes.append(complex_expression)
         return result_complexes
@@ -159,3 +182,26 @@ class KappaSnapshot(KappaEntity):
             else:
                 size_dist[current_size] = complex_abundance
         return size_dist
+
+    def get_all_tokens(self) -> Dict[KappaToken, float]:
+        """Returns a dictionary where the key is an instance of KappaToken, and the value is the numeric value of the
+        token in this snapshot."""
+        return self._tokens
+
+    def get_value_of_token(self, query) -> float:
+        """Returns the value of a token."""
+        # make it a KappaToken, if it's not one already
+        if not type(query) is KappaAgent:
+            q = KappaToken(query)
+        else:
+            q = query
+        # return value, if key is present
+        try:
+            value = self._tokens[q]
+        except KeyError as k:
+            raise ValueError('Token <' + query + '> not found in this snapshot.') from k
+        return value
+
+    def get_tokens_present(self) -> List[KappaToken]:
+        """Returns the tokens present in the snapshot."""
+        return [tk for tk in self._tokens.keys()]

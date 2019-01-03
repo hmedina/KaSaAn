@@ -4,7 +4,7 @@ import re
 from typing import List
 from .KappaEntity import KappaEntity
 from .KappaSite import KappaPort, KappaCounter, KappaSite
-from .KappaError import AgentParseError, PortParseError, CounterParseError
+from .KappaError import AgentParseError, TokenParseError, PortParseError, CounterParseError
 
 
 class KappaAgent(KappaEntity):
@@ -98,3 +98,28 @@ class KappaAgent(KappaEntity):
                 agent_bonds.append(item.get_port_bond_state())
         agent_bonds = [b for b in agent_bonds if b != '.' and b != '_' and b != '#']
         return agent_bonds
+
+
+class KappaToken(KappaEntity):
+    """Class for representing Kappa tokens. I.e. <<X>>, or <<ATP>>."""
+
+    def __init__(self, expression: str):
+        self._raw_expression: str
+        self._token_name: str
+        self._kappa_expression: str
+
+        # Check if expression has valid structure
+        token_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+        token_pat = '^' + token_name_pat + '$'
+        matches = re.match(token_pat, expression.strip())
+        if not matches:
+            raise TokenParseError('Invalid token declaration <' + expression + '>')
+        self._raw_expression = expression
+
+        # assign to variables
+        self._token_name = matches.group(1)
+        self._kappa_expression = self._raw_expression.strip()
+
+    def get_token_name(self) -> str:
+        return self._token_name
+
