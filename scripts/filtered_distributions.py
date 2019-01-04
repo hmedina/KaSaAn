@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /usr/local/bin/python3
 
 from KaSaAn import KappaSnapshot
 import matplotlib.pyplot as plt
