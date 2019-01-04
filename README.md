@@ -261,6 +261,27 @@ by `size`, it however is the only species that is appreciable. When
 viewed by `mass`, it is clear it is an important species.
 
 
+### Traces
+One way of visualizing a trace is by making an animated movie of the snapshots through time. Given a trace, the [Trace
+Query Language](https://github.com/jonathan-laurent/Kappa-TQL) (TQL) engine can dump snapshots taken at regular time, or
+event, intervals.
+
+Let's assume there is a trace `t.json`. The following TQL query, saved as `my_query.txt` would produce a series of
+snapshots regular in time.
+```
+query 'snapshots.csv'
+match e every 10 seconds
+do { snapshot[.e] }
+```
+One can invoke the TQL engine to read the trace, the query, name files as `snap_%.ka` where `%` is an incremental
+counter, and saving the snapshots as native kappa files (i.e. ASCII representation, not JSON):
+```
+$ query -t t.json -q my_query.txt --snapshots-names snap_%.ka --native-snapshots
+```
+Then one can produce a movie of the snapshots with:
+```
+$ ./visualization/snapshot_visualizer.py -d dir_with_snaps -m mass -o movie.mp4
+```
 
 
 ## Requirements

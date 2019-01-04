@@ -11,7 +11,7 @@ from matplotlib.collections import PatchCollection
 from KaSaAn import KappaSnapshot, KappaAgent
 from operator import itemgetter
 import argparse
-from typing import List, Dict, Tuple, Any
+from typing import List, Set, Dict, Tuple, Any
 
 
 
@@ -25,8 +25,9 @@ def process_snapshot(snapshot: KappaSnapshot) -> List[dict]:
     return data
 
 
-def colorize_agents(agent_list: List[KappaAgent]) -> Dict[KappaAgent, Any]:
+def colorize_agents(agent_set: Set[KappaAgent]) -> Dict[KappaAgent, Any]:
     # Generate & associate colors as a dictionary {Agent: Color}
+    agent_list = list(agent_set)
     num_agents = len(agent_list)
     agent_colors = {}
     # Use built-in palettes: for 10 or less use the default colors
@@ -156,7 +157,7 @@ def render_snapshot(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = No
     if color_scheme:
         my_color_scheme = color_scheme
     else:
-        agent_list = [agent for agent in my_snapshot.get_agent_types_present()]
+        agent_list = my_snapshot.get_agent_types_present()
         if len(agent_list) > 20:
             print('Over 20 agents found: color palette might be ugly. Try googling <<iwanthue>> for a tool to generate optimally distinct colors.')
         my_color_scheme = colorize_agents(agent_list)
