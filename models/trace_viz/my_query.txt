@@ -1,0 +1,3 @@
+query 'snapshots.csv'
+match e every 10 seconds
+do { snapshot[.e] }

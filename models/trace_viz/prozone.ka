@@ -1,0 +1,9 @@
+%agent: A(b)
+%agent: B(a,c)
+%agent: C(b)
+%init: 100 A(), C()
+'/' B()+ @ 1.0
+'A.B' A(b[.]), B(a[.]) <-> A(b[1]), B(a[1]) @ 1.0e-4, 1.0e-3
+'C.B' C(b[.]), B(c[.]) <-> C(b[1]), B(c[1]) @ 1.0e-4, 1.0e-3
+%def: "traceFileName" "t.json"
+%mod: [T] > 2000 do $STOP ;

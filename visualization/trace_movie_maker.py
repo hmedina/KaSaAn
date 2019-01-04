@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /usr/local/bin/python3
 
 import glob
 import re
@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.collections import PatchCollection
 from visualization.snapshot_visualizer import process_snapshot, snapshot_composition_simple, colorize_agents, snapshot_legend_simple
-from KaSaAn import KappaSnapshot
+from KaSaAn import KappaSnapshot, KappaAgent
 import argparse
 from typing import List, Tuple, Set
 
@@ -33,7 +33,7 @@ def find_snapshot_files(base_dir: str = './') -> List[KappaSnapshot]:
 
 
 # Define consistent coloring scheme & maximum mass
-def define_agent_list_and_max_mass(snap_list: List[KappaSnapshot]) -> Tuple[Set[str], int]:
+def define_agent_list_and_max_mass(snap_list: List[KappaSnapshot]) -> Tuple[Set[KappaAgent], int]:
     max_mass = 0
     agent_set = set()
     for snap in snap_list:
