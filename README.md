@@ -1,7 +1,7 @@
 # KaSaAn: Kappa Snapshot Analysis
 
 ## Overview
-This provides several tools to analyze Kappa snapshots. Concretely, it
+This provides several tools to analyze [Kappa](https://kappalanguage.org/) snapshots. Concretely, it
 implements Kappa-centric classes, and a whole-mix visualizer.
 
 Snapshots are represented as instances of the class KappaSnapshot. Within snapshots, molecular species are represented
@@ -17,7 +17,7 @@ and/or KappaCounter.
 Several of these methods return objects of the appropriate class. For example, a KappaSnapshot's
 `get_largest_complexes()` returns a list of KappaComplexes. 
 
-This tool is compatible with KaSim syntax 4.
+This tool is compatible with [KaSim](https://github.com/Kappa-Dev/KaSim/) syntax 4.
 
 
 ## Classes
@@ -266,17 +266,12 @@ One way of visualizing a trace is by making an animated movie of the snapshots t
 Query Language](https://github.com/jonathan-laurent/Kappa-TQL) (TQL) engine can dump snapshots taken at regular time, or
 event, intervals.
 
-Let's assume there is a trace `t.json`. The following TQL query, saved as `my_query.txt` would produce a series of
-snapshots regular in time.
+Let's assume there is a trace `t.json`, and a query, saved as `my_query.txt` (see files under `models/trace_viz`). One
+can invoke the TQL engine to read the trace, the query, and save the snapshots as native kappa files
+(i.e. ASCII representation, not JSON), saved as `snapshot.0.ka`, `snapshot.1.ka`, etc. (the default naming used by the
+ TQL).
 ```
-query 'snapshots.csv'
-match e every 10 seconds
-do { snapshot[.e] }
-```
-One can invoke the TQL engine to read the trace, the query, name files as `snap_%.ka` where `%` is an incremental
-counter, and saving the snapshots as native kappa files (i.e. ASCII representation, not JSON):
-```
-$ query -t t.json -q my_query.txt --snapshots-names snap_%.ka --native-snapshots
+$ query -t t.json -q my_query.txt --native-snapshots
 ```
 Then one can produce a movie of the snapshots with:
 ```
@@ -285,10 +280,17 @@ $ ./visualization/snapshot_visualizer.py -d dir_with_snaps -m mass -o movie.mp4
 
 
 ## Requirements
-Python 3.7 or above.
+General:
+* Python 3.7 or above
+* For visualization of rules, snapshots, traces: 
+  * matplotlib 3.0.2 (under Windows, an X server, like Xming)
+  * squarify 0.3.0
 
-For snapshot analysis: none.
+On the Kappa Side:
+* Executing models, producing snapshots, producing traces:
+Kappa Simulator [KaSim](https://github.com/Kappa-Dev/KaSim), v4 or above
 
-For visualization scripts (of rules, snapshots, or traces): 
-* matplotlib 3.0.2
-* squarify 0.3.0
+* Performing trace operations:
+Trace Query Language engine [TQL](https://github.com/jonathan-laurent/Kappa-TQL)
+
+
