@@ -35,14 +35,14 @@ def get_potential_of_snapshot(file_name: str, enzyme: KappaAgent, substrate: Kap
 
 
 def get_potential_of_folder(base_directory: str, enzyme: KappaAgent, substrate: KappaAgent,
-                                      verbosity: bool) -> List[int]:
+                                      verbosity: bool, snap_name_prefix: str) -> List[int]:
     # Get the file names of snapshots in specified directory
-    snap_names = sorted(glob.glob(base_directory + '*.ka'), key=numerical_sort)
+    snap_names = sorted(glob.glob(base_directory + snap_name_prefix + '*.ka'), key=numerical_sort)
     snap_num = len(snap_names)
     if verbosity:
         print('Found ' + str(snap_num) + ' snapshots in directory ' + base_directory)
     if snap_num < 2:
-        warnings.warn('Only one snapshot was found.')
+        warnings.warn('Found less than two snapshots.')
     # Iterate over the files and calculate each's catalytic potential
     cat_pot_dist = []
     snap_num = len(snap_names)
@@ -71,13 +71,15 @@ if __name__ == '__main__':
                         help='The name of the file where the list of catalytic potentials should be saved; one value'
                              'per line, in the same order as the snapshots. If not specified, the list will be printed'
                              'to the console.')
+    parser.add_argument('-p', '--snapshot_prefix', type=str, required=True,
+                        help='The prefix by which the snapshots are named; e.g. <snap_4.ka> would have <snap_>.')
 
     args = parser.parse_args()
 
     enzyme_agent = KappaAgent(args.enzyme_name)
     substrate_agent = KappaAgent(args.substrate_name)
 
-    q = get_potential_of_folder(args.directory, enzyme_agent, substrate_agent, args.verbose)
+    q = get_potential_of_folder(args.directory, enzyme_agent, substrate_agent, args.verbose, args.snapshot_prefix)
 
     if args.output_file:
         with open(args.output_file, 'w') as out_file:
