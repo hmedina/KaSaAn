@@ -4,24 +4,30 @@ from KaSaAn import KappaSnapshot
 import glob
 import csv
 import argparse
+import warnings
 
 
 def snapshot_analyzer(base_directory: str, snap_prefix: str, verbosity: bool):
-    # Get the file names of snapshots in specified directory that fit the pattern [prefix]snap[number].ka
-    snap_names = glob.glob(base_directory + snap_prefix + 'snap*.ka')
+    # Get the file names of snapshots in specified directory that fit the pattern [prefix][number].ka
+    snap_names = glob.glob(base_directory + snap_prefix + '*.ka')
     snap_num = len(snap_names)
     if verbosity:
         print("Found " + str(snap_num) + " snapshots in directory " + base_directory + ' with prefix <' + snap_prefix + '> .')
-    assert snap_num >= 2, "Problem: less than 2 snapshots were found."
+    if snap_num < 2:
+        warnings.warn('Found less than 2 snapshots.')
 
     # For each snapshot, get the size distribution & update the results dictionary {size: abundance}
-    # Also get the number of species in that snapshot and save it to another dictionary {snapshot name: species number}
+    # Also get the number of complexes in that snapshot and save it to another dictionary {snapshot name: number of complexes}
     cum_dist = {}
-    species_num = {}
+    total_complexes = {}
     lc_size = {}
-    for snap_name in snap_names:
+    for snap_index in range(snap_num):
+        snap_name = snap_names[snap_index]
+        if verbosity:
+            print('Now parsing file <{}>, {} of {}, {}%'.format(
+                snap_name, snap_index, snap_num, snap_index/snap_num))
         current_snapshot = KappaSnapshot(snap_name)
-        species_num[snap_name] = sum(current_snapshot.get_all_abundances())
+        total_complexes[snap_name] = sum(current_snapshot.get_all_abundances())
         lc_size[snap_name] = current_snapshot.get_largest_complexes()[0].get_size_of_complex()
         size_dist = current_snapshot.get_size_distribution()
         for key in size_dist.keys():
@@ -52,15 +58,15 @@ def snapshot_analyzer(base_directory: str, snap_prefix: str, verbosity: bool):
     if verbosity:
         print('Mean distribution written to file: ' + mean_dist_file_name)
 
-    # Save the number of species in each snapshot to a file
-    num_species_file_name = base_directory + snap_prefix + 'species_number.csv'
+    # Save the number of complexes in each snapshot to a file
+    num_species_file_name = base_directory + snap_prefix + 'total_complexes.csv'
     with open(num_species_file_name, 'w') as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(['Snapshot Number', 'Species In Snapshot'])
-        for key, value in species_num.items():
+        writer.writerow(['Snapshot Name', 'Number of complexes'])
+        for key, value in total_complexes.items():
             writer.writerow([key, value])
     if verbosity:
-        print('Number of species distribution written to file: ' + num_species_file_name)
+        print('Distribution of number of complexes written to file: ' + num_species_file_name)
 
 
     # Save the largest-complex statistics to file
@@ -83,8 +89,8 @@ if __name__ == '__main__':
                     ' directory as the snapshots are. They will be prefixed accordingly, e.g. '
                     ' [prefix]distribution_cumulative.csv')
     parser.add_argument('-p', '--prefix', type=str, default='',
-                        help='Prefix identifying snapshots to analyze, precedes the string "snap"; e.g. "foo_" is the'
-                             ' prefix for "foo_snap_76.ka".')
+                        help='Prefix identifying snapshots to analyze; e.g. "foo_snap_" is the prefix for'
+                             '"foo_snap_76.ka". Files must end with [number].ka')
     parser.add_argument('-d', '--working_directory', type=str, default='./',
                         help='The directory where snapshots are held, and where distribution files will be saved to.')
     parser.add_argument('-v', '--verbosity', action='store_true',
