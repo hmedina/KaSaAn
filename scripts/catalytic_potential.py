@@ -56,7 +56,13 @@ def get_potential_of_folder(base_directory: str, enzyme: KappaAgent, substrate: 
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='')
+    parser = argparse.ArgumentParser(description='Out of a series of snapshots from a simulation, obtain the catalytic'
+                                                 'potential of each snapshot, i.e. each state. Each molecular species'
+                                                 'has a catalytic potential, defines as the product of the number of '
+                                                 'bound enzyme agents, times the number of bound substrate agents,'
+                                                 'times the abundance of that species. The catalytic potential of a'
+                                                 'state is the sum of the catalytic potentials over all the constituent'
+                                                 'species.')
     parser.add_argument('-d', '--directory', type=str, default='./',
                         help='The directory containing the snapshots to be analyzed.')
     parser.add_argument('-e', '--enzyme_name', type=str, required=True,
