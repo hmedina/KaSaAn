@@ -1,4 +1,4 @@
-#! /usr/local/bin/python3
+#!/usr/bin/env python3
 
 from .KappaSnapshot import KappaSnapshot
 from .KappaComplex import KappaComplex
