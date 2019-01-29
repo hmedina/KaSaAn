@@ -275,10 +275,18 @@ $ query -t t.json -q my_query.txt --native-snapshots --skip-init-events
 ```
 Then one can produce a movie of the snapshots with:
 ```
-$ ./visualization/tracde_movie_maker.py -v -d dir_with_snaps -m mass -o movie.gif
+$ ./visualization/trace_movie_maker.py -v -d dir_with_snaps -m mass -o movie.gif
 ```
 
 ![Visualization of a trace, using mass](./models/trace_viz/movie.gif)
+
+In this animation, we can see the prozone effect. Monomers of type B are being pumped into the system at a constant
+rate, with the total amount of agents A and C constant at 100 units each. In early times, the mixture is dominated by
+the monomeric forms of A and C. As B starts to accumulate, dimers of AB and BC start appearing, with occasional trimers
+of ABC. At a point around T=150s, the trimer is the dominant species (in mass). Eventually, however the system is
+dominated by monomers of B, around T=250. At later stages, the trimeric ABC is rare compared to the dimers AB and BC,
+and the B monomer. Note this visualization is done through the `mass`; it serves to inform "where are the monomers".
+The alternative visualizations of `size` or `count` are also informative.
 
 ## Requirements
 General:
