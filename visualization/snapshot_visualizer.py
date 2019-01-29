@@ -12,6 +12,7 @@ from KaSaAn import KappaSnapshot, KappaAgent
 from operator import itemgetter
 import argparse
 from typing import List, Set, Dict, Tuple, Any
+import warnings
 
 
 
@@ -22,6 +23,8 @@ def process_snapshot(snapshot: KappaSnapshot) -> List[dict]:
         size = kappa_complex.get_size_of_complex()
         composition = kappa_complex.get_complex_composition()
         data.append({'size': size, 'count': abundance, 'mass': size * abundance, 'composition': composition})
+    if len(data) < 1:
+        warnings.warn('Empty snapshot <<' + str(snapshot) + '>>')
     return data
 
 
@@ -49,7 +52,8 @@ def colorize_agents(agent_set: Set[KappaAgent]) -> Dict[KappaAgent, Any]:
 
 
 def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent, Any], vis_mode: str, x_res: float, y_res: float) -> Tuple[List[matplotlib.patches.Rectangle], int]:
-    assert vis_mode == 'size' or vis_mode == 'count' or vis_mode == 'mass', 'Problem: unknown mode <<' + vis_mode + '>>'
+    if vis_mode != 'size' and vis_mode != 'count' and vis_mode != 'mass':
+        warnings.warn('Unknown mode <<' + vis_mode + '>>')
     species_num = len(data)
 
     # First plot the species & their agent composition
@@ -151,7 +155,8 @@ def render_snapshot(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = No
     # Process the snapshot
     my_snapshot = KappaSnapshot(snapshot_file)
     my_data = process_snapshot(my_snapshot)
-    assert len(my_data) > 0, 'Problem: empty snapshot <<' + snapshot_file + '>>'
+    if len(my_data) < 1:
+        warnings.warn('Empty snapshot <<' + snapshot_file + '>>')
 
     # Determine coloring scheme, unless provided
     if color_scheme:

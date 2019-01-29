@@ -271,20 +271,23 @@ can invoke the TQL engine to read the trace, the query, and save the snapshots a
 (i.e. ASCII representation, not JSON), saved as `snapshot.0.ka`, `snapshot.1.ka`, etc. (the default naming used by the
  TQL).
 ```
-$ query -t t.json -q my_query.txt --native-snapshots
+$ query -t t.json -q my_query.txt --native-snapshots --skip-init-events
 ```
 Then one can produce a movie of the snapshots with:
 ```
-$ ./visualization/snapshot_visualizer.py -d dir_with_snaps -m mass -o movie.mp4
+$ ./visualization/tracde_movie_maker.py -v -d dir_with_snaps -m mass -o movie.gif
 ```
 
+![Visualization of a trace, using mass](./models/trace_viz/movie.gif)
 
 ## Requirements
 General:
 * Python 3.7 or above
-* For visualization of rules, snapshots, traces: 
+* Python packages for visualization of rules, snapshots, traces: 
   * matplotlib 3.0.2 (under Windows, an X server, like Xming)
   * squarify 0.3.0
+* ffmpeg for writing mp4 movies of traces
+* imagemagick for writing gifs of traces
 
 On the Kappa Side:
 * Executing models, producing snapshots, producing traces:

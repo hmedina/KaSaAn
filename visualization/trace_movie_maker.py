@@ -147,9 +147,14 @@ if __name__ == '__main__':
 
     # Save to file, or show the figure
     if args.output_file:
+        # Use the ImageMagick writer if a gif was requested; else use the default mpeg writer
+        if args.output_file[-4:] == '.gif':
+            my_writer = animation.ImageMagickFileWriter()
+        else:
+            my_writer = 'ffmpeg'
         if args.verbose:
-            print('Now saving animation to file.')
-        my_animation.save(args.output_file)
+            print('Now saving animation to file <<' + args.output_file + '>>')
+        my_animation.save(filename=args.output_file, writer=my_writer)
     else:
         plt.show()
 
