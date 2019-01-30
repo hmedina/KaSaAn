@@ -291,17 +291,20 @@ The alternative visualizations of `size` or `count` are also informative.
 ## Requirements
 General:
 * Python 3.7 or above
-* Python packages for visualization of rules, snapshots, traces: 
-  * matplotlib 3.0.2 (under Windows, an X server, like Xming)
-  * squarify 0.3.0
+
+For visualization scripts:
+* Python packages: 
+  * matplotlib
+  * squarify
 * ffmpeg for writing mp4 movies of traces
 * imagemagick for writing gifs of traces
+* an X server, like Xming under Windows / Windows Subsystem for Linux
 
 On the Kappa Side:
-* Executing models, producing snapshots, producing traces:
-Kappa Simulator [KaSim](https://github.com/Kappa-Dev/KaSim), v4 or above
+* Kappa Simulator [KaSim](https://github.com/Kappa-Dev/KaSim) v4 or above.
+For executing models, producing snapshots, producing traces, etc.
 
-* Performing trace operations:
-Trace Query Language engine [TQL](https://github.com/jonathan-laurent/Kappa-TQL)
+* Trace Query Language engine [TQL](https://github.com/jonathan-laurent/Kappa-TQL).
+For querying a trace to, for example, obtain periodic snapshots.
 
 
