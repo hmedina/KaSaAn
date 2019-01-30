@@ -293,7 +293,8 @@ General:
 * Python 3.7 or above
 
 For visualization scripts:
-* Python packages: 
+* Python packages:
+  * numpy
   * matplotlib
   * squarify
 * ffmpeg for writing mp4 movies of traces
