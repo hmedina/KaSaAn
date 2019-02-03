@@ -1,21 +1,14 @@
 #!/usr/bin/env python3
 
 import glob
-import re
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.collections import PatchCollection
 from visualization.snapshot_visualizer import process_snapshot, snapshot_composition_simple, colorize_agents, snapshot_legend_simple
-from KaSaAn import KappaSnapshot, KappaAgent
+from core import KappaSnapshot, KappaAgent
+from scripts import numerical_sort
 import argparse
 from typing import List, Tuple, Set
-
-
-# Helper function to sort file names
-def numerical_sort(value):
-    parts = re.compile(r'(\d+)').split(value)
-    parts[1::2] = map(int, parts[1::2])
-    return parts
 
 
 # Get & sort the file names

@@ -8,7 +8,7 @@ import matplotlib as mpl
 import colorsys
 import numpy
 from matplotlib.collections import PatchCollection
-from KaSaAn import KappaSnapshot, KappaAgent
+from core import KappaSnapshot, KappaAgent
 from operator import itemgetter
 import argparse
 from typing import List, Set, Dict, Tuple, Any

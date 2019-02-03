@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from KaSaAn import KappaSnapshot
+from ..core import KappaSnapshot
 import glob
 import csv
 import argparse

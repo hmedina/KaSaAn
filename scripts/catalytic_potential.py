@@ -1,24 +1,21 @@
 #!/usr/bin/env python3
 
-from KaSaAn import KappaSnapshot, KappaAgent
+from ..core import KappaSnapshot, KappaAgent
+from ..scripts import numerical_sort
 import warnings
 import glob
 import argparse
-import re
 from typing import List
 
 
-# Helper function to sort file names
-def numerical_sort(value):
-    parts = re.compile(r'(\d+)').split(value)
-    parts[1::2] = map(int, parts[1::2])
-    return parts
-
-
-def get_potential_of_snapshot(file_name: str, enzyme: KappaAgent, substrate: KappaAgent) -> int:
+def get_potential_of_snapshot(file_name: str, enzyme, substrate) -> int:
     """"The catalytic potential of a snapshot is a number. Each molecular species will contain a (possibly zero)
     quantity of enzymes, and another of substrates. Their product is the catalytic potential of the species. The sum
     over the species in a snapshot yields the catalytic potential of the snapshot."""
+    if not type(enzyme) is KappaAgent:
+        enzyme = KappaAgent(enzyme)
+    if not type(substrate) is KappaAgent:
+        substrate = KappaAgent(substrate)
     snap = KappaSnapshot(file_name)
     # Sanity check: both requested agent names are present in the snapshot
     if not enzyme in snap.get_agent_types_present():
@@ -82,10 +79,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    enzyme_agent = KappaAgent(args.enzyme_name)
-    substrate_agent = KappaAgent(args.substrate_name)
-
-    q = get_potential_of_folder(args.directory, enzyme_agent, substrate_agent, args.verbose, args.snapshot_prefix)
+    q = get_potential_of_folder(args.directory, args.enzyme_name, args.substrate_name, args.verbose, args.snapshot_prefix)
 
     if args.output_file:
         with open(args.output_file, 'w') as out_file:
