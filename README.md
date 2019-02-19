@@ -143,6 +143,20 @@ True
 False
 ```
 
+### KappaToken
+This class represents Kappa tokens.
+
+Currently implemented methods:
+  * `get_token_name()`
+    * Returns a string with the name of the token
+  * `get_token_operation()`
+    * Returns a string with the operation performed on the token (used in rule representation, not in snapshots)
+```
+>>> tok = KappaToken('ATP')
+>>> tok.get_token_name()
+'ATP'
+```
+
 
 ### KappaPort
 This class represents "vanilla" Kappa sites, i.e. sites capable of having internal states and bond states, unlike

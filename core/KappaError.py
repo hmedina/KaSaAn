@@ -37,3 +37,6 @@ class SnapshotAgentParseError(SnapshotParseError):
 
 class SnapshotTokenParseError(SnapshotParseError):
     """Exception raised when failing to parse a line in a snapshot that should contain tokens."""
+
+class RuleParseError(KappaError):
+    """Exception raised when failing to parse a rule."""

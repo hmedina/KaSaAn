@@ -110,26 +110,32 @@ class KappaAgent(KappaEntity):
         """Return the operation being performed on this agent: creation, deletion, or empty string."""
         return self._abundance_change
 
+
 class KappaToken(KappaEntity):
     """Class for representing Kappa tokens. I.e. <<X>>, or <<ATP>>."""
 
     def __init__(self, expression: str):
         self._raw_expression: str
         self._token_name: str
+        self._token_operation: str
         self._kappa_expression: str
 
         # Check if expression has valid structure
         token_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-        token_pat = '^' + token_name_pat + '$'
+        token_oper_pat = '(.+\s)?'
+        token_pat = '^' + token_oper_pat + token_name_pat + '$'
         matches = re.match(token_pat, expression.strip())
         if not matches:
             raise TokenParseError('Invalid token declaration <' + expression + '>')
         self._raw_expression = expression
 
         # assign to variables
-        self._token_name = matches.group(1)
+        self._token_operation = matches.group(1).strip() if matches.group(1) else ''
+        self._token_name = matches.group(2).strip()
         self._kappa_expression = self._raw_expression.strip()
 
     def get_token_name(self) -> str:
         return self._token_name
 
+    def get_token_operation(self) -> str:
+        return self._token_operation
