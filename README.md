@@ -171,6 +171,22 @@ Currently implemented methods:
   * `get_port_bond_state()`
     * Returns a string with the bond identifier of the port, a period if unbound, or a hash sign (i.e. wildcard)
     if undeclared.
+  * `get_port_current_bond()`
+    * Returns a string with the bond state or identifier required for the rule to fire, or the state or identifier used
+    in the non-rule expression.
+  * `get_port_future_bond()`
+    * Returns a string with the bond state or identifier after rule application, with an empty string for non-rule 
+    patterns or usages.
+  * `get_port_current_state()`
+    * Returns a string with the internal state required for the rule to fire, or the state or identifier
+    used in the non-rule expression.
+  * `get_port_future_state()`
+    * Returns a string with the internal state after rule application, with an empty string for non-rule 
+    patterns or usages.
+  * `has_bond_operation()`
+    * Returns true if the port has an operation being performed on its bond state.
+  * `has_state_operation()`
+    * Returns true if the port has an operation being performed on its internal state. 
     
 ```
 >>> fitz = baz.get_agent_signature()[0]

@@ -3,6 +3,7 @@ import re
 from .KappaEntity import KappaEntity
 from .KappaError import PortParseError, CounterParseError
 from abc import abstractmethod
+import warnings
 
 
 class KappaSite(KappaEntity):
@@ -98,7 +99,11 @@ class KappaPort(KappaSite):
             item = KappaPort(item)
         # check if item is in self, Kappa-wise
         contains = False
-        if not self._int_operand and not item._int_operand: # if neither has an operation, proceed to check; else false
+        if self._int_operand or self._bond_operand:                 # if self has an operation, issue warning
+            warnings.warn('Undefined inclusion test: <' + str(self) + '> has an operation in it.')
+        elif item._int_operand or item._bond_operand:               # if item has an operation, issue warning
+            warnings.warn('Undefined inclusion test: <' + str(item) + '> has an operation in it.')
+        else:
             if self._port_name == item._port_name:
                 if item._present_int_state == '#':
                     if item._present_bond_state == '#':
@@ -122,17 +127,39 @@ class KappaPort(KappaSite):
 
     def get_port_int_state(self) -> str:
         """Returns a string with the port's internal state."""
-        return self._present_int_state
+        return self._present_int_state + self._int_operand + self._future_int_state
 
     def get_port_bond_state(self) -> str:
         """Returns a string with the port's bond state."""
+        return self._present_bond_state + self._bond_operand + self._future_bond_state
+
+    def get_port_current_bond(self) -> str:
+        """Returns a string with the bond state or identifier required for the rule to fire, or the state or identifier
+        used in the non-rule expression."""
         return self._present_bond_state
 
-    #TODO:
-    # get_port_past_bond
-    # get_port_future_bond
-    # get_port_past_state
-    # get_port_future_state
+    def get_port_future_bond(self) -> str:
+        """Returns a string with the bond state or identifier after rule application, with an empty string for non-rule
+        patterns or usages."""
+        return self._future_bond_state
+
+    def get_port_current_state(self) -> str:
+        """Returns a string with the internal state required for the rule to fire, or the state or identifier
+        used in the non-rule expression."""
+        return self._present_int_state
+
+    def get_port_future_state(self) -> str:
+        """Returns a string with the internal state after rule application, with an empty string for non-rule
+        patterns or usages."""
+        return self._future_int_state
+
+    def has_bond_operation(self) -> bool:
+        """Returns true if the port has an operation being performed on its bond state."""
+        return True if self._bond_operand else False
+
+    def has_state_operation(self) -> bool:
+        """Returns true if the port has an operation being performed on its internal state."""
+        return True if self._int_operand else False
 
 
 class KappaCounter(KappaSite):
