@@ -15,11 +15,13 @@ class KappaAgent(KappaEntity):
         self._agent_name: str
         self._agent_signature: List[KappaSite]
         self._kappa_expression: str
+        self._abundance_change: str
 
         # Check if kappa expression's name & overall structure is valid
         agent_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
         agent_sign_pat = '\(([^()]*)\)'
-        agent_pat = '^' + agent_name_pat + agent_sign_pat + '$'
+        agent_oper_pat = '(\+|-)?'
+        agent_pat = '^' + agent_name_pat + agent_sign_pat + agent_oper_pat + '$'
         matches = re.match(agent_pat, expression.strip())
         if not matches:
             matches = re.match(agent_pat, expression.strip() + '()')
@@ -27,8 +29,9 @@ class KappaAgent(KappaEntity):
             raise AgentParseError('Invalid agent declaration <' + expression + '>')
         self._raw_expression = expression
 
-        # assign to variables
+        # process & assign to variables
         self._agent_name = matches.group(1)
+        # process agent signature
         ag_signature = matches.group(2)
         if ag_signature == '':
             site_list = []
@@ -46,9 +49,13 @@ class KappaAgent(KappaEntity):
             except CounterParseError:
                 raise ValueError('Could not parse <' + entry + '> as a Port nor as a Counter')
             self._agent_signature.append(site)
+        # process abundance operator, if present
+        self._abundance_change = matches.group(3) if matches.group(3) else ''
 
         # canonicalize the kappa expression
-        self._kappa_expression = self._agent_name + '(' + ' '.join([str(site) for site in self._agent_signature]) + ')'
+        self._kappa_expression = self._agent_name +\
+                                 '(' + ' '.join([str(site) for site in self._agent_signature]) + ')' +\
+                                 self._abundance_change
 
     def __contains__(self, item) -> bool:
         # type parsing: try to make it an Agent, if that fails try a Site, if that tails, raise exception
@@ -99,6 +106,9 @@ class KappaAgent(KappaEntity):
         agent_bonds = [b for b in agent_bonds if b != '.' and b != '_' and b != '#']
         return agent_bonds
 
+    def get_abundance_change_operation(self) -> str:
+        """Return the operation being performed on this agent: creation, deletion, or empty string."""
+        return self._abundance_change
 
 class KappaToken(KappaEntity):
     """Class for representing Kappa tokens. I.e. <<X>>, or <<ATP>>."""
