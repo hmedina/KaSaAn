@@ -208,18 +208,26 @@ can be used as a variable in rule rates (e.g. level of phosphorylation of a prot
 Currently implemented methods:
   * `get_counter_name()`
     * Returns a string with the name of the counter.
-  * `get_counter_value()`
-    * Returns an integer with the value of the counter.
+  * `get_counter_state()`
+    * Returns a string with the counter's value expression, including the delta if specified.
+  * `get_counter_tested_value()`
+    * Returns a string with the value being tested for the rule's application.
+  * `get_counter_delta()`
+    * Returns a string with the delta being applied to the counter's value.
+  * `has_operation()`
+    * Returns true if this counter has an operation being performed on it.
     
 ```
 >>> from KaSaAn import KappaCounter
->>> botz = KappaCounter('g{=5}')
->>> print(botz)
-g{=5}
->>> botz.get_counter_value() > 4
+>>> botz = KappaCounter('gorg{>=55/+=39}')
+>>> botz.get_counter_name()
+'gorg'
+>>> botz.get_counter_state()
+'>=55/+=39'
+>>> botz.has_operation()
 True
->>> botz.get_counter_value() > 6
-False
+>>> botz.get_counter_delta()
+'+=39'
 ```
 
 

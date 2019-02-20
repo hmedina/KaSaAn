@@ -28,7 +28,7 @@ class KappaPort(KappaSite):
         self._bond_operation: str
 
         self._raw_expression = expression
-
+        expression = re.sub('\s+|\t+|\n+', '', expression)  # Remove line breaks, tabs, multi-spaces
         # define patterns that make up a site
         port_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
         int_state_pat = '(?:{(\w+|#)(/)?(\w+)?})?'
@@ -168,14 +168,16 @@ class KappaCounter(KappaSite):
     def __init__(self, expression: str):
         self._raw_expression: str
         self._counter_name: str
-        self._counter_value: int
+        self._current_state: str
+        self._counter_operand: str
+        self._counter_delta: str
         self._kappa_expression: str
 
         self._raw_expression = expression
-
+        expression = re.sub('\s+|\t+|\n+', '', expression)  # Remove line breaks, tabs, multi-spaces
         # define patterns that make up a site
         site_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-        cnt_state_pat = '{=(\d+)}'
+        cnt_state_pat = '{(>?=\d+)(?:(/)([+-]=\d+))?}'
         counter_pat = '^' + site_name_pat + cnt_state_pat + '$'
         # parse the counter
         g = re.match(counter_pat, expression.strip())
@@ -183,15 +185,29 @@ class KappaCounter(KappaSite):
             raise CounterParseError('Invalid counter declaration <' + expression + '>')
         # assign capturing groups to variables
         self._counter_name = g.group(1)
-        self._counter_value = int(g.group(2))
+        self._current_state = g.group(2)
+        self._counter_operand = g.group(3) if g.group(3) else ''
+        self._counter_delta = g.group(4) if g.group(4) else ''
         # canonicalize the kappa expression
-        self._kappa_expression = self._counter_name + '{=' + str(self._counter_value) + '}'
+        self._kappa_expression = self._counter_name +\
+                                 '{' + self._current_state + self._counter_operand + self._counter_delta + '}'
 
     def get_counter_name(self) -> str:
         """Returns a string with the counter's name."""
         return self._counter_name
 
-    def get_counter_value(self) -> int:
-        """Returns an integer with the counter's value."""
-        return self._counter_value
+    def get_counter_state(self) -> str:
+        """Returns a string with the counter's value expression, including the delta if specified."""
+        return self._current_state + self._counter_operand + self._counter_delta
 
+    def get_counter_tested_value(self) -> str:
+        """Returns a string with the value being tested for the rule's application."""
+        return self._current_state
+
+    def get_counter_delta(self) -> str:
+        """Returns a string with the delta being applied to the counter's value."""
+        return self._counter_delta
+
+    def has_operation(self) -> bool:
+        """Returns true if this counter has an operation being performed on it."""
+        return True if self._counter_operand else False
