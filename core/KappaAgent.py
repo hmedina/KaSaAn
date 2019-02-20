@@ -17,6 +17,7 @@ class KappaAgent(KappaEntity):
         self._kappa_expression: str
         self._abundance_change: str
 
+        expression = re.sub('\s+|\t+|\n+', '', expression)  # Remove line breaks, tabs, multi-spaces
         # Check if kappa expression's name & overall structure is valid
         agent_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
         agent_sign_pat = '\(([^()]*)\)'
