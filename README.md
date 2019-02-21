@@ -231,6 +231,35 @@ True
 ```
 
 
+### KappaRule
+This class is used to represent rules, specifically those written in Kappa4 Edit notation. It is used mostly for
+visualization purposes.
+
+Currently implemented methods:
+  * `get_name()`
+    * Returns a string with the name of this rule, if named.
+  * `get_rate_primary()`
+    * Returns a string with the primary (binary in case of ambiguous molecularity) rate for this rule.
+  * `get_rate_unary()`
+    * Returns a string with the unary rate for this rule, if specified.
+  * `get_agents()`
+    * Returns a list with the KappaAgents in this rule, if any.
+  * `get_tokens()`
+    * Returns a list with the KappaTokens in this rule, if any.
+
+```
+>>> from KaSaAn import KappaRule
+>>> foo = KappaRule("'some name' counterfitz(kp{un/ph}[./1]), /*comment with Agent(nasty[.])*/ counterfitz(c1{=3/-=2} kp[./1]) | 55 bob, -55 bob @ 'a' * 'b' / 'c' {'a' / 'b' * 'c'} //comment")
+>>> foo
+KappaRule("'some name' counterfitz(c1{=3/-=2} kp[./1]{#}), counterfitz(kp[./1]{un/ph}) | 55 bob, -55 bob @ 'a' * 'b' / 'c' { 'a' / 'b' * 'c' } ")
+>>> foo.get_name()
+"'some name'"
+>>> foo.get_agents()[0].get_agent_signature()[0].has_operation()
+True
+>>> foo.get_agents()[0].get_agent_signature()[0].get_counter_state()
+'=3/-=2'
+```
+
 ## Visualization
 Scripts are provided for visualization of different Kappa entities: snapshots, traces, and rules.
 
