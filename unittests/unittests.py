@@ -2,6 +2,8 @@
 
 import unittest
 from KaSaAn import KappaPort, KappaCounter, KappaAgent, KappaToken, KappaComplex, KappaSnapshot, KappaRule
+#from ..core import KappaPort, KappaCounter, KappaAgent, KappaToken, KappaComplex, KappaSnapshot, KappaRule
+# above line is just a hack to get PyCharm to load properly as it can't seem to read the PythonPath correctly
 
 
 class TestKappaParse(unittest.TestCase):
@@ -9,9 +11,9 @@ class TestKappaParse(unittest.TestCase):
 
     def test_port(self):
         # string representation
-        self.assertEqual(str(KappaPort('~a')), '~a[#]{#}')          # name passed
-        self.assertEqual(str(KappaPort('~a[#]{#}')), '~a[#]{#}')    # signature passed
-        self.assertEqual(str(KappaPort('~a{#}[#]')), '~a[#]{#}')    # ordering of signature passed
+        self.assertEqual(str(KappaPort('~a')), '~a[#]{#}')
+        self.assertEqual(str(KappaPort('~a[#]{#}')), '~a[#]{#}')
+        self.assertEqual(str(KappaPort('~a{#}[#]')), '~a[#]{#}')
         # parsing port's name
         self.assertEqual(KappaPort('bob').get_port_name(), 'bob')
         self.assertEqual(KappaPort('bob[.]').get_port_name(), 'bob')
@@ -38,7 +40,23 @@ class TestKappaParse(unittest.TestCase):
         self.assertFalse(KappaPort('_b[1]{ph}').has_bond_operation())
 
 
-#    def test_counter(self):
+    def test_counter(self):
+        # string representation
+        self.assertEqual(str(KappaCounter('c{ = 5}')), 'c{=5}')
+        self.assertEqual(str(KappaCounter('~c{ = 5 / += 3}')), '~c{=5/+=3}')
+        self.assertEqual(str(KappaCounter('_1{ = 5 / -= 3}')), '_1{=5/-=3}')
+        # snapshot-like usage
+        self.assertEqual(KappaCounter('c1{=11}').get_counter_name(),'c1')
+        self.assertEqual(KappaCounter('c1{=11}').get_counter_state(), '=11')
+        self.assertEqual(KappaCounter('c1{>=11}').get_counter_state(), '>=11')
+        self.assertFalse(KappaCounter('c1{>=11}').has_operation())
+        # rule usage (edit notation)
+        self.assertEqual(KappaCounter('c1{=11/+=99}').get_counter_state(), '=11/+=99')
+        self.assertEqual(KappaCounter('c1{=11/+=99}').get_counter_tested_value(), '=11')
+        self.assertEqual(KappaCounter('c1{>=11/+=99}').get_counter_tested_value(), '>=11')
+        self.assertEqual(KappaCounter('c1{>=11/+=99}').get_counter_delta(), '+=99')
+        self.assertTrue(KappaCounter('c1{>=11/+=99}').has_operation())
+
 
 #    def test_agent(self):
 
