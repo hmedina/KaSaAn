@@ -15,6 +15,10 @@ class PortParseError(KappaError):
     """Exception raised when failing to parse a port site."""
 
 
+class PortInclusionError(KappaError):
+    """Exception raised when testing for inclusion of a port in a port."""
+
+
 class AgentParseError(KappaError):
     """Exception raised when failing to parse an agent."""
 
@@ -37,6 +41,7 @@ class SnapshotAgentParseError(SnapshotParseError):
 
 class SnapshotTokenParseError(SnapshotParseError):
     """Exception raised when failing to parse a line in a snapshot that should contain tokens."""
+
 
 class RuleParseError(KappaError):
     """Exception raised when failing to parse a rule."""

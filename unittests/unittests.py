@@ -38,6 +38,19 @@ class TestKappaParse(unittest.TestCase):
         self.assertEqual(KappaPort('_b[./1]{ph}').get_port_future_bond(), '1')
         self.assertTrue(KappaPort('_b[./1]{ph}').has_bond_operation())
         self.assertFalse(KappaPort('_b[1]{ph}').has_bond_operation())
+        # inclusion testing
+        self.assertTrue('a[1]' in KappaPort('a[1]{s}'))
+        self.assertTrue('a[_]' in KappaPort('a[1]{s}'))
+        self.assertTrue('a[.]' in KappaPort('a[.]{s}'))
+        self.assertTrue('a{s}' in KappaPort('a[1]{s}'))
+        self.assertTrue('a{#}' in KappaPort('a[1]{s}'))
+        self.assertTrue('a{s}' in KappaPort('a[1]{#}'))
+        self.assertTrue('a[1]' in KappaPort('a[_]{#}'))
+        self.assertTrue('a[1]' in KappaPort('a[#]{#}'))
+        self.assertTrue('a[1]' in KappaPort('a[1]'))
+        self.assertFalse('a[.]' in KappaPort('a[1]{s}'))
+        self.assertFalse('a[_]' in KappaPort('a[.]{s}'))
+        self.assertFalse('a{u}' in KappaPort('a[1]{s}'))
 
 
     def test_counter(self):

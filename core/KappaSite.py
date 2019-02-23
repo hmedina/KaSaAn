@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 import re
 from .KappaEntity import KappaEntity
-from .KappaError import PortParseError, CounterParseError
+from .KappaError import PortParseError, CounterParseError, PortInclusionError
 from abc import abstractmethod
-import warnings
 
 
 class KappaSite(KappaEntity):
@@ -100,13 +99,28 @@ class KappaPort(KappaSite):
         # check if item is in self, Kappa-wise
         contains = False
         if self._int_operand or self._bond_operand:                 # if self has an operation, issue warning
-            warnings.warn('Undefined inclusion test: <' + str(self) + '> has an operation in it.')
+            raise PortInclusionError('Undefined inclusion test: <' + str(self) + '> has an operation in it.')
         elif item._int_operand or item._bond_operand:               # if item has an operation, issue warning
-            warnings.warn('Undefined inclusion test: <' + str(item) + '> has an operation in it.')
+            raise PortInclusionError('Undefined inclusion test: <' + str(item) + '> has an operation in it.')
         else:
             if self._port_name == item._port_name:
                 if item._present_int_state == '#':
                     if item._present_bond_state == '#':
+                        contains = True     # [#]{#} in [?]{?}
+                    elif self._present_bond_state == '#':
+                        contains = True     # [?]{#} in [#]{?}
+                    elif (self._present_bond_state == '_') & (item._present_bond_state != '.'):
+                        contains = True     # [.]{#} in! [_]{?}
+                    elif (item._present_bond_state == '_') & (self._present_bond_state != '.'):
+                        contains = True     # [_]{#} in! [.]{?}
+                    elif item._present_bond_state == self._present_bond_state:
+                        contains = True     # [x]{#} in [x]{?}
+                elif self._present_int_state == '#':
+                    if item._present_bond_state == '#':
+                        contains = True
+                    elif self._present_bond_state == '#':
+                        contains = True
+                    elif (self._present_bond_state == '_') & (item._present_bond_state != '.'):
                         contains = True
                     elif (item._present_bond_state == '_') & (self._present_bond_state != '.'):
                         contains = True
@@ -114,6 +128,10 @@ class KappaPort(KappaSite):
                         contains = True
                 elif item._present_int_state == self._present_int_state:
                     if item._present_bond_state == '#':
+                        contains = True
+                    elif self._present_bond_state == '#':
+                        contains = True
+                    elif (self._present_bond_state == '_') & (item._present_bond_state != '.'):
                         contains = True
                     elif (item._present_bond_state == '_') & (self._present_bond_state != '.'):
                         contains = True
