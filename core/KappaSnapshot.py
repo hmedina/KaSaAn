@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
 import re
+import os
+import warnings
+from typing import List, Set, ItemsView, Dict
+
 from .KappaEntity import KappaEntity
 from .KappaComplex import KappaComplex
 from .KappaAgent import KappaAgent, KappaToken
-from typing import List, Set, ItemsView, Dict
 from .KappaError import SnapshotAgentParseError, SnapshotTokenParseError, SnapshotParseError
 
 
@@ -16,14 +19,14 @@ class KappaSnapshot(KappaEntity):
     def __init__(self, snapshot_file_name: str):
         self._file_name: str
         self._complexes: Dict[KappaComplex, int]
-        self._tokens: Dict[KappaToken, float]
+        self._tokens: Dict[str: KappaToken]
         self._raw_expression: str
         self._kappa_expression: str
         self._snapshot_event: int
         self._snapshot_uuid: str
         self._snapshot_time: float
 
-        self._file_name = snapshot_file_name
+        self._file_name = os.path.split(snapshot_file_name)[1]
         self._complexes = dict()
         self._tokens = dict()
         # read file into a single string
@@ -63,14 +66,13 @@ class KappaSnapshot(KappaEntity):
                     if not g:
                         raise SnapshotTokenParseError('Abundance & token name not found in <' + entry + '>')
                     # assign the token as a key to the dictionary
-                    tk_name = KappaToken(g.group(2))
-                    tk_value = float(g.group(1))
-                    self._tokens[tk_name] = tk_value
+                    tk = KappaToken(g.group(0))
+                    self._tokens[tk.get_token_name()] = tk
             except SnapshotTokenParseError:
                 raise SnapshotParseError('Could not parse as either complex line nor token line <' + entry + '>')
         # canonicalize the kappa expression: tokens
-        self._kappa_expression = '\n'.join(['%init: ' + str(self._tokens[tk]) + ' ' + str(tk)
-                                            for tk in self._tokens.keys()])
+        self._kappa_expression = '\n'.join(['%init: ' + str(float(tk.get_token_operation())) + ' ' + tk.get_token_name()
+                                            for tk in self._tokens.values()])
         self._kappa_expression += '\n' if self._tokens else ''
         # canonicalize the kappa expression: complexes
         self._kappa_expression += '\n'.join(['%init: ' + str(self._complexes[cx]) + ' ' + str(cx)
@@ -183,25 +185,29 @@ class KappaSnapshot(KappaEntity):
                 size_dist[current_size] = complex_abundance
         return size_dist
 
-    def get_all_tokens(self) -> Dict[KappaToken, float]:
-        """Returns a dictionary where the key is an instance of KappaToken, and the value is the numeric value of the
-        token in this snapshot."""
-        return self._tokens
+    def get_all_tokens_and_values(self) -> Dict[str, float]:
+        """Returns a dictionary with the tokens present in the snapshot in the form of [name]:[value]."""
+        d = dict()
+        for item in self._tokens.values():
+            d[item.get_token_name()] = float(item.get_token_operation())
+        return d
 
     def get_value_of_token(self, query) -> float:
         """Returns the value of a token."""
         # make it a KappaToken, if it's not one already
-        if not type(query) is KappaAgent:
+        if not type(query) is KappaToken:
             q = KappaToken(query)
         else:
             q = query
-        # return value, if key is present
-        try:
-            value = self._tokens[q]
-        except KeyError as k:
-            raise ValueError('Token <' + query + '> not found in this snapshot.') from k
+        # return value, if token is present
+        if q.get_token_name() in self._tokens:
+            value = float(self._tokens[q].get_token_operation())
+        else:
+            warnings.warn('Token <' + str(query) + '> not found in this snapshot.')
+            value = None
         return value
 
-    def get_tokens_present(self) -> List[KappaToken]:
-        """Returns the tokens present in the snapshot."""
-        return [tk for tk in self._tokens.keys()]
+
+    def get_token_names(self) -> List[str]:
+        """Returns the token names present in the snapshot."""
+        return list(self._tokens.keys())

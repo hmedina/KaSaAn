@@ -66,11 +66,11 @@ Currently implemented methods:
     * Returns a list of the least abundant KappaComplexes.
   * `get_size_distribution()`
     * Returns a list of integers with the size distribution of complexes in the snapshot.
-  * `get_all_tokens()`
+  * `get_all_tokens_and_values()`
     * Returns a dictionary where the key is a KappaToken, and the value the numeric value of the token in this snapshot.
   * `get_value_of_token(query_token)`
     * Returns a float with the numeric value of `query_token`.
-  * `get_tokens_present()`
+  * `get_token_names()`
     * Returns a list of KappaTokens with the tokens present in the snapshot.
 
 ```
