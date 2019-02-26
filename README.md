@@ -244,6 +244,8 @@ Currently implemented methods:
     * Returns a string with the primary (binary in case of ambiguous molecularity) rate for this rule.
   * `get_rate_unary()`
     * Returns a string with the unary rate for this rule, if specified.
+  * `get_horizon()`
+    * Returns an integer with the molecular horizon specified, if any.
   * `get_agents()`
     * Returns a list with the KappaAgents in this rule, if any.
   * `get_tokens()`

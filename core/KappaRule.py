@@ -15,6 +15,7 @@ class KappaRule(KappaEntity):
         self._pattern: str
         self._rate_pri: str
         self._rate_uni: str
+        self._horizon: int
         self._agent_expression: str
         self._token_expression: str
         self._agents: List[KappaAgent]
@@ -29,10 +30,19 @@ class KappaRule(KappaEntity):
 
         # extract rule name, Kappa pattern, rates
         rule_components = re.match("('.+')?\s*(.+)\s*@\s*([^{]+)\s*(?:{([^}]+)})?", digested_rule)
-        self._name = rule_components.group(1).strip() if rule_components.group(1) else None
+        self._name = rule_components.group(1).strip() if rule_components.group(1) else ''
         self._pattern = rule_components.group(2).strip() if rule_components.group(2) else None
         self._rate_pri = rule_components.group(3).strip() if rule_components.group(3) else None
         self._rate_uni = rule_components.group(4).strip() if rule_components.group(4) else None
+        if self._rate_uni:
+            if ':' in self._rate_uni:
+                parts = self._rate_uni.split(':')
+                self._rate_uni = parts[0].strip()
+                self._horizon = int(parts[1].strip())
+            else:
+                self._horizon = None
+        else:
+            self._horizon = None
         if not self._pattern:
             raise RuleParseError('No rule expression found in <' + digested_rule + '>')
         if not self._rate_pri:
@@ -42,15 +52,21 @@ class KappaRule(KappaEntity):
         agents_and_tokens = re.match('([^|]+)?\s*\|?\s*(.+)?', self._pattern)
         self._agent_expression = agents_and_tokens.group(1).strip() if agents_and_tokens.group(1) else None
         self._token_expression = agents_and_tokens.group(2).strip() if agents_and_tokens.group(2) else None
-        self._agents = KappaComplex(self._agent_expression).get_all_agents()
-        self._tokens = [KappaToken(item) for item in self._token_expression.split(',')]
+        self._agents = KappaComplex(self._agent_expression).get_all_agents() if self._agent_expression else None
+        self._tokens = [KappaToken(item) for item in self._token_expression.split(',')] if self._token_expression else None
 
         # canonicalize the kappa expression
         c_name = self._name + ' ' if self._name else ''
         c_agnt = ', '.join([str(ag) for ag in self._agents])
         c_tokn = ' | ' + ', '.join([str(tk) for tk in self._tokens]) if self._tokens else ''
         c_rt_p = ' @ ' + self._rate_pri
-        c_rt_u = ' { ' + self._rate_uni + ' } ' if self._rate_uni else ''
+        if self._rate_uni:
+            if self._horizon:
+                c_rt_u = ' { ' + self._rate_uni + ' : ' + str(self._horizon) + ' } '
+            else:
+                c_rt_u = ' { ' + self._rate_uni + ' } '
+        else:
+            c_rt_u = ''
         self._kappa_expression = c_name + c_agnt + c_tokn + c_rt_p + c_rt_u
 
     def get_name(self) -> str:
@@ -64,6 +80,10 @@ class KappaRule(KappaEntity):
     def get_rate_unary(self) -> str:
         """Returns a string with the unary rate for this rule, if specified."""
         return self._rate_uni
+
+    def get_horizon(self) -> int:
+        """Returns an integer with the molecular horizon for this rule's unary rate."""
+        return self._horizon
 
     def get_agents(self) -> List[KappaAgent]:
         """Returns a list with the KappaAgents in this rule."""
