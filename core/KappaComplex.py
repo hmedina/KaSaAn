@@ -19,7 +19,7 @@ class KappaComplex(KappaEntity):
 
         self._raw_expression = expression
         # get the set of agents making up this complex
-        agent_name_pat = '[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*'
+        agent_name_pat = '(?:[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
         agent_sign_pat = '\([^()]*\)'
         matches = re.findall(agent_name_pat + agent_sign_pat, expression.strip())
         if len(matches) == 0:

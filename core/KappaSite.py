@@ -30,7 +30,7 @@ class KappaPort(KappaSite):
         expression = re.sub('\s+|\t+|\n+', '', expression)  # Remove line breaks, tabs, multi-spaces
         # define patterns that make up a site
         port_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-        int_state_pat = '(?:{(\w+|#)(/)?(\w+)?})?'
+        int_state_pat = '(?:{([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*|#)(?:(/)([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*))?})?'
         bnd_state_pat = '\[(.|_|#|\d+)(?:(/)(.|\d+))?\]'
         port_pat = '^' + port_name_pat + int_state_pat + bnd_state_pat + int_state_pat + '$'
         # parse assuming full site declaration, with bond state declared
@@ -170,6 +170,11 @@ class KappaPort(KappaSite):
         """Returns a string with the internal state after rule application, with an empty string for non-rule
         patterns or usages."""
         return self._future_int_state
+
+    def get_port_bond_operation(self) -> str:
+        """Returns the operation being performed on this port's bond: creation, deletion, swap, unknown, or an empty
+         string for none."""
+        return self._bond_operation
 
     def has_bond_operation(self) -> bool:
         """Returns true if the port has an operation being performed on its bond state."""

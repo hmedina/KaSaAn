@@ -183,6 +183,8 @@ Currently implemented methods:
   * `get_port_future_state()`
     * Returns a string with the internal state after rule application, with an empty string for non-rule 
     patterns or usages.
+  * `get_port_bond_operation()`
+    * Returns the operation being performed on this bond, choice of 'creation', 'deletion', 'swap', 'unknown', or ''.
   * `has_bond_operation()`
     * Returns true if the port has an operation being performed on its bond state.
   * `has_state_operation()`
