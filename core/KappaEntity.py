@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from functools import total_ordering
+from .KappaError import KappaEqualtiyError
 
 
 @total_ordering
@@ -24,11 +25,22 @@ class KappaEntity(ABC):
         return hash(self._kappa_expression)
 
     def __eq__(self, other) -> bool:
-        # make it a Kappa-whatever-this-is if it's not one already
-        if not type(other) is type(self):
+        # as the kappa_expression has been canonicalized, it is sufficient for equality testing
+        # the bulk of this method is just type-checking
+        if type(other) is str:
+            # if other is a string, make it into an instance of my class
             other = self.__class__(other)
-        # as kappa_expressions have been canonicalized, they're sufficient for equality testing
-        return True if self._kappa_expression == other._kappa_expression else False
+            return True if self._kappa_expression == other._kappa_expression else False
+        elif issubclass(other.__class__, KappaEntity):
+            if type(other) is type(self):
+                # if comparing two of the same class & subclass
+                return True if self._kappa_expression == other._kappa_expression else False
+            else:
+                # if comparing, say Agents and Complexes, same parent class, but different classes
+                raise KappaEqualtiyError('Can not compare <' + str(self) + '> to <' + str(other) + '> as they have different classes.')
+        else:
+            # if comparing some other type to a kappa entity
+            raise ValueError('Can not compare <' + str(self) + '> to <' + str(other) + '> as the latter is not a compatible class')
 
     def __lt__(self, other) -> bool:
         # make it a Kappa-whatever-this-is if it's not one already

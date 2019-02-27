@@ -45,3 +45,7 @@ class SnapshotTokenParseError(SnapshotParseError):
 
 class RuleParseError(KappaError):
     """Exception raised when failing to parse a rule."""
+
+
+class KappaEqualtiyError(KappaError):
+    """Exception raised when comparing apples to oranges."""

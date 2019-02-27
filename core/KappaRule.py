@@ -30,10 +30,12 @@ class KappaRule(KappaEntity):
 
         # extract rule name, Kappa pattern, rates
         rule_components = re.match("('.+')?\s*(.+)\s*@\s*([^{]+)\s*(?:{([^}]+)})?", digested_rule)
+        if not rule_components:
+            raise ValueError('Could not parse pattern <' + digested_rule + '> as a rule')
         self._name = rule_components.group(1).strip() if rule_components.group(1) else ''
-        self._pattern = rule_components.group(2).strip() if rule_components.group(2) else None
-        self._rate_pri = rule_components.group(3).strip() if rule_components.group(3) else None
-        self._rate_uni = rule_components.group(4).strip() if rule_components.group(4) else None
+        self._pattern = rule_components.group(2).strip() if rule_components.group(2) else ''
+        self._rate_pri = rule_components.group(3).strip() if rule_components.group(3) else ''
+        self._rate_uni = rule_components.group(4).strip() if rule_components.group(4) else ''
         if self._rate_uni:
             if ':' in self._rate_uni:
                 parts = self._rate_uni.split(':')
@@ -50,10 +52,22 @@ class KappaRule(KappaEntity):
 
         # extract & process entities: agents & tokens
         agents_and_tokens = re.match('([^|]+)?\s*\|?\s*(.+)?', self._pattern)
-        self._agent_expression = agents_and_tokens.group(1).strip() if agents_and_tokens.group(1) else None
-        self._token_expression = agents_and_tokens.group(2).strip() if agents_and_tokens.group(2) else None
-        self._agents = KappaComplex(self._agent_expression).get_all_agents() if self._agent_expression else None
-        self._tokens = [KappaToken(item) for item in self._token_expression.split(',')] if self._token_expression else None
+        if not agents_and_tokens:
+            raise RuleParseError('Could not find agents nor tokens in <' + self._pattern + '> expression')
+        # process agents
+        if agents_and_tokens.group(1):
+            self._agent_expression = agents_and_tokens.group(1).strip()
+            self._agents = KappaComplex(self._agent_expression).get_all_agents()
+        else:
+            self._agent_expression = ''
+            self._agents = []
+        # process tokens
+        if agents_and_tokens.group(2):
+            self._token_expression = agents_and_tokens.group(2).strip()
+            self._tokens = [KappaToken(item) for item in self._token_expression.split(',')]
+        else:
+            self._token_expression = ''
+            self._tokens = []
 
         # canonicalize the kappa expression
         c_name = self._name + ' ' if self._name else ''
