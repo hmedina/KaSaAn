@@ -28,5 +28,5 @@ setup(
             'trace_movie_maker = KaSaAn.scripts.trace_movie_maker:main [MPL,sqr]'
         ]
     },
-    test_suite='./unittests/unittests.py'
+    test_suite='unittests'
 )
