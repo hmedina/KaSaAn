@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from functools import total_ordering
+
 from .KappaError import KappaEqualtiyError
 
 

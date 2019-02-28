@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-from .KappaEntity import KappaEntity
-from .KappaAgent import KappaAgent, KappaToken
-from .KappaComplex import KappaComplex
-from .KappaError import RuleParseError
 import re
 from typing import List
+
+from .KappaAgent import KappaAgent, KappaToken
+from .KappaComplex import KappaComplex
+from .KappaEntity import KappaEntity
+from .KappaError import RuleParseError
 
 
 class KappaRule(KappaEntity):

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-from ..core import KappaSnapshot
-import glob
 import csv
-import argparse
+import glob
 import warnings
 
+from KaSaAn.core import KappaSnapshot
 
-def snapshot_analyzer(base_directory: str, snap_prefix: str, verbosity: bool):
+
+def prefixed_snapshot_analyzer(base_directory: str, snap_prefix: str, verbosity: bool):
     # Get the file names of snapshots in specified directory that fit the pattern [prefix][number].ka
     snap_names = glob.glob(base_directory + snap_prefix + '*.ka')
     snap_num = len(snap_names)
@@ -78,24 +78,3 @@ def snapshot_analyzer(base_directory: str, snap_prefix: str, verbosity: bool):
             writer.writerow([key, value])
     if verbosity:
         print('Largest complex sizes written to file: ' + largest_complex_stats_file_name)
-
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='Get cumulative and mean distribution of complex sizes, plus distribution of number of species,'
-                    ' based on snapshots sharing a common prefix, like "t_one_snap_7.ka" having the prefix "t_one_".'
-                    ' Snapshots must contain the word "snap" and end in ".ka". Files will be produced in the same'
-                    ' directory as the snapshots are. They will be prefixed accordingly, e.g. '
-                    ' [prefix]distribution_cumulative.csv')
-    parser.add_argument('-p', '--prefix', type=str, default='',
-                        help='Prefix identifying snapshots to analyze; e.g. "foo_snap_" is the prefix for'
-                             '"foo_snap_76.ka". Files must end with [number].ka')
-    parser.add_argument('-d', '--working_directory', type=str, default='./',
-                        help='The directory where snapshots are held, and where distribution files will be saved to.')
-    parser.add_argument('-v', '--verbosity', action='store_true',
-                        help='Print extra information, like number of snapshots found, directory understood, and'
-                             ' file names used for output.')
-    args = parser.parse_args()
-
-    snapshot_analyzer(base_directory=args.working_directory, snap_prefix=args.prefix, verbosity=args.verbosity)

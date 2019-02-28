@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
+
 import re
+from abc import abstractmethod
+
 from .KappaEntity import KappaEntity
 from .KappaError import PortParseError, CounterParseError, PortInclusionError
-from abc import abstractmethod
 
 
 class KappaSite(KappaEntity):

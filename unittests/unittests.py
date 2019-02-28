@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
 import unittest
-from KaSaAn import KappaPort, KappaCounter, KappaAgent, KappaToken, KappaComplex, KappaSnapshot, KappaRule
-#from ..core import KappaPort, KappaCounter, KappaAgent, KappaToken, KappaComplex, KappaSnapshot, KappaRule
-# above line is just a hack to get PyCharm to load properly as it can't seem to read the PythonPath correctly
+from KaSaAn.core import KappaPort, KappaCounter, KappaAgent, KappaToken, KappaComplex, KappaSnapshot, KappaRule
 
 
 class TestKappaPort(unittest.TestCase):
@@ -457,7 +455,3 @@ class TestKappaRule(unittest.TestCase):
         self.assertEqual(KappaRule("Bob(s1[./1] s2{a/b} s3{=0/+=1}), Jane(s1[./1] s2[2/.]), Jane(s2[2/.] s3[./3]), Jane(s3[./3]), Bob(s3{=3})-, Jane()+ | 1 Mary, 1 John, -1 Luke @ 'a' * 'b' / ('c' + 'd') {'a' + 'b' / 'd' : 5}").get_tokens(),
                          [KappaToken('1 Mary'), KappaToken('1 John'), KappaToken('-1 Luke')])
         self.assertEqual(KappaRule("Bob()+ @ 'foo'").get_tokens(), [])
-
-
-if __name__ == '__main__':
-    unittest.main()

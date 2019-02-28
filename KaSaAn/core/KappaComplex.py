@@ -2,6 +2,7 @@
 
 import re
 from typing import List, Set, Dict
+
 from .KappaEntity import KappaEntity
 from .KappaAgent import KappaAgent
 from .KappaError import ComplexParseError, AgentParseError
