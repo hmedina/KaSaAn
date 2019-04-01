@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from typing import Iterator, Tuple
 
-from KaSaAn.core import KappaSnapshot
+from KaSaAn.core import KappaSnapshot, KappaAgent
 
 
 def filtered_dist(snapshot_file_name: str, agent_of_interest: str) -> Iterator[Tuple[int, int]]:
@@ -14,12 +14,13 @@ def filtered_dist(snapshot_file_name: str, agent_of_interest: str) -> Iterator[T
     (e.g. 5 for pentamer), and B corresponds to the abundance of the parent species."""
 
     snap = KappaSnapshot(snapshot_file_name)
-    assert agent_of_interest in snap.get_agent_types_present(),\
-        'Problem: snapshot ' + snapshot_file_name + ' does not contain any agent <<' + agent_of_interest + '>>'
+    agent_of_interest = KappaAgent(agent_of_interest)
+    if agent_of_interest not in snap.get_agent_types_present():
+        raise ValueError('Agent <' + str(agent_of_interest) + '> not in snapshot <' + snapshot_file_name + '>')
     abundance_in_species = []
     abundance_of_species = []
     for kappa_complex, complex_abundance in snap.get_all_complexes_and_abundances():
-        abundance_in_species.append(kappa_complex.get_number_of_embeddings_of_agent(agent_of_interest + '()'))
+        abundance_in_species.append(kappa_complex.get_number_of_embeddings_of_agent(agent_of_interest))
         abundance_of_species.append(complex_abundance)
 
     return zip(abundance_in_species, abundance_of_species)
