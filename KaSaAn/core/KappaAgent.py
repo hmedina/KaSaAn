@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import re
-from typing import List
+from typing import List, Union
 
 from .KappaEntity import KappaEntity
 from .KappaSite import KappaPort, KappaCounter, KappaSite
@@ -94,7 +94,7 @@ class KappaAgent(KappaEntity):
         """Return a string with the agent's name."""
         return self._agent_name
 
-    def get_agent_signature(self) -> List[KappaSite]:
+    def get_agent_signature(self) -> List[Union[KappaPort, KappaCounter]]:
         """Return a list of strings with the agent's signature."""
         return self._agent_signature
 
