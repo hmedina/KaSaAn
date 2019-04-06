@@ -33,6 +33,8 @@ def get_potential_of_snapshot(file_name: str, enzyme, substrate) -> int:
 
 def get_potential_of_folder(base_directory: str, enzyme: KappaAgent, substrate: KappaAgent,
                                       verbosity: bool, snap_name_prefix: str) -> List[int]:
+    if base_directory[-1] != '/':
+        base_directory += '/'
     # Get the file names of snapshots in specified directory
     snap_names = sorted(glob.glob(base_directory + snap_name_prefix + '*.ka'), key=numerical_sort)
     snap_num = len(snap_names)
