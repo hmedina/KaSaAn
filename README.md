@@ -50,7 +50,7 @@ Currently implemented methods:
     * Returns a list of tuples (technically an ItemsView object) of the KappaComplexes and their abundances.
   * `get_total_mass()`
     * Returns an int with the total mass in the snapshot (i.e. the number of agents).
-  * `def get_agent_types_present():`
+  * `get_agent_types_present():`
     * Returns a set of KappaAgents of the names of the agents present in the snapshot (i.e. ignores agent signatures).
   * `get_complexes_with_abundance(query_abundance)`
     * Returns a list of KappaComplexes present at abundance `query_abundance` (integer: number of molecules).
