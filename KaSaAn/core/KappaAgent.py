@@ -102,10 +102,14 @@ class KappaAgent(KappaEntity):
         """Return the list of bonds ending/starting at this agent, e.g. for <<A(a[.] b[1] c[2] d{a}[.])>> these would
          be the list ['1','2']."""
         agent_bonds = []
+        all_bonds_data = []
         for item in self._agent_signature:
             if type(item) is KappaPort:
-                agent_bonds.append(item.get_port_bond_state())
-        agent_bonds = [b for b in agent_bonds if b != '.' and b != '_' and b != '#']
+                all_bonds_data += item.get_port_current_bond()
+                all_bonds_data += item.get_port_future_bond()
+        for bond_data in all_bonds_data:
+            if re.match('\d+', bond_data):
+                agent_bonds += bond_data
         return agent_bonds
 
     def get_abundance_change_operation(self) -> str:
