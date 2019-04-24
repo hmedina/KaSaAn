@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import re
-from typing import List
+from typing import List, Set
 
 from .KappaAgent import KappaAgent, KappaToken
 from .KappaComplex import KappaComplex
@@ -10,7 +10,7 @@ from .KappaError import RuleParseError
 
 
 class KappaRule(KappaEntity):
-    """Class to represent a Kappa Rule, WIP."""
+    """Class to represent a Kappa Rule."""
     def __init__(self, raw_expression: str):
         self._name: str
         self._pattern: str
@@ -28,6 +28,8 @@ class KappaRule(KappaEntity):
         digested_rule = re.sub('/\*[^*/]*\*/', '', digested_rule)   # Remove in-line comment
         digested_rule = digested_rule.split('//')[0]                # Remove trailing comment, leading/trialing spaces
         digested_rule = digested_rule.strip()
+        if '->' in digested_rule:
+            raise RuleParseError('Rule parsing only supports edit notation, not chemical notation.')
 
         # extract rule name, Kappa pattern, rates
         rule_components = re.match("('.+')?\s*(.+)\s*@\s*([^{]+)\s*(?:{([^}]+)})?", digested_rule)
@@ -82,7 +84,7 @@ class KappaRule(KappaEntity):
                 c_rt_u = ' { ' + self._rate_uni + ' } '
         else:
             c_rt_u = ''
-        self._kappa_expression = c_name + c_agnt + c_tokn + c_rt_p + c_rt_u
+        self._kappa_expression = (c_name + c_agnt + c_tokn + c_rt_p + c_rt_u).strip()
 
     def get_name(self) -> str:
         """Returns a string with the name of this rule."""
@@ -107,3 +109,10 @@ class KappaRule(KappaEntity):
     def get_tokens(self) -> List[KappaToken]:
         """Returns a list with the KappaTokens in this rule."""
         return self._tokens
+
+    def get_bond_identifiers(self) -> Set[str]:
+        """Returns a set with the bond identifiers present in this rule."""
+        idents = []
+        for agent in self._agents:
+            idents += agent.get_bond_identifiers()
+        return set(idents)

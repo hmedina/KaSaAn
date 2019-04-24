@@ -250,6 +250,8 @@ Currently implemented methods:
     * Returns a list with the KappaAgents in this rule, if any.
   * `get_tokens()`
     * Returns a list with the KappaTokens in this rule, if any.
+  * `get_bond_identifiers()`
+    * Returns a set with the identifiers found in this rule.
 
 ```
 >>> from KaSaAn import KappaRule
