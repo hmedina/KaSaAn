@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-import re
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches
 from matplotlib.collections import PatchCollection
 import matplotlib.path as mpath
+import numpy as np
+import re
 from typing import Tuple, List, Dict
 
 
