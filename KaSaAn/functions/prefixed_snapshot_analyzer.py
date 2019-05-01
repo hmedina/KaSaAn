@@ -9,6 +9,8 @@ from KaSaAn.core import KappaSnapshot
 
 def prefixed_snapshot_analyzer(base_directory: str, snap_prefix: str, verbosity: bool):
     # Get the file names of snapshots in specified directory that fit the pattern [prefix][number].ka
+    if base_directory[-1] != '/':
+        base_directory += '/'
     snap_names = glob.glob(base_directory + snap_prefix + '*.ka')
     snap_num = len(snap_names)
     if verbosity:
@@ -25,7 +27,7 @@ def prefixed_snapshot_analyzer(base_directory: str, snap_prefix: str, verbosity:
         snap_name = snap_names[snap_index]
         if verbosity:
             print('Now parsing file <{}>, {} of {}, {}%'.format(
-                snap_name, snap_index, snap_num, snap_index/snap_num))
+                snap_name, snap_index, snap_num, snap_index/snap_num*100))
         current_snapshot = KappaSnapshot(snap_name)
         total_complexes[snap_name] = sum(current_snapshot.get_all_abundances())
         lc_size[snap_name] = current_snapshot.get_largest_complexes()[0].get_size_of_complex()
