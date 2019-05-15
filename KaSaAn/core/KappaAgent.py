@@ -105,11 +105,11 @@ class KappaAgent(KappaEntity):
         all_bonds_data = []
         for item in self._agent_signature:
             if type(item) is KappaPort:
-                all_bonds_data += item.get_port_current_bond()
-                all_bonds_data += item.get_port_future_bond()
+                all_bonds_data.append(item.get_port_current_bond())
+                all_bonds_data.append(item.get_port_future_bond())
         for bond_data in all_bonds_data:
             if re.match('\d+', bond_data):
-                agent_bonds += bond_data
+                agent_bonds.append(bond_data)
         return agent_bonds
 
     def get_abundance_change_operation(self) -> str:
