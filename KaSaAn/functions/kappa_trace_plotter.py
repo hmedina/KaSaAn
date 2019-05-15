@@ -21,7 +21,7 @@ def kappa_trace_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[i
         vars_to_plot = range(1, len(leg_data))
     for var in vars_to_plot:
         if not var in range(len(leg_data)):
-            raise ValueError('Variable <' + str(var) + '> not in observables present: 1-' + str(len(leg_data)-1))
+            raise ValueError('Variable <' + str(var) + '> not in observables present: 0-' + str(len(leg_data)-1))
     # determine the type of plot
     fig, ax = plt.subplots()
     x_data = num_data[:, 0]
