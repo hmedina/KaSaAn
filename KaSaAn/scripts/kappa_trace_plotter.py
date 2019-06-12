@@ -33,7 +33,7 @@ def main():
 
     # save or display the figure
     if args.output_file_name:
-        this_figure.save(args.output_file_name)
+        this_figure.savefig(fname=args.output_file_name)
     else:
         plt.show()
 
