@@ -19,7 +19,10 @@ def main():
 
     # parse data
     this_data = kappa_trace_reader(args.input_file_name)
-    indexes_to_plot = [var - 1 for var in args.variables_to_plot]
+    if args.variables_to_plot:
+        indexes_to_plot = [var - 1 for var in args.variables_to_plot]
+    else:
+        indexes_to_plot = args.variables_to_plot
     this_figure = kappa_trace_figure_maker(data=this_data, vars_to_plot=indexes_to_plot)
 
     # print out observables
