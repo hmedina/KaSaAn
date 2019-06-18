@@ -8,7 +8,7 @@ from KaSaAn.core import KappaSnapshot, KappaAgent
 from .numerical_sort import numerical_sort
 
 
-def get_potential_of_snapshot(file_name: str, enzyme, substrate) -> int:
+def get_potential_of_snapshot(snapshot, enzyme, substrate) -> int:
     """"The catalytic potential of a snapshot is a number. Each molecular species will contain a (possibly zero)
     quantity of enzymes, and another of substrates. Their product is the catalytic potential of the species. The sum
     over the species in a snapshot yields the catalytic potential of the snapshot."""
@@ -16,15 +16,16 @@ def get_potential_of_snapshot(file_name: str, enzyme, substrate) -> int:
         enzyme = KappaAgent(enzyme)
     if not type(substrate) is KappaAgent:
         substrate = KappaAgent(substrate)
-    snap = KappaSnapshot(file_name)
+    if not type(snapshot) is KappaSnapshot:
+        snapshot = KappaSnapshot(snapshot)
     # Sanity check: both requested agent names are present in the snapshot
-    if not enzyme in snap.get_agent_types_present():
+    if not enzyme in snapshot.get_agent_types_present():
         warnings.warn('Agent name <' + enzyme.get_agent_name() + '> + not present in <' + file_name + '>')
-    if not substrate in snap.get_agent_types_present():
+    if not substrate in snapshot.get_agent_types_present():
         warnings.warn('Warning: Agent name <' + substrate.get_agent_name() + '> + not present in <' + file_name + '>')
     # Iterate over each complex and calculate its catalytic potential, q
     cat_pot = 0
-    for mol_spec, ab in snap.get_all_complexes_and_abundances():
+    for mol_spec, ab in snapshot.get_all_complexes_and_abundances():
         e = mol_spec.get_number_of_embeddings_of_agent(enzyme)
         s = mol_spec.get_number_of_embeddings_of_agent(substrate)
         cat_pot += e * s * ab
