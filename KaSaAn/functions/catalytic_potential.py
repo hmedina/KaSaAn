@@ -12,6 +12,7 @@ def get_potential_of_snapshot(snapshot, enzyme, substrate) -> int:
     """"The catalytic potential of a snapshot is a number. Each molecular species will contain a (possibly zero)
     quantity of enzymes, and another of substrates. Their product is the catalytic potential of the species. The sum
     over the species in a snapshot yields the catalytic potential of the snapshot."""
+    # If not already KappaEntities, try to convert them into ones, i.e. from strings for expressions or filenames
     if not type(enzyme) is KappaAgent:
         enzyme = KappaAgent(enzyme)
     if not type(substrate) is KappaAgent:
