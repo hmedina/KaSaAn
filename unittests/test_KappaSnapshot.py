@@ -88,6 +88,16 @@ class TestKappaSnapshot(unittest.TestCase):
         self.assertEqual(ref_snap_abc.get_total_mass(), 26000)
         self.assertEqual(ref_snap_dim.get_total_mass(), 500)
 
+    def test_get_abundance_of_agent(self, ref_snap_abc = snap_abc, ref_snap_dim = snap_dim):
+        self.assertEqual(ref_snap_abc.get_abundance_of_agent('Aa()'), 1000)
+        self.assertEqual(ref_snap_abc.get_abundance_of_agent(KappaAgent('Aa()')), 1000)
+        self.assertEqual(ref_snap_abc.get_abundance_of_agent('Aa(a[.])'), 30)
+        self.assertEqual(ref_snap_abc.get_abundance_of_agent('Ab(b[.])'), 36)
+        self.assertEqual(ref_snap_dim.get_abundance_of_agent('Bob()'), 0)
+        self.assertEqual(ref_snap_dim.get_abundance_of_agent('A()'), 500)
+        self.assertEqual(ref_snap_dim.get_abundance_of_agent('A(a[.])'), 18)
+        self.assertEqual(ref_snap_dim.get_abundance_of_agent('A(a[_])'), 482)
+
     def test_get_complexes_with_abundance(self, ref_snap_abc = snap_abc, ref_snap_dim = snap_dim):
         self.assertEqual(ref_snap_abc.get_complexes_with_abundance(10), [])
         self.assertEqual(ref_snap_abc.get_complexes_with_abundance(190),

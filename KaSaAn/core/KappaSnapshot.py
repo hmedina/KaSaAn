@@ -13,7 +13,7 @@ from .KappaError import SnapshotAgentParseError, SnapshotTokenParseError, Snapsh
 
 class KappaSnapshot(KappaEntity):
     """Class for representing Kappa snapshots. A snapshot is represented as a dictionary, where the kappa expression
-    serves as the key, and the abundance serves as the value. Many of the methods for this class are simple re-namings
+     serves as the key, and the abundance serves as the value. Many of the methods for this class are simple re-namings
      of the Dict() class', but with more informative names for Kappa entities."""
 
     def __init__(self, snapshot_file_name: str):
@@ -126,6 +126,17 @@ class KappaSnapshot(KappaEntity):
         for i_complex, i_abundance in self._complexes.items():
             total_mass += i_complex.get_size_of_complex() * i_abundance
         return total_mass
+
+    def get_abundance_of_agent(self, query_agent) -> int:
+        """Returns an int with the abundance of the given agent. Supports passing a string with the agent expression, or
+        and instance of a KappaAgent. Supports passing agents with signature, e.g. Bob(site{state})."""
+        if type(query_agent) is not KappaAgent:
+            query_agent = KappaAgent(query_agent)
+        abundance = 0
+        for cx, cx_ab in self.get_all_complexes_and_abundances():
+            intra_cx_ab = cx.get_number_of_embeddings_of_agent(query_agent)
+            abundance += intra_cx_ab * cx_ab
+        return abundance
 
     def get_complexes_with_abundance(self, query_abundance: int) -> List[KappaComplex]:
         """Returns a list of KappaComplexes present in the snapshot at the query abundance. For example, get all
