@@ -27,7 +27,7 @@ def prefixed_snapshot_analyzer(base_directory: str, snap_prefix: str, verbosity:
         snap_name = snap_names[snap_index]
         if verbosity:
             print('Now parsing file <{}>, {} of {}, {}%'.format(
-                snap_name, snap_index, snap_num, snap_index/snap_num*100))
+                snap_name, snap_index, snap_num, snap_index/snap_num*100), end='\r')
         current_snapshot = KappaSnapshot(snap_name)
         total_complexes[snap_name] = sum(current_snapshot.get_all_abundances())
         lc_size[snap_name] = current_snapshot.get_largest_complexes()[0].get_size_of_complex()
