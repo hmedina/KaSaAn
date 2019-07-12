@@ -21,9 +21,9 @@ def get_potential_of_snapshot(snapshot, enzyme, substrate) -> int:
         snapshot = KappaSnapshot(snapshot)
     # Sanity check: both requested agent names are present in the snapshot
     if not enzyme in snapshot.get_agent_types_present():
-        warnings.warn('Agent name <' + enzyme.get_agent_name() + '> + not present in <' + file_name + '>')
+        warnings.warn('Agent name <' + enzyme.get_agent_name() + '> + not present in <' + snapshot.get_snapshot_file_name() + '>')
     if not substrate in snapshot.get_agent_types_present():
-        warnings.warn('Warning: Agent name <' + substrate.get_agent_name() + '> + not present in <' + file_name + '>')
+        warnings.warn('Warning: Agent name <' + substrate.get_agent_name() + '> + not present in <' + snapshot.get_snapshot_file_name() + '>')
     # Iterate over each complex and calculate its catalytic potential, q
     cat_pot = 0
     for mol_spec, ab in snapshot.get_all_complexes_and_abundances():
