@@ -31,7 +31,7 @@ def kappa_trace_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[i
         plot_drawstyle = 'default'
     # plot
     for variable in vars_to_plot:
-        ax.plot(x_data, num_data[:, variable], label=leg_data[variable], drawstyle=plot_drawstyle)
+        ax.plot(x_data, num_data[:, variable - 1], label=leg_data[variable - 1], drawstyle=plot_drawstyle)
     ax.legend()
     ax.set_xlabel('Time')
     return fig
