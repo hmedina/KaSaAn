@@ -158,10 +158,18 @@ def render_snapshot(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = No
         warnings.warn('Empty snapshot <<' + snapshot_file + '>>')
 
     # Determine coloring scheme, unless provided
+    agent_list = my_snapshot.get_agent_types_present()
     if color_scheme:
         my_color_scheme = color_scheme
+        # check entries match, if not look for discrepancy
+        if my_color_scheme.keys() != agent_list:
+            for agent in my_color_scheme:
+                if agent not in agent_list:
+                    warnings.warn('Agent <' + agent.get_agent_name() + '> provided in coloring scheme is not present in snapshot <' + my_snapshot.get_snapshot_file_name() + '>.')
+            for agent in agent_list:
+                if agent not in my_color_scheme:
+                    warnings.warn('Agent <' + agent.get_agent_name() + '> present in snapshot <' + my_snapshot.get_snapshot_file_name() + '> has no color assigned in the scheme provided.')
     else:
-        agent_list = my_snapshot.get_agent_types_present()
         if len(agent_list) > 20:
             print('Over 20 agents found: color palette might be ugly. Try googling <<iwanthue>> for a tool to generate optimally distinct colors.')
         my_color_scheme = colorize_agents(agent_list)
