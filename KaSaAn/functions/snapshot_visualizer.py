@@ -150,7 +150,9 @@ def snapshot_legend_maximum(max_data: int, vis_mode: str) -> matplotlib.text.Tex
     return max_text
 
 
-def render_snapshot(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = None, vis_mode: str ='all') -> plt.figure:
+def render_snapshot(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = None, vis_mode: str ='all',
+                    fig_size: Tuple[float, float] = mpl.rcParams['figure.figsize'],
+                    fig_res: float = mpl.rcParams['figure.dpi']) -> plt.figure:
     # Process the snapshot
     my_snapshot = KappaSnapshot(snapshot_file)
     my_data = process_snapshot(my_snapshot)
@@ -175,12 +177,9 @@ def render_snapshot(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = No
         my_color_scheme = colorize_agents(agent_list)
 
     # Define figure definition & resolution
-    h_w_ratio = 2/3
-    res_w = 1200
-    res_h = res_w * h_w_ratio
-
-    fig_width = 8 # Width of default figure box, in inches [?!]
-    figure = plt.figure(figsize=[fig_width, fig_width * h_w_ratio])
+    res_w = fig_res * fig_size[0]
+    res_h = fig_res * fig_size[1]
+    figure = plt.figure(figsize=fig_size)
 
     # If visualizing all, then we need three subplots (for mass, size, count), plus the area for the legend
     if vis_mode == 'all':
