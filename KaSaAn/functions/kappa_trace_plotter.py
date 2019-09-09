@@ -2,6 +2,7 @@
 
 from typing import List, Tuple
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 
@@ -13,7 +14,9 @@ def kappa_trace_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarray]:
     return leg_data, num_data
 
 
-def kappa_trace_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[int]) -> plt.figure:
+def kappa_trace_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[int],
+                             fig_size: Tuple[float, float] = mpl.rcParams['figure.figsize'],
+                             fig_res: float = mpl.rcParams['figure.dpi'] ) -> plt.figure:
     """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object."""
     leg_data, num_data = data
     # determine what observables to plot
@@ -23,7 +26,7 @@ def kappa_trace_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[i
         if not var in range(1, len(leg_data) + 1):
             raise ValueError('Variable <' + str(var) + '> not in observables present: 1-' + str(len(leg_data)))
     # determine the type of plot
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=fig_size, dpi=fig_res)
     x_data = num_data[:, 0]
     if len(x_data) < 1000:
         plot_drawstyle = 'steps-post'
