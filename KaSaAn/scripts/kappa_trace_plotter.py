@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from KaSaAn.functions import kappa_trace_reader, kappa_trace_figure_maker
 
@@ -19,11 +20,11 @@ def main():
                         help='The list of variable / observable indexes that should be plotted. If not specified, all'
                              ' will be plotted against time. Observables are plotted in order, with the top-most legend'
                              ' entry corresponding to number 1.')
-    parser.add_argument('-fs', '--fig_size', type=float, default=None, nargs=2,
+    parser.add_argument('-fs', '--fig_size', type=float, default=mpl.rcParams['figure.figsize'], nargs=2,
                         help='Size of the resulting figure, in inches, specified as two elements, width and height (text'
                              ' size is specified in points, so this affects the size of text relative to other graph'
                              ' elements).')
-    parser.add_argument('-dpi', '--dots_per_inch', type=float, default=None,
+    parser.add_argument('-dpi', '--dots_per_inch', type=float, default=mpl.rcParams['figure.dpi'],
                         help='Resolution of the figure, specified as dots per inch.')
     args = parser.parse_args()
 
