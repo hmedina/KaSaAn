@@ -11,7 +11,7 @@ def main(args=None):
         args = sys.argv[1:]
     parser = argparse.ArgumentParser(description='Out of a series of snapshots from a simulation, obtain the catalytic'
                                                  ' potential of each snapshot, i.e. each state. Each molecular species'
-                                                 ' has a catalytic potential, defines as the product of the number of'
+                                                 ' has a catalytic potential, defined as the product of the number of'
                                                  ' bound enzyme agents, times the number of bound substrate agents,'
                                                  ' times the abundance of that species. The catalytic potential of a'
                                                  ' state is the sum of the catalytic potentials over all the constituent'
