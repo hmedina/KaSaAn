@@ -45,7 +45,7 @@ their product, hence the `mass` mode is presented.
 
 #### Count
 ```
-$ ./visualization/snapshot_visualizer.py -sf ./models/alphabet_soup_snap.ka -vm count -of ./models/alphabet_soup_snap_count.png
+$ snapshot_visualizer -sf ./models/alphabet_soup_snap.ka -vm count -of ./models/alphabet_soup_snap_count.png
 ```
 ![Visualization by species count](./models/alphabet_soup_snap_count.png)
 
@@ -57,7 +57,7 @@ abundance levels (e.g. a gazillion types of dimers).
 
 #### Size
 ```
-$ ./visualization/snapshot_visualizer.py -sf ./models/alphabet_soup_snap.ka -vm size -of ./models/alphabet_soup_snap_size.png
+$ snapshot_visualizer -sf ./models/alphabet_soup_snap.ka -vm size -of ./models/alphabet_soup_snap_size.png
 ```
 ![Visualization by species size](./models/alphabet_soup_snap_size.png)
 
@@ -69,7 +69,7 @@ There is one type of species that is very large.
 
 #### Mass
 ```
-$ ./visualization/snapshot_visualizer.py -sf ./models/alphabet_soup_snap.ka -vm mass -of ./models/alphabet_soup_snap_mass.png
+$ snapshot_visualizer -sf ./models/alphabet_soup_snap.ka -vm mass -of ./models/alphabet_soup_snap_mass.png
 ```
 ![Visualization by species mass](./models/alphabet_soup_snap_mass.png)
 
@@ -83,7 +83,7 @@ of the entire patchwork / mixture).
 
 #### All
 ```
-$ ./visualization/snapshot_visualizer.py -sf ./models/alphabet_soup_snap.ka -vm all -of ./models/alphabet_soup_snap_all.png
+$ snapshot_visualizer -sf ./models/alphabet_soup_snap.ka -vm all -of ./models/alphabet_soup_snap_all.png
 ```
 ![Visualization by species count, size, and mass](./models/alphabet_soup_snap_all.png)
 
@@ -107,7 +107,7 @@ $ query -t t.json -q my_query.txt --native-snapshots --skip-init-events
 ```
 Then one can produce a movie of the snapshots with:
 ```
-$ ./visualization/trace_movie_maker.py -v -d dir_with_snaps -m mass -o movie.gif
+$ trace_movie_maker -v -d dir_with_snaps -m mass -o movie.gif
 ```
 
 ![Visualization of a trace, using mass](./models/trace_viz/movie.gif)
