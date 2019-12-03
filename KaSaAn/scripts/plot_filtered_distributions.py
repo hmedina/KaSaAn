@@ -41,7 +41,7 @@ def main(args=None):
                                 cumulative_bins=args.c, plot_raw_counts=args.ss)
 
     if args.o:
-        plt.savefig(args.o, bbox_inches='tight')
+        my_fig.savefig(args.o, bbox_inches='tight')
     else:
         plt.show()
 

@@ -39,8 +39,7 @@ def main(args=None):
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Display information about number of snapshots found.')
     args = parser.parse_args()
-
-
+    # make the animation
     my_animation = movie_from_snapshots(directory=args.directory,
                                         vis_mode=args.vis_mode,
                                         fig_width=args.fig_width,
@@ -49,7 +48,6 @@ def main(args=None):
                                         legend_cols=args.legend_columns,
                                         frame_int=args.frame_interval,
                                         verbose=args.verbose)
-
     # Save to file, or show the figure
     if args.output_file:
         # Use the ImageMagick writer if a gif was requested; else use the default mpeg writer
@@ -62,7 +60,6 @@ def main(args=None):
         my_animation.save(filename=args.output_file, writer=my_writer)
     else:
         plt.show()
-
 
 
 if __name__ == '__main__':

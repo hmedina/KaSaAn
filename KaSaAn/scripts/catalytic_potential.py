@@ -45,6 +45,5 @@ def main(args=None):
         print(q)
 
 
-
 if __name__ == '__main__':
     main()
