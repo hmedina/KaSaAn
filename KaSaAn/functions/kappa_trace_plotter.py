@@ -16,14 +16,14 @@ def kappa_trace_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarray]:
 
 def kappa_trace_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[int],
                              fig_size: Tuple[float, float] = mpl.rcParams['figure.figsize'],
-                             fig_res: float = mpl.rcParams['figure.dpi'] ) -> plt.figure:
+                             fig_res: float = mpl.rcParams['figure.dpi']) -> plt.figure:
     """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object."""
     leg_data, num_data = data
     # determine what observables to plot
     if not vars_to_plot:
         vars_to_plot = range(1, len(leg_data) + 1)
     for var in vars_to_plot:
-        if not var in range(1, len(leg_data) + 1):
+        if var not in range(1, len(leg_data) + 1):
             raise ValueError('Variable <' + str(var) + '> not in observables present: 1-' + str(len(leg_data)))
     # determine the type of plot
     fig, ax = plt.subplots(figsize=fig_size, dpi=fig_res)

@@ -31,7 +31,7 @@ def plot_filtered_dist(snapshot_file_name: str, agent_of_interest: str, perfect_
     # Unpack data, get maximer value, flatten into a vector
     abundance_in_species, abundance_of_species = zip(*filtered_dist(snapshot_file_name, agent_of_interest))
     if not plot_raw_counts:
-        abundance_of_species = [a * b for a,b in zip(abundance_in_species, abundance_of_species)]
+        abundance_of_species = [a * b for a, b in zip(abundance_in_species, abundance_of_species)]
     max_mer = max(abundance_in_species)
     flattened_data = np.repeat(abundance_in_species, abundance_of_species)
     # Define figure and plot the data
