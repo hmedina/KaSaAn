@@ -35,9 +35,14 @@ class KappaSnapshot(KappaEntity):
         # remove newlines, split by "%init:" keyword
         digest: List[str] = self._raw_expression.replace('\n', '').split('%init: ')
         # parse header and get event, uuid, time
-        g = re.match('//\sSnapshot\s\[Event:\s(\d+)\]//\s\"uuid\"\s:\s\"(\w+)\"%def:\s\"T0\"\s\"([0-9]+|([0-9]+[eE][+-]?[0-9+])|((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+-]?[0-9]+)?))\"', digest[0])
+        g = re.match(
+            r'//\sSnapshot\s' +
+            r'\[Event:\s(\d+)\]//\s' +
+            r'\"uuid\"\s:\s\"(\w+)' +
+            r'\"%def:\s\"T0\"\s\"([0-9]+|([0-9]+[eE][+-]?[0-9+])|((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+-]?[0-9]+)?))\"',
+            digest[0])
         if not g:
-            raise SnapshotParseError('Snapshot header <' + digest[0] + '> could not be parsed in <' + snapshot_file_name + '>')
+            raise SnapshotParseError('Header <' + digest[0] + '> not be parsed in <' + snapshot_file_name + '>')
         self._snapshot_event = int(g.group(1))
         self._snapshot_uuid = str(g.group(2))
         self._snapshot_time = float(g.group(3))
@@ -46,30 +51,34 @@ class KappaSnapshot(KappaEntity):
             try:
                 try:
                     # try to parse as a KappaComplex line, with agents
-                    g = re.match('^(\d+)\s/\*(\d+)\sagents\*/\s(.+)$', entry)
+                    g = re.match(r'^(\d+)\s/\*(\d+)\sagents\*/\s(.+)$', entry)
                     if not g:
-                        raise SnapshotAgentParseError('Abundance, length, & complex not found in <' + entry + '> in <' + snapshot_file_name + '>')
+                        raise SnapshotAgentParseError(
+                            'Abundance, length, & complex not found in <' + entry + '> in <' + snapshot_file_name + '>')
                     abundance = int(g.group(1))
                     size = int(g.group(2))
                     species = KappaComplex(g.group(3))
                     if not size == species.get_size_of_complex():
-                        raise ValueError('Size mismatch: snapshot declares <' + str(size) +
-                                         '>, I counted <' + str(species.get_size_of_complex()) + '> in <' + snapshot_file_name + '>')
+                        raise ValueError(
+                            'Size mismatch: snapshot declares <' + str(size) + '>, I counted <' +
+                            str(species.get_size_of_complex()) + '> in <' + snapshot_file_name + '>')
                     # assign the complex as a key to the dictionary
                     self._complexes[species] = abundance
                 except SnapshotAgentParseError:
                     # try to parse as a token line instead
-                    tk_value_pat = '((?:(?:\d+\.\d+)|(?:\d+\.)|(?:\.\d+)|(?:\d+))[eE]?[+-]?\d?)'
-                    tk_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-                    tk_pat = '^' + tk_value_pat + '\s' + tk_name_pat + '$'
+                    tk_value_pat = r'((?:(?:\d+\.\d+)|(?:\d+\.)|(?:\.\d+)|(?:\d+))[eE]?[+-]?\d?)'
+                    tk_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+                    tk_pat = r'^' + tk_value_pat + r'\s' + tk_name_pat + r'$'
                     g = re.match(tk_pat, entry)
                     if not g:
-                        raise SnapshotTokenParseError('Abundance & token name not found in <' + entry + '> in <' + snapshot_file_name + '>')
+                        raise SnapshotTokenParseError(
+                            'Abundance & token name not found in <' + entry + '> in <' + snapshot_file_name + '>')
                     # assign the token as a key to the dictionary
                     tk = KappaToken(g.group(0))
                     self._tokens[tk.get_token_name()] = tk
             except SnapshotTokenParseError:
-                raise SnapshotParseError('Could not parse as either complex line nor token line <' + entry + '> in <' + snapshot_file_name + '>')
+                raise SnapshotParseError(
+                    'Complex and token parse failed for <' + entry + '> in <' + snapshot_file_name + '>')
         # canonicalize the kappa expression: tokens
         self._kappa_expression = '\n'.join(['%init: ' + str(float(tk.get_token_operation())) + ' ' + tk.get_token_name()
                                             for tk in self._tokens.values()])
@@ -217,7 +226,6 @@ class KappaSnapshot(KappaEntity):
             warnings.warn('Token <' + str(query) + '> not found in this snapshot.')
             value = None
         return value
-
 
     def get_token_names(self) -> List[str]:
         """Returns the token names present in the snapshot."""

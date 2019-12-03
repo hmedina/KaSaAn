@@ -29,12 +29,13 @@ class KappaPort(KappaSite):
         self._bond_operation: str
 
         self._raw_expression = expression
-        expression = re.sub('\s+|\t+|\n+', '', expression)  # Remove line breaks, tabs, multi-spaces
+        expression = re.sub(r'\s+|\t+|\n+', '', expression)  # Remove line breaks, tabs, multi-spaces
         # define patterns that make up a site
-        port_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-        int_state_pat = '(?:{([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*|#)(?:(/)([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*))?})?'
-        bnd_state_pat = '\[(.|_|#|\d+)(?:(/)(.|\d+))?\]'
-        port_pat = '^' + port_name_pat + int_state_pat + bnd_state_pat + int_state_pat + '$'
+        ident = r'[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*'
+        port_name_pat = r'(' + ident + r')'
+        int_state_pat = r'(?:{(' + ident + r'|#)(?:(/)(' + ident + r'))?})?'
+        bnd_state_pat = r'\[(.|_|#|\d+)(?:(/)(.|\d+))?\]'
+        port_pat = r'^' + port_name_pat + int_state_pat + bnd_state_pat + int_state_pat + r'$'
         # parse assuming full site declaration, with bond state declared
         g = re.match(port_pat, expression.strip())
         # if that fails, try parsing with bond state explicitly declared as a wildcard
@@ -86,9 +87,10 @@ class KappaPort(KappaSite):
             self._int_operand = ''
             self._future_int_state = ''
         # canonicalize the kappa expression
-        self._kappa_expression = self._port_name +\
-                                 '[' + self._present_bond_state + self._bond_operand + self._future_bond_state + ']' +\
-                                 '{' + self._present_int_state + self._int_operand + self._future_int_state + '}'
+        self._kappa_expression = \
+            self._port_name + \
+            '[' + self._present_bond_state + self._bond_operand + self._future_bond_state + ']' + \
+            '{' + self._present_int_state + self._int_operand + self._future_int_state + '}'
 
     def __contains__(self, item) -> bool:
         # we can't compare ports to counters
@@ -199,11 +201,11 @@ class KappaCounter(KappaSite):
         self._kappa_expression: str
 
         self._raw_expression = expression
-        expression = re.sub('\s+|\t+|\n+', '', expression)  # Remove line breaks, tabs, multi-spaces
+        expression = re.sub(r'\s+|\t+|\n+', '', expression)  # Remove line breaks, tabs, multi-spaces
         # define patterns that make up a site
-        site_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-        cnt_state_pat = '{(>?=\d+)(?:(/)([+-]=\d+))?}'
-        counter_pat = '^' + site_name_pat + cnt_state_pat + '$'
+        site_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+        cnt_state_pat = r'{(>?=\d+)(?:(/)([+-]=\d+))?}'
+        counter_pat = r'^' + site_name_pat + cnt_state_pat + r'$'
         # parse the counter
         g = re.match(counter_pat, expression.strip())
         if not g:
@@ -214,8 +216,9 @@ class KappaCounter(KappaSite):
         self._counter_operand = g.group(3) if g.group(3) else ''
         self._counter_delta = g.group(4) if g.group(4) else ''
         # canonicalize the kappa expression
-        self._kappa_expression = self._counter_name +\
-                                 '{' + self._current_state + self._counter_operand + self._counter_delta + '}'
+        self._kappa_expression = \
+            self._counter_name + \
+            '{' + self._current_state + self._counter_operand + self._counter_delta + '}'
 
     def get_counter_name(self) -> str:
         """Returns a string with the counter's name."""

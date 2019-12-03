@@ -20,8 +20,8 @@ class KappaComplex(KappaEntity):
 
         self._raw_expression = expression
         # get the set of agents making up this complex
-        agent_name_pat = '(?:[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-        agent_sign_pat = '\([^()]*\)'
+        agent_name_pat = r'(?:[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+        agent_sign_pat = r'\([^()]*\)'
         matches = re.findall(agent_name_pat + agent_sign_pat, expression.strip())
         if len(matches) == 0:
             raise ComplexParseError('Complex <' + self._raw_expression + '> appears to have zero agents.')
@@ -79,5 +79,4 @@ class KappaComplex(KappaEntity):
 
     def get_number_of_embeddings_of_complex(self, query: str) -> int:
         """Returns the number of embedding the query complex has on the KappaComplex. Follows bonds. WIP"""
-        raise NotImplemented
-
+        raise NotImplementedError
