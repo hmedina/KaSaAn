@@ -14,11 +14,11 @@ setup(
     author_email='hector.f.medina.a@gmail.com',
     description='Kappa snapshot analysis & WIP tools.',
     long_description=__doc__,
-    install_requires={
+    install_requires=[
         'matplotlib>=3.0.2<3.0.3',
         'numpy>=1.16<1.17',
         'squarify>=0.3.0<0.5.0',
-    },
+    ],
     python_requires='==3.7',
     entry_points={
         'console_scripts': [
@@ -29,6 +29,5 @@ setup(
             'snapshot_visualizer = KaSaAn.scripts.snapshot_visualizer:main',
             'trace_movie_maker = KaSaAn.scripts.trace_movie_maker:main'
         ]
-    },
-    test_suite='unittests'
+    }
 )
