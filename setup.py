@@ -14,20 +14,20 @@ setup(
     author_email='hector.f.medina.a@gmail.com',
     description='Kappa snapshot analysis & WIP tools.',
     long_description=__doc__,
-    extras_require={
-        'MPL': ['matplotlib>=3.0.2<3.0.3'],
-        'Npy': ['numpy>=1.16<1.17'],
-        'sqr': ['squarify>=0.3.0<0.5.0'],
+    install_requires={
+        'matplotlib>=3.0.2<3.0.3',
+        'numpy>=1.16<1.17',
+        'squarify>=0.3.0<0.5.0',
     },
     python_requires='==3.7',
     entry_points={
         'console_scripts': [
             'catalytic_potential_of_folder = KaSaAn.scripts.catalytic_potential:main',
-            'kappa_trace_plotter = KaSaAn.scripts.kappa_trace_plotter:main [MPL,Npy]',
-            'plot_filtered_distributions = KaSaAn.scripts.plot_filtered_distributions:main [MPL,Npy,sqr]',
+            'kappa_trace_plotter = KaSaAn.scripts.kappa_trace_plotter:main',
+            'plot_filtered_distributions = KaSaAn.scripts.plot_filtered_distributions:main',
             'prefixed_snapshot_analyzer = KaSaAn.scripts.prefixed_snapshot_analyzer:main',
-            'snapshot_visualizer = KaSaAn.scripts.snapshot_visualizer:main [MPL,Npy,sqr]',
-            'trace_movie_maker = KaSaAn.scripts.trace_movie_maker:main [MPL,Npy,sqr]'
+            'snapshot_visualizer = KaSaAn.scripts.snapshot_visualizer:main',
+            'trace_movie_maker = KaSaAn.scripts.trace_movie_maker:main'
         ]
     },
     test_suite='unittests'
