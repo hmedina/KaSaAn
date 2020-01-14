@@ -15,7 +15,7 @@ setup(
     description='Kappa snapshot analysis & WIP tools.',
     long_description=__doc__,
     install_requires=[
-        'matplotlib>=3.0.2<3.0.3',
+        'matplotlib>=3.0.2<3.1.2',
         'numpy>=1.16<1.17',
         'squarify>=0.3.0<0.5.0',
     ],
@@ -24,6 +24,7 @@ setup(
         'console_scripts': [
             'catalytic_potential_of_folder = KaSaAn.scripts.catalytic_potential:main',
             'kappa_trace_plotter = KaSaAn.scripts.kappa_trace_plotter:main',
+            'kappa_trace_coplotter = KaSaAn.scripts.kappa_trace_coplotter:main',
             'plot_filtered_distributions = KaSaAn.scripts.plot_filtered_distributions:main',
             'prefixed_snapshot_analyzer = KaSaAn.scripts.prefixed_snapshot_analyzer:main',
             'snapshot_visualizer = KaSaAn.scripts.snapshot_visualizer:main',

@@ -93,7 +93,7 @@ by `size`, it however is the only species that is appreciable. When
 viewed by `mass`, it is clear it is an important species.
 
 
-### Traces
+### Event Traces
 One way of visualizing a trace is by making an animated movie of the snapshots through time. Given a trace, the [Trace
 Query Language](https://github.com/jonathan-laurent/Kappa-TQL) (TQL) engine can dump snapshots taken at regular time, or
 event, intervals.
@@ -119,6 +119,19 @@ of ABC. At a point around T=150s, the trimer is the dominant species (in mass). 
 dominated by monomers of B, around T=250. At later stages, the trimeric ABC is rare compared to the dimers AB and BC,
 and the B monomer. Note this visualization is done through the `mass`; it serves to inform "where are the monomers".
 The alternative visualizations of `size` or `count` are also informative.
+
+
+### Observable time traces
+The outputs of the Kappa simulator (KaSim) are usually comma separated value files with the values for observables and
+their evolution in time. Two scripts are provided for plotting these (use `--help` for their usage) :
+  * `kappa_trace_plotter`
+    * Plots one or more variables from a single observable file, saving the figure to file or displaying it. Useful for
+    comparing the behavior of multiple observables within a simulation.
+  * `kappa_trace_coplotter`
+    * Plots the same one variable from a set of observable files, saving the figure to file or displaying it. Useful for
+    comparing the behavior of one observable across different simulations. If the name of the observable changes, the 
+    legend will reflect this, using multiple entries. Otherwise, the observable's name will be used for a title.
+
 
 ## Requirements
 General:
