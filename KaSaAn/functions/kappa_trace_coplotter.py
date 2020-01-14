@@ -17,6 +17,7 @@ def find_data_files(pattern: str) -> List[str]:
     sorted_file_list = sorted(file_list, key=numerical_sort)
     return sorted_file_list
 
+
 def get_xy_legend_data_from_file(variable: int, file_name: str) -> Tuple[np.array, np.array, str]:
     """Extract time and value data for a specific observable from a standard Kappa time-trace file."""
     legend_data, numeric_data = kappa_trace_reader(file_name)
@@ -27,10 +28,11 @@ def get_xy_legend_data_from_file(variable: int, file_name: str) -> Tuple[np.arra
     legend_name = legend_data[variable]
     return time_series, var_val_series, legend_name
 
+
 def co_plot_variable_from_file_list(data_files: List[str], var_to_coplot: int):
     """Co-plot the same variable from a list of files."""
     var_index = var_to_coplot - 1
-    co_plot_fig, ax  = plt.subplots()
+    co_plot_fig, ax = plt.subplots()
     legend_entries = []
     for rep_file in data_files:
         data_x, data_y, legend_entry = get_xy_legend_data_from_file(var_index, rep_file)
@@ -46,6 +48,7 @@ def co_plot_variable_from_file_list(data_files: List[str], var_to_coplot: int):
     else:
         ax.legend()
     return co_plot_fig
+
 
 def kappa_trace_coplotter(file_pattern: str, plot_variable: int):
     file_names = find_data_files(file_pattern)
