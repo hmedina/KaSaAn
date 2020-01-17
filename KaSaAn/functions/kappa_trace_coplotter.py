@@ -29,13 +29,20 @@ def get_xy_legend_data_from_file(variable: int, file_name: str) -> Tuple[np.arra
     return time_series, var_val_series, legend_name
 
 
-def co_plot_variable_from_file_list(data_files: List[str], var_to_coplot: int):
+def co_plot_variable_from_file_list(data_files: List[str], var_to_coplot: int, diff_toggle: bool):
     """Co-plot the same variable from a list of files."""
     var_index = var_to_coplot - 1
     co_plot_fig, ax = plt.subplots()
     legend_entries = []
     for rep_file in data_files:
         data_x, data_y, legend_entry = get_xy_legend_data_from_file(var_index, rep_file)
+        if diff_toggle:
+            d_t = np.diff(data_x)
+            d_v = np.diff(data_y)
+            if np.any(d_t == 0.0):
+                raise ValueError('Time difference of zero found in file ' + rep_file)
+            data_y = d_v / d_t
+            data_x = data_x[1:]
         legend_entries.append(legend_entry)
         if len(data_x) < 1000:
             plot_drawstyle = 'steps-post'
@@ -43,6 +50,10 @@ def co_plot_variable_from_file_list(data_files: List[str], var_to_coplot: int):
             plot_drawstyle = 'default'
         ax.plot(data_x, data_y, label=legend_entry, drawstyle=plot_drawstyle)
     ax.set_xlabel('Time')
+    if diff_toggle:
+        ax.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$')
+    else:
+        ax.set_ylabel('Value')
     if len(set(legend_entries)) == 1:
         ax.set_title(legend_entries[0])
     else:
@@ -50,7 +61,7 @@ def co_plot_variable_from_file_list(data_files: List[str], var_to_coplot: int):
     return co_plot_fig
 
 
-def kappa_trace_coplotter(file_pattern: str, plot_variable: int):
+def kappa_trace_coplotter(file_pattern: str, plot_variable: int, differential_toggle: bool):
     file_names = find_data_files(file_pattern)
-    fig = co_plot_variable_from_file_list(file_names, plot_variable)
+    fig = co_plot_variable_from_file_list(file_names, plot_variable, differential_toggle)
     return fig
