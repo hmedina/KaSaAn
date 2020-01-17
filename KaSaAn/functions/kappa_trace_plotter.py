@@ -14,7 +14,7 @@ def kappa_trace_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarray]:
     return leg_data, num_data
 
 
-def kappa_trace_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[int],
+def kappa_trace_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[int], diff_toggle: bool,
                              fig_size: Tuple[float, float] = mpl.rcParams['figure.figsize'],
                              fig_res: float = mpl.rcParams['figure.dpi']) -> plt.figure:
     """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object."""
@@ -28,13 +28,26 @@ def kappa_trace_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[i
     # determine the type of plot
     fig, ax = plt.subplots(figsize=fig_size, dpi=fig_res)
     x_data = num_data[:, 0]
-    if len(x_data) < 1000:
-        plot_drawstyle = 'steps-post'
-    else:
-        plot_drawstyle = 'default'
+    if diff_toggle:
+        d_t = np.diff(x_data)
+        x_data = x_data[1:]
+        if np.any(d_t == 0.0):
+            raise ValueError('Time difference of zero found in input data.')
     # plot
     for variable in vars_to_plot:
-        ax.plot(x_data, num_data[:, variable - 1], label=leg_data[variable - 1], drawstyle=plot_drawstyle)
+        y_data = num_data[:, variable - 1]
+        if diff_toggle:
+            d_v = np.diff(y_data)
+            y_data = d_v / d_t
+        if len(x_data) < 1000:
+            plot_drawstyle = 'steps-post'
+        else:
+            plot_drawstyle = 'default'
+        ax.plot(x_data, y_data, label=leg_data[variable - 1], drawstyle=plot_drawstyle)
     ax.legend()
     ax.set_xlabel('Time')
+    if diff_toggle:
+        ax.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$')
+    else:
+        ax.set_ylabel('Value')
     return fig
