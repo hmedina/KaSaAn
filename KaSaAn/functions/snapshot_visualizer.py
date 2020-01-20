@@ -181,6 +181,7 @@ def render_snapshot(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = No
     # sanity check color scheme, or create one
     if color_scheme:
         sanity_check_colors(snapshot=my_snapshot, color_scheme=color_scheme)
+        my_color_scheme = color_scheme
     else:
         agent_list = my_snapshot.get_agent_types_present()
         if len(agent_list) > 20:
