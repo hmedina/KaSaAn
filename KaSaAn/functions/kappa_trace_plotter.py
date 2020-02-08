@@ -47,7 +47,7 @@ def kappa_trace_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[i
     ax.legend()
     ax.set_xlabel('Time')
     if diff_toggle:
-        ax.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$')
+        ax.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$', rotation='horizontal')
     else:
         ax.set_ylabel('Value')
     return fig

@@ -51,7 +51,7 @@ def co_plot_variable_from_file_list(data_files: List[str], var_to_coplot: int, d
         ax.plot(data_x, data_y, label=legend_entry, drawstyle=plot_drawstyle)
     ax.set_xlabel('Time')
     if diff_toggle:
-        ax.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$')
+        ax.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$', rotation='horizontal')
     else:
         ax.set_ylabel('Value')
     if len(set(legend_entries)) == 1:
