@@ -26,10 +26,16 @@ class KappaComplex(KappaEntity):
         if len(matches) == 0:
             raise ComplexParseError('Complex <' + self._raw_expression + '> appears to have zero agents.')
         try:
-            self._agents = sorted([KappaAgent(item) for item in matches])
+            agent_list = []
+            agent_type_list = []
+            for item in matches:
+                agent = KappaAgent(item)
+                agent_list.append(agent)
+                agent_type_list.append(KappaAgent(agent.get_agent_name() + '()'))
         except AgentParseError as a:
             raise ComplexParseError('Could not parse agents in complex <' + expression + '>.') from a
-        self._agent_types = set([KappaAgent(agent.get_agent_name() + '()') for agent in self._agents])
+        self._agents = sorted(agent_list)
+        self._agent_types = set(agent_type_list)
         # canonicalize the kappa expression
         self._kappa_expression = ', '.join([str(agent) for agent in self._agents])
 
