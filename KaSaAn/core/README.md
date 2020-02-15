@@ -88,6 +88,13 @@ Currently implemented methods:
   * `get_complex_composition(self)`
     * Returns a dictionary where the key is an agent name, and the value the number of times that agent appears in this
      complex.
+  * `to_networkx(self)`
+    * Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
+        agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent.
+        Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the Kappa expression.
+        Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays
+        the node identifiers and their corresponding KappaAgents, and `g.edges.data()` displays the edges, using the
+        node identifiers as well as the kappa identifiers.
 
 ```
 >>> bar = foo.get_largest_complexes()[0]
