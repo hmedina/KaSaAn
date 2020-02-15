@@ -18,6 +18,7 @@ setup(
         'matplotlib>=3.0.2<3.1.2',
         'numpy>=1.16<1.17',
         'squarify>=0.3.0<0.5.0',
+        'networkx>=2.4<2.5',
     ],
     python_requires='==3.7',
     entry_points={
@@ -28,7 +29,7 @@ setup(
             'plot_filtered_distributions = KaSaAn.scripts.plot_filtered_distributions:main',
             'prefixed_snapshot_analyzer = KaSaAn.scripts.prefixed_snapshot_analyzer:main',
             'snapshot_visualizer = KaSaAn.scripts.snapshot_visualizer:main',
-            'trace_movie_maker = KaSaAn.scripts.trace_movie_maker:main'
+            'trace_movie_maker = KaSaAn.scripts.trace_movie_maker:main',
         ]
     }
 )

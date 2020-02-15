@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import re
+import networkx as nx
 from typing import List, Set, Dict
 
 from .KappaEntity import KappaEntity
@@ -86,3 +87,27 @@ class KappaComplex(KappaEntity):
     def get_number_of_embeddings_of_complex(self, query: str) -> int:
         """Returns the number of embedding the query complex has on the KappaComplex. Follows bonds. WIP"""
         raise NotImplementedError
+
+    def to_networkx(self) -> nx.MultiGraph:
+        """Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
+        agents, edges their bonds. Nodes have an attribute dictionary where the key 'kappa' holds the KappaAgent.
+        Edges have an attribute dictionary where the key 'bond id' holds the bond identifier from the Kappa expression.
+        Node identifiers are integers, using the order of agent declaration. For a graph g, g.nodes.data() displays the
+        node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
+        identifiers as well as the kappa identifiers."""
+        kappa_complex_multigraph = nx.MultiGraph()
+        dangle_bond_list = {}   # store unpaired bonds here
+        paired_bond_list = []   # store tuples of (agent index 1, agent index 2, bond identifier)
+        for agent_node_id, agent in enumerate(self.get_all_agents()):
+            kappa_complex_multigraph.add_node(agent_node_id, kappa=agent)
+            for bond in agent.get_bond_identifiers():
+                if bond in dangle_bond_list:
+                    paired_bond_list.append((dangle_bond_list[bond], agent_node_id, {'bond id': bond}))
+                    del dangle_bond_list[bond]
+                else:
+                    dangle_bond_list[bond] = agent_node_id
+        if dangle_bond_list:
+            raise ValueError('Dangling bonds <' + ','.join(dangle_bond_list.keys()) +
+                             '> found in: ' + self._raw_expression)
+        kappa_complex_multigraph.add_edges_from(paired_bond_list)
+        return kappa_complex_multigraph
