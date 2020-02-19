@@ -196,3 +196,9 @@ class TestKappaSnapshot(unittest.TestCase):
 
     def test_get_token_names(self, ref_snap_dim=snap_dim):
         self.assertEqual(ref_snap_dim.get_token_names(), ['X'])
+
+    def to_networkx(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+        self.assertEqual(ref_snap_abc.to_networkx().number_of_nodes(), 26000)
+        self.assertEqual(ref_snap_abc.to_networkx().number_of_edges(), 78542)
+        self.assertEqual(ref_snap_dim.to_networkx().number_of_nodes(), 500)
+        self.assertEqual(ref_snap_dim.to_networkx().number_of_edges(), 241)
