@@ -170,9 +170,9 @@ def snapshot_legend_maximum(max_data: int, vis_mode: str) -> matplotlib.text.Tex
     return max_text
 
 
-def render_snapshot(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = None, vis_mode: str = 'all',
-                    fig_size: Tuple[float, float] = mpl.rcParams['figure.figsize'],
-                    fig_res: float = mpl.rcParams['figure.dpi']) -> plt.figure:
+def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = None, vis_mode: str = 'all',
+                                 fig_size: Tuple[float, float] = mpl.rcParams['figure.figsize'],
+                                 fig_res: float = mpl.rcParams['figure.dpi']) -> plt.figure:
     # Process the snapshot
     my_snapshot = KappaSnapshot(snapshot_file)
     my_data = process_snapshot(my_snapshot)

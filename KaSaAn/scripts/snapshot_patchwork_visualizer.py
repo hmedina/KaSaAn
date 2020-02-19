@@ -7,7 +7,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 from KaSaAn.core import KappaAgent
-from KaSaAn.functions import render_snapshot
+from KaSaAn.functions import render_snapshot_as_patchwork
 
 
 def main(args=None):
@@ -53,11 +53,11 @@ def main(args=None):
     else:
         coloring_scheme = None
     # make the figure
-    fig = render_snapshot(snapshot_file=args.snapshot_file,
-                          color_scheme=coloring_scheme,
-                          vis_mode=args.visualization_mode,
-                          fig_size=args.fig_size,
-                          fig_res=args.dots_per_inch)
+    fig = render_snapshot_as_patchwork(snapshot_file=args.snapshot_file,
+                                       color_scheme=coloring_scheme,
+                                       vis_mode=args.visualization_mode,
+                                       fig_size=args.fig_size,
+                                       fig_res=args.dots_per_inch)
     # Either save figure to file, or plot it
     if args.output_file:
         fig.savefig(args.output_file, bbox_inches='tight')

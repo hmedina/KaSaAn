@@ -28,7 +28,7 @@ setup(
             'kappa_trace_coplotter = KaSaAn.scripts.kappa_trace_coplotter:main',
             'plot_filtered_distributions = KaSaAn.scripts.plot_filtered_distributions:main',
             'prefixed_snapshot_analyzer = KaSaAn.scripts.prefixed_snapshot_analyzer:main',
-            'snapshot_visualizer = KaSaAn.scripts.snapshot_visualizer:main',
+            'snapshot_visualizer = KaSaAn.scripts.snapshot_patchwork_visualizer:main',
             'trace_movie_maker = KaSaAn.scripts.trace_movie_maker:main',
         ]
     }
