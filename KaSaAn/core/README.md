@@ -31,6 +31,8 @@ Currently implemented methods:
     * Returns an int with the total mass in the snapshot (i.e. the number of agents).
   * `get_abundance_of_agent()`
     * Returns an int with the abundance of the given agent. Supports passing a string with the agent expression, or and instance of a KappaAgent. Supports passing agents with signature, e.g. Bob(site{state}).
+  * `get_composition()`
+    * Return a dictionary where the keys are KappaAgents, their names, and their value is the abundance in the snapshot of those agents.
   * `get_agent_types_present():`
     * Returns a set of KappaAgents of the names of the agents present in the snapshot (i.e. ignores agent signatures).
   * `get_complexes_with_abundance(query_abundance)`
@@ -53,6 +55,8 @@ Currently implemented methods:
     * Returns a float with the numeric value of `query_token`.
   * `get_token_names()`
     * Returns a list of KappaTokens with the tokens present in the snapshot.
+  * `to_networkx()`
+    * Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent. Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the complex' Kappa expression; this is not a globally unique identifier at the snapshot level, only at the complex level. Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays the node identifiers and their corresponding KappaAgents, and `g.edges.data()` displays the edges, using the node identifiers as well as the kappa identifiers.
 
 ```
 >>> from KaSaAn.core import KappaSnapshot
@@ -90,11 +94,9 @@ Currently implemented methods:
      complex.
   * `to_networkx(self)`
     * Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
-        agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent.
-        Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the Kappa expression.
-        Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays
-        the node identifiers and their corresponding KappaAgents, and `g.edges.data()` displays the edges, using the
-        node identifiers as well as the kappa identifiers.
+      agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent.
+      Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the Kappa expression.
+      Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays the node identifiers and their corresponding KappaAgents, and `g.edges.data()` displays the edges, using the node identifiers as well as the kappa identifiers.
 
 ```
 >>> bar = foo.get_largest_complexes()[0]

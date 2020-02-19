@@ -3,6 +3,7 @@
 import re
 import os
 import warnings
+import networkx as nx
 from typing import List, Set, ItemsView, Dict
 
 from .KappaEntity import KappaEntity
@@ -147,6 +148,18 @@ class KappaSnapshot(KappaEntity):
             abundance += intra_cx_ab * cx_ab
         return abundance
 
+    def get_composition(self) -> Dict[KappaAgent, int]:
+        """Return a dictionary where the keys are KappaAgents, their names, and their value is the abundance in the
+        snapshot of those agents."""
+        agent_types = self.get_agent_types_present()
+        composition = dict(zip(agent_types, [0] * len(agent_types)))
+        for agent_type in agent_types:
+            for kappa_complex, abundance in self.get_all_complexes_and_abundances():
+                complex_composition = kappa_complex.get_complex_composition()
+                local_abundance = complex_composition[agent_type] if agent_type in complex_composition else 0
+                composition[agent_type] += abundance * local_abundance
+        return composition
+
     def get_complexes_with_abundance(self, query_abundance: int) -> List[KappaComplex]:
         """Returns a list of KappaComplexes present in the snapshot at the query abundance. For example, get all
         elements present in single copy."""
@@ -230,3 +243,38 @@ class KappaSnapshot(KappaEntity):
     def get_token_names(self) -> List[str]:
         """Returns the token names present in the snapshot."""
         return list(self._tokens.keys())
+
+    def to_networkx(self) -> nx.MultiGraph:
+        """Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent
+        agents, edges their bonds. Nodes have an attribute dictionary where the key 'kappa' holds the KappaAgent.
+        Edges have an attribute dictionary where the key 'bond id' holds the bond identifier from the Kappa expression.
+        Node identifiers are integers, using the order of agent declaration. For a graph g, g.nodes.data() displays the
+        node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
+        identifiers as well as the kappa identifiers."""
+        agent_node_id = 0
+        snapshot_network = nx.MultiGraph()
+        # iterate over all molecular species
+        # then iterate over the number of times that species appears in the mix
+        for molecular_species, species_abundance in self.get_all_complexes_and_abundances():
+            for species_copy in range(species_abundance):
+                # reconstruct the species, assign identifiers
+                dangle_bond_list = {}  # store unpaired bonds here
+                paired_bond_list = []  # store tuples of (agent index 1, agent index 2, bond identifier)
+                for agent in molecular_species.get_all_agents():
+                    snapshot_network.add_node(agent_node_id, kappa=agent)
+                    for bond in agent.get_bond_identifiers():
+                        if bond in dangle_bond_list:
+                            paired_bond_list.append((dangle_bond_list[bond], agent_node_id, {'bond id': bond}))
+                            del dangle_bond_list[bond]
+                        else:
+                            dangle_bond_list[bond] = agent_node_id
+                    agent_node_id += 1
+                if dangle_bond_list:
+                    raise ValueError('Dangling bonds <' + ','.join(dangle_bond_list.keys()) +
+                                     '> found in: ' + self._raw_expression)
+                snapshot_network.add_edges_from(paired_bond_list)
+        if snapshot_network.number_of_nodes() != self.get_total_mass():
+            raise SnapshotParseError('Mismatch between snapshot mass <' + str(self.get_total_mass()) +
+                                     '> and number of nodes in network <' + str(snapshot_network.number_of_nodes()) +
+                                     '> for snapshot <' + self.get_snapshot_file_name() + '>')
+        return snapshot_network

@@ -98,6 +98,19 @@ class TestKappaSnapshot(unittest.TestCase):
         self.assertEqual(ref_snap_dim.get_abundance_of_agent('A(a[.])'), 18)
         self.assertEqual(ref_snap_dim.get_abundance_of_agent('A(a[_])'), 482)
 
+    def test_get_composition(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+        self.assertEqual(ref_snap_abc.get_composition(),
+                         {KappaAgent("Aa()"): 1000, KappaAgent("Ab()"): 1000, KappaAgent("Ac()"): 1000,
+                          KappaAgent("Ad()"): 1000, KappaAgent("Ae()"): 1000, KappaAgent("Af()"): 1000,
+                          KappaAgent("Ag()"): 1000, KappaAgent("Ah()"): 1000, KappaAgent("Ai()"): 1000,
+                          KappaAgent("Aj()"): 1000, KappaAgent("Ak()"): 1000, KappaAgent("Al()"): 1000,
+                          KappaAgent("Am()"): 1000, KappaAgent("An()"): 1000, KappaAgent("Ao()"): 1000,
+                          KappaAgent("Ap()"): 1000, KappaAgent("Aq()"): 1000, KappaAgent("Ar()"): 1000,
+                          KappaAgent("As()"): 1000, KappaAgent("At()"): 1000, KappaAgent("Au()"): 1000,
+                          KappaAgent("Av()"): 1000, KappaAgent("Aw()"): 1000, KappaAgent("Ax()"): 1000,
+                          KappaAgent("Ay()"): 1000, KappaAgent("Az()"): 1000})
+        self.assertEqual(ref_snap_dim.get_composition(), {KappaAgent("A()"): 500})
+
     def test_get_complexes_with_abundance(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
         self.assertEqual(ref_snap_abc.get_complexes_with_abundance(10), [])
         self.assertEqual(ref_snap_abc.get_complexes_with_abundance(190),

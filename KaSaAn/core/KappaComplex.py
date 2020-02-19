@@ -18,6 +18,7 @@ class KappaComplex(KappaEntity):
         self._agents: List[KappaAgent]
         self._agent_types: Set[KappaAgent]
         self._kappa_expression: str
+        self._composition: Dict[KappaAgent, int]
 
         self._raw_expression = expression
         # get the set of agents making up this complex
@@ -28,15 +29,22 @@ class KappaComplex(KappaEntity):
             raise ComplexParseError('Complex <' + self._raw_expression + '> appears to have zero agents.')
         try:
             agent_list = []
-            agent_type_list = []
+            agent_types = set()
+            composition = {}
             for item in matches:
                 agent = KappaAgent(item)
                 agent_list.append(agent)
-                agent_type_list.append(KappaAgent(agent.get_agent_name() + '()'))
+                agent_type = KappaAgent(agent.get_agent_name() + '()')
+                agent_types.update([agent_type])
+                if agent_type in composition:
+                    composition[agent_type] += 1
+                else:
+                    composition[agent_type] = 1
         except AgentParseError as a:
             raise ComplexParseError('Could not parse agents in complex <' + expression + '>.') from a
         self._agents = sorted(agent_list)
-        self._agent_types = set(agent_type_list)
+        self._agent_types = agent_types
+        self._composition = composition
         # canonicalize the kappa expression
         self._kappa_expression = ', '.join([str(agent) for agent in self._agents])
 
@@ -79,10 +87,7 @@ class KappaComplex(KappaEntity):
     def get_complex_composition(self) -> Dict[KappaAgent, int]:
         """Returns a dictionary where the key is an agent, and the value the number of times that agent appears in
         this complex."""
-        composition = {}
-        for agent in self._agent_types:
-            composition[agent] = self.get_number_of_embeddings_of_agent(agent)
-        return composition
+        return self._composition
 
     def get_number_of_embeddings_of_complex(self, query: str) -> int:
         """Returns the number of embedding the query complex has on the KappaComplex. Follows bonds. WIP"""
