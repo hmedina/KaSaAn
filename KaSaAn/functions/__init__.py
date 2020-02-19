@@ -6,5 +6,6 @@ from .kappa_trace_coplotter import kappa_trace_coplotter
 from .numerical_sort import numerical_sort
 from .plot_filtered_distributions import plot_filtered_dist
 from .prefixed_snapshot_analyzer import prefixed_snapshot_analyzer
-from .snapshot_visualizer import render_snapshot
+from .snapshot_patchwork_visualizer import render_snapshot_as_patchwork
+from .snapshot_graph_plotter import render_snapshot_as_plain_graph
 from .trace_movie_maker import movie_from_snapshots

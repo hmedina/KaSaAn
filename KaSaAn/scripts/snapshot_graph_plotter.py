@@ -35,15 +35,14 @@ def main():
     args = parser.parse_args()
 
     snapshot = KappaSnapshot(snapshot_file_name=args.snapshot_file_name)
-    highlight_pattern_list = [KappaAgent(pattern) for pattern in args.highlight_patterns]
     # render graph
     this_figure = render_snapshot_as_plain_graph(snapshot=snapshot, color_scheme_file_name=args.coloring_scheme,
-                                                 highlight_patterns=highlight_pattern_list, fig_size=args.figure_size,
+                                                 highlight_patterns=args.highlight_patterns, fig_size=args.figure_size,
                                                  node_size=args.node_size, edge_width=args.edge_width)
 
     # save or display the figure
-    if args.output_file_name:
-        this_figure.savefig(fname=args.output_file_name)
+    if args.output_file:
+        this_figure.savefig(fname=args.output_file)
     else:
         plt.show()
 
