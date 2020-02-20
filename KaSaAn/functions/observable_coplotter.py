@@ -5,7 +5,7 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 from typing import List, Tuple
-from .kappa_trace_plotter import kappa_trace_reader
+from .observable_plotter import kappa_trace_reader
 from .numerical_sort import numerical_sort
 
 

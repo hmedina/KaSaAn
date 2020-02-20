@@ -23,13 +23,12 @@ setup(
     python_requires='==3.7',
     entry_points={
         'console_scripts': [
-            'catalytic_potential_of_folder = KaSaAn.scripts.catalytic_potential:main',
-            'kappa_trace_plotter = KaSaAn.scripts.kappa_trace_plotter:main',
-            'kappa_trace_coplotter = KaSaAn.scripts.kappa_trace_coplotter:main',
-            'plot_filtered_distributions = KaSaAn.scripts.plot_filtered_distributions:main',
-            'prefixed_snapshot_analyzer = KaSaAn.scripts.prefixed_snapshot_analyzer:main',
-            'snapshot_visualizer = KaSaAn.scripts.snapshot_patchwork_visualizer:main',
-            'trace_movie_maker = KaSaAn.scripts.trace_movie_maker:main',
+            'kappa_catalytic_potential = KaSaAn.scripts.catalytic_potential:main',
+            'kappa_observable_plotter = KaSaAn.scripts.observable_plotter:main',
+            'kappa_observable_coplotter = KaSaAn.scripts.observable_coplotter:main',
+            'kappa_snapshot_visualizer_patchwork = KaSaAn.scripts.snapshot_visualizer_patchwork:main',
+            'kappa_snapshot_visualizer_network = KaSaAn.scripts.snapshot_visualizer_network:main',
+            'kappa_trace_movie_maker = KaSaAn.scripts.trace_movie_maker:main',
         ]
     }
 )

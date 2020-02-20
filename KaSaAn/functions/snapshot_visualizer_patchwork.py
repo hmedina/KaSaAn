@@ -213,9 +213,9 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
         ax_count.add_collection(PatchCollection(rectangles_count, match_original=True))
 
         # Add title onto axes, hide the ticks, re-center the bounding box
-        ax_mass.set_title('Area proportional to mass of species')
-        ax_size.set_title('Area proportional to size of species')
-        ax_count.set_title('Area proportional to count of species')
+        ax_mass.set_title('Mass')
+        ax_size.set_title('Size')
+        ax_count.set_title('Count')
         ax_mass.axis('off')
         ax_size.axis('off')
         ax_count.axis('off')

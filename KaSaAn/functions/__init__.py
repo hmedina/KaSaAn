@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 from .catalytic_potential import get_potential_of_snapshot, get_potential_of_folder
-from .kappa_trace_plotter import kappa_trace_reader, kappa_trace_figure_maker
-from .kappa_trace_coplotter import kappa_trace_coplotter
+from .observable_plotter import kappa_trace_reader, kappa_trace_figure_maker
+from .observable_coplotter import kappa_trace_coplotter
 from .numerical_sort import numerical_sort
 from .plot_filtered_distributions import plot_filtered_dist
 from .prefixed_snapshot_analyzer import prefixed_snapshot_analyzer
-from .snapshot_patchwork_visualizer import render_snapshot_as_patchwork
-from .snapshot_graph_plotter import render_snapshot_as_plain_graph
+from .snapshot_visualizer_patchwork import render_snapshot_as_patchwork
+from .snapshot_visualizer_network import render_snapshot_as_plain_graph
 from .trace_movie_maker import movie_from_snapshots
