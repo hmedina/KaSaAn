@@ -8,6 +8,7 @@ class TestKappaSnapshot(unittest.TestCase):
     """Testing various elements of KappaSnapshot representation."""
     snap_abc = KappaSnapshot('./models/alphabet_soup_snap.ka')
     snap_dim = KappaSnapshot('./models/dimerization_with_tokens_snap.ka')
+    snap_kte = KappaSnapshot('./models/kite_snap.ka')
 
     def test_snapshot_string_representation(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
         self.assertEqual(str(ref_snap_abc)[0:1000],
@@ -19,17 +20,20 @@ class TestKappaSnapshot(unittest.TestCase):
         self.assertEqual(ref_snap_abc.get_snapshot_file_name(), 'alphabet_soup_snap.ka')
         self.assertEqual(ref_snap_dim.get_snapshot_file_name(), 'dimerization_with_tokens_snap.ka')
 
-    def test_get_snapshot_time(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+    def test_get_snapshot_time(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.get_snapshot_time(), 10.0)
         self.assertEqual(ref_snap_dim.get_snapshot_time(), 10.0)
+        self.assertEqual(ref_snap_kte.get_snapshot_time(), 1.0)
 
-    def test_get_snapshot_uuid(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+    def test_get_snapshot_uuid(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.get_snapshot_uuid(), '466122889')
         self.assertEqual(ref_snap_dim.get_snapshot_uuid(), '912920752')
+        self.assertEqual(ref_snap_kte.get_snapshot_uuid(), '000000000')
 
-    def test_get_snapshot_event(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+    def test_get_snapshot_event(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.get_snapshot_event(), 91304)
         self.assertEqual(ref_snap_dim.get_snapshot_event(), 9953)
+        self.assertEqual(ref_snap_kte.get_snapshot_event(), 1)
 
     def test_get_all_complexes(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
         self.assertEqual(ref_snap_abc.get_all_complexes()[0:10],
@@ -57,18 +61,20 @@ class TestKappaSnapshot(unittest.TestCase):
         self.assertEqual(ref_snap_dim.get_all_complexes(),
                          [KappaComplex("A(a[1]{#}), A(a[1]{#})"), KappaComplex("A(a[.]{#})")])
 
-    def test_get_all_abundances(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+    def test_get_all_abundances(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.get_all_abundances(),
                          [182, 1, 1, 192, 189, 1, 1, 183, 1, 189, 190, 191, 176, 180, 1, 174, 187, 184, 183, 184, 190,
                           1, 171, 170, 1, 186, 1, 1, 185, 1, 1, 1, 1, 175, 185, 1, 182])
         self.assertEqual(ref_snap_dim.get_all_abundances(), [241, 18])
+        self.assertEqual(ref_snap_kte.get_all_abundances(), [1, 2])
 
-    def test_get_all_sizes(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+    def test_get_all_sizes(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.get_all_sizes(), [1, 5, 5, 1, 1, 6, 10, 1, 4, 1, 1, 1, 1, 1, 21899, 1, 1, 1, 1,
                                                         1, 1, 2, 1, 1, 3, 1, 4, 4, 1, 5, 9, 5, 4, 1, 1, 7, 1])
         self.assertEqual(ref_snap_dim.get_all_sizes(), [2, 1])
+        self.assertEqual(ref_snap_kte.get_all_sizes(), [7, 6])
 
-    def test_get_agent_types_present(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+    def test_get_agent_types_present(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.get_agent_types_present(),
                          {KappaAgent("Aa()"), KappaAgent("Ab()"), KappaAgent("Ac()"), KappaAgent("Ad()"),
                           KappaAgent("Ae()"), KappaAgent("Af()"), KappaAgent("Ag()"), KappaAgent("Ah()"),
@@ -78,17 +84,20 @@ class TestKappaSnapshot(unittest.TestCase):
                           KappaAgent("Au()"), KappaAgent("Av()"), KappaAgent("Aw()"), KappaAgent("Ax()"),
                           KappaAgent("Ay()"), KappaAgent("Az()")})
         self.assertEqual(ref_snap_dim.get_agent_types_present(), {KappaAgent("A()")})
+        self.assertEqual(ref_snap_kte.get_agent_types_present(),
+                         {KappaAgent("A()"), KappaAgent("B()"), KappaAgent("C()")})
 
     def test_get_all_complexes_and_abundances(self, ref_snap_dim=snap_dim):
         self.assertEqual(dict(ref_snap_dim.get_all_complexes_and_abundances()),
                          {KappaComplex('A(a[1]), A(a[1])'): 241,
                           KappaComplex('A(a[.])'): 18})
 
-    def test_get_total_mass(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+    def test_get_total_mass(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.get_total_mass(), 26000)
         self.assertEqual(ref_snap_dim.get_total_mass(), 500)
+        self.assertEqual(ref_snap_kte.get_total_mass(), 19)
 
-    def test_get_abundance_of_agent(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+    def test_get_abundance_of_agent(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.get_abundance_of_agent('Aa()'), 1000)
         self.assertEqual(ref_snap_abc.get_abundance_of_agent(KappaAgent('Aa()')), 1000)
         self.assertEqual(ref_snap_abc.get_abundance_of_agent('Aa(a[.])'), 30)
@@ -97,8 +106,11 @@ class TestKappaSnapshot(unittest.TestCase):
         self.assertEqual(ref_snap_dim.get_abundance_of_agent('A()'), 500)
         self.assertEqual(ref_snap_dim.get_abundance_of_agent('A(a[.])'), 18)
         self.assertEqual(ref_snap_dim.get_abundance_of_agent('A(a[_])'), 482)
+        self.assertEqual(ref_snap_kte.get_abundance_of_agent('A(a{ph})'), 5)
+        self.assertEqual(ref_snap_kte.get_abundance_of_agent('B(c{ph})'), 3)
+        self.assertEqual(ref_snap_kte.get_abundance_of_agent('A(c[_])'), 3)
 
-    def test_get_composition(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+    def test_get_composition(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.get_composition(),
                          {KappaAgent("Aa()"): 1000, KappaAgent("Ab()"): 1000, KappaAgent("Ac()"): 1000,
                           KappaAgent("Ad()"): 1000, KappaAgent("Ae()"): 1000, KappaAgent("Af()"): 1000,
@@ -110,6 +122,8 @@ class TestKappaSnapshot(unittest.TestCase):
                           KappaAgent("Av()"): 1000, KappaAgent("Aw()"): 1000, KappaAgent("Ax()"): 1000,
                           KappaAgent("Ay()"): 1000, KappaAgent("Az()"): 1000})
         self.assertEqual(ref_snap_dim.get_composition(), {KappaAgent("A()"): 500})
+        self.assertEqual(ref_snap_kte.get_composition(),
+                         {KappaAgent('A()'): 12, KappaAgent('B()'): 6, KappaAgent('C()'): 1})
 
     def test_get_complexes_with_abundance(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
         self.assertEqual(ref_snap_abc.get_complexes_with_abundance(10), [])
@@ -182,13 +196,15 @@ class TestKappaSnapshot(unittest.TestCase):
                           KappaComplex("Ad(a[.]{#} b[.]{#} c[.]{#} d[.]{#} e[.]{#} f[.]{#} g[.]{#} h[.]{#} i[.]{#} j[.]{#} k[.]{#} l[.]{#} m[.]{#} n[.]{#} o[2]{#} p[.]{#} q[3]{#} r[1]{#} s[4]{#} t[.]{#} u[.]{#} v[.]{#} w[.]{#} x[5]{#} y[.]{#} z[.]{#}), Ao(a[.]{#} b[.]{#} c[.]{#} d[2]{#} e[.]{#} f[.]{#} g[.]{#} h[.]{#} i[.]{#} j[.]{#} k[.]{#} l[.]{#} m[.]{#} n[.]{#} o[.]{#} p[.]{#} q[.]{#} r[.]{#} s[.]{#} t[.]{#} u[.]{#} v[.]{#} w[.]{#} x[.]{#} y[.]{#} z[.]{#}), Aq(a[.]{#} b[.]{#} c[.]{#} d[3]{#} e[.]{#} f[.]{#} g[.]{#} h[.]{#} i[.]{#} j[.]{#} k[.]{#} l[.]{#} m[.]{#} n[.]{#} o[.]{#} p[.]{#} q[.]{#} r[.]{#} s[.]{#} t[.]{#} u[.]{#} v[.]{#} w[.]{#} x[.]{#} y[.]{#} z[.]{#}), Ar(a[.]{#} b[.]{#} c[.]{#} d[1]{#} e[.]{#} f[.]{#} g[.]{#} h[.]{#} i[.]{#} j[.]{#} k[.]{#} l[.]{#} m[.]{#} n[.]{#} o[.]{#} p[.]{#} q[.]{#} r[.]{#} s[.]{#} t[.]{#} u[.]{#} v[.]{#} w[.]{#} x[.]{#} y[.]{#} z[.]{#}), As(a[.]{#} b[.]{#} c[.]{#} d[4]{#} e[.]{#} f[.]{#} g[.]{#} h[.]{#} i[.]{#} j[.]{#} k[.]{#} l[.]{#} m[.]{#} n[.]{#} o[.]{#} p[.]{#} q[.]{#} r[.]{#} s[.]{#} t[.]{#} u[.]{#} v[.]{#} w[.]{#} x[.]{#} y[.]{#} z[.]{#}), Ax(a[.]{#} b[.]{#} c[.]{#} d[5]{#} e[.]{#} f[.]{#} g[.]{#} h[.]{#} i[.]{#} j[.]{#} k[.]{#} l[.]{#} m[.]{#} n[.]{#} o[.]{#} p[.]{#} q[.]{#} r[.]{#} s[.]{#} t[.]{#} u[.]{#} v[.]{#} w[.]{#} x[.]{#} y[.]{#} z[.]{#})")])
         self.assertEqual(ref_snap_dim.get_least_abundant_complexes(), [KappaComplex("A(a[.]{#})")])
 
-    def test_get_size_distribution(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+    def test_get_size_distribution(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.get_size_distribution(),
                          {1: 4028, 5: 4, 6: 1, 10: 1, 4: 4, 21899: 1, 2: 1, 3: 1, 9: 1, 7: 1})
         self.assertEqual(ref_snap_dim.get_size_distribution(), {2: 241, 1: 18})
+        self.assertEqual(ref_snap_kte.get_size_distribution(), {7: 1, 6: 2})
 
-    def test_get_all_tokens(self, ref_snap_dim=snap_dim):
+    def test_get_all_tokens(self, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_dim.get_all_tokens_and_values(), {'X': 241.0})
+        self.assertEqual(ref_snap_kte.get_all_tokens_and_values(), {})
 
     def test_get_value_of_token(self, ref_snap_dim=snap_dim):
         self.assertEqual(ref_snap_dim.get_value_of_token('X'), 241.0)
@@ -197,8 +213,10 @@ class TestKappaSnapshot(unittest.TestCase):
     def test_get_token_names(self, ref_snap_dim=snap_dim):
         self.assertEqual(ref_snap_dim.get_token_names(), ['X'])
 
-    def to_networkx(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
+    def to_networkx(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.to_networkx().number_of_nodes(), 26000)
         self.assertEqual(ref_snap_abc.to_networkx().number_of_edges(), 78542)
         self.assertEqual(ref_snap_dim.to_networkx().number_of_nodes(), 500)
         self.assertEqual(ref_snap_dim.to_networkx().number_of_edges(), 241)
+        self.assertEqual(ref_snap_kte.to_networkx().number_of_nodes(), 19)
+        self.assertEqual(ref_snap_kte.to_networkx().number_of_edges(), 19)

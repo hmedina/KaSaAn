@@ -1,0 +1,6 @@
+// Snapshot [Event: 1]
+// "uuid" : "000000000"
+%def: "T0" "1"
+
+%init: 1 /*7 agents*/ A(a{ph}[4] b[1] c[.]), A(a{ub}[1] b[2] c[.]), A(a{ph}[2] b[3] c[.]), A(a{ph}[3] b[4] c[5]), B(c{ub}[5] b[6]), B(b[6] c{ph}[7]), C(b[7])
+%init: 2 /*6 agents*/ A(a{ub}[4] b[1] c[.]), A(a{ph}[1] b[2] c[.]), A(a{ub}[2] b[3] c[.]), A(a{ub}[3] b[4] c[5]), B(c{ph}[5] b[6]), B(b[6] c{ub}[.])
