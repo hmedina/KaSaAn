@@ -18,29 +18,21 @@ def find_data_files(pattern: str) -> List[str]:
     return sorted_file_list
 
 
-def get_xy_legend_data_from_file(variable: int, file_name: str) -> Tuple[np.array, np.array, str]:
-    """Extract time and value data for a specific observable from a standard Kappa time-trace file."""
-    legend_data, numeric_data = kappa_trace_reader(file_name)
-    if numeric_data.shape[0] <= 1:
-        warnings.warn('Only one time point in file ' + str(file_name))
-    time_series = numeric_data[:, 0]
-    var_val_series = numeric_data[:, variable]
-    legend_name = legend_data[variable]
-    return time_series, var_val_series, legend_name
-
-
-def co_plot_variable_from_file_list(data_files: List[str], var_to_coplot: int, diff_toggle: bool):
+def co_plot_variable_from_file_list(file_data_list: List[Tuple[List[str], np.array, str]], var_to_coplot: int, diff_toggle: bool):
     """Co-plot the same variable from a list of files."""
     var_index = var_to_coplot - 1
     co_plot_fig, ax = plt.subplots()
     legend_entries = []
-    for rep_file in data_files:
-        data_x, data_y, legend_entry = get_xy_legend_data_from_file(var_index, rep_file)
+    for file_data in file_data_list:
+        legend_data, numeric_data, file_name = file_data
+        data_x = numeric_data[:, 0]
+        data_y = numeric_data[:, var_index]
+        legend_entry = legend_data[var_index]
         if diff_toggle:
             d_t = np.diff(data_x)
             d_v = np.diff(data_y)
             if np.any(d_t == 0.0):
-                raise ValueError('Time difference of zero found in file ' + rep_file)
+                raise ValueError('Time difference of zero found in file ' + file_name)
             data_y = d_v / d_t
             data_x = data_x[1:]
         legend_entries.append(legend_entry)
@@ -63,5 +55,11 @@ def co_plot_variable_from_file_list(data_files: List[str], var_to_coplot: int, d
 
 def kappa_trace_coplotter(file_pattern: str, plot_variable: int, differential_toggle: bool):
     file_names = find_data_files(file_pattern)
-    fig = co_plot_variable_from_file_list(file_names, plot_variable, differential_toggle)
+    file_data_list = []
+    for file_name in file_names:
+        legend_data, numeric_data = kappa_trace_reader(file_name)
+        if numeric_data.shape[0] <= 1:
+            warnings.warn('Only one time point in file ' + file_name)
+        file_data_list.append((legend_data, numeric_data, file_name))
+    fig = co_plot_variable_from_file_list(file_data_list, plot_variable, differential_toggle)
     return fig
