@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 from .catalytic_potential import get_potential_of_snapshot, get_potential_of_folder
-from .observable_plotter import kappa_trace_reader, kappa_trace_figure_maker
-from .observable_coplotter import kappa_trace_coplotter
+from .observable_plotter import observable_file_reader, observable_list_figure_maker
+from .observable_coplotter import observable_coplot_figure_maker, observable_multi_data_figure_maker
 from .numerical_sort import numerical_sort
 from .plot_filtered_distributions import plot_filtered_dist
 from .prefixed_snapshot_analyzer import prefixed_snapshot_analyzer

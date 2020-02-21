@@ -5,7 +5,7 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 from typing import List, Tuple
-from .observable_plotter import kappa_trace_reader
+from .observable_plotter import observable_file_reader
 from .numerical_sort import numerical_sort
 
 
@@ -18,7 +18,7 @@ def find_data_files(pattern: str) -> List[str]:
     return sorted_file_list
 
 
-def co_plot_variable_from_file_list(file_data_list: List[Tuple[List[str], np.array, str]], var_to_coplot: int, diff_toggle: bool):
+def observable_multi_data_figure_maker(file_data_list: List[Tuple[List[str], np.array, str]], var_to_coplot: int, diff_toggle: bool):
     """Co-plot the same variable from a list of files."""
     var_index = var_to_coplot - 1
     co_plot_fig, ax = plt.subplots()
@@ -53,13 +53,13 @@ def co_plot_variable_from_file_list(file_data_list: List[Tuple[List[str], np.arr
     return co_plot_fig
 
 
-def kappa_trace_coplotter(file_pattern: str, plot_variable: int, differential_toggle: bool):
+def observable_coplot_figure_maker(file_pattern: str, plot_variable: int, differential_toggle: bool):
     file_names = find_data_files(file_pattern)
     file_data_list = []
     for file_name in file_names:
-        legend_data, numeric_data = kappa_trace_reader(file_name)
+        legend_data, numeric_data = observable_file_reader(file_name)
         if numeric_data.shape[0] <= 1:
             warnings.warn('Only one time point in file ' + file_name)
         file_data_list.append((legend_data, numeric_data, file_name))
-    fig = co_plot_variable_from_file_list(file_data_list, plot_variable, differential_toggle)
+    fig = observable_multi_data_figure_maker(file_data_list, plot_variable, differential_toggle)
     return fig

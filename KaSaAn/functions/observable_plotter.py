@@ -6,7 +6,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 
-def kappa_trace_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarray]:
+def observable_file_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarray]:
     """Function parses a kappa output file, e.g. <data.csv>, and returns the legend and numeric data."""
     leg_data = np.loadtxt(file_name, delimiter=',', skiprows=2, max_rows=1, dtype=str)
     num_data = np.loadtxt(file_name, delimiter=',', skiprows=3)
@@ -14,9 +14,9 @@ def kappa_trace_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarray]:
     return leg_data, num_data
 
 
-def kappa_trace_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[int], diff_toggle: bool,
-                             fig_size: Tuple[float, float] = mpl.rcParams['figure.figsize'],
-                             fig_res: float = mpl.rcParams['figure.dpi']) -> plt.figure:
+def observable_list_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[int], diff_toggle: bool,
+                                 fig_size: Tuple[float, float] = mpl.rcParams['figure.figsize'],
+                                 fig_res: float = mpl.rcParams['figure.dpi']) -> plt.figure:
     """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object."""
     leg_data, num_data = data
     # determine what observables to plot

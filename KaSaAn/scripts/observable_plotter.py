@@ -3,7 +3,7 @@
 import argparse
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from KaSaAn.functions import kappa_trace_reader, kappa_trace_figure_maker
+from KaSaAn.functions import observable_file_reader, observable_list_figure_maker
 
 
 def main():
@@ -32,12 +32,12 @@ def main():
     args = parser.parse_args()
 
     # parse data
-    this_data = kappa_trace_reader(args.input_file_name)
-    this_figure = kappa_trace_figure_maker(data=this_data,
-                                           vars_to_plot=args.variables_to_plot,
-                                           fig_size=args.fig_size,
-                                           fig_res=args.dots_per_inch,
-                                           diff_toggle=args.differential)
+    this_data = observable_file_reader(args.input_file_name)
+    this_figure = observable_list_figure_maker(data=this_data,
+                                               vars_to_plot=args.variables_to_plot,
+                                               fig_size=args.fig_size,
+                                               fig_res=args.dots_per_inch,
+                                               diff_toggle=args.differential)
 
     # print out observables
     if args.print_observables_to_file:
