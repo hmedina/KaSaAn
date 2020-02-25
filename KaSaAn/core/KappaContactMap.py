@@ -61,7 +61,7 @@ def raw_string_to_agent_sites_bond_types(raw_string: str) -> Tuple[str, dict]:
     return agent_name, sites_data
 
 
-def parsed_kappa_to_default_graphics(parsed_kappa_struct: dict, wedge_surf_dist=3, wedge_thickness=1.5, grid_spacing=10):
+def parsed_kappa_to_default_graphics(parsed_kappa_struct: dict, wedge_surf_dist=1, wedge_thick_ratio=0.5, grid_spacing=10):
     """Initialize agents as a square grid, sites superposed (i.e. default values)."""
     agent_graphics = {}
     grid_base = np.ceil(np.sqrt(len(parsed_kappa_struct.keys())))
@@ -75,14 +75,14 @@ def parsed_kappa_to_default_graphics(parsed_kappa_struct: dict, wedge_surf_dist=
                 binding_sites[site_name] = {'center': (agent_x, agent_y),
                                             'r': wedge_surf_dist,
                                             'theta1': 0.0, 'theta2': 0.0,       # these will be initialized later
-                                            'width': wedge_thickness,
+                                            'width': wedge_thick_ratio * wedge_surf_dist,
                                             'facecolor': '#000000'}
             if parsed_kappa_struct[agent_name][site_name]['int_states']:
                 flagpole_site_data[site_name] = parsed_kappa_struct[agent_name][site_name]['int_states']
         flagpole_location = {'center': (agent_x, agent_y),
                              'r': wedge_surf_dist,
                              'theta1': 0.0, 'theta2': 0.0,                 # these will be initialized later
-                             'width': wedge_thickness,
+                             'width': wedge_thick_ratio * wedge_surf_dist,
                              'facecolor': '#444444'}
         agent_graphics[agent_name] = {'loc_x': agent_x, 'loc_y': agent_y,
                                       'bnd_sites': binding_sites, 'flagpole_sites': flagpole_site_data,
@@ -103,17 +103,21 @@ def initialize_sites_graphic_structure(graphic_struct: dict) -> dict:
         wedge_ends = np.rad2deg(np.linspace(0, 2*np.pi, wedge_number))
         # define default color palette based on number of wedges
         site_palette = default_site_colors(bind_site_number)
-        # (re)initialize data
+        # (re)initialize data, wedges scale in size with the number of wedges to draw
         wedge_center = (graphic_struct[agent_name]['loc_x'], graphic_struct[agent_name]['loc_y'])
         for bind_site_index, bind_site_name in enumerate(init_site_graphics[agent_name]['bnd_sites'].keys()):
             init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['theta1'] = wedge_ends[bind_site_index]
             init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['theta2'] = wedge_ends[bind_site_index+1]
             init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['facecolor'] = site_palette[bind_site_index]
             init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['center'] = wedge_center
+            init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['r'] *= np.sqrt(wedge_number)
+            init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['width'] *= np.sqrt(wedge_number)
         if init_site_graphics[agent_name]['flagpole_sites']:
             init_site_graphics[agent_name]['flagpole_loc']['theta1'] = wedge_ends[-2]
             init_site_graphics[agent_name]['flagpole_loc']['theta2'] = wedge_ends[-1]
             init_site_graphics[agent_name]['flagpole_loc']['center'] = wedge_center
+            init_site_graphics[agent_name]['flagpole_loc']['r'] *= np.sqrt(wedge_number)
+            init_site_graphics[agent_name]['flagpole_loc']['width'] *= np.sqrt(wedge_number)
     return init_site_graphics
 
 
