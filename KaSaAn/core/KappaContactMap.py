@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import colorsys
+import random
 import re
 import matplotlib.path
 import matplotlib.patches
@@ -15,15 +16,16 @@ def default_site_colors(number_of_sites) -> list:
     """Define a list of colors appropriate to the number of sites being drawn."""
     # Use built-in palettes: for 10 or less use the default colors
     if number_of_sites <= len(mpl.rcParams['axes.prop_cycle']):
-        color_list = ['C' + str(i) for i in range(number_of_sites)]
+        color_set = ['C' + str(i) for i in range(len(mpl.rcParams['axes.prop_cycle']))]
     # For 20 or more agents, use the tab20 colormap
     elif number_of_sites <= 20:
         colormap = plt.get_cmap('tab20')
-        color_list = [colormap(i) for i in range(number_of_sites)]
+        color_set = [colormap(i) for i in range(20)]
     # For more than 20, pick linearly spaced values on HSV space
     else:
-        h = np.linspace(start=0, stop=1, num=number_of_sites, endpoint=False)
-        color_list = [colorsys.hsv_to_rgb(i, 0.7, 0.75) for i in range(number_of_sites)]
+        hue_samples = np.linspace(start=0, stop=1, num=number_of_sites, endpoint=False)
+        color_set = [colorsys.hsv_to_rgb(h, 0.7, 0.75) for h in hue_samples]
+    color_list = random.sample(color_set, number_of_sites)
     return color_list
 
 
