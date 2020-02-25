@@ -334,6 +334,10 @@ class KappaContactMap:
         # update
         self._bond_spline_points = define_bond_spline_points(self._bond_types, self._agent_graphics)
 
+    def set_site_color_of(self, agent_name, site_name, new_color):
+        """Change the color of a wedge to a new color."""
+        self._agent_graphics[agent_name]['bnd_sites'][site_name]['facecolor'] = new_color
+
     def draw(self, target_axis):
         """Draw the contact map onto the supplied axis"""
         # draw splines
