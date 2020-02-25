@@ -259,7 +259,7 @@ def draw_flagpole(agent_graphic_struct: dict, figure_axis):
             fp_string = '\n'.join(fp_strings)
             # define align keywords
             align_kwrds = {'ha': 'left' if np.cos(np.deg2rad(fp_midline)) > 0 else 'right',
-                           'va': 'top' if np.cos(np.deg2rad(fp_midline)) > 0 else 'bottom'}
+                           'va': 'bottom' if np.cos(np.deg2rad(fp_midline)) > 0 else 'top'}
             # draw the actual flagpole
             figure_axis.plot([fp_x_base, fp_x_offs], [fp_y_base, fp_y_offs], color='k')
             figure_axis.text(s=fp_string, x=fp_x_offs, y=fp_y_offs, **align_kwrds, fontsize='xx-small')
