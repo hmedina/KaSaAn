@@ -125,11 +125,16 @@ def get_bond_types(parsed_kappa_struct: dict) -> dict:
             for type_data in parsed_kappa_struct[agent_a][site_a]['bnd_states']:
                 raw_exp = type_data
                 site_b, agent_b = raw_exp.split('.')
-                # canonicalize bond name by alphabetical agent number, avoids duplication
+                # canonicalize bond name by alphabetical agent number, site name if equal: avoids duplication
                 if agent_a < agent_b:
                     bond_name = agent_a + '.' + site_a + '..' + site_b + '.' + agent_b
+                elif agent_a > agent_b:
+                    bond_name = agent_b + '.' + site_b + '..' + site_a + '.' + agent_a
                 else:
-                    bond_name = agent_b + '.' + site_b + '..' + site_b + '.' + agent_b
+                    if site_a < site_b:
+                        bond_name = agent_a + '.' + site_a + '..' + site_b + '.' + agent_b
+                    else:
+                        bond_name = agent_b + '.' + site_b + '..' + site_a + '.' + agent_a
                 bond_dict[bond_name] = {'ag_1': agent_a, 'st_1': site_a, 'st_2': site_b, 'ag_2': agent_b}
     return bond_dict
 
