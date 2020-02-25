@@ -249,8 +249,8 @@ def draw_flagpole(agent_graphic_struct: dict, figure_axis):
             fp_midline = (fp_loc['theta1'] + fp_loc['theta2']) / 2
             fp_x_base = ag_x + np.cos(np.deg2rad(fp_midline)) * fp_loc['r']
             fp_y_base = ag_y + np.sin(np.deg2rad(fp_midline)) * fp_loc['r']
-            fp_x_offs = ag_x + np.cos(np.deg2rad(fp_midline)) * 2 * fp_loc['r']
-            fp_y_offs = ag_y + np.sin(np.deg2rad(fp_midline)) * 2 * fp_loc['r']
+            fp_x_offs = ag_x + np.cos(np.deg2rad(fp_midline)) * (fp_loc['width'] + fp_loc['r'])
+            fp_y_offs = ag_y + np.sin(np.deg2rad(fp_midline)) * (fp_loc['width'] + fp_loc['r'])
             # define string
             fp_strings = []
             for site_name in agent_graphic_struct[agent_name]['flagpole_sites'].keys():
@@ -259,7 +259,7 @@ def draw_flagpole(agent_graphic_struct: dict, figure_axis):
             fp_string = '\n'.join(fp_strings)
             # define align keywords
             align_kwrds = {'ha': 'left' if np.cos(np.deg2rad(fp_midline)) > 0 else 'right',
-                           'va': 'bottom' if np.cos(np.deg2rad(fp_midline)) > 0 else 'top'}
+                           'va': 'bottom' if np.sin(np.deg2rad(fp_midline)) > 0 else 'top'}
             # draw the actual flagpole
             figure_axis.plot([fp_x_base, fp_x_offs], [fp_y_base, fp_y_offs], color='k')
             figure_axis.text(s=fp_string, x=fp_x_offs, y=fp_y_offs, **align_kwrds, fontsize='xx-small')
