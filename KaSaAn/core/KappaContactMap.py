@@ -28,13 +28,14 @@ def default_site_colors(number_of_sites) -> list:
 
 
 def file_name_to_string_list(contact_map_file_name: str) -> List[str]:
-    """Read a file containing only contact map data, process into a list."""
+    """Read an "inputs.ka" style file containing contact map data, process into a clean list of 1-agent strings."""
     with open(contact_map_file_name, 'r') as cmf:
         raw_expression = cmf.read()
     spaced_string = re.sub(r'\s+', ' ', raw_expression)                 # condense spaces
     flat_string = spaced_string.replace(' [', '[')                      # remove whitespace before bracket
     flat_string = flat_string.replace(' {', '{')                        # remove whitespace before curly bracket
     split_string = flat_string.split('%agent: ')[1:]                    # break into list, discard empty first element
+    split_string[-1] = split_string[-1].split(')')[0] + ')'
     cleaned_list = [agent_exp.strip() for agent_exp in split_string]    # clean trailing space
     return cleaned_list
 
@@ -67,7 +68,7 @@ def parsed_kappa_to_default_graphics(parsed_kappa_struct: dict, wedge_surf_dist=
     for agent_index, agent_name in enumerate(parsed_kappa_struct.keys()):
         agent_x = np.mod(agent_index, grid_base) * grid_spacing           # default values, square grid
         agent_y = np.floor_divide(agent_index, grid_base) * grid_spacing
-        binding_sites = {}                                  # each site should be sent to either of these
+        binding_sites = {}                                  # each site should be sent to one or both of these
         flagpole_site_data = {}
         for site_name in parsed_kappa_struct[agent_name].keys():
             if parsed_kappa_struct[agent_name][site_name]['bnd_states']:
@@ -76,7 +77,7 @@ def parsed_kappa_to_default_graphics(parsed_kappa_struct: dict, wedge_surf_dist=
                                             'theta1': 0.0, 'theta2': 0.0,       # these will be initialized later
                                             'width': wedge_thickness,
                                             'facecolor': '#000000'}
-            else:
+            if parsed_kappa_struct[agent_name][site_name]['int_states']:
                 flagpole_site_data[site_name] = parsed_kappa_struct[agent_name][site_name]['int_states']
         flagpole_location = {'center': (agent_x, agent_y),
                              'r': wedge_surf_dist,
@@ -119,13 +120,17 @@ def initialize_sites_graphic_structure(graphic_struct: dict) -> dict:
 def get_bond_types(parsed_kappa_struct: dict) -> dict:
     """Define the agent and site points for later spline drawing."""
     bond_dict = {}
-    for agent_name in parsed_kappa_struct.keys():
-        for site_name in parsed_kappa_struct[agent_name].keys():
-            for type_data in parsed_kappa_struct[agent_name][site_name]['bnd_states']:
+    for agent_a in parsed_kappa_struct.keys():
+        for site_a in parsed_kappa_struct[agent_a].keys():
+            for type_data in parsed_kappa_struct[agent_a][site_a]['bnd_states']:
                 raw_exp = type_data
                 site_b, agent_b = raw_exp.split('.')
-                bond_name = agent_name + '.' + site_name + '..' + raw_exp
-                bond_dict[bond_name] = {'ag_1': agent_name, 'st_1': site_name, 'st_2': site_b, 'ag_2': agent_b}
+                # canonicalize bond name by alphabetical agent number, avoids duplication
+                if agent_a < agent_b:
+                    bond_name = agent_a + '.' + site_a + '..' + site_b + '.' + agent_b
+                else:
+                    bond_name = agent_b + '.' + site_b + '..' + site_b + '.' + agent_b
+                bond_dict[bond_name] = {'ag_1': agent_a, 'st_1': site_a, 'st_2': site_b, 'ag_2': agent_b}
     return bond_dict
 
 
@@ -340,4 +345,3 @@ class KappaContactMap:
         target_axis.autoscale()
         target_axis.set_aspect('equal')
         return target_axis
-
