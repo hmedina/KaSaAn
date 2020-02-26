@@ -92,7 +92,7 @@ def parsed_kappa_to_default_graphics(parsed_kappa_struct: dict, wedge_surf_dist=
     return agent_graphics
 
 
-def initialize_sites_graphic_structure(graphic_struct: dict) -> dict:
+def initialize_sites_graphic_structure(graphic_struct: dict, scale_wedges: bool=False) -> dict:
     """Once the data structure has been created, it can now be initialized with plausible values."""
     init_site_graphics = graphic_struct
     for agent_name in init_site_graphics.keys():
@@ -102,6 +102,7 @@ def initialize_sites_graphic_structure(graphic_struct: dict) -> dict:
             wedge_number = bind_site_number + 2
         else:
             wedge_number = bind_site_number + 1
+        wedge_scaling_factor = np.sqrt(wedge_number) if scale_wedges else 1
         wedge_ends = np.rad2deg(np.linspace(0, 2*np.pi, wedge_number))
         # define default color palette based on number of wedges
         site_palette = default_site_colors(bind_site_number)
@@ -112,14 +113,14 @@ def initialize_sites_graphic_structure(graphic_struct: dict) -> dict:
             init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['theta2'] = wedge_ends[bind_site_index+1]
             init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['facecolor'] = site_palette[bind_site_index]
             init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['center'] = wedge_center
-            init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['r'] *= np.sqrt(wedge_number)
-            init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['width'] *= np.sqrt(wedge_number)
+            init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['r'] *= wedge_scaling_factor
+            init_site_graphics[agent_name]['bnd_sites'][bind_site_name]['width'] *= wedge_scaling_factor
         if init_site_graphics[agent_name]['flagpole_sites']:
             init_site_graphics[agent_name]['flagpole_loc']['theta1'] = wedge_ends[-2]
             init_site_graphics[agent_name]['flagpole_loc']['theta2'] = wedge_ends[-1]
             init_site_graphics[agent_name]['flagpole_loc']['center'] = wedge_center
-            init_site_graphics[agent_name]['flagpole_loc']['r'] *= np.sqrt(wedge_number)
-            init_site_graphics[agent_name]['flagpole_loc']['width'] *= np.sqrt(wedge_number)
+            init_site_graphics[agent_name]['flagpole_loc']['r'] *= wedge_scaling_factor
+            init_site_graphics[agent_name]['flagpole_loc']['width'] *= wedge_scaling_factor
     return init_site_graphics
 
 
@@ -296,7 +297,7 @@ class KappaContactMap:
 
         # create structure used for storing location and plotting of agents and sites, then initialize it
         self._agent_graphics = parsed_kappa_to_default_graphics(self._parsed_kappa)
-        self._agent_graphics = initialize_sites_graphic_structure(self._agent_graphics)
+        self._agent_graphics = initialize_sites_graphic_structure(self._agent_graphics, scale_wedges=True)
 
         # create structure for storing the splines that mark bonds
         self._bond_types = get_bond_types(self._parsed_kappa)
