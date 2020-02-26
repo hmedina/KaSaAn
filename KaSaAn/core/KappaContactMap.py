@@ -227,23 +227,28 @@ def list_flagpole_wedges(agent_graphic_struct: dict) -> List[matplotlib.patches.
 
 def annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
     """Annotate an axis with data from the binding sites"""
-    txt_kwrds = {'horizontalalignment': 'center', 'verticalalignment': 'center', 'backgroundcolor': '#ffffff99',
-                 'fontfamily': 'monospace'}
+    agent_txt_kwrds = {'backgroundcolor': '#ffffffaa', 'fontfamily': 'monospace', 'fontsize': 'medium',
+                       'horizontalalignment': 'center', 'verticalalignment': 'center'}
+    wedge_txt_kwrds = {'backgroundcolor': '#ddddddaa', 'fontfamily': 'monospace', 'fontsize': 'x-small',
+                       'verticalalignment': 'center', 'rotation_mode': 'anchor'}
     for agent_name in agent_graphic_struct.keys():
         ag_x = agent_graphic_struct[agent_name]['loc_x']
         ag_y = agent_graphic_struct[agent_name]['loc_y']
-        figure_axis.text(s=agent_name, x=ag_x, y=ag_y, **txt_kwrds, fontsize='medium')
+        figure_axis.text(s=agent_name, x=ag_x, y=ag_y, **agent_txt_kwrds)
         for site_name in agent_graphic_struct[agent_name]['bnd_sites'].keys():
             site_data = agent_graphic_struct[agent_name]['bnd_sites'][site_name]
             st_midline = (site_data['theta1'] + site_data['theta2']) / 2
-            txt_x = ag_x + np.cos(np.deg2rad(st_midline)) * (site_data['r'] - (0.5 * site_data['width']))
-            txt_y = ag_y + np.sin(np.deg2rad(st_midline)) * (site_data['r'] - (0.5 * site_data['width']))
-            if np.sin(np.deg2rad(st_midline)) > 0:
-                text_rotation = -90
+            txt_x = ag_x + np.cos(np.deg2rad(st_midline)) * (site_data['r'] - site_data['width'])
+            txt_y = ag_y + np.sin(np.deg2rad(st_midline)) * (site_data['r'] - site_data['width'])
+            if np.cos(np.deg2rad(st_midline)) > 0:
+                text_rotation = 0
+                horz_align = 'left'
             else:
-                text_rotation = +90
+                text_rotation = 180
+                horz_align = 'right'
             txt_rot = st_midline + text_rotation
-            figure_axis.text(s=site_name, x=txt_x, y=txt_y, rotation=txt_rot, **txt_kwrds, fontsize='x-small')
+            figure_axis.text(s=site_name, x=txt_x, y=txt_y, rotation=txt_rot, **wedge_txt_kwrds,
+                             ha=horz_align)
 
 
 def draw_flagpole(agent_graphic_struct: dict, figure_axis, detailed_toggle: bool):
