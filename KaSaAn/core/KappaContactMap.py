@@ -236,7 +236,11 @@ def annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
             st_midline = (site_data['theta1'] + site_data['theta2']) / 2
             txt_x = ag_x + np.cos(np.deg2rad(st_midline)) * (site_data['r'] - (0.5 * site_data['width']))
             txt_y = ag_y + np.sin(np.deg2rad(st_midline)) * (site_data['r'] - (0.5 * site_data['width']))
-            txt_rot = st_midline + 90
+            if np.sin(np.deg2rad(st_midline)) > 0:
+                text_rotation = -90
+            else:
+                text_rotation = +90
+            txt_rot = st_midline + text_rotation
             figure_axis.text(s=site_name, x=txt_x, y=txt_y, rotation=txt_rot, **txt_kwrds, fontsize='x-small')
 
 
