@@ -6,7 +6,7 @@ from KaSaAn.core import KappaContactMap
 
 class TestKappaContactMap(unittest.TestCase):
     """Text various elements of the parsing and rendering of a KappaContactMap."""
-    cm_dedicated = KappaContactMap('../models/contact_map/inputs.ka')
+    cm_dedicated = KappaContactMap('./models/contact_map/inputs.ka')
 
     def test_agent_number(self, cm=cm_dedicated):
         self.assertEqual(len(cm._parsed_kappa.keys()), 4)
