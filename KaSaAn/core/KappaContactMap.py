@@ -240,7 +240,7 @@ def annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
             figure_axis.text(s=site_name, x=txt_x, y=txt_y, rotation=txt_rot, **txt_kwrds, fontsize='x-small')
 
 
-def draw_flagpole(agent_graphic_struct: dict, figure_axis):
+def draw_flagpole(agent_graphic_struct: dict, figure_axis, detailed_toggle: bool):
     """Draw the flagpole, line, site names, and state list"""
     for agent_name in agent_graphic_struct.keys():
         if agent_graphic_struct[agent_name]['flagpole_sites']:
@@ -262,9 +262,14 @@ def draw_flagpole(agent_graphic_struct: dict, figure_axis):
             # define align keywords
             align_kwrds = {'ha': 'left' if np.cos(np.deg2rad(fp_midline)) > 0 else 'right',
                            'va': 'bottom' if np.sin(np.deg2rad(fp_midline)) > 0 else 'top'}
-            # draw the actual flagpole
+            # draw the actual flagpole?
             figure_axis.plot([fp_x_base, fp_x_offs], [fp_y_base, fp_y_offs], color='k')
-            figure_axis.text(s=fp_string, x=fp_x_offs, y=fp_y_offs, **align_kwrds, fontsize='xx-small')
+            if detailed_toggle:
+                final_string = fp_string
+            else:
+                fp_annot = ' internal states\nnot shown' if len(fp_strings) > 1 else ' internal state\nnot shown'
+                final_string = str(len(fp_strings)) + fp_annot
+            figure_axis.text(s=final_string, x=fp_x_offs, y=fp_y_offs, **align_kwrds, fontsize='xx-small')
 
 
 class KappaContactMap:
@@ -338,7 +343,7 @@ class KappaContactMap:
         """Change the color of a wedge to a new color."""
         self._agent_graphics[agent_name]['bnd_sites'][site_name]['facecolor'] = new_color
 
-    def draw(self, target_axis):
+    def draw(self, target_axis, draw_state_flagpole: bool = True):
         """Draw the contact map onto the supplied axis"""
         # draw splines
         spline_list = [create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
@@ -354,7 +359,7 @@ class KappaContactMap:
         annotate_wedges_and_agents(self._agent_graphics, target_axis)
 
         # draw flagpole with its text
-        draw_flagpole(self._agent_graphics, target_axis)
+        draw_flagpole(self._agent_graphics, target_axis, draw_state_flagpole)
 
         # update limits, set aspect ratio
         target_axis.autoscale()
