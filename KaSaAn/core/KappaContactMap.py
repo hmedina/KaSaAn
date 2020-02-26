@@ -227,11 +227,12 @@ def list_flagpole_wedges(agent_graphic_struct: dict) -> List[matplotlib.patches.
 
 def annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
     """Annotate an axis with data from the binding sites"""
-    txt_kwrds = {'horizontalalignment': 'center', 'verticalalignment': 'center', 'backgroundcolor': '#ffffff99'}
+    txt_kwrds = {'horizontalalignment': 'center', 'verticalalignment': 'center', 'backgroundcolor': '#ffffff99',
+                 'fontfamily': 'monospace'}
     for agent_name in agent_graphic_struct.keys():
         ag_x = agent_graphic_struct[agent_name]['loc_x']
         ag_y = agent_graphic_struct[agent_name]['loc_y']
-        figure_axis.text(s=agent_name, x=ag_x, y=ag_y, **txt_kwrds)
+        figure_axis.text(s=agent_name, x=ag_x, y=ag_y, **txt_kwrds, fontsize='medium')
         for site_name in agent_graphic_struct[agent_name]['bnd_sites'].keys():
             site_data = agent_graphic_struct[agent_name]['bnd_sites'][site_name]
             st_midline = (site_data['theta1'] + site_data['theta2']) / 2
@@ -265,8 +266,10 @@ def draw_flagpole(agent_graphic_struct: dict, figure_axis, detailed_toggle: bool
                 fp_strings.append(site_name + ': ' + ', '.join(state_list))
             fp_string = '\n'.join(fp_strings)
             # define align keywords
-            align_kwrds = {'ha': 'left' if np.cos(np.deg2rad(fp_midline)) > 0 else 'right',
-                           'va': 'bottom' if np.sin(np.deg2rad(fp_midline)) > 0 else 'top'}
+            text_kwrds = {'ha': 'left' if np.cos(np.deg2rad(fp_midline)) > 0 else 'right',
+                          'va': 'bottom' if np.sin(np.deg2rad(fp_midline)) > 0 else 'top',
+                          'fontsize': 'xx-small', 'fontfamily': 'monospace',
+                          'backgroundcolor': '#bbbbbb99'}
             # draw the actual flagpole?
             figure_axis.plot([fp_x_base, fp_x_offs], [fp_y_base, fp_y_offs], color='k')
             if detailed_toggle:
@@ -274,7 +277,7 @@ def draw_flagpole(agent_graphic_struct: dict, figure_axis, detailed_toggle: bool
             else:
                 fp_annot = ' internal states\nnot shown' if len(fp_strings) > 1 else ' internal state\nnot shown'
                 final_string = str(len(fp_strings)) + fp_annot
-            figure_axis.text(s=final_string, x=fp_x_offs, y=fp_y_offs, **align_kwrds, fontsize='xx-small')
+            figure_axis.text(s=final_string, x=fp_x_offs, y=fp_y_offs, **text_kwrds)
 
 
 class KappaContactMap:
