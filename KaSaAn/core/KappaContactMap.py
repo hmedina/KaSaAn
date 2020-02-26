@@ -227,8 +227,9 @@ def list_flagpole_wedges(agent_graphic_struct: dict) -> List[matplotlib.patches.
 
 def annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
     """Annotate an axis with data from the binding sites"""
-    agent_txt_kwrds = {'backgroundcolor': '#ffffffaa', 'fontfamily': 'monospace', 'fontsize': 'medium',
-                       'horizontalalignment': 'center', 'verticalalignment': 'center'}
+    agent_txt_kwrds = {'fontfamily': 'monospace', 'fontsize': 'medium',
+                       'horizontalalignment': 'center', 'verticalalignment': 'center',
+                       'bbox': {'boxstyle': 'round', 'fc': '#ffffffaa'}}
     wedge_txt_kwrds = {'backgroundcolor': '#ddddddaa', 'fontfamily': 'monospace', 'fontsize': 'x-small',
                        'verticalalignment': 'center', 'rotation_mode': 'anchor'}
     for agent_name in agent_graphic_struct.keys():
