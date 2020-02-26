@@ -235,7 +235,6 @@ def annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
     for agent_name in agent_graphic_struct.keys():
         ag_x = agent_graphic_struct[agent_name]['loc_x']
         ag_y = agent_graphic_struct[agent_name]['loc_y']
-        figure_axis.text(s=agent_name, x=ag_x, y=ag_y, **agent_txt_kwrds)
         for site_name in agent_graphic_struct[agent_name]['bnd_sites'].keys():
             site_data = agent_graphic_struct[agent_name]['bnd_sites'][site_name]
             st_midline = (site_data['theta1'] + site_data['theta2']) / 2
@@ -250,6 +249,8 @@ def annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
             txt_rot = st_midline + text_rotation
             figure_axis.text(s=site_name, x=txt_x, y=txt_y, rotation=txt_rot, **wedge_txt_kwrds,
                              ha=horz_align)
+        # agent name should overlay wedge names
+        figure_axis.text(s=agent_name, x=ag_x, y=ag_y, **agent_txt_kwrds)
 
 
 def draw_flagpole(agent_graphic_struct: dict, figure_axis, detailed_toggle: bool):
