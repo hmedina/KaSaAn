@@ -20,9 +20,14 @@ This tool only compatible with [KaSim](https://github.com/Kappa-Dev/KaSim/) synt
 For in-depth explanation of the classes and their methods, see readme file in [KaSaAn/KaSaAn/core](./KaSaAn/core/README.md)
 
 #### Visualization
-Various scripts are provided and added to the user's path via setuptools entrypoints, as declared in `setup.py`
+Various scripts are provided and added to the user's path via setuptools entrypoints, as declared in `setup.py`. Included are scripts to render snapshots, complexes, and observables.
  
- For in-depth explanation of visualization scripts, see readme file in [KaSaAn/KaSaAn/scripts](./KaSaAn/scripts/README.md)
+For in-depth explanation of visualization scripts, see readme file in [KaSaAn/KaSaAn/scripts](./KaSaAn/scripts/README.md)
+
+##### Contact maps
+For a demo on how to render a contact map, see the demo script `contact_map_demo.py` located under `/models/contact_map/`
+![ContactMap](./models/contact_map/contact_map.png)
+Fine grained control is exposed through the various methods of the `KappaContactMap` class. As the layout of these things is not yet automated (if ever...), the user is encouraged to fine-tune with the methods provided. 
 
 
 ## Installation

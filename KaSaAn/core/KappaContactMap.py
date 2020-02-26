@@ -307,7 +307,7 @@ class KappaContactMap:
         self._bond_spline_points = define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def move_agent_to(self, agent_name, new_x, new_y):
-        """Change the location of an agent's center by specifying new coordinates"""
+        """Change the location of an agent's center by specifying new coordinates."""
         self._agent_graphics[agent_name]['loc_x'] = new_x
         self._agent_graphics[agent_name]['loc_y'] = new_y
         # update
@@ -315,7 +315,7 @@ class KappaContactMap:
         self._bond_spline_points = define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def move_agent_by(self, agent_name, delta_x, delta_y):
-        """Move the location of an agent's center by some amount"""
+        """Move the location of an agent's center by some amount."""
         self._agent_graphics[agent_name]['loc_x'] += delta_x
         self._agent_graphics[agent_name]['loc_y'] += delta_y
         # update
@@ -323,7 +323,7 @@ class KappaContactMap:
         self._bond_spline_points = define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def rotate_all_sites_of(self, agent_name, degrees):
-        """Rotate all the sites on an agent by this many degrees"""
+        """Rotate all the sites on an agent by this many degrees."""
         # rotate binding sites
         for site_name in self._agent_graphics[agent_name]['bnd_sites'].keys():
             self._agent_graphics[agent_name]['bnd_sites'][site_name]['theta1'] += degrees
@@ -335,7 +335,7 @@ class KappaContactMap:
         self._bond_spline_points = define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def swap_sites_of(self, agent_name, site_1, site_2):
-        """Swap the positions of two sites"""
+        """Swap the positions of two sites."""
         s1_t_1 = self._agent_graphics[agent_name]['bnd_sites'][site_1]['theta1']
         s1_t_2 = self._agent_graphics[agent_name]['bnd_sites'][site_1]['theta2']
         s2_t_1 = self._agent_graphics[agent_name]['bnd_sites'][site_2]['theta1']
@@ -348,11 +348,12 @@ class KappaContactMap:
         self._bond_spline_points = define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def set_site_color_of(self, agent_name, site_name, new_color):
-        """Change the color of a wedge to a new color."""
+        """Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color."""
         self._agent_graphics[agent_name]['bnd_sites'][site_name]['facecolor'] = new_color
 
     def draw(self, target_axis, draw_state_flagpole: bool = True):
-        """Draw the contact map onto the supplied axis"""
+        """Draw the contact map onto the supplied axis. If draw_state_flagpole is True, the flagpole will display all
+         internal state data. If false, only a summary with the number of sites omitted."""
         # draw splines
         spline_list = [create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
         target_axis.add_collection(PatchCollection(spline_list, match_original=True))

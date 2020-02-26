@@ -255,3 +255,26 @@ True
 >>> foo.get_agents()[0].get_agent_signature()[0].get_counter_state()
 '=3/-=2'
 ```
+
+### KappaContactMap
+This class is used to represent the graph that is a Kappa contact map. In this graph, agent types appear only once, and all their sites binding sites are exposed, presenting all their binding potentials. All data for internal states, including counters, is relegated to an artificial site I call the "flagpole". Sites who have binding data are represented as wedges, making up a doughnut shape that represents an agent. If an agent's site has neither sites with internal state nor counters, it won't appear in the flagpole, and if it hasn't binding data either (i.e. a "dead site"), it won't appear at all.
+
+![ContactMap](../../models/contact_map/contact_map.png)
+
+For a workflow, see the demo script under `models/contact_map/contact_map_demo.py`. On that note, the agent locations and sizes are defined in data coordinates, whereas text is defined in points. To increase the size of text, define a smaller figure; it won't affect agent layout. Also for this reason, the axis is left on after a call to `draw()`, so the user can visualize locations using the same units that would be supplied to the layout methods listed below.
+
+Although the flagpole can't be swapped, the whole agent can be rotated. Thus the recomended workflow is to first rotate the flagpole into position, then swap the binding sites as desired.
+
+Currently implemented methods are:
+  * `move_agent_to(agent_name, new_x, new_y)`
+    * Change the location of an agent's center by specifying new coordinates. Units are in data-space (as is the axis).
+  * `move_agent_by(agent_name, delta_x, delta_y)` 
+    * Move the location of an agent's center by some amount. Units are in data-space (as is the axis).
+  * `rotate_all_sites_of(agent_name, degrees)`
+    * Rotate all the sites on an agent by this many _degrees_.
+  * `swap_sites_of(agent_name, site_1, site_2)`
+    * Swap the positions of two sites.
+  * `set_site_color_of(agent_name, site_name, new_color)`
+    * Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color.
+  * `draw(target_axis, draw_state_flag_pole)`
+    * Draw the contact map onto the supplied axis. If draw_state_flagpole is True, the flagpole will display all internal state data. If false, only a summary with the number of sites omitted.
