@@ -26,7 +26,9 @@ For in-depth explanation of visualization scripts, see readme file in [KaSaAn/Ka
 
 ##### Contact maps
 For a demo on how to render a contact map, see the demo script `contact_map_demo.py` located under `/models/contact_map/`
+
 ![ContactMap](./models/contact_map/contact_map.png)
+
 Fine grained control is exposed through the various methods of the `KappaContactMap` class. As the layout of these things is not yet automated (if ever...), the user is encouraged to fine-tune with the methods provided. 
 
 
