@@ -2,8 +2,6 @@
 
 from typing import List, Tuple
 import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 
 
 def observable_file_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarray]:
@@ -14,9 +12,8 @@ def observable_file_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarra
     return leg_data, num_data
 
 
-def observable_list_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: List[int], diff_toggle: bool,
-                                 fig_size: Tuple[float, float] = mpl.rcParams['figure.figsize'],
-                                 fig_res: float = mpl.rcParams['figure.dpi']) -> plt.figure:
+def observable_list_figure_maker(obs_axis, data: Tuple[list, np.ndarray], vars_to_plot: List[int],
+                                 diff_toggle: bool):
     """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object."""
     leg_data, num_data = data
     # determine what observables to plot
@@ -26,7 +23,6 @@ def observable_list_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: Li
         if var not in range(1, len(leg_data) + 1):
             raise ValueError('Variable <' + str(var) + '> not in observables present: 1-' + str(len(leg_data)))
     # determine the type of plot
-    fig, ax = plt.subplots(figsize=fig_size, dpi=fig_res)
     x_data = num_data[:, 0]
     if diff_toggle:
         d_t = np.diff(x_data)
@@ -43,11 +39,11 @@ def observable_list_figure_maker(data: Tuple[list, np.ndarray], vars_to_plot: Li
             plot_drawstyle = 'steps-post'
         else:
             plot_drawstyle = 'default'
-        ax.plot(x_data, y_data, label=leg_data[variable - 1], drawstyle=plot_drawstyle)
-    ax.legend()
-    ax.set_xlabel('Time')
+        obs_axis.plot(x_data, y_data, label=leg_data[variable - 1], drawstyle=plot_drawstyle)
+    obs_axis.legend()
+    obs_axis.set_xlabel('Time')
     if diff_toggle:
-        ax.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$', rotation='horizontal')
+        obs_axis.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$', rotation='horizontal')
     else:
-        ax.set_ylabel('Value')
-    return fig
+        obs_axis.set_ylabel('Value')
+    return obs_axis

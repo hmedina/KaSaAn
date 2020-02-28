@@ -33,10 +33,8 @@ def main():
 
     # parse data
     this_data = observable_file_reader(args.input_file_name)
-    this_figure = observable_list_figure_maker(data=this_data,
-                                               vars_to_plot=args.variables_to_plot,
-                                               fig_size=args.fig_size,
-                                               fig_res=args.dots_per_inch,
+    fig, ax = plt.subplots(figsize=args.fig_size, dpi=args.dots_per_inch)
+    this_figure = observable_list_figure_maker(obs_axis=ax, data=this_data, vars_to_plot=args.variables_to_plot,
                                                diff_toggle=args.differential)
 
     # print out observables

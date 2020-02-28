@@ -2,7 +2,6 @@
 
 import glob
 import warnings
-import matplotlib.pyplot as plt
 import numpy as np
 from typing import List, Tuple
 from .observable_plotter import observable_file_reader
@@ -18,10 +17,9 @@ def find_data_files(pattern: str) -> List[str]:
     return sorted_file_list
 
 
-def observable_multi_data_figure_maker(file_data_list: List[Tuple[List[str], np.array, str]], var_to_coplot: int, diff_toggle: bool):
+def observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tuple[List[str], np.array, str]], var_to_coplot: int, diff_toggle: bool):
     """Co-plot the same variable from a list of files."""
     var_index = var_to_coplot - 1
-    co_plot_fig, ax = plt.subplots()
     legend_entries = []
     for file_data in file_data_list:
         legend_data, numeric_data, file_name = file_data
@@ -40,20 +38,20 @@ def observable_multi_data_figure_maker(file_data_list: List[Tuple[List[str], np.
             plot_drawstyle = 'steps-post'
         else:
             plot_drawstyle = 'default'
-        ax.plot(data_x, data_y, label=legend_entry, drawstyle=plot_drawstyle)
-    ax.set_xlabel('Time')
+        co_plot_axis.plot(data_x, data_y, label=legend_entry, drawstyle=plot_drawstyle)
+    co_plot_axis.set_xlabel('Time')
     if diff_toggle:
-        ax.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$', rotation='horizontal')
+        co_plot_axis.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$', rotation='horizontal')
     else:
-        ax.set_ylabel('Value')
+        co_plot_axis.set_ylabel('Value')
     if len(set(legend_entries)) == 1:
-        ax.set_title(legend_entries[0])
+        co_plot_axis.set_title(legend_entries[0])
     else:
-        ax.legend()
-    return co_plot_fig
+        co_plot_axis.legend()
+    return co_plot_axis
 
 
-def observable_coplot_figure_maker(file_pattern: str, plot_variable: int, differential_toggle: bool):
+def observable_coplot_axis_annotator(target_axis, file_pattern: str, plot_variable: int, differential_toggle: bool):
     file_names = find_data_files(file_pattern)
     file_data_list = []
     for file_name in file_names:
@@ -61,5 +59,5 @@ def observable_coplot_figure_maker(file_pattern: str, plot_variable: int, differ
         if numeric_data.shape[0] <= 1:
             warnings.warn('Only one time point in file ' + file_name)
         file_data_list.append((legend_data, numeric_data, file_name))
-    fig = observable_multi_data_figure_maker(file_data_list, plot_variable, differential_toggle)
-    return fig
+    observable_multi_data_axis_annotator(target_axis, file_data_list, plot_variable, differential_toggle)
+    return target_axis
