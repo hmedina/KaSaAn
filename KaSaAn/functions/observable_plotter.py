@@ -12,8 +12,8 @@ def observable_file_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarra
     return leg_data, num_data
 
 
-def observable_list_figure_maker(obs_axis, data: Tuple[list, np.ndarray], vars_to_plot: List[int],
-                                 diff_toggle: bool):
+def observable_list_axis_annotator(obs_axis, data: Tuple[list, np.ndarray], vars_to_plot: List[int],
+                                   diff_toggle: bool):
     """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object."""
     leg_data, num_data = data
     # determine what observables to plot

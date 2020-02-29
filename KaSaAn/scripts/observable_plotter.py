@@ -3,7 +3,7 @@
 import argparse
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from KaSaAn.functions import observable_file_reader, observable_list_figure_maker
+from KaSaAn.functions import observable_file_reader, observable_list_axis_annotator
 
 
 def main():
@@ -34,8 +34,8 @@ def main():
     # parse data
     this_data = observable_file_reader(args.input_file_name)
     fig, ax = plt.subplots(figsize=args.fig_size, dpi=args.dots_per_inch)
-    this_figure = observable_list_figure_maker(obs_axis=ax, data=this_data, vars_to_plot=args.variables_to_plot,
-                                               diff_toggle=args.differential)
+    observable_list_axis_annotator(obs_axis=ax, data=this_data, vars_to_plot=args.variables_to_plot,
+                                   diff_toggle=args.differential)
 
     # print out observables
     if args.print_observables_to_file:
@@ -45,7 +45,7 @@ def main():
 
     # save or display the figure
     if args.output_file_name:
-        this_figure.savefig(fname=args.output_file_name)
+        fig.savefig(fname=args.output_file_name)
     else:
         plt.show()
 
