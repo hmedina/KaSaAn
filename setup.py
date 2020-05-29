@@ -20,7 +20,7 @@ setup(
         'squarify>=0.3.0<0.5.0',
         'networkx>=2.4<2.5',
     ],
-    python_requires='==3.7',
+    python_requires='>=3.7<3.9',
     entry_points={
         'console_scripts': [
             'kappa_catalytic_potential = KaSaAn.scripts.catalytic_potential:main',
