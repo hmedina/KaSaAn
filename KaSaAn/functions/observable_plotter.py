@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 
 from typing import List, Tuple
+import csv
 import numpy as np
 
 
 def observable_file_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarray]:
     """Function parses a kappa output file, e.g. <data.csv>, and returns the legend and numeric data."""
-    leg_data = np.loadtxt(file_name, delimiter=',', skiprows=2, max_rows=1, dtype=str)
+    # read the header, skipping UUID and command recipe, extract legend entries
+    with open(file_name, 'r', newline='') as csv_file:
+        legend_reader = csv.reader(csv_file, dialect='excel')
+        _ = next(legend_reader)         # recipe line
+        _ = next(legend_reader)         # UUID line
+        leg_data = next(legend_reader)  # legend line
     num_data = np.loadtxt(file_name, delimiter=',', skiprows=3)
     leg_data = [entry.replace("'", "").replace('"', '') for entry in leg_data]
     return leg_data, num_data
@@ -17,8 +23,9 @@ def observable_list_axis_annotator(obs_axis, data: Tuple[list, np.ndarray], vars
     """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object."""
     leg_data, num_data = data
     # determine what observables to plot
+    # by default, plot all observables except the first, which plots [T]
     if not vars_to_plot:
-        vars_to_plot = range(1, len(leg_data) + 1)
+        vars_to_plot = range(2, len(leg_data) + 1)
     for var in vars_to_plot:
         if var not in range(1, len(leg_data) + 1):
             raise ValueError('Variable <' + str(var) + '> not in observables present: 1-' + str(len(leg_data)))
