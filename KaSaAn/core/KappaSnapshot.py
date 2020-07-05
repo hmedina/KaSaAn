@@ -21,6 +21,7 @@ class KappaSnapshot(KappaEntity):
         self._file_name: str
         self._complexes: Dict[KappaComplex, int]
         self._tokens: Dict[str: KappaToken]
+        self._known_sizes: List[int]
         self._raw_expression: str
         self._kappa_expression: str
         self._snapshot_event: int
@@ -30,6 +31,7 @@ class KappaSnapshot(KappaEntity):
         self._file_name = os.path.split(snapshot_file_name)[1]
         self._complexes = dict()
         self._tokens = dict()
+        self._known_sizes = []
         # read file into a single string
         with open(snapshot_file_name, 'r') as kf:
             self._raw_expression = kf.read()
@@ -65,6 +67,7 @@ class KappaSnapshot(KappaEntity):
                             str(species.get_size_of_complex()) + '> in <' + snapshot_file_name + '>')
                     # assign the complex as a key to the dictionary
                     self._complexes[species] = abundance
+                    self._known_sizes.append(size)
                 except SnapshotAgentParseError:
                     # try to parse as a token line instead
                     tk_value_pat = r'((?:(?:\d+\.\d+)|(?:\d+\.)|(?:\.\d+)|(?:\d+))[eE]?[+-]?\d?)'
@@ -179,20 +182,12 @@ class KappaSnapshot(KappaEntity):
 
     def get_largest_complexes(self) -> List[KappaComplex]:
         """Returns a list of KappaComplexes of the largest size, measured in number of constituting agents."""
-        max_known_size = 0
-        for complex_expression in self.get_all_complexes():
-            current_size = complex_expression.get_size_of_complex()
-            if current_size > max_known_size:
-                max_known_size = current_size
+        max_known_size = max(self._known_sizes)
         return self.get_complexes_of_size(max_known_size)
 
     def get_smallest_complexes(self) -> List[KappaComplex]:
         """Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents."""
-        min_known_size = self.get_largest_complexes()[0].get_size_of_complex() + 1
-        for complex_expression in self.get_all_complexes():
-            current_size = complex_expression.get_size_of_complex()
-            if current_size < min_known_size:
-                min_known_size = current_size
+        min_known_size = min(self._known_sizes)
         return self.get_complexes_of_size(min_known_size)
 
     def get_most_abundant_complexes(self) -> List[KappaComplex]:
