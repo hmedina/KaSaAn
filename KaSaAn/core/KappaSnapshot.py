@@ -4,7 +4,7 @@ import re
 import os
 import warnings
 import networkx as nx
-from typing import List, Set, ItemsView, Dict
+from typing import List, Set, ItemsView, Dict, Tuple
 
 from .KappaEntity import KappaEntity
 from .KappaComplex import KappaComplex
@@ -172,20 +172,21 @@ class KappaSnapshot(KappaEntity):
                 result_complexes.append(complex_expression)
         return result_complexes
 
-    def get_complexes_of_size(self, query_size: int) -> List[KappaComplex]:
-        """Returns the list of complexes that are of the query size. For example, get all the dimers."""
+    def get_complexes_of_size(self, query_size: int) -> List[Tuple[KappaComplex, int]]:
+        """Returns the list tuples, with complexes and their abudnace, for complexes that are of the query size. For
+        example, get all the dimers and their respective abundances."""
         result_complexes = []
-        for complex_expression in self.get_all_complexes():
-            if query_size == complex_expression.get_size_of_complex():
-                result_complexes.append(complex_expression)
+        for comp, abun in self.get_all_complexes_and_abundances():
+            if query_size == comp.get_size_of_complex():
+                result_complexes.append((comp, abun))
         return result_complexes
 
-    def get_largest_complexes(self) -> List[KappaComplex]:
+    def get_largest_complexes(self) -> List[Tuple[KappaComplex, int]]:
         """Returns a list of KappaComplexes of the largest size, measured in number of constituting agents."""
         max_known_size = max(self._known_sizes)
         return self.get_complexes_of_size(max_known_size)
 
-    def get_smallest_complexes(self) -> List[KappaComplex]:
+    def get_smallest_complexes(self) -> List[Tuple[KappaComplex, int]]:
         """Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents."""
         min_known_size = min(self._known_sizes)
         return self.get_complexes_of_size(min_known_size)
