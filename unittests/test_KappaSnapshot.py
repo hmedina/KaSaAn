@@ -200,7 +200,7 @@ class TestKappaSnapshot(unittest.TestCase):
         self.assertEqual(ref_snap_abc.get_size_distribution(),
                          {1: 4028, 2: 1, 3: 1, 4: 4, 5: 4, 6: 1, 7: 1, 9: 1, 10: 1, 21899: 1})
         self.assertEqual(ref_snap_dim.get_size_distribution(), {1: 18, 2: 241})
-        self.assertEqual(ref_snap_kte.get_size_distribution(), {6:2, 7: 1})
+        self.assertEqual(ref_snap_kte.get_size_distribution(), {6: 2, 7: 1})
 
     def test_get_all_tokens(self, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_dim.get_all_tokens_and_values(), {'X': 241.0})

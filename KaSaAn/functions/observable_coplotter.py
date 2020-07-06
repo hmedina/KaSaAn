@@ -17,7 +17,8 @@ def find_data_files(pattern: str) -> List[str]:
     return sorted_file_list
 
 
-def observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tuple[List[str], np.array, str]], var_to_coplot: int, diff_toggle: bool):
+def observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tuple[List[str], np.array, str]],
+                                         var_to_coplot: int, diff_toggle: bool):
     """Co-plot the same variable from a list of files."""
     var_index = var_to_coplot - 1
     legend_entries = []

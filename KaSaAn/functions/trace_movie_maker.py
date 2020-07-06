@@ -7,7 +7,8 @@ from matplotlib.collections import PatchCollection
 from typing import List, Tuple, Set
 
 from .numerical_sort import numerical_sort
-from .snapshot_visualizer_patchwork import process_snapshot, snapshot_composition_simple, colorize_agents, snapshot_legend_simple
+from .snapshot_visualizer_patchwork import process_snapshot, snapshot_composition_simple, colorize_agents, \
+    snapshot_legend_simple
 from KaSaAn.core import KappaSnapshot, KappaAgent
 
 

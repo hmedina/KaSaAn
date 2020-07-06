@@ -17,10 +17,8 @@ class TestKappaContactMap(unittest.TestCase):
         self.assertEqual(list(cm._agent_graphics.keys()), agent_names)
 
     def test_agent_bind_sites(self, cm=cm_dedicated):
-        ref_bind_sites = {'Foo': ['bork'],
-                         'Bar': ['stan'],
-                         'Baz': ['ge89', 'f856'],
-                         'Fitz': ['a', 'fran', 'gif', 'jif']}
+        ref_bind_sites = {'Foo': ['bork'], 'Bar': ['stan'], 'Baz': ['ge89', 'f856'],
+                          'Fitz': ['a', 'fran', 'gif', 'jif']}
         cm_bind_sites = {}
         for agent_name in cm._agent_graphics.keys():
             cm_bind_sites[agent_name] = list(cm._agent_graphics[agent_name]['bnd_sites'].keys())

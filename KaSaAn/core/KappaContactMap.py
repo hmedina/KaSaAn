@@ -92,7 +92,7 @@ def parsed_kappa_to_default_graphics(parsed_kappa_struct: dict, wedge_surf_dist=
     return agent_graphics
 
 
-def initialize_sites_graphic_structure(graphic_struct: dict, scale_wedges: bool=False) -> dict:
+def initialize_sites_graphic_structure(graphic_struct: dict, scale_wedges: bool = False) -> dict:
     """Once the data structure has been created, it can now be initialized with plausible values."""
     init_site_graphics = graphic_struct
     for agent_name in init_site_graphics.keys():
