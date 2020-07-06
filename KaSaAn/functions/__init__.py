@@ -8,4 +8,5 @@ from .plot_filtered_distributions import plot_filtered_dist
 from .prefixed_snapshot_analyzer import prefixed_snapshot_analyzer
 from .snapshot_visualizer_patchwork import render_snapshot_as_patchwork
 from .snapshot_visualizer_network import render_snapshot_as_plain_graph
+from .snapshot_visualizer_subcomponent import render_complexes_as_plain_graph
 from .trace_movie_maker import movie_from_snapshots
