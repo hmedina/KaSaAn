@@ -204,7 +204,8 @@ class KappaSnapshot(KappaEntity):
 
     def get_size_distribution(self) -> Dict[int, int]:
         """Returns a dictionary where the key is the size of a complex and the value is the amount of complexes with
-        that size. For example, {1:3, 4:5} indicates the mixture contains only three monomers and five tetramers."""
+        that size. For example, {1:3, 4:5} indicates the mixture contains only three monomers and five tetramers.
+        Dictionary is sorted by increasing complex size."""
         size_dist = dict()
         for complex_expression, complex_abundance in self.get_all_complexes_and_abundances():
             current_size = complex_expression.get_size_of_complex()
@@ -212,7 +213,8 @@ class KappaSnapshot(KappaEntity):
                 size_dist[current_size] += complex_abundance
             else:
                 size_dist[current_size] = complex_abundance
-        return size_dist
+        sorted_dist = dict(sorted(size_dist.items(), key=lambda item: item[0]))
+        return sorted_dist
 
     def get_all_tokens_and_values(self) -> Dict[str, float]:
         """Returns a dictionary with the tokens present in the snapshot in the form of [name]:[value]."""
