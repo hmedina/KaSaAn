@@ -18,7 +18,6 @@ setup(
         'MPL': ['matplotlib>=3.0.2<3.0.3'],
         'sqr': ['squarify>=0.3.0<0.5.0'],
     },
-    python_requires='==3.7',
     entry_points={
         'console_scripts': [
             'prefixed_snapshot_analyzer = KaSaAn.scripts.prefixed_snapshot_analyzer:main',
