@@ -38,10 +38,12 @@ class KappaEntity(ABC):
                 return True if self._kappa_expression == other._kappa_expression else False
             else:
                 # if comparing, say Agents and Complexes, same parent class, but different classes
-                raise KappaEqualtiyError('Can not compare <' + str(self) + '> to <' + str(other) + '> as they have different classes.')
+                raise KappaEqualtiyError(
+                    'Can not compare <' + str(self) + '> to <' + str(other) + '> as they have different classes.')
         else:
             # if comparing some other type to a kappa entity
-            raise ValueError('Can not compare <' + str(self) + '> to <' + str(other) + '> as the latter is not a compatible class')
+            raise ValueError(
+                'Can not compare <' + str(self) + '> to <' + str(other) + '> as the latter is not a compatible class')
 
     def __lt__(self, other) -> bool:
         # make it a Kappa-whatever-this-is if it's not one already

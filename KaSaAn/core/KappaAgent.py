@@ -18,12 +18,12 @@ class KappaAgent(KappaEntity):
         self._kappa_expression: str
         self._abundance_change: str
 
-        expression = re.sub('\s+|\t+|\n+', ' ', expression)  # Remove line breaks, tabs, multi-spaces
+        expression = re.sub(r'\s+|\t+|\n+', ' ', expression)  # Remove line breaks, tabs, multi-spaces
         # Check if kappa expression's name & overall structure is valid
-        agent_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-        agent_sign_pat = '\(([^()]*)\)'
-        agent_oper_pat = '(\+|-)?'
-        agent_pat = '^' + agent_name_pat + agent_sign_pat + agent_oper_pat + '$'
+        agent_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+        agent_sign_pat = r'\(([^()]*)\)'
+        agent_oper_pat = r'(\+|-)?'
+        agent_pat = r'^' + agent_name_pat + agent_sign_pat + agent_oper_pat + r'$'
         matches = re.match(agent_pat, expression.strip())
         if not matches:
             matches = re.match(agent_pat, expression.strip() + '()')
@@ -55,9 +55,10 @@ class KappaAgent(KappaEntity):
         self._abundance_change = matches.group(3) if matches.group(3) else ''
 
         # canonicalize the kappa expression
-        self._kappa_expression = self._agent_name +\
-                                 '(' + ' '.join([str(site) for site in self._agent_signature]) + ')' +\
-                                 self._abundance_change
+        self._kappa_expression = \
+            self._agent_name + r'(' + \
+            ' '.join([str(site) for site in self._agent_signature]) + \
+            ')' + self._abundance_change
 
     def __contains__(self, item) -> bool:
         # type parsing: try to make it an Agent, if that fails try a Site, if that tails, raise exception
@@ -82,8 +83,8 @@ class KappaAgent(KappaEntity):
                 if item == site:
                     return True
         elif type(item) is KappaAgent:
-            if item._agent_name ==  self._agent_name:
-                counter  = 0
+            if item._agent_name == self._agent_name:
+                counter = 0
                 for site in item._agent_signature:
                     if site in self:
                         counter += 1
@@ -105,11 +106,11 @@ class KappaAgent(KappaEntity):
         all_bonds_data = []
         for item in self._agent_signature:
             if type(item) is KappaPort:
-                all_bonds_data += item.get_port_current_bond()
-                all_bonds_data += item.get_port_future_bond()
+                all_bonds_data.append(item.get_port_current_bond())
+                all_bonds_data.append(item.get_port_future_bond())
         for bond_data in all_bonds_data:
-            if re.match('\d+', bond_data):
-                agent_bonds += bond_data
+            if re.match(r'\d+', bond_data):
+                agent_bonds.append(bond_data)
         return agent_bonds
 
     def get_abundance_change_operation(self) -> str:
@@ -127,8 +128,8 @@ class KappaToken(KappaEntity):
         self._kappa_expression: str
 
         # Check if expression has valid structure
-        token_name_pat = '([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-        token_oper_pat = '(.+\s)?'
+        token_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+        token_oper_pat = r'(.+\s)?'
         token_pat = '^' + token_oper_pat + token_name_pat + '$'
         matches = re.match(token_pat, expression.strip())
         if not matches:

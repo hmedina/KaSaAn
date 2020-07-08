@@ -24,15 +24,15 @@ class KappaRule(KappaEntity):
         self._kappa_expression: str
 
         # remove spaces, breaks, comments
-        digested_rule = re.sub('\s+|\t+|\n+', ' ', raw_expression)  # Remove line breaks, tabs, multi-spaces
-        digested_rule = re.sub('/\*[^*/]*\*/', '', digested_rule)   # Remove in-line comment
+        digested_rule = re.sub(r'\s+|\t+|\n+', ' ', raw_expression)  # Remove line breaks, tabs, multi-spaces
+        digested_rule = re.sub(r'/\*[^*/]*\*/', '', digested_rule)   # Remove in-line comment
         digested_rule = digested_rule.split('//')[0]                # Remove trailing comment, leading/trialing spaces
         digested_rule = digested_rule.strip()
         if '->' in digested_rule:
             raise RuleParseError('Rule parsing only supports edit notation, not chemical notation.')
 
         # extract rule name, Kappa pattern, rates
-        rule_components = re.match("('.+')?\s*(.+)\s*@\s*([^{]+)\s*(?:{([^}]+)})?", digested_rule)
+        rule_components = re.match(r"('.+')?\s*(.+)\s*@\s*([^{]+)\s*(?:{([^}]+)})?", digested_rule)
         if not rule_components:
             raise ValueError('Could not parse pattern <' + digested_rule + '> as a rule')
         self._name = rule_components.group(1).strip() if rule_components.group(1) else ''
@@ -54,7 +54,7 @@ class KappaRule(KappaEntity):
             raise RuleParseError('No primary rate found in <' + digested_rule + '>')
 
         # extract & process entities: agents & tokens
-        agents_and_tokens = re.match('([^|]+)?\s*\|?\s*(.+)?', self._pattern)
+        agents_and_tokens = re.match(r'([^|]+)?\s*\|?\s*(.+)?', self._pattern)
         if not agents_and_tokens:
             raise RuleParseError('Could not find agents nor tokens in <' + self._pattern + '> expression')
         # process agents

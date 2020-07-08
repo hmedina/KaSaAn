@@ -1,0 +1,40 @@
+// "uuid" : "000000000"
+%def: "seed" "000000000"
+%def: "dumpIfDeadlocked" "true"
+%def: "maxConsecutiveClash" "2"
+%def: "progressBarSize" "60"
+%def: "progressBarSymbol" "#"
+%def: "plotPeriod" "1" "t.u."
+%def: "outputFileName" "data.csv"
+
+
+%agent:
+  Foo(bork{a b}[f856.Baz a.Fitz] woof{a b} miau{a b} hehehe{a b}
+      huehuehue{a b c d e f g h i j k l})
+%agent: Bar(stan{activated deactivated}[a.Fitz])
+%agent: Baz(ge89[a.Fitz] f856[bork.Foo] p25{=1/+=5})
+%agent:
+  Fitz(a[bork.Foo stan.Bar ge89.Baz] fran[fran.Fitz] mate gif[jif.Fitz]
+       jif[gif.Fitz])
+
+%var:/*0*/ 'Fitz' |Fitz()|
+%plot: [T]
+%plot: Fitz
+
+Baz(ge89[./1]), Fitz(a[./1]) @ 1
+Fitz(a[./1]), Bar(stan[./1]) @ 1
+Fitz(a[./1]), Foo(bork[./1]) @ 1
+Fitz(fran[./1]), Fitz(fran[./1]) @ 1
+Fitz(gif[./1]), Fitz(jif[./1]) @ 1
+Foo(bork[./1]), Baz(f856[./1]) @ 1
+
+/*0*/%mod: (|Baz(p25{=6})| = 1) do $PRINTF ""; $PRINTF "Counter p25 of agent Baz reached maximum"; $STOP "counter_perturbation.ka"; repeat [false]
+/*1*/%mod: ([E] = 0) do $STOP ; repeat [false]
+/*2*/%mod: ([E] > 1) do $APPLY 1 Baz(ge89[#] f856[#] p25[#])-; repeat [false]
+
+%init: 10
+  Fitz(a[.] fran[.] mate[.] gif[.] jif[.]), Baz(ge89[.] f856[.] p25{=1}),
+  Bar(stan{activated}[.]),
+  Foo(bork{a}[.] woof{a}[.] miau{a}[.] hehehe{a}[.] huehuehue{a}[.])
+
+%mod: [E] = 0 do $STOP;

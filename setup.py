@@ -14,18 +14,22 @@ setup(
     author_email='hector.f.medina.a@gmail.com',
     description='Kappa snapshot analysis & WIP tools.',
     long_description=__doc__,
-    extras_require={
-        'MPL': ['matplotlib>=3.0.2<3.0.3'],
-        'sqr': ['squarify>=0.3.0<0.5.0'],
-    },
+    install_requires=[
+        'matplotlib>=3.0.2<3.1.2',
+        'numpy>=1.16<1.17',
+        'squarify>=0.3.0<0.5.0',
+        'networkx>=2.4<2.5',
+    ],
+    python_requires='>=3.7<3.9',
     entry_points={
         'console_scripts': [
-            'prefixed_snapshot_analyzer = KaSaAn.scripts.prefixed_snapshot_analyzer:main',
-            'plot_filtered_distributions = KaSaAn.scripts.plot_filtered_distributions:main [MPL,sqr]',
-            'catalytic_potential_of_folder = KaSaAn.scripts.catalytic_potential:main',
-            'snapshot_visualizer = KaSaAn.scripts.snapshot_visualizer:main [MPL,sqr]',
-            'trace_movie_maker = KaSaAn.scripts.trace_movie_maker:main [MPL,sqr]'
+            'kappa_catalytic_potential = KaSaAn.scripts.catalytic_potential:main',
+            'kappa_observable_plotter = KaSaAn.scripts.observable_plotter:main',
+            'kappa_observable_coplotter = KaSaAn.scripts.observable_coplotter:main',
+            'kappa_snapshot_visualizer_patchwork = KaSaAn.scripts.snapshot_visualizer_patchwork:main',
+            'kappa_snapshot_visualizer_network = KaSaAn.scripts.snapshot_visualizer_network:main',
+            'kappa_snapshot_visualizer_subcomponent = KaSaAn.scripts.snapshot_visualizer_subcomponent:main',
+            'kappa_trace_movie_maker = KaSaAn.scripts.trace_movie_maker:main',
         ]
-    },
-    test_suite='unittests'
+    }
 )

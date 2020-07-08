@@ -7,7 +7,8 @@ from matplotlib.collections import PatchCollection
 from typing import List, Tuple, Set
 
 from .numerical_sort import numerical_sort
-from .snapshot_visualizer import process_snapshot, snapshot_composition_simple, colorize_agents, snapshot_legend_simple
+from .snapshot_visualizer_patchwork import process_snapshot, snapshot_composition_simple, colorize_agents, \
+    snapshot_legend_simple
 from KaSaAn.core import KappaSnapshot, KappaAgent
 
 
@@ -60,6 +61,7 @@ def movie_from_snapshots(directory: str, vis_mode: str, fig_width: int, xy_ratio
 
     # Define the animation, i.e. the left axis
     artist_list = []
+    final_time = snapshots[-1].get_snapshot_time()
     for snap in snapshots:
         ars = []
         snap_scale = snap.get_total_mass() / my_max_mass if not dont_scale_mass else 1
@@ -72,12 +74,11 @@ def movie_from_snapshots(directory: str, vis_mode: str, fig_width: int, xy_ratio
             ar = data_ax.add_patch(r)
             ars.append(ar)
         ars.append(data_ax.text(0, y_res,
-                                'Time ' + str(snap.get_snapshot_time()) + ' ; final time ' + str(snapshots[-1].get_snapshot_time()),
+                                'Time ' + str(snap.get_snapshot_time()) + ' ; final time ' + str(final_time),
                                 horizontalalignment='left', verticalalignment='bottom'))
         ars.append(data_ax.text(x_res, y_res, 'Mass present ' + str(snap.get_total_mass()),
                                 horizontalalignment='right', verticalalignment='bottom'))
         artist_list.append(ars)
-
 
     # Define the legend, i.e. the right axis
     # This legend will have legend_cols number of columns for writing the agents. This helps with scaling for systems
