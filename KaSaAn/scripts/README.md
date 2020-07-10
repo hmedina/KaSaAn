@@ -41,6 +41,8 @@ Visualize a kappa snapshot using a patchwork layout, where the area colored is p
 ##### Viewing a complex model
 ![Complex snapshot as a patchwork](../../models/alphabet_soup_snap_patchwork.png)
 
+### `snapshot_visualizer_subcomponent.py`
+Visualize an _n_ -mer class from a snapshot as a set of connected graphs. User can request a size class, for example "4", to get a list of all tetramers in the snapshot, and display each as a network, anotated with the copy number of the complex. User can request more than one size class, or leave it blank to request the largest class found. The `-d` option prints to standard output the size distribution found as a dictionary, using `size:abundance`.
 
 ### `trace_movie_maker.py`
 Make a movie out of a set of snapshot files, and save it to disk. The snapshots are meant to be produced by a trace query (see [TQL](https://github.com/jonathan-laurent/Kappa-TQL)), for example
