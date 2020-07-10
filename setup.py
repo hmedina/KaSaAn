@@ -6,7 +6,7 @@ from setuptools import setup
 setup(
     name='KaSaAn',
     version='0.1.dev0',
-    packages=['KaSaAn'],
+    packages=['KaSaAn', 'KaSaAn.core', 'KaSaAn.functions'],
     package_dir={'': '.'},
     url='https://github.com/hmedina/KaSaAn',
     license='MIT',
