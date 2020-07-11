@@ -8,7 +8,7 @@ Out of a series of snapshots from a simulation, obtain the catalytic potential o
 
 
 ### `observable_plotter.py`
-Plot a set of observables against time from the observable's file produced by KaSim. The `-d` option toggles "differential" mode, useful for transforming a cumulative token into an instantaneous rate. The `-p` option prints the list of observables to a CSV, where the line number is the index value this script understands. This is useful for models with large number of observables, where plotting a subset is desired.
+Plot a set of observables against time from the observable's file produced by KaSim. The `-d` option toggles "differential" mode, useful for transforming a cumulative token into an instantaneous rate. The `-p` option prints the list of observables to a CSV, where the line number is the index value this script understands. This is useful for models with large number of observables, where plotting a subset is desired. The script also supports calling variables by name, in addition to by index. These can be mixed-and-matched.
 
 
 ### `observable_coplotter.py`
