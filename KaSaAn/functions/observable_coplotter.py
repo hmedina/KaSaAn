@@ -18,12 +18,22 @@ def find_data_files(pattern: str) -> List[str]:
 
 
 def observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tuple[List[str], np.array, str]],
-                                         var_to_coplot: int, diff_toggle: bool):
+                                         coplot_index: int, coplot_name: str, diff_toggle: bool):
     """Co-plot the same variable from a list of files."""
-    var_index = var_to_coplot - 1
     legend_entries = []
     for file_data in file_data_list:
         legend_data, numeric_data, file_name = file_data
+        # find indexes to plot:
+        if coplot_index:
+            var_index = coplot_index - 1
+        elif coplot_name:
+            try:
+                var_index = legend_data.index(coplot_name)
+            except ValueError as ve:
+                raise ValueError('Requested variable name not found in variable list; available options are:\n' +
+                                 ' | '.join(legend_data)) from ve
+        else:
+             raise ValueError('Function requires a variable index, or a name.')
         data_x = numeric_data[:, 0]
         data_y = numeric_data[:, var_index]
         legend_entry = legend_data[var_index]
@@ -52,7 +62,8 @@ def observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tupl
     return co_plot_axis
 
 
-def observable_coplot_axis_annotator(target_axis, file_pattern: str, plot_variable: int, differential_toggle: bool):
+def observable_coplot_axis_annotator(target_axis, file_pattern: str, variable_index: int, variable_name: str,
+                                     differential_toggle: bool):
     file_names = find_data_files(file_pattern)
     file_data_list = []
     for file_name in file_names:
@@ -60,5 +71,9 @@ def observable_coplot_axis_annotator(target_axis, file_pattern: str, plot_variab
         if numeric_data.shape[0] <= 1:
             warnings.warn('Only one time point in file ' + file_name)
         file_data_list.append((legend_data, numeric_data, file_name))
-    observable_multi_data_axis_annotator(target_axis, file_data_list, plot_variable, differential_toggle)
+    if not variable_index and not variable_name:
+        raise ValueError('Function requires the index of a variable, or a name for it.')
+    observable_multi_data_axis_annotator(co_plot_axis=target_axis, file_data_list=file_data_list,
+                                         coplot_index=variable_index, coplot_name=variable_name,
+                                         diff_toggle=differential_toggle)
     return target_axis
