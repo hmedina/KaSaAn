@@ -18,17 +18,24 @@ def observable_file_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarra
     return leg_data, num_data
 
 
-def observable_list_axis_annotator(obs_axis, data: Tuple[list, np.ndarray], vars_to_plot: List[int],
+def observable_list_axis_annotator(obs_axis, data: Tuple[list, np.ndarray],
+                                   vars_indexes: List[int], vars_names: List[str],
                                    diff_toggle: bool):
     """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object."""
     leg_data, num_data = data
     # determine what observables to plot
     # by default, plot all observables except the first, which plots [T]
-    if not vars_to_plot:
+    if not vars_indexes and not vars_names:
         vars_to_plot = range(2, len(leg_data) + 1)
-    for var in vars_to_plot:
-        if var not in range(1, len(leg_data) + 1):
-            raise ValueError('Variable <' + str(var) + '> not in observables present: 1-' + str(len(leg_data)))
+    elif vars_indexes:
+        for var in vars_indexes:
+            if var not in range(1, len(leg_data) + 1):
+                raise ValueError('Variable <' + str(var) + '> not in observables present: 1-' + str(len(leg_data)))
+        vars_to_plot = vars_indexes
+    else:
+        vars_to_plot = []
+        for var_name in vars_names:
+            vars_to_plot.append(leg_data.index(var_name) + 1)
     # determine the type of plot
     x_data = num_data[:, 0]
     if diff_toggle:

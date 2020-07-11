@@ -16,10 +16,13 @@ def main():
     parser.add_argument('-p', '--print_observables_to_file', type=str, default='',
                         help="If specified, dump the list of observables to a file, one per line, so that the line"
                              " number corresponds to the observable's index.")
-    parser.add_argument('-v', '--variables_to_plot', type=int, default=None, nargs='*',
-                        help='The list of variable / observable indexes that should be plotted. If not specified, all'
-                             ' will be plotted against time. Observables are plotted in order, with the top-most legend'
-                             ' entry corresponding to number 1.')
+    parser.add_argument('-vi', '--variable_indexes', type=int, default=None, nargs='*',
+                        help='The list of variable / observable indexes that should be plotted. Observables are plotted'
+                             ' in their declaration order, see option <-p> to print their order. If neither <-vi> nor'
+                             ' <-vn> are specified, all variables will be plotted.')
+    parser.add_argument('-vn', '--variable_names', type=str, default='', nargs='*',
+                        help='List of variable names that should be plotted. If neither <-vi> nor <-vn> are specified,'
+                             ' all variables will be plotted.')
     parser.add_argument('-fs', '--fig_size', type=float, default=mpl.rcParams['figure.figsize'], nargs=2,
                         help='Size of the resulting figure, in inches, specified as two elements, width and height '
                              '(text size is specified in points, so this affects the size of text relative to other'
@@ -34,7 +37,8 @@ def main():
     # parse data
     this_data = observable_file_reader(args.input_file_name)
     fig, ax = plt.subplots(figsize=args.fig_size, dpi=args.dots_per_inch)
-    observable_list_axis_annotator(obs_axis=ax, data=this_data, vars_to_plot=args.variables_to_plot,
+    observable_list_axis_annotator(obs_axis=ax, data=this_data,
+                                   vars_indexes=args.variable_indexes, vars_names=args.variable_names,
                                    diff_toggle=args.differential)
 
     # print out observables
