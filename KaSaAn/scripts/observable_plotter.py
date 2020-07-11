@@ -19,10 +19,12 @@ def main():
     parser.add_argument('-vi', '--variable_indexes', type=int, default=None, nargs='*',
                         help='The list of variable / observable indexes that should be plotted. Observables are plotted'
                              ' in their declaration order, see option <-p> to print their order. If neither <-vi> nor'
-                             ' <-vn> are specified, all variables will be plotted.')
+                             ' <-vn> are specified, all variables will be plotted. Options <-vi> and <-vn> can be '
+                             'called together, and their set will be plotted.')
     parser.add_argument('-vn', '--variable_names', type=str, default='', nargs='*',
                         help='List of variable names that should be plotted. If neither <-vi> nor <-vn> are specified,'
-                             ' all variables will be plotted.')
+                             ' all variables will be plotted. Options <-vi> and <-vn> can be called together, and their'
+                             ' set will be plotted.')
     parser.add_argument('-fs', '--fig_size', type=float, default=mpl.rcParams['figure.figsize'], nargs=2,
                         help='Size of the resulting figure, in inches, specified as two elements, width and height '
                              '(text size is specified in points, so this affects the size of text relative to other'

@@ -27,15 +27,17 @@ def observable_list_axis_annotator(obs_axis, data: Tuple[list, np.ndarray],
     # by default, plot all observables except the first, which plots [T]
     if not vars_indexes and not vars_names:
         vars_to_plot = range(2, len(leg_data) + 1)
-    elif vars_indexes:
-        for var in vars_indexes:
-            if var not in range(1, len(leg_data) + 1):
-                raise ValueError('Variable <' + str(var) + '> not in observables present: 1-' + str(len(leg_data)))
-        vars_to_plot = vars_indexes
     else:
         vars_to_plot = []
-        for var_name in vars_names:
-            vars_to_plot.append(leg_data.index(var_name) + 1)
+        if vars_indexes:
+            for var in vars_indexes:
+                if var not in range(1, len(leg_data) + 1):
+                    raise ValueError('Variable <' + str(var) + '> not in observables present: 1-' + str(len(leg_data)))
+                else:
+                    vars_to_plot.append(var)
+        if vars_names:
+            for var_name in vars_names:
+                vars_to_plot.append(leg_data.index(var_name) + 1)
     # determine the type of plot
     x_data = num_data[:, 0]
     if diff_toggle:
