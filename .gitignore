@@ -3,3 +3,10 @@
 /KaSaAn/KaSaAn.egg-info/
 /KaSaAn.egg-info/
 /.idea/
+/__pycache__/
+/KaSaAn/__pycache__/
+/KaSaAn/core/__pycache__/
+/KaSaAn/functions/__pycache__/
+/KaSaAn/scripts/__pycache__/
+/unittests/__pycache__/
+*.pyc
