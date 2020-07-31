@@ -28,21 +28,21 @@ Currently implemented methods:
   * `get_all_complexes_and_abundances()`
     * Returns a list of tuples (technically an ItemsView object) of the KappaComplexes and their abundances.
   * `get_total_mass()`
-    * Returns an int with the total mass in the snapshot (i.e. the number of agents).
+    * Returns an integer with the total mass in the snapshot (i.e. the number of agents).
   * `get_abundance_of_agent()`
-    * Returns an int with the abundance of the given agent. Supports passing a string with the agent expression, or and instance of a KappaAgent. Supports passing agents with signature, e.g. Bob(site{state}).
+    * Returns an integer with the abundance of the given agent. Supports passing a string with the agent expression, or and instance of a KappaAgent. Supports passing agents with signature, e.g. Bob(site{state}).
   * `get_composition()`
-    * Return a dictionary where the keys are KappaAgents, their names, and their value is the abundance in the snapshot of those agents.
+    * Return a dictionary where the keys are KappaAgents, their names, and their value is the abundance in the snapshot of those agents. This is akin to the sum-formula used in chemistry.
   * `get_agent_types_present():`
-    * Returns a set of KappaAgents of the names of the agents present in the snapshot (i.e. ignores agent signatures).
+    * Returns a set of KappaAgents, with the names of the agents present in the snapshot (i.e. ignores agent signatures).
   * `get_complexes_with_abundance(query_abundance)`
     * Returns a list of KappaComplexes present at abundance `query_abundance` (integer: number of molecules).
   * `get_complexes_of_size(query_size)`
-    * Returns a list of KappaComplexes of size `query_size` (integer: number of agents).
+    * Returns a list of tuples, with KappaComplexes and their abundance, where the complexes are of size `query_size`, an integer being the number of agents.
   * `get_largest_complexes()`
-    * Returns a list of the largest KappaComplexes.
+    * Returns a list of tuples with the largest KappaComplexes and their abundance.
   * `get_smallest_complexes()`
-    * Returns a list of the smallest KappaComplexes.
+    * Returns a list of tuples with the smallest KappaComplexes and their abundance.
   * `get_most_abundant_complexes()`
     * Returns a list of the most abundant KappaComplexes.
   * `get_least_abundant_complexes()`
