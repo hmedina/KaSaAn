@@ -33,7 +33,7 @@ def observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tupl
                 raise ValueError('Requested variable name not found in variable list; available options are:\n' +
                                  ' | '.join(legend_data)) from ve
         else:
-             raise ValueError('Function requires a variable index, or a name.')
+            raise ValueError('Function requires a variable index, or a name.')
         data_x = numeric_data[:, 0]
         data_y = numeric_data[:, var_index]
         legend_entry = legend_data[var_index]
@@ -46,10 +46,10 @@ def observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tupl
             data_x = data_x[1:]
         legend_entries.append(legend_entry)
         if len(data_x) < 1000:
-            plot_drawstyle = 'steps-post'
+            plot_draw_style = 'steps-post'
         else:
-            plot_drawstyle = 'default'
-        co_plot_axis.plot(data_x, data_y, label=legend_entry, drawstyle=plot_drawstyle)
+            plot_draw_style = 'default'
+        co_plot_axis.plot(data_x, data_y, label=legend_entry, drawstyle=plot_draw_style)
     co_plot_axis.set_xlabel('Time')
     if diff_toggle:
         co_plot_axis.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$', rotation='horizontal')
@@ -57,6 +57,7 @@ def observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tupl
         co_plot_axis.set_ylabel('Value')
     if len(set(legend_entries)) == 1:
         co_plot_axis.set_title(legend_entries[0])
+        co_plot_axis.legend([item[2] for item in file_data_list])
     else:
         co_plot_axis.legend()
     return co_plot_axis
