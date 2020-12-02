@@ -137,6 +137,6 @@ Ad(z[.]),Az(d[.]) <-> Ad(z[1]),Az(d[1]) @ 1e-4 {1e-2}, 1e-2
 
 %def: "seed" "1"
 %mod: alarm 10 do (
-	$SNAPSHOT "alphabet_soup_snap.ka" ;
-    $SNAPSHOT "alphabet_soup_snap.json" ;
+    $SNAPSHOT "alphabet_soup_snap.ka" ;
+    $SNAPSHOT "alphabet_soup_snap_raw.ka" [true] ;
     $STOP )
