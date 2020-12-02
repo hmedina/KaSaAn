@@ -58,6 +58,7 @@ class TestKappaAgent(unittest.TestCase):
         self.assertEqual('+', KappaAgent('x78:Grob(site[.])+').get_abundance_change_operation())
 
     def test_get_agent_identifier(self):
+        self.assertEqual(0, KappaAgent('x0:A(site[.]{state})').get_agent_identifier())
         self.assertEqual(1, KappaAgent('x1:An(site[.]{state})').get_agent_identifier())
         self.assertNotEqual(2, KappaAgent('x22:Aar(bbr[_])').get_agent_identifier())
         self.assertFalse(KappaAgent('Ccr(ddr[1])').get_agent_identifier())

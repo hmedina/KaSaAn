@@ -58,7 +58,7 @@ class KappaAgent(KappaEntity):
         self._abundance_change = matches.group(4) if matches.group(4) else ''
 
         # canonicalize the kappa expression
-        if self._agent_identifier:
+        if self._agent_identifier is not None:
             self._kappa_expression = \
                 'x' + str(self._agent_identifier) + ':' + \
                 self._agent_name + r'(' + \

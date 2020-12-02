@@ -37,7 +37,7 @@ class KappaComplex(KappaEntity):
             for item in matches:
                 agent = KappaAgent(item)
                 agent_list.append(agent)
-                if agent.get_agent_identifier():
+                if agent.get_agent_identifier() is not None:
                     agent_idents.append(agent.get_agent_identifier())
                 agent_type = KappaAgent(agent.get_agent_name() + '()')
                 agent_types.update([agent_type])
