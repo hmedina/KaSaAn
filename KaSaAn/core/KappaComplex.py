@@ -11,29 +11,34 @@ from .KappaError import ComplexParseError, AgentParseError
 
 class KappaComplex(KappaEntity):
     """Class for representing Kappa complexes. I.e. 'A(b[1] s{u}[.]), B(a[1] c[2]), C(b[2] a[3]), A(c[3] s[.]{x})'.
-    Notice these must be connected components."""
+    Note these must be connected components."""
 
     def __init__(self, expression: str):
         self._raw_expression: str
         self._agents: List[KappaAgent]
+        self._agent_identifiers: List[int]
         self._agent_types: Set[KappaAgent]
         self._kappa_expression: str
         self._composition: Dict[KappaAgent, int]
 
         self._raw_expression = expression
         # get the set of agents making up this complex
+        agent_idnt_pat = r'(?:x\d+:)?'
         agent_name_pat = r'(?:[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
         agent_sign_pat = r'\([^()]*\)'
-        matches = re.findall(agent_name_pat + agent_sign_pat, expression.strip())
+        matches = re.findall(agent_idnt_pat + agent_name_pat + agent_sign_pat, expression.strip())
         if len(matches) == 0:
             raise ComplexParseError('Complex <' + self._raw_expression + '> appears to have zero agents.')
         try:
             agent_list = []
+            agent_idents = []
             agent_types = set()
             composition = {}
             for item in matches:
                 agent = KappaAgent(item)
                 agent_list.append(agent)
+                if agent.get_agent_identifier():
+                    agent_idents.append(agent.get_agent_identifier())
                 agent_type = KappaAgent(agent.get_agent_name() + '()')
                 agent_types.update([agent_type])
                 if agent_type in composition:
@@ -43,6 +48,7 @@ class KappaComplex(KappaEntity):
         except AgentParseError as a:
             raise ComplexParseError('Could not parse agents in complex <' + expression + '>.') from a
         self._agents = sorted(agent_list)
+        self._agent_identifiers = agent_idents
         self._agent_types = agent_types
         self._composition = composition
         # canonicalize the kappa expression
@@ -92,6 +98,10 @@ class KappaComplex(KappaEntity):
     def get_number_of_embeddings_of_complex(self, query: str) -> int:
         """Returns the number of embedding the query complex has on the KappaComplex. Follows bonds. WIP"""
         raise NotImplementedError
+
+    def get_agent_identifiers(self) -> List[int]:
+        """Returns a list with the numeric agent identifiers, if any."""
+        return self._agent_identifiers
 
     def to_networkx(self) -> nx.MultiGraph:
         """Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent

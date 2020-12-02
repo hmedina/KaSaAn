@@ -58,3 +58,10 @@ class TestKappaComplex(unittest.TestCase):
                          get_number_of_embeddings_of_agent('bob(bob[#])'), 1)
         self.assertEqual(KappaComplex('Bob(bob[.]), bob(bob{ph}), jane(bob{un}[_])').
                          get_number_of_embeddings_of_agent('jane(bob{#})'), 1)
+
+    def test_get_agent_identifiers(self):
+        self.assertTrue(33 in KappaComplex('x22:A(s[2]), x33:A(s[1])').get_agent_identifiers())
+        self.assertTrue(22 in KappaComplex('x22:A(s[2]), x33:A(s[1])').get_agent_identifiers())
+        self.assertCountEqual([22, 33], KappaComplex('x22:A(s[2]), x33:A(s[1])').get_agent_identifiers())
+        self.assertFalse(5 in KappaComplex('x22:A(s[2]), x33:A(s[1])').get_agent_identifiers())
+        self.assertEqual([], KappaComplex('A(s[2]), A(s[1])').get_agent_identifiers())
