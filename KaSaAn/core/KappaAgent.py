@@ -13,6 +13,7 @@ class KappaAgent(KappaEntity):
 
     def __init__(self, expression: str):
         self._raw_expression: str
+        self._agent_identifier: int
         self._agent_name: str
         self._agent_signature: List[KappaSite]
         self._kappa_expression: str
@@ -20,10 +21,11 @@ class KappaAgent(KappaEntity):
 
         expression = re.sub(r'\s+|\t+|\n+', ' ', expression)  # Remove line breaks, tabs, multi-spaces
         # Check if kappa expression's name & overall structure is valid
+        agent_idnt_pat = r'(?:x(\d+):)?'
         agent_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
         agent_sign_pat = r'\(([^()]*)\)'
         agent_oper_pat = r'(\+|-)?'
-        agent_pat = r'^' + agent_name_pat + agent_sign_pat + agent_oper_pat + r'$'
+        agent_pat = r'^' + agent_idnt_pat + agent_name_pat + agent_sign_pat + agent_oper_pat + r'$'
         matches = re.match(agent_pat, expression.strip())
         if not matches:
             matches = re.match(agent_pat, expression.strip() + '()')
@@ -32,9 +34,10 @@ class KappaAgent(KappaEntity):
         self._raw_expression = expression
 
         # process & assign to variables
-        self._agent_name = matches.group(1)
+        self._agent_identifier = int(matches.group(1)) if matches.group(1) else None
+        self._agent_name = matches.group(2)
         # process agent signature
-        ag_signature = matches.group(2)
+        ag_signature = matches.group(3)
         if ag_signature == '':
             site_list = []
         else:
@@ -52,13 +55,20 @@ class KappaAgent(KappaEntity):
                 raise ValueError('Could not parse <' + entry + '> as a Port nor as a Counter')
             self._agent_signature.append(site)
         # process abundance operator, if present
-        self._abundance_change = matches.group(3) if matches.group(3) else ''
+        self._abundance_change = matches.group(4) if matches.group(4) else ''
 
         # canonicalize the kappa expression
-        self._kappa_expression = \
-            self._agent_name + r'(' + \
-            ' '.join([str(site) for site in self._agent_signature]) + \
-            ')' + self._abundance_change
+        if self._agent_identifier:
+            self._kappa_expression = \
+                'x' + str(self._agent_identifier) + ':' + \
+                self._agent_name + r'(' + \
+                ' '.join([str(site) for site in self._agent_signature]) + \
+                ')' + self._abundance_change
+        else:
+            self._kappa_expression = \
+                self._agent_name + r'(' + \
+                ' '.join([str(site) for site in self._agent_signature]) + \
+                ')' + self._abundance_change
 
     def __contains__(self, item) -> bool:
         # type parsing: try to make it an Agent, if that fails try a Site, if that tails, raise exception
@@ -116,6 +126,11 @@ class KappaAgent(KappaEntity):
     def get_abundance_change_operation(self) -> str:
         """Return the operation being performed on this agent: creation, deletion, or empty string."""
         return self._abundance_change
+
+    def get_agent_identifier(self) -> int:
+        """Returns the agent's unique numeric identifier, if any. These are generated in snapshots in the form
+         x[int]:[agent name][agent signature]"""
+        return self._agent_identifier
 
 
 class KappaToken(KappaEntity):
