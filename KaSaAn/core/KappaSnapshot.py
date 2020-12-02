@@ -22,6 +22,7 @@ class KappaSnapshot(KappaEntity):
         self._complexes: Dict[KappaComplex, int]
         self._tokens: Dict[str: KappaToken]
         self._known_sizes: List[int]
+        self._held_identifiers: List[int]
         self._raw_expression: str
         self._kappa_expression: str
         self._snapshot_event: int
@@ -32,6 +33,7 @@ class KappaSnapshot(KappaEntity):
         self._complexes = dict()
         self._tokens = dict()
         self._known_sizes = []
+        self._held_identifiers = []
         # read file into a single string
         with open(snapshot_file_name, 'r') as kf:
             self._raw_expression = kf.read()
@@ -68,6 +70,8 @@ class KappaSnapshot(KappaEntity):
                     # assign the complex as a key to the dictionary
                     self._complexes[species] = abundance
                     self._known_sizes.append(size)
+                    if species.get_agent_identifiers():
+                        self._held_identifiers.extend(species.get_agent_identifiers())
                 except SnapshotAgentParseError:
                     # try to parse as a token line instead
                     tk_value_pat = r'((?:(?:\d+\.\d+)|(?:\d+\.)|(?:\.\d+)|(?:\d+))[eE]?[+-]?\d?)'
@@ -241,6 +245,10 @@ class KappaSnapshot(KappaEntity):
     def get_token_names(self) -> List[str]:
         """Returns the token names present in the snapshot."""
         return list(self._tokens.keys())
+
+    def get_agent_identifiers(self) -> List[int]:
+        """Returns a list with all the agent identifiers held in the snapshot."""
+        return self._held_identifiers
 
     def to_networkx(self) -> nx.MultiGraph:
         """Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent

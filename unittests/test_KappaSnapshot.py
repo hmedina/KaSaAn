@@ -9,6 +9,7 @@ class TestKappaSnapshot(unittest.TestCase):
     snap_abc = KappaSnapshot('./models/alphabet_soup_snap.ka')
     snap_dim = KappaSnapshot('./models/dimerization_with_tokens_snap.ka')
     snap_kte = KappaSnapshot('./models/kite_snap.ka')
+    snap_abc_raw = KappaSnapshot('./models/alphabet_soup_snap_raw.ka')
 
     def test_snapshot_string_representation(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
         self.assertEqual(str(ref_snap_abc)[0:1000],
@@ -92,10 +93,12 @@ class TestKappaSnapshot(unittest.TestCase):
                          {KappaComplex('A(a[1]), A(a[1])'): 241,
                           KappaComplex('A(a[.])'): 18})
 
-    def test_get_total_mass(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
+    def test_get_total_mass(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte,
+                            ref_snap_raw=snap_abc_raw):
         self.assertEqual(ref_snap_abc.get_total_mass(), 26000)
         self.assertEqual(ref_snap_dim.get_total_mass(), 500)
         self.assertEqual(ref_snap_kte.get_total_mass(), 19)
+        self.assertEqual(ref_snap_raw.get_total_mass(), 26000)
 
     def test_get_abundance_of_agent(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.get_abundance_of_agent('Aa()'), 1000)
@@ -212,6 +215,10 @@ class TestKappaSnapshot(unittest.TestCase):
 
     def test_get_token_names(self, ref_snap_dim=snap_dim):
         self.assertEqual(ref_snap_dim.get_token_names(), ['X'])
+
+    def test_get_agent_identifiers(self, ref_snap_raw=snap_abc_raw, ref_snap_triaged=snap_abc):
+        self.assertEqual([], ref_snap_triaged.get_agent_identifiers())
+        self.assertCountEqual(list(range(0, 26000)), ref_snap_raw.get_agent_identifiers())
 
     def test_to_networkx(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.to_networkx().number_of_nodes(), 26000)
