@@ -250,6 +250,15 @@ class KappaSnapshot(KappaEntity):
         """Returns a list with all the agent identifiers held in the snapshot."""
         return self._held_identifiers
 
+    def find_complex_of_agent(self, query_identifier: int) -> Tuple[KappaComplex, int]:
+        """Returns a tuple with the KappaComplex and its abundance, for the complex that holds the agent whose
+        identifier was supplied."""
+        if query_identifier not in self._held_identifiers:
+            raise ValueError('Identifier <{}> not present in snapshot.'.format(query_identifier))
+        for complex_expression, complex_abundance in self.get_all_complexes_and_abundances():
+            if query_identifier in complex_expression.get_agent_identifiers():
+                return complex_expression, complex_abundance
+
     def to_networkx(self) -> nx.MultiGraph:
         """Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent
         agents, edges their bonds. Nodes have an attribute dictionary where the key 'kappa' holds the KappaAgent.
