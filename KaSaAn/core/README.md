@@ -55,6 +55,12 @@ Currently implemented methods:
     * Returns a float with the numeric value of `query_token`.
   * `get_token_names()`
     * Returns a list of KappaTokens with the tokens present in the snapshot.
+  * `get_agent_identifiers()`
+    * Returns a list with all the agent identifiers held in the snapshot.
+  * `get_complex_of_agent(query_identifier)`
+    * Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
+        should always be numerically 1; the identifier print-out forces distinction of species that would otherwise
+        be identical, and identifiers are unique and stable throughout the simulation.
   * `to_networkx()`
     * Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent. Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the complex' Kappa expression; this is not a globally unique identifier at the snapshot level, only at the complex level. Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays the node identifiers and their corresponding KappaAgents, and `g.edges.data()` displays the edges, using the node identifiers as well as the kappa identifiers.
 
@@ -92,6 +98,8 @@ Currently implemented methods:
   * `get_complex_composition(self)`
     * Returns a dictionary where the key is an agent name, and the value the number of times that agent appears in this
      complex.
+  * `get_agent_identifiers()`
+    * Returns a list with the numeric agent identifiers, if any.
   * `to_networkx(self)`
     * Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
       agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent.
@@ -123,6 +131,9 @@ Currently implemented methods:
   * `get_abundance_change_operation()`
     * Returns a string with the agent-level operation performed on this agent; i.e. `+` for creation, `-` for
     degradation, or an empty string for no operation.
+  * `get_agent_identifier()`
+    * Returns the agent's unique numeric identifier, if any. These are generated in snapshots in the form
+         `x[int]:[agent name][agent signature]`
 ```
 >>> baz = bar.get_all_agents()[1]
 >>> print(baz)
