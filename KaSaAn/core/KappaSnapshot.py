@@ -18,22 +18,23 @@ class KappaSnapshot(KappaEntity):
      of the Dict() class', but with more informative names for Kappa entities."""
 
     def __init__(self, snapshot_file_name: str):
+        # type declarations
         self._file_name: str
         self._complexes: Dict[KappaComplex, int]
         self._tokens: Dict[str: KappaToken]
         self._known_sizes: List[int]
-        self._held_identifiers: List[int]
+        self._identifier_complex_map: Dict[int, KappaComplex]
         self._raw_expression: str
         self._kappa_expression: str
         self._snapshot_event: int
         self._snapshot_uuid: str
         self._snapshot_time: float
-
+        # initialization of structures
         self._file_name = os.path.split(snapshot_file_name)[1]
         self._complexes = dict()
         self._tokens = dict()
         self._known_sizes = []
-        self._held_identifiers = []
+        self._identifier_complex_map = {}
         # read file into a single string
         with open(snapshot_file_name, 'r') as kf:
             self._raw_expression = kf.read()
@@ -70,8 +71,10 @@ class KappaSnapshot(KappaEntity):
                     # assign the complex as a key to the dictionary
                     self._complexes[species] = abundance
                     self._known_sizes.append(size)
+                    # define identifier -> complex map
                     if species.get_agent_identifiers():
-                        self._held_identifiers.extend(species.get_agent_identifiers())
+                        for identifier in species.get_agent_identifiers():
+                            self._identifier_complex_map[identifier] = species
                 except SnapshotAgentParseError:
                     # try to parse as a token line instead
                     tk_value_pat = r'((?:(?:\d+\.\d+)|(?:\d+\.)|(?:\.\d+)|(?:\d+))[eE]?[+-]?\d?)'
@@ -248,16 +251,21 @@ class KappaSnapshot(KappaEntity):
 
     def get_agent_identifiers(self) -> List[int]:
         """Returns a list with all the agent identifiers held in the snapshot."""
-        return self._held_identifiers
+        return list(self._identifier_complex_map.keys())
 
-    def find_complex_of_agent(self, query_identifier: int) -> Tuple[KappaComplex, int]:
-        """Returns a tuple with the KappaComplex and its abundance, for the complex that holds the agent whose
-        identifier was supplied."""
-        if query_identifier not in self._held_identifiers:
-            raise ValueError('Identifier <{}> not present in snapshot.'.format(query_identifier))
-        for complex_expression, complex_abundance in self.get_all_complexes_and_abundances():
-            if query_identifier in complex_expression.get_agent_identifiers():
-                return complex_expression, complex_abundance
+    def get_complex_of_agent(self, query_identifier: int) -> KappaComplex:
+        """Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
+        should always be numerically 1; the identifier print-out forces distinction of species that would otherwise
+        be identical, and identifiers are unique and stable throughout the simulation."""
+        if self._identifier_complex_map:
+            try:
+                return self._identifier_complex_map[query_identifier]
+            except KeyError as e:
+                raise ValueError('Identifier <{}> not present in snapshot <{}>.'.format(
+                    query_identifier, self.get_snapshot_file_name())) from e
+        else:
+            raise ValueError('Snapshot <{}> was not found to contain agent identifiers (i.e. raw formatted).'.format(
+                self.get_snapshot_file_name()))
 
     def to_networkx(self) -> nx.MultiGraph:
         """Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent

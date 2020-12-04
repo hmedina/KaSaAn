@@ -221,8 +221,10 @@ class TestKappaSnapshot(unittest.TestCase):
         self.assertCountEqual(list(range(0, 26000)), ref_snap_raw.get_agent_identifiers())
 
     def test_find_complex_of_agent(self, ref_snap_raw=snap_abc_raw, ref_snap_triaged=snap_abc):
-        self.assertEqual(ref_snap_raw.find_complex_of_agent(25918), (KappaComplex('x25918:Aw(a[.] b[.] c[.] d[.] e[.] f[.] g[.] h[.] i[.] j[.] k[.] l[.] m[.] n[.] o[.] p[.] q[.] r[.] s[.] t[.] u[.] v[.] w[.] x[.] y[.] z[.])'), 1))
-        self.assertEqual(ref_snap_raw.find_complex_of_agent(0)[0].get_size_of_complex(), 21918)
+        self.assertEqual(ref_snap_raw.get_complex_of_agent(25918), KappaComplex('x25918:Aw(a[.] b[.] c[.] d[.] e[.] f[.] g[.] h[.] i[.] j[.] k[.] l[.] m[.] n[.] o[.] p[.] q[.] r[.] s[.] t[.] u[.] v[.] w[.] x[.] y[.] z[.])'))
+        self.assertEqual(ref_snap_raw.get_complex_of_agent(0).get_size_of_complex(), 21918)
+        with self.assertRaises(ValueError):
+            ref_snap_triaged.get_complex_of_agent(1)
 
     def test_to_networkx(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.to_networkx().number_of_nodes(), 26000)
