@@ -33,18 +33,18 @@ Fine grained control is exposed through the various methods of the `KappaContact
 
 
 ## Installation
-To install, optionally to the user directory:
+To install from a freshly downloaded copy, where `[dir]` contains the `setup.py` file:
 ```
-./setup.py install [--user]
+pip install [dir]
 ```
 
 To install in "development" mode, where the source is linked to and remains editable:
 ```
-./setup.py develop [--user]
+pip install -e [dir]
 ```
 
 ### Uninstallation
-The python package manager should be aware of packages installed via setuptools. Try `pip list` to display currently installed packages, then:
+To uninstall via the standard way:
 ```
 pip uninstall KaSaAn
 ```
@@ -55,14 +55,14 @@ General:
 
 For visualization scripts:
 * Python packages:
-  * numpy
-  * matplotlib
-  * squarify
-  * networkx
-* ffmpeg for writing mp4 movies of traces
-* imagemagick for writing gifs of traces
-* graphviz for network layout
-* an X server, like Xming under Windows / Windows Subsystem for Linux
+  * `numpy`
+  * `matplotlib`
+  * `squarify`
+  * `networkx`
+* `ffmpeg` for writing mp4 movies of traces
+* `imagemagick` for writing gifs of traces
+* `graphviz` for network layout
+* an X server, like VcXsrv under Windows / Windows Subsystem for Linux
 
 On the Kappa Side:
 * Kappa Simulator [KaSim](https://github.com/Kappa-Dev/KaSim) v4 or above.
