@@ -18,8 +18,7 @@ setup(
         'matplotlib>=3.0.2<3.3.4',
         'numpy>=1.16<1.19.5',
         'squarify>=0.3.0<0.5.0',
-        'networkx>=2.4<2.6',
-        'pygraphviz>=1.6'
+        'networkx>=2.4<2.6'
     ],
     python_requires='>=3.7<3.10',
     entry_points={
