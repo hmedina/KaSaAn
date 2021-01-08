@@ -29,13 +29,19 @@ def main():
                         help='Size of the resulting figure, in inches, specified as two elements, width and height'
                              ' (text size is specified in points, so this affects the size of text relative to other'
                              ' graph elements).')
+    parser.add_argument('-lx', '--log_x', action='store_true',
+                        help='Plot the X axis in logarithmic scale.')
+    parser.add_argument('-ly', '--log_y', action='store_true',
+                        help='Plot the Y axis in logarithmic scale.')
     args = parser.parse_args()
     fig, ax = plt.subplots(figsize=args.figure_size)
     observable_coplot_axis_annotator(target_axis=ax,
                                      file_pattern=args.pattern,
                                      variable_index=args.variable_by_index,
                                      variable_name=args.variable_by_name,
-                                     differential_toggle=args.differential)
+                                     differential_toggle=args.differential,
+                                     log_axis_x=args.log_x,
+                                     log_axis_y=args.log_y)
     if args.out_file:
         fig.savefig(args.out_file)
     else:

@@ -18,7 +18,8 @@ def find_data_files(pattern: str) -> List[str]:
 
 
 def observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tuple[List[str], np.array, str]],
-                                         coplot_index: int, coplot_name: str, diff_toggle: bool):
+                                         coplot_index: int, coplot_name: str,
+                                         diff_toggle: bool = False, log_x: bool = False, log_y: bool = False):
     """Co-plot the same variable from a list of files."""
     legend_entries = []
     for file_data in file_data_list:
@@ -51,20 +52,29 @@ def observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tupl
             plot_draw_style = 'default'
         co_plot_axis.plot(data_x, data_y, label=legend_entry, drawstyle=plot_draw_style)
     co_plot_axis.set_xlabel('Time')
+    # if plotting a time differential, adjust Y-axis label
     if diff_toggle:
         co_plot_axis.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$', rotation='horizontal')
     else:
         co_plot_axis.set_ylabel('Value')
+    # if requested index yielded one observable name (all tracks of same observable), the file-names;
+    # else use the variable names that resulted from the requested index
     if len(set(legend_entries)) == 1:
         co_plot_axis.set_title(legend_entries[0])
         co_plot_axis.legend([item[2] for item in file_data_list])
     else:
         co_plot_axis.legend()
+    # adjust plot scales
+    if log_x:
+        co_plot_axis.set_xscale('log')
+    if log_y:
+        co_plot_axis.set_yscale('log')
     return co_plot_axis
 
 
 def observable_coplot_axis_annotator(target_axis, file_pattern: str, variable_index: int, variable_name: str,
-                                     differential_toggle: bool):
+                                     differential_toggle: bool = False,
+                                     log_axis_x: bool = False, log_axis_y: bool = False):
     file_names = find_data_files(file_pattern)
     file_data_list = []
     for file_name in file_names:
@@ -76,5 +86,5 @@ def observable_coplot_axis_annotator(target_axis, file_pattern: str, variable_in
         raise ValueError('Function requires the index of a variable, or a name for it.')
     observable_multi_data_axis_annotator(co_plot_axis=target_axis, file_data_list=file_data_list,
                                          coplot_index=variable_index, coplot_name=variable_name,
-                                         diff_toggle=differential_toggle)
+                                         diff_toggle=differential_toggle, log_x=log_axis_x, log_y=log_axis_y)
     return target_axis
