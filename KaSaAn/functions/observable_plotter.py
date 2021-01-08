@@ -20,7 +20,7 @@ def observable_file_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarra
 
 def observable_list_axis_annotator(obs_axis, data: Tuple[list, np.ndarray],
                                    vars_indexes: List[int], vars_names: List[str],
-                                   diff_toggle: bool):
+                                   diff_toggle: bool = False, axis_x_log: bool = False, axis_y_log: bool = False):
     """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object."""
     leg_data, num_data = data
     # determine what observables to plot
@@ -58,8 +58,14 @@ def observable_list_axis_annotator(obs_axis, data: Tuple[list, np.ndarray],
         obs_axis.plot(x_data, y_data, label=leg_data[variable - 1], drawstyle=plot_drawstyle)
     obs_axis.legend()
     obs_axis.set_xlabel('Time')
+    # adjust label if plotting a differential
     if diff_toggle:
         obs_axis.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$', rotation='horizontal')
     else:
         obs_axis.set_ylabel('Value')
+    # adjust axes scales
+    if axis_x_log:
+        obs_axis.set_xscale('log')
+    if axis_y_log:
+        obs_axis.set_yscale('log')
     return obs_axis
