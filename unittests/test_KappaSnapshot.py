@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import networkx
 import unittest
 from KaSaAn.core import KappaSnapshot, KappaComplex, KappaAgent, KappaToken
 
@@ -9,6 +10,8 @@ class TestKappaSnapshot(unittest.TestCase):
     snap_abc = KappaSnapshot('./models/alphabet_soup_snap.ka')
     snap_dim = KappaSnapshot('./models/dimerization_with_tokens_snap.ka')
     snap_kte = KappaSnapshot('./models/kite_snap.ka')
+    snap_prz_labeled = KappaSnapshot('./models/labeled_vs_unlabeled_snapshots/prozone_snap_with_identifiers.ka')
+    snap_prz_unlabeled = KappaSnapshot('./models/labeled_vs_unlabeled_snapshots/prozone_snap_no_identifiers.ka')
     snap_abc_raw = KappaSnapshot('./models/alphabet_soup_snap_raw.ka')
 
     def test_snapshot_string_representation(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim):
@@ -226,10 +229,17 @@ class TestKappaSnapshot(unittest.TestCase):
         with self.assertRaises(ValueError):
             ref_snap_triaged.get_complex_of_agent(1)
 
-    def test_to_networkx(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
+    def test_to_networkx(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte,
+                         ref_labeled=snap_prz_labeled, ref_unlabeled=snap_prz_unlabeled):
         self.assertEqual(ref_snap_abc.to_networkx().number_of_nodes(), 26000)
         self.assertEqual(ref_snap_abc.to_networkx().number_of_edges(), 78542)
         self.assertEqual(ref_snap_dim.to_networkx().number_of_nodes(), 500)
         self.assertEqual(ref_snap_dim.to_networkx().number_of_edges(), 241)
         self.assertEqual(ref_snap_kte.to_networkx().number_of_nodes(), 19)
         self.assertEqual(ref_snap_kte.to_networkx().number_of_edges(), 19)
+        self.assertCountEqual(ref_labeled.to_networkx().nodes(), ref_unlabeled.to_networkx().nodes())
+        self.assertEqual(len(ref_labeled.to_networkx().edges()), len(ref_unlabeled.to_networkx().edges))
+        self.assertEqual(networkx.degree_histogram(ref_labeled.to_networkx()),
+                         networkx.degree_histogram(ref_unlabeled.to_networkx()))
+        self.assertEqual(list(networkx.selfloop_edges(ref_labeled.to_networkx())), [])
+        self.assertEqual(list(networkx.selfloop_edges(ref_unlabeled.to_networkx())), [])

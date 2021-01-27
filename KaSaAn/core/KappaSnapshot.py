@@ -274,28 +274,17 @@ class KappaSnapshot(KappaEntity):
         Node identifiers are integers, using the order of agent declaration. For a graph g, g.nodes.data() displays the
         node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
         identifiers as well as the kappa identifiers."""
-        agent_node_id = 0
+        agent_id_counter = 0
         snapshot_network = nx.MultiGraph()
         # iterate over all molecular species
         # then iterate over the number of times that species appears in the mix
         for molecular_species, species_abundance in self.get_all_complexes_and_abundances():
             for species_copy in range(species_abundance):
-                # reconstruct the species, assign identifiers
-                dangle_bond_list = {}  # store unpaired bonds here
-                paired_bond_list = []  # store tuples of (agent index 1, agent index 2, bond identifier)
-                for agent in molecular_species.get_all_agents():
-                    snapshot_network.add_node(agent_node_id, kappa=agent)
-                    for bond in agent.get_bond_identifiers():
-                        if bond in dangle_bond_list:
-                            paired_bond_list.append((dangle_bond_list[bond], agent_node_id, {'bond id': bond}))
-                            del dangle_bond_list[bond]
-                        else:
-                            dangle_bond_list[bond] = agent_node_id
-                    agent_node_id += 1
-                if dangle_bond_list:
-                    raise ValueError('Dangling bonds <' + ','.join(dangle_bond_list.keys()) +
-                                     '> found in: ' + self._raw_expression)
-                snapshot_network.add_edges_from(paired_bond_list)
+                species_network = molecular_species.to_networkx(identifier_offset=agent_id_counter)
+                snapshot_network.update(species_network)
+                # if we are not dealing with labeled agents, increase offset once per network added
+                if not self.get_agent_identifiers():
+                    agent_id_counter += molecular_species.get_size_of_complex()
         if snapshot_network.number_of_nodes() != self.get_total_mass():
             raise SnapshotParseError('Mismatch between snapshot mass <' + str(self.get_total_mass()) +
                                      '> and number of nodes in network <' + str(snapshot_network.number_of_nodes()) +
