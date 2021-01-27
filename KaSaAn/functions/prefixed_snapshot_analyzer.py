@@ -18,7 +18,8 @@ def find_snapshots(directory: str, prefix: str) -> List[str]:
 def process_snapshots(snap_names: List[str], verbosity: bool) -> Tuple[dict, dict, dict]:
     """For each snapshot, get size distribution, number of complexes, size of largest complex."""
     # For each snapshot, get the size distribution & update the results dictionary {size: abundance}
-    # Also get the number of complexes in that snapshot and save it to another dictionary {snapshot name: number of complexes}
+    # Also get the number of complexes in that snapshot and save it to another dictionary
+    # {snapshot name: number of complexes}
     cum_dist = {}
     total_complexes = {}
     lc_size = {}
@@ -29,7 +30,7 @@ def process_snapshots(snap_names: List[str], verbosity: bool) -> Tuple[dict, dic
                 snap_name, snap_index, snap_num, snap_index/snap_num), end='\r')
         current_snapshot = KappaSnapshot(snap_name)
         total_complexes[snap_name] = sum(current_snapshot.get_all_abundances())
-        lc_size[snap_name] = current_snapshot.get_largest_complexes()[0].get_size_of_complex()
+        lc_size[snap_name] = current_snapshot.get_largest_complexes()[0][0].get_size_of_complex()
         size_dist = current_snapshot.get_size_distribution()
         for key in size_dist.keys():
             if key in cum_dist:
