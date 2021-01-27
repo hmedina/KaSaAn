@@ -95,16 +95,19 @@ Currently implemented methods:
   * `get_number_of_embeddings_of_agent(query)`
     * Returns an integer with the number of embeddings a given query `agent(signature)` has on the complex. The query
     must be a KappaAgent, KappaSite, or KappaCounter, or a string that can be parsed into any of those.
-  * `get_complex_composition(self)`
+  * `get_complex_composition()`
     * Returns a dictionary where the key is an agent name, and the value the number of times that agent appears in this
      complex.
   * `get_agent_identifiers()`
     * Returns a list with the numeric agent identifiers, if any.
-  * `to_networkx(self)`
+  * `to_networkx(identifier_offset: int)`
     * Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
-      agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent.
-      Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the Kappa expression.
-      Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays the node identifiers and their corresponding KappaAgents, and `g.edges.data()` displays the edges, using the node identifiers as well as the kappa identifiers.
+        agents, edges their bonds. Nodes have an attribute dictionary where the key 'kappa' holds the KappaAgent.
+        Edges have an attribute dictionary where the key 'bond id' holds the bond identifier from the Kappa expression.
+        Node identifiers are integers, using the order of agent declaration. For a graph g, g.nodes.data() displays the
+        node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
+        identifiers as well as the kappa identifiers. The optional parameter `identifier_offset` will offset all 
+        numeric identifiers reported; used in unlabeled snapshots, or when combining graphs
 
 ```
 >>> bar = foo.get_largest_complexes()[0]
