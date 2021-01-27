@@ -4,12 +4,12 @@ import re
 import networkx as nx
 from typing import List, Set, Dict
 
-from .KappaEntity import KappaEntity
+from .KappaGraph import KappaGraph
 from .KappaAgent import KappaAgent
 from .KappaError import ComplexParseError, AgentParseError
 
 
-class KappaComplex(KappaEntity):
+class KappaComplex(KappaGraph):
     """Class for representing Kappa complexes. I.e. 'A(b[1] s{u}[.]), B(a[1] c[2]), C(b[2] a[3]), A(c[3] s[.]{x})'.
     Note these must be connected components."""
 
@@ -130,8 +130,22 @@ class KappaComplex(KappaEntity):
                 else:
                     dangle_bond_list[bond] = agent_global_id
             agent_counter += 1
+        # if anything remains in the dangling bond list, it means we failed to pair at least one bond terminus
         if dangle_bond_list:
             raise ValueError('Dangling bonds <' + ','.join(dangle_bond_list.keys()) +
                              '> found in complex: ' + self._raw_expression)
         kappa_complex_multigraph.add_edges_from(paired_bond_list)
         return kappa_complex_multigraph
+
+    def to_cytoscape_cx(self) -> List[Dict]:
+        """
+        Export to a structure that, via some json encoding and dumping, can be read by Cytoscape as a CX file. Usage:
+
+        my_cx = my_complex.to_cytoscape_cx()
+        with open('my_cx.cx', 'w') as out_file:
+            json.dump(my_cx, out_file)
+        """
+        cx_data = self._kappa_to_cytoscape_cx()
+        cx_network_attributes = [{'n': 'name', 'v': 'network'}]
+        cx_data.insert(2, {'networkAttributes': cx_network_attributes})
+        return cx_data
