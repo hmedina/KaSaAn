@@ -63,7 +63,13 @@ Currently implemented methods:
         be identical, and identifiers are unique and stable throughout the simulation.
   * `to_networkx()`
     * Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent. Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the complex' Kappa expression; this is not a globally unique identifier at the snapshot level, only at the complex level. Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays the node identifiers and their corresponding KappaAgents, and `g.edges.data()` displays the edges, using the node identifiers as well as the kappa identifiers.
-
+  * `to_cytoscape_cx()`
+    * Export to a structure that via some json encoding and dumping can be read by Cytoscape as a CX file. Usage:
+        ```
+        my_cx = my_snap.to_cytoscape_cx()
+        with open('my_cx.cx', 'w') as out_file:
+            json.dump(my_cx, out_file)
+      ```
 ```
 >>> from KaSaAn.core import KappaSnapshot
 >>> foo = KappaSnapshot('E_10000.ka')
@@ -108,13 +114,6 @@ Currently implemented methods:
         node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
         identifiers as well as the kappa identifiers. The optional parameter `identifier_offset` will offset all 
         numeric identifiers reported; used in unlabeled snapshots, or when combining graphs
-  * `to_cytoscape_cx()`
-    * Export to a structure that via some json encoding and dumping can be read by Cytoscape as a CX file. Usage:
-        ```
-        my_cx = my_snap.to_cytoscape_cx()
-        with open('my_cx.cx', 'w') as out_file:
-            json.dump(my_cx, out_file)
-      ```
 ```
 >>> bar = foo.get_largest_complexes()[0]
 >>> print(bar)
