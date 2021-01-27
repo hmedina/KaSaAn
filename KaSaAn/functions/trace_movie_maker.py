@@ -6,23 +6,10 @@ import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
 from typing import List, Tuple, Set
 
-from .numerical_sort import numerical_sort
+from .find_snapshot_names import find_snapshot_names
 from .snapshot_visualizer_patchwork import process_snapshot, snapshot_composition_simple, colorize_agents, \
     snapshot_legend_simple
 from ..core import KappaSnapshot, KappaAgent
-
-
-# Get & sort the file names
-def find_snapshot_files(base_dir: str = './') -> List[KappaSnapshot]:
-    # In case we're fed a directory name, without the trailing slash, append it
-    if base_dir[-1] != '/':
-        base_dir += '/'
-    snap_names = sorted(glob.glob(base_dir + 'snapshot.*.ka'), key=numerical_sort)
-    snapshot_list = []
-    for file_name in snap_names:
-        snapshot_list.append(KappaSnapshot(file_name))
-
-    return snapshot_list
 
 
 # Define consistent coloring scheme & maximum mass
@@ -41,9 +28,14 @@ def define_agent_list_and_max_mass(snap_list: List[KappaSnapshot]) -> Tuple[Set[
 def movie_from_snapshots(directory: str, vis_mode: str, fig_width: int, xy_ratio: float, dont_scale_mass: bool,
                          legend_cols: int, frame_int: int, verbose: bool):
     # Find the snapshots in the directory; determine agent set; colorize it
-    snapshots = find_snapshot_files(directory)
+    snapshots = []
+    snapshot_names = find_snapshot_names(target_directory=directory, name_pattern='snapshot.*.ka')
     if verbose:
         print('Found ' + str(len(snapshots)) + ' snapshots in directory ' + directory)
+    for snapshot_index, snapshot_name in enumerate(snapshot_names):
+        if verbose:
+            print('Processing {}, {} of {}'.format(snapshot_name, snapshot_index + 1, len(snapshot_names)))
+        snapshots.append(KappaSnapshot(snapshot_name))
     my_agent_list, my_max_mass = define_agent_list_and_max_mass(snapshots)
     if verbose:
         print('Trace contains ' + str(len(my_agent_list)) + ' agents in total.')
