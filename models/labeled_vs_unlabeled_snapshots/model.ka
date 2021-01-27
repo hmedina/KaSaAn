@@ -1,0 +1,10 @@
+%agent: A(b)        %init:  5 A()
+%agent: B(a,c)      %init: 10 B()
+%agent: C(b)        %init: 30 C()
+A(b[./1]), B(a[./1]) @ 1.0 {1.0}
+C(b[./1]), B(c[./1]) @ 1.0 {1.0}
+A(b[1/.]), B(a[1/.]) @ 1.0
+C(b[1/.]), B(c[1/.]) @ 1.0
+%mod: [E] = 100 do $SNAPSHOT "prozone_snap_with_identifiers.ka" [true] ;
+%mod: [E] = 100 do $SNAPSHOT "prozone_snap_no_identifiers.ka" [false] ;
+%mod: [E] = 101 do $STOP ;

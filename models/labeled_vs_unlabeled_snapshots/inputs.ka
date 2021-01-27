@@ -1,0 +1,28 @@
+// "uuid" : "89565151"
+%def: "seed" "7837171"
+%def: "dumpIfDeadlocked" "true"
+%def: "maxConsecutiveClash" "3"
+%def: "progressBarSize" "70"
+%def: "progressBarSymbol" "#"
+%def: "plotPeriod" "1" "t.u."
+%def: "outputFileName" "data.csv"
+
+%agent: A(b[a.B])
+%agent: B(a[b.A] c[b.C])
+%agent: C(b[c.B])
+
+%plot: [T]
+A(b[./1]), B(a[./1]) @ 1. {1.}
+C(b[./1]), B(c[./1]) @ 1. {1.}
+A(b[1/.]), B(a[1/.]) @ 1.
+C(b[1/.]), B(c[1/.]) @ 1.
+
+/*0*/%mod: ([E] = 100) do $SNAPSHOT "prozone_snap_with_identifiers.ka" [true]; repeat [false]
+/*1*/%mod: ([E] = 100) do $SNAPSHOT "prozone_snap_no_identifiers.ka"; repeat [false]
+/*2*/%mod: ([E] = 101) do $STOP ; repeat [false]
+
+%init: 5 A(b[.])
+%init: 10 B(a[.] c[.])
+%init: 30 C(b[.])
+
+%mod: [E] = 101 do $STOP;

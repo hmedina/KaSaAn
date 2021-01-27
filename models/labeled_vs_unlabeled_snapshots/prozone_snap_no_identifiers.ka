@@ -1,0 +1,9 @@
+// Snapshot [Event: 100]
+// "uuid" : "89565151"
+%def: "T0" "3.45711"
+
+%init: 5 /*3 agents*/ A(b[1]), B(a[1] c[2]), C(b[2])
+%init: 4 /*2 agents*/ B(a[.] c[1]), C(b[1])
+%init: 21 /*1 agents*/ C(b[.])
+%init: 1 /*1 agents*/ B(a[.] c[.])
+
