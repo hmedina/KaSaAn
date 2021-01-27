@@ -49,10 +49,9 @@ def get_potential_of_folder(base_directory: str, enzyme: KappaAgent, substrate: 
     # Iterate over the files and calculate each's catalytic potential
     cat_pot_dist = []
     snap_num = len(snap_names)
-    for snap_index in range(snap_num):
-        snap_name = snap_names[snap_index]
+    for snap_index, snap_name in enumerate(snap_names):
         if verbosity:
-            print('Now parsing file <{}>, {} of {}, {}%'.format(
-                snap_name, snap_index, snap_num, 100*snap_index/snap_num))
-        cat_pot_dist.append(get_potential_of_snapshot(snap_name, enzyme, substrate))
+            print('Now parsing file <{}>, {} of {}, {:.2%}'.format(
+                snap_name, snap_index, snap_num, snap_index/snap_num))
+        cat_pot_dist.append(get_potential_of_snapshot(KappaSnapshot(snap_name), enzyme, substrate))
     return cat_pot_dist
