@@ -12,7 +12,8 @@ from matplotlib.collections import PatchCollection
 from operator import itemgetter
 from typing import List, Set, Dict, Tuple, Any
 
-from KaSaAn.core import KappaSnapshot, KappaAgent
+from ..core.KappaSnapshot import KappaSnapshot
+from ..core.KappaAgent import KappaAgent
 
 
 def process_snapshot(snapshot: KappaSnapshot) -> List[dict]:

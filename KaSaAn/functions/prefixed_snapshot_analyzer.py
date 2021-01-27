@@ -4,7 +4,7 @@ import csv
 import glob
 import warnings
 from typing import List, Tuple
-from KaSaAn.core import KappaSnapshot
+from ..core import KappaSnapshot
 
 
 def find_snapshots(directory: str, prefix: str) -> List[str]:

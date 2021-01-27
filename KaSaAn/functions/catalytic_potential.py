@@ -4,7 +4,7 @@ import glob
 import warnings
 from typing import List
 
-from KaSaAn.core import KappaSnapshot, KappaAgent
+from ..core import KappaSnapshot, KappaAgent
 from .numerical_sort import numerical_sort
 
 

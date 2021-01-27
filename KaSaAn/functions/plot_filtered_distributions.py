@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from typing import Iterator, Tuple
 
-from KaSaAn.core import KappaSnapshot, KappaAgent
+from ..core import KappaSnapshot, KappaAgent
 
 
 def filtered_dist(snapshot_file_name: str, agent_of_interest: str) -> Iterator[Tuple[int, int]]:

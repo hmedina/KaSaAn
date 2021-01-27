@@ -6,8 +6,8 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 from networkx.drawing.nx_agraph import graphviz_layout
 from typing import List, Tuple
-from KaSaAn.core import KappaSnapshot, KappaAgent
-from KaSaAn.functions.snapshot_visualizer_patchwork import colorize_agents
+from ..core import KappaSnapshot, KappaAgent
+from .snapshot_visualizer_patchwork import colorize_agents
 
 
 def render_snapshot_as_plain_graph(snapshot_file_name: str, highlight_patterns: List[str],

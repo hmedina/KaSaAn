@@ -3,7 +3,7 @@
 import pathlib
 import warnings
 from typing import List
-from KaSaAn.functions.numerical_sort import numerical_sort
+from .numerical_sort import numerical_sort
 
 
 def find_snapshot_names(target_directory: str = '.', name_pattern: str = 'snap*.ka') -> List[str]:
