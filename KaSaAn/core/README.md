@@ -108,7 +108,13 @@ Currently implemented methods:
         node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
         identifiers as well as the kappa identifiers. The optional parameter `identifier_offset` will offset all 
         numeric identifiers reported; used in unlabeled snapshots, or when combining graphs
-
+  * `to_cytoscape_cx()`
+    * Export to a structure that via some json encoding and dumping can be read by Cytoscape as a CX file. Usage:
+        ```
+        my_cx = my_snap.to_cytoscape_cx()
+        with open('my_cx.cx', 'w') as out_file:
+            json.dump(my_cx, out_file)
+      ```
 ```
 >>> bar = foo.get_largest_complexes()[0]
 >>> print(bar)
@@ -126,8 +132,7 @@ Currently implemented methods:
   * `get_agent_name()`
     * Returns a string with the agent's name.
   * `get_agent_signature()`
-    * Returns true if the agent contains `query_site`, included is the check against internal and bond states, e.g.
-     `my_agent.contains_site_with_states(foo{bar}[.])`
+    * Return a list of strings with the agent's signature.
   * `get_bond_identifiers()`
     * Returns a list of strings with the bond identifiers that start/end at this agent. For example, for the KappaAgent
     `A(a[.] b[1] c[2] d{a}[.])` these would be the list `['1','2']`.
