@@ -103,26 +103,35 @@ class KappaComplex(KappaEntity):
         """Returns a list with the numeric agent identifiers, if any."""
         return self._agent_identifiers
 
-    def to_networkx(self) -> nx.MultiGraph:
+    def to_networkx(self, identifier_offset: int = 0) -> nx.MultiGraph:
         """Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
         agents, edges their bonds. Nodes have an attribute dictionary where the key 'kappa' holds the KappaAgent.
         Edges have an attribute dictionary where the key 'bond id' holds the bond identifier from the Kappa expression.
         Node identifiers are integers, using the order of agent declaration. For a graph g, g.nodes.data() displays the
         node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
-        identifiers as well as the kappa identifiers."""
+        identifiers as well as the kappa identifiers. The optional parameter 'identifier_offset' will offset all
+        numeric identifiers reported; used in unlabeled snapshots, or when combining graphs."""
         kappa_complex_multigraph = nx.MultiGraph()
-        dangle_bond_list = {}   # store unpaired bonds here
-        paired_bond_list = []   # store tuples of (agent index 1, agent index 2, bond identifier)
-        for agent_node_id, agent in enumerate(self.get_all_agents()):
-            kappa_complex_multigraph.add_node(agent_node_id, kappa=agent)
+        dangle_bond_list = {}                       # store unpaired bonds here
+        paired_bond_list = []                       # store tuples of (agent index 1, agent index 2, bond identifier)
+        agent_counter = 0                           # if using un-labeled kappa, default to this
+        for agent in self.get_all_agents():
+            if agent.get_agent_identifier():
+                agent_global_id = agent.get_agent_identifier() + identifier_offset
+            else:
+                agent_global_id = agent_counter + identifier_offset
+            kappa_complex_multigraph.add_node(agent_global_id, kappa=agent)
             for bond in agent.get_bond_identifiers():
+                # if we've already seen this edge and it is in the dangling list, it's partner has already been matched,
+                # so we can add this terminus to the bond database and delete from the dangle list
                 if bond in dangle_bond_list:
-                    paired_bond_list.append((dangle_bond_list[bond], agent_node_id, {'bond id': bond}))
+                    paired_bond_list.append((dangle_bond_list[bond], agent_global_id, {'bond id': bond}))
                     del dangle_bond_list[bond]
                 else:
-                    dangle_bond_list[bond] = agent_node_id
+                    dangle_bond_list[bond] = agent_global_id
+            agent_counter += 1
         if dangle_bond_list:
             raise ValueError('Dangling bonds <' + ','.join(dangle_bond_list.keys()) +
-                             '> found in: ' + self._raw_expression)
+                             '> found in complex: ' + self._raw_expression)
         kappa_complex_multigraph.add_edges_from(paired_bond_list)
         return kappa_complex_multigraph

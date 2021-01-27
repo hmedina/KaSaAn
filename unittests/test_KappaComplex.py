@@ -65,3 +65,17 @@ class TestKappaComplex(unittest.TestCase):
         self.assertCountEqual([22, 33], KappaComplex('x22:A(s[2]), x33:A(s[1])').get_agent_identifiers())
         self.assertFalse(5 in KappaComplex('x22:A(s[2]), x33:A(s[1])').get_agent_identifiers())
         self.assertEqual([], KappaComplex('A(s[2]), A(s[1])').get_agent_identifiers())
+
+    def test_to_networkx(self):
+        unlabeled_snap = KappaComplex('A(b[1]), B(a[1] c[2]), C(b[2])')
+        unlabeled_snap_ref_nodes = [(0, {'kappa': KappaAgent("A(b[1]{#})")}),
+                                    (1, {'kappa': KappaAgent("B(a[1]{#} c[2]{#})")}),
+                                    (2, {'kappa': KappaAgent("C(b[2]{#})")})]
+        self.assertEqual(list(unlabeled_snap.to_networkx().nodes().items()), unlabeled_snap_ref_nodes)
+        self.assertEqual(list(unlabeled_snap.to_networkx().edges()), [(0, 1), (1, 2)])
+        labeled_snap = KappaComplex('x0:A(b[1]), x8:B(a[1] c[2]), x36:C(b[2])')
+        labeled_snap_ref_nodes = [(0, {'kappa': KappaAgent("x0:A(b[1]{#})")}),
+                                  (36, {'kappa': KappaAgent("x36:C(b[2]{#})")}),
+                                  (8, {'kappa': KappaAgent("x8:B(a[1]{#} c[2]{#})")})]
+        self.assertEqual(list(labeled_snap.to_networkx().nodes().items()), labeled_snap_ref_nodes)
+        self.assertEqual(list(labeled_snap.to_networkx().edges()), [(0, 8), (36, 8)])
