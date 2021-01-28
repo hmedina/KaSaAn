@@ -54,3 +54,8 @@ return snapshot[.e]
 
 The produces snapshots can be analyzed and animated into a GIF. For a prozone-like case, this allows one to see where the bulk of the mixture ends up in:
 ![Prozone movie](../../models/trace_viz/movie.gif)
+
+### `graph_largest_complex_composition.py`
+Graph the size & composition of the largest complex. Script fill find snapshots in a directory, sort them by their time
+ stamp, and perform a stack-plot. Optional parameter allows specification of agents, with or without signature, to be
+ plotted, allowing one to filter the resulting plot.
