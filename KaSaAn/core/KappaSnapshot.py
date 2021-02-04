@@ -6,16 +6,31 @@ import warnings
 import networkx as nx
 from typing import List, Set, ItemsView, Dict, Tuple
 
-from .KappaGraph import KappaGraph
+from .KappaMultiAgentGraph import KappaMultiAgentGraph
 from .KappaComplex import KappaComplex
 from .KappaAgent import KappaAgent, KappaToken
 from .KappaError import SnapshotAgentParseError, SnapshotTokenParseError, SnapshotParseError
 
 
-class KappaSnapshot(KappaGraph):
+class KappaSnapshot(KappaMultiAgentGraph):
     """Class for representing Kappa snapshots. A snapshot is represented as a dictionary, where the kappa expression
      serves as the key, and the abundance serves as the value. Many of the methods for this class are simple re-namings
      of the Dict() class', but with more informative names for Kappa entities."""
+
+    # define pattern for the header
+    _header_title_pat = r'//\sSnapshot\s'
+    _header_event_pat = r'\[Event:\s(\d+)\]//\s'
+    _header_uuid_pat = r'\"uuid\"\s:\s\"(\w+)'
+    _header_t_zero_pat = r'\"%def:\s\"T0\"\s\"' + \
+                         r'([0-9]+|([0-9]+[eE][+-]?[0-9+])|((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+-]?[0-9]+)?))\"'
+    _header_pat_re = re.compile(_header_title_pat + _header_event_pat + _header_uuid_pat + _header_t_zero_pat)
+    # define pattern for a KappaComplex entry line
+    _line_complex_re = re.compile(r'^(\d+)\s/\*(\d+)\sagents\*/\s(.+)$')
+    # define pattern for a KappaToken entry line
+    _token_value_pat = r'((?:(?:\d+\.\d+)|(?:\d+\.)|(?:\.\d+)|(?:\d+))[eE]?[+-]?\d?)'
+    _token_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+    _line_token_pat = r'^' + _token_value_pat + r'\s' + _token_name_pat + r'$'
+    _line_token_re = re.compile(_line_token_pat)
 
     def __init__(self, snapshot_file_name: str):
         # type declarations
@@ -41,12 +56,7 @@ class KappaSnapshot(KappaGraph):
         # remove newlines, split by "%init:" keyword
         digest: List[str] = self._raw_expression.replace('\n', '').split('%init: ')
         # parse header and get event, uuid, time
-        g = re.match(
-            r'//\sSnapshot\s' +
-            r'\[Event:\s(\d+)\]//\s' +
-            r'\"uuid\"\s:\s\"(\w+)' +
-            r'\"%def:\s\"T0\"\s\"([0-9]+|([0-9]+[eE][+-]?[0-9+])|((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+-]?[0-9]+)?))\"',
-            digest[0])
+        g = self._header_pat_re.match(digest[0])
         if not g:
             raise SnapshotParseError('Header <' + digest[0] + '> not be parsed in <' + snapshot_file_name + '>')
         self._snapshot_event = int(g.group(1))
@@ -57,7 +67,7 @@ class KappaSnapshot(KappaGraph):
             try:
                 try:
                     # try to parse as a KappaComplex line, with agents
-                    g = re.match(r'^(\d+)\s/\*(\d+)\sagents\*/\s(.+)$', entry)
+                    g = self._line_complex_re.match(entry)
                     if not g:
                         raise SnapshotAgentParseError(
                             'Abundance, length, & complex not found in <' + entry + '> in <' + snapshot_file_name + '>')
@@ -77,10 +87,7 @@ class KappaSnapshot(KappaGraph):
                             self._identifier_complex_map[identifier] = species
                 except SnapshotAgentParseError:
                     # try to parse as a token line instead
-                    tk_value_pat = r'((?:(?:\d+\.\d+)|(?:\d+\.)|(?:\.\d+)|(?:\d+))[eE]?[+-]?\d?)'
-                    tk_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-                    tk_pat = r'^' + tk_value_pat + r'\s' + tk_name_pat + r'$'
-                    g = re.match(tk_pat, entry)
+                    g = self._line_token_re.match(entry)
                     if not g:
                         raise SnapshotTokenParseError(
                             'Abundance & token name not found in <' + entry + '> in <' + snapshot_file_name + '>')

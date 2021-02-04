@@ -8,6 +8,8 @@ from .KappaError import PortParseError, CounterParseError, PortInclusionError
 
 
 class KappaSite(KappaEntity):
+    """Abstract base class for site sub-types: KappaPort and KappaCounter."""
+
     @abstractmethod
     def __init__(self):
         pass
@@ -15,6 +17,14 @@ class KappaSite(KappaEntity):
 
 class KappaPort(KappaSite):
     """Class for representing traditional Kappa Sites, e.g. 's[3]', 'g[.]{b}', or 'k[_]{#}'."""
+
+    # define patterns that make up a port
+    __ident = r'[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*'
+    __port_name_pat = r'(' + __ident + r')'
+    __int_state_pat = r'(?:{(' + __ident + r'|#)(?:(/)(' + __ident + r'))?})?'
+    __bnd_state_pat = r'\[(.|_|#|\d+)(?:(/)(.|\d+))?\]'
+    __port_pat = r'^' + __port_name_pat + __int_state_pat + __bnd_state_pat + __int_state_pat + r'$'
+    __port_pat_re = re.compile(__port_pat)
 
     def __init__(self, expression: str):
         self._raw_expression: str
@@ -29,18 +39,13 @@ class KappaPort(KappaSite):
         self._bond_operation: str
 
         self._raw_expression = expression
-        expression = re.sub(r'\s+|\t+|\n+', '', expression)  # Remove line breaks, tabs, multi-spaces
-        # define patterns that make up a site
-        ident = r'[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*'
-        port_name_pat = r'(' + ident + r')'
-        int_state_pat = r'(?:{(' + ident + r'|#)(?:(/)(' + ident + r'))?})?'
-        bnd_state_pat = r'\[(.|_|#|\d+)(?:(/)(.|\d+))?\]'
-        port_pat = r'^' + port_name_pat + int_state_pat + bnd_state_pat + int_state_pat + r'$'
+        # Remove line breaks, tabs, multi-spaces
+        expression = self._whitespace_re.sub('', expression)
         # parse assuming full site declaration, with bond state declared
-        g = re.match(port_pat, expression.strip())
+        g = self.__port_pat_re.match(expression.strip())
         # if that fails, try parsing with bond state explicitly declared as a wildcard
         if not g:
-            g = re.match(port_pat, expression.strip() + '[#]')
+            g = self.__port_pat_re.match(expression.strip() + '[#]')
         # if that fails, throw an error
         if not g:
             raise PortParseError('Invalid port declaration <' + expression + '>')
@@ -192,6 +197,12 @@ class KappaPort(KappaSite):
 class KappaCounter(KappaSite):
     """"Class for representing counters, pseudo-Kappa sites, e.g. 'c{=5}'."""
 
+    # define patterns that make up a counter
+    __site_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+    __cnt_state_pat = r'{(>?=\d+)(?:(/)([+-]=\d+))?}'
+    __counter_pat = r'^' + __site_name_pat + __cnt_state_pat + r'$'
+    __counter_pat_re = re.compile(__counter_pat)
+
     def __init__(self, expression: str):
         self._raw_expression: str
         self._counter_name: str
@@ -201,13 +212,9 @@ class KappaCounter(KappaSite):
         self._kappa_expression: str
 
         self._raw_expression = expression
-        expression = re.sub(r'\s+|\t+|\n+', '', expression)  # Remove line breaks, tabs, multi-spaces
-        # define patterns that make up a site
-        site_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-        cnt_state_pat = r'{(>?=\d+)(?:(/)([+-]=\d+))?}'
-        counter_pat = r'^' + site_name_pat + cnt_state_pat + r'$'
+        expression = self._whitespace_re.sub('', expression)     # Remove line breaks, tabs, multi-spaces
         # parse the counter
-        g = re.match(counter_pat, expression.strip())
+        g = self.__counter_pat_re.match(expression.strip())
         if not g:
             raise CounterParseError('Invalid counter declaration <' + expression + '>')
         # assign capturing groups to variables

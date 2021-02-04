@@ -4,14 +4,21 @@ import re
 import networkx as nx
 from typing import List, Set, Dict
 
-from .KappaGraph import KappaGraph
+from .KappaMultiAgentGraph import KappaMultiAgentGraph
 from .KappaAgent import KappaAgent
 from .KappaError import ComplexParseError, AgentParseError
 
 
-class KappaComplex(KappaGraph):
+class KappaComplex(KappaMultiAgentGraph):
     """Class for representing Kappa complexes. I.e. 'A(b[1] s{u}[.]), B(a[1] c[2]), C(b[2] a[3]), A(c[3] s[.]{x})'.
     Note these must be connected components."""
+
+    # define agent pattern
+    _agent_idnt_pat = r'(?:x\d+:)?'
+    _agent_name_pat = r'(?:[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+    _agent_sign_pat = r'\([^()]*\)'
+    _agent_pat = _agent_idnt_pat + _agent_name_pat + _agent_sign_pat
+    _agent_pat_re = re.compile(_agent_pat)
 
     def __init__(self, expression: str):
         self._raw_expression: str
@@ -23,10 +30,7 @@ class KappaComplex(KappaGraph):
 
         self._raw_expression = expression
         # get the set of agents making up this complex
-        agent_idnt_pat = r'(?:x\d+:)?'
-        agent_name_pat = r'(?:[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-        agent_sign_pat = r'\([^()]*\)'
-        matches = re.findall(agent_idnt_pat + agent_name_pat + agent_sign_pat, expression.strip())
+        matches = self._agent_pat_re.findall(expression.strip())
         if len(matches) == 0:
             raise ComplexParseError('Complex <' + self._raw_expression + '> appears to have zero agents.')
         try:

@@ -6,7 +6,7 @@ from typing import List, Dict
 from .KappaEntity import KappaEntity
 
 
-class KappaGraph(KappaEntity):
+class KappaMultiAgentGraph(KappaEntity):
     @abstractmethod
     def __init__(self):
         pass

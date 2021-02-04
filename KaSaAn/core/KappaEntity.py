@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import re
+
 from abc import ABC, abstractmethod
 from functools import total_ordering
 
@@ -10,6 +12,8 @@ from .KappaError import KappaEqualtiyError
 class KappaEntity(ABC):
     """Abstract base class for Kappa entities. It should not be invoked directly. Contains boiler-plate code used
     by child classes."""
+
+    _whitespace_re = re.compile(r'\s+|\t+|\n+')  # used for string cleanup and sanitization
 
     @abstractmethod
     def __init__(self):

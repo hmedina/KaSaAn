@@ -11,7 +11,16 @@ from .KappaError import AgentParseError, TokenParseError, PortParseError, Counte
 class KappaAgent(KappaEntity):
     """Class for representing Kappa agents. I.e. <<A(b[1])>> or <<A(s{a}[.] a[1] b[.])>>."""
 
+    # define pattern that makes up an agent
+    _agent_idnt_pat = r'(?:x(\d+):)?'
+    _agent_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+    _agent_sign_pat = r'\(([^()]*)\)'
+    _agent_oper_pat = r'(\+|-)?'
+    _agent_pat = r'^' + _agent_idnt_pat + _agent_name_pat + _agent_sign_pat + _agent_oper_pat + r'$'
+    _agent_pat_re = re.compile(_agent_pat)
+
     def __init__(self, expression: str):
+        # instance type "declarations"
         self._raw_expression: str
         self._agent_identifier: int
         self._agent_name: str
@@ -19,16 +28,11 @@ class KappaAgent(KappaEntity):
         self._kappa_expression: str
         self._abundance_change: str
 
-        expression = re.sub(r'\s+|\t+|\n+', ' ', expression)  # Remove line breaks, tabs, multi-spaces
+        expression = self._whitespace_re.sub(' ', expression)  # Remove line breaks, tabs, multi-spaces
         # Check if kappa expression's name & overall structure is valid
-        agent_idnt_pat = r'(?:x(\d+):)?'
-        agent_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-        agent_sign_pat = r'\(([^()]*)\)'
-        agent_oper_pat = r'(\+|-)?'
-        agent_pat = r'^' + agent_idnt_pat + agent_name_pat + agent_sign_pat + agent_oper_pat + r'$'
-        matches = re.match(agent_pat, expression.strip())
+        matches = self._agent_pat_re.match(expression.strip())
         if not matches:
-            matches = re.match(agent_pat, expression.strip() + '()')
+            matches = self._agent_pat_re.match(expression.strip() + '()')
         if not matches:
             raise AgentParseError('Invalid agent declaration <' + expression + '>')
         self._raw_expression = expression
@@ -136,17 +140,21 @@ class KappaAgent(KappaEntity):
 class KappaToken(KappaEntity):
     """Class for representing Kappa tokens. I.e. <<X>>, or <<ATP>>."""
 
+    # define pattern that makes up a token
+    _token_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
+    _token_oper_pat = r'(.+\s)?'
+    _token_pat = '^' + _token_oper_pat + _token_name_pat + '$'
+    _token_pat_re = re.compile(_token_pat)
+
     def __init__(self, expression: str):
+        # instance type "declarations"
         self._raw_expression: str
         self._token_name: str
         self._token_operation: str
         self._kappa_expression: str
 
         # Check if expression has valid structure
-        token_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
-        token_oper_pat = r'(.+\s)?'
-        token_pat = '^' + token_oper_pat + token_name_pat + '$'
-        matches = re.match(token_pat, expression.strip())
+        matches = self._token_pat_re.match(expression.strip())
         if not matches:
             raise TokenParseError('Invalid token declaration <' + expression + '>')
         self._raw_expression = expression
