@@ -24,9 +24,13 @@ class KappaAgent(KappaEntity):
         self._raw_expression: str
         self._agent_identifier: int
         self._agent_name: str
-        self._agent_signature: List[KappaSite]
+        self._agent_signature: List[Union[KappaPort, KappaCounter]]
+        self._agent_ports: List[KappaPort]
+        self._agent_counters: List[KappaCounter]
         self._kappa_expression: str
         self._abundance_change: str
+        self._bond_identifiers: List[str]
+        self._bond_types: List[str]
 
         expression = self._whitespace_re.sub(' ', expression)  # Remove line breaks, tabs, multi-spaces
         # Check if kappa expression's name & overall structure is valid
@@ -48,13 +52,23 @@ class KappaAgent(KappaEntity):
             # Kappa4 allows commas or whitespace as separators:
             # swap all commas for spaces, then split by whitespace, then sort alphabetically
             site_list = sorted(ag_signature.replace(',', ' ').split())
+        # build agent signature, bond lists, counter lists
         self._agent_signature = []
+        self._bond_identifiers = []
+        self._agent_ports = []
+        self._agent_counters = []
         for entry in site_list:
             try:
                 try:
                     site = KappaPort(entry)
+                    self._agent_ports.append(site)
+                    if re.match(r'\d+', site.get_port_current_bond()):
+                        self._bond_identifiers.append(site.get_port_current_bond())
+                    if re.match(r'\d+', site.get_port_future_bond()):
+                        self._bond_identifiers.append(site.get_port_future_bond())
                 except PortParseError:
                     site = KappaCounter(entry)
+                    self._agent_counters.append(site)
             except CounterParseError:
                 raise ValueError('Could not parse <' + entry + '> as a Port nor as a Counter')
             self._agent_signature.append(site)
@@ -116,16 +130,17 @@ class KappaAgent(KappaEntity):
     def get_bond_identifiers(self) -> List[str]:
         """Return the list of bonds ending/starting at this agent, e.g. for <<A(a[.] b[1] c[2] d{a}[.])>> these would
          be the list ['1','2']."""
-        agent_bonds = []
-        all_bonds_data = []
-        for item in self._agent_signature:
-            if type(item) is KappaPort:
-                all_bonds_data.append(item.get_port_current_bond())
-                all_bonds_data.append(item.get_port_future_bond())
-        for bond_data in all_bonds_data:
-            if re.match(r'\d+', bond_data):
-                agent_bonds.append(bond_data)
-        return agent_bonds
+        return self._bond_identifiers
+
+    def get_terminii_of_bond(self, bond_ident: str) -> []:
+        """Returns a list of the names of the KappaSite where a given bond identifier ends. Outside of self-loops,
+        this is either a 1 element list or an empty one."""
+        name_list = []
+        if bond_ident in self._bond_identifiers:
+            for this_port in self._agent_ports:
+                if this_port.get_port_current_bond() == bond_ident or this_port.get_port_future_bond() == bond_ident:
+                    name_list.extend(this_port.get_port_name())
+        return name_list
 
     def get_abundance_change_operation(self) -> str:
         """Return the operation being performed on this agent: creation, deletion, or empty string."""

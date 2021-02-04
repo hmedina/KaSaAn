@@ -47,6 +47,16 @@ class TestKappaAgent(unittest.TestCase):
                               KappaAgent('Jane(s1{ph}[3], _2, c3{=55})').get_agent_signature())
         self.assertEqual('site[.]{un}', str(KappaAgent('x56:Pavo(site[.]{un})').get_agent_signature()[0]))
 
+    def test_get_terminii_of_bond(self):
+        my_comp = KappaAgent('B(a[2], b[.], c[#], d[3], e[./5], f[6/7], g[8], h[8])')
+        self.assertEqual(my_comp.get_terminii_of_bond('2'), ['a'])
+        self.assertEqual(my_comp.get_terminii_of_bond('3'), ['d'])
+        self.assertEqual(my_comp.get_terminii_of_bond('5'), ['e'])
+        self.assertEqual(my_comp.get_terminii_of_bond('6'), ['f'])
+        self.assertEqual(my_comp.get_terminii_of_bond('7'), ['f'])
+        self.assertEqual(my_comp.get_terminii_of_bond('8'), ['g', 'h'])
+        self.assertEqual(my_comp.get_terminii_of_bond('0'), [])
+
     def test_get_bond_identifiers(self):
         self.assertCountEqual(['1', '33', '999'], KappaAgent('Mary(~a[1], _b[33], cc[999])').get_bond_identifiers())
         self.assertCountEqual(['2', '5'], KappaAgent('x843:Slav(un[2], trois[.], quatre[5])').get_bond_identifiers())

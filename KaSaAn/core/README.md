@@ -135,6 +135,8 @@ Currently implemented methods:
   * `get_bond_identifiers()`
     * Returns a list of strings with the bond identifiers that start/end at this agent. For example, for the KappaAgent
     `A(a[.] b[1] c[2] d{a}[.])` these would be the list `['1','2']`.
+  * `get_terminus_of_bond(bond)`
+    * Returns the name of the KappaSite where a given bond identifier ends.
   * `get_abundance_change_operation()`
     * Returns a string with the agent-level operation performed on this agent; i.e. `+` for creation, `-` for
     degradation, or an empty string for no operation.

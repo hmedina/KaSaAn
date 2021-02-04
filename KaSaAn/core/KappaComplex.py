@@ -7,6 +7,7 @@ from typing import List, Set, Dict
 from .KappaMultiAgentGraph import KappaMultiAgentGraph
 from .KappaAgent import KappaAgent
 from .KappaError import ComplexParseError, AgentParseError
+from .KappaBond import KappaBond
 
 
 class KappaComplex(KappaMultiAgentGraph):
@@ -116,7 +117,7 @@ class KappaComplex(KappaMultiAgentGraph):
         identifiers as well as the kappa identifiers. The optional parameter 'identifier_offset' will offset all
         numeric identifiers reported; used in unlabeled snapshots, or when combining graphs."""
         kappa_complex_multigraph = nx.MultiGraph()
-        dangle_bond_list = {}                       # store unpaired bonds here
+        dangle_bond_dict = {}                       # store unpaired bonds he
         paired_bond_list = []                       # store tuples of (agent index 1, agent index 2, bond identifier)
         agent_counter = 0                           # if using un-labeled kappa, default to this
         for agent in self.get_all_agents():
@@ -128,15 +129,29 @@ class KappaComplex(KappaMultiAgentGraph):
             for bond in agent.get_bond_identifiers():
                 # if we've already seen this edge and it is in the dangling list, it's partner has already been matched,
                 # so we can add this terminus to the bond database and delete from the dangle list
-                if bond in dangle_bond_list:
-                    paired_bond_list.append((dangle_bond_list[bond], agent_global_id, {'bond id': bond}))
-                    del dangle_bond_list[bond]
+                if bond in dangle_bond_dict:
+                    # special case for self-bonds: the first pass already got the alphabetically lower terminus,
+                    # so this pass should get the second terminus of the bond
+                    if len(agent.get_terminii_of_bond(bond)) > 1:
+                        second_terminus = agent.get_terminii_of_bond(bond)[1]
+                    else:
+                        second_terminus = agent.get_terminii_of_bond(bond)[0]
+                    paired_bond_list.append((dangle_bond_dict[bond]['agent id'], agent_global_id,
+                                             {'bond id': bond, 'bond type':
+                                             KappaBond(agent_one=dangle_bond_dict[bond]['agent name'],
+                                                       site_one=dangle_bond_dict[bond]['site name'],
+                                                       agent_two=agent.get_agent_name(),
+                                                       site_two=second_terminus
+                                                       )}))
+                    del dangle_bond_dict[bond]
                 else:
-                    dangle_bond_list[bond] = agent_global_id
+                    dangle_bond_dict[bond] = {'agent id': agent_global_id,
+                                              'agent name': agent.get_agent_name(),
+                                              'site name': agent.get_terminii_of_bond(bond)[0]}
             agent_counter += 1
         # if anything remains in the dangling bond list, it means we failed to pair at least one bond terminus
-        if dangle_bond_list:
-            raise ValueError('Dangling bonds <' + ','.join(dangle_bond_list.keys()) +
+        if dangle_bond_dict:
+            raise ValueError('Dangling bonds <' + ','.join(dangle_bond_dict.keys()) +
                              '> found in complex: ' + self._raw_expression)
         kappa_complex_multigraph.add_edges_from(paired_bond_list)
         return kappa_complex_multigraph
