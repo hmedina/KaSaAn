@@ -43,6 +43,7 @@ def main():
                                      log_axis_x=args.log_x,
                                      log_axis_y=args.log_y)
     if args.out_file:
+        plt.tight_layout()
         fig.savefig(args.out_file)
     else:
         plt.show()

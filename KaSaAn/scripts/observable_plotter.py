@@ -55,6 +55,7 @@ def main():
 
     # save or display the figure
     if args.output_file_name:
+        plt.tight_layout()
         fig.savefig(fname=args.output_file_name)
     else:
         plt.show()
