@@ -54,11 +54,11 @@ def main():
         save_path = Path(args.output_name)
         fig_lin_lin.savefig(save_path)
         if args.lin_log:
-            fig_lin_log.savefig(save_path.parents[0] / Path(save_path.name + '_lin_log' + save_path.suffix))
+            fig_lin_log.savefig(save_path.parents[0] / Path(save_path.stem + '_lin_log' + save_path.suffix))
         if args.log_lin:
-            fig_log_lin.savefig(save_path.parents[0] / Path(save_path.name + '_log_lin' + save_path.suffix))
+            fig_log_lin.savefig(save_path.parents[0] / Path(save_path.stem + '_log_lin' + save_path.suffix))
         if args.log_log:
-            fig_log_log.savefig(save_path.parents[0] / Path(save_path.name + '_log_log' + save_path.suffix))
+            fig_log_log.savefig(save_path.parents[0] / Path(save_path.stem + '_log_log' + save_path.suffix))
     else:
         plt.show()
 
