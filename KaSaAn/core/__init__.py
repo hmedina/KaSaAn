@@ -2,6 +2,7 @@
 
 from .KappaSnapshot import KappaSnapshot
 from .KappaComplex import KappaComplex
+from .KappaBond import KappaBond
 from .KappaAgent import KappaAgent, KappaToken
 from .KappaSite import KappaPort, KappaCounter
 from .KappaRule import KappaRule
