@@ -124,22 +124,26 @@ class KappaAgent(KappaEntity):
         return self._agent_name
 
     def get_agent_signature(self) -> List[Union[KappaPort, KappaCounter]]:
-        """Return a list of strings with the agent's signature."""
+        """Return a list of the agent's KappaPort and KappaCounter components."""
         return self._agent_signature
+
+    def get_agent_ports(self) -> List[KappaPort]:
+        """Returns a list of the agent's KappaPort components (used for bonds)."""
+        return self._agent_ports
 
     def get_bond_identifiers(self) -> List[str]:
         """Return the list of bonds ending/starting at this agent, e.g. for <<A(a[.] b[1] c[2] d{a}[.])>> these would
          be the list ['1','2']."""
         return self._bond_identifiers
 
-    def get_terminii_of_bond(self, bond_ident: str) -> []:
+    def get_terminii_of_bond(self, bond_ident: str) -> List[str]:
         """Returns a list of the names of the KappaSite where a given bond identifier ends. Outside of self-loops,
         this is either a 1 element list or an empty one."""
         name_list = []
         if bond_ident in self._bond_identifiers:
             for this_port in self._agent_ports:
                 if this_port.get_port_current_bond() == bond_ident or this_port.get_port_future_bond() == bond_ident:
-                    name_list.extend(this_port.get_port_name())
+                    name_list.append(this_port.get_port_name())
         return name_list
 
     def get_abundance_change_operation(self) -> str:
