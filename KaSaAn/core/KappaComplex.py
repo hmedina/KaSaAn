@@ -55,7 +55,7 @@ class KappaComplex(KappaMultiAgentGraph):
         self._agents = sorted(agent_list)
         self._agent_identifiers = agent_idents
         self._agent_types = agent_types
-        self._composition = composition
+        self._composition = dict(sorted(composition.items(), key=lambda item: item[1]))
         # canonicalize the kappa expression
         self._kappa_expression = ', '.join([str(agent) for agent in self._agents])
 
