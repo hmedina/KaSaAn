@@ -59,6 +59,47 @@ class TestKappaComplex(unittest.TestCase):
         self.assertEqual(KappaComplex('Bob(bob[.]), bob(bob{ph}), jane(bob{un}[_])').
                          get_number_of_embeddings_of_agent('jane(bob{#})'), 1)
 
+    def test_get_number_of_embeddings_of_complex(self):
+        t1 = KappaComplex(
+            'A(b[1]), B(a[1], b[2]{b}, c[4]), B(a[6], b[2]{a}, ba[3], bb[3], c[5]), C(b1[4]{s1}, b2[5]), A(b[6])')
+        t2 = KappaComplex('A(b[1]), B(a[1])')
+        t3 = KappaComplex('B(b[1]), B(b[1])')
+        t4 = KappaComplex('B(b[1]{a}), B(b[1])')
+        t5 = KappaComplex('B(b[1]{b}), B(b[1])')
+        t6 = KappaComplex('Bob(h[3], t[1]), Bob(h[1], t[2]), Bob(h[2], t[3])')
+        t7 = KappaComplex('A(h[4], t[1]), A(h[1], t[2]), A(h[2], t[3], b[5]), A(h[3], t[4], b[6]), B(a[5]), B(a[6], s{r})')
+        self.assertEqual(0, t2.get_number_of_embeddings_of_complex(t3))
+        self.assertEqual(2, t1.get_number_of_embeddings_of_complex(t2))
+        self.assertEqual(1, t1.get_number_of_embeddings_of_complex(t3))
+        self.assertEqual(2, t1.get_number_of_embeddings_of_complex(t3, False))
+        self.assertEqual(1, t1.get_number_of_embeddings_of_complex(t4))
+        self.assertEqual(1, t1.get_number_of_embeddings_of_complex(t5))
+        self.assertEqual(1, t3.get_number_of_embeddings_of_complex(t3))
+        self.assertEqual(2, t3.get_number_of_embeddings_of_complex(t3, False))
+        self.assertEqual(1, t6.get_number_of_embeddings_of_complex(t6))
+        self.assertEqual(3, t6.get_number_of_embeddings_of_complex(t6, False))
+        self.assertEqual(1, t7.get_number_of_embeddings_of_complex(t7))
+        self.assertEqual(1, t7.get_number_of_embeddings_of_complex(KappaComplex('A(h[4], t[1]), A(h[1], t[2]), A(h[2], t[3]), A(h[3], t[4])')))
+        self.assertEqual(4, t7.get_number_of_embeddings_of_complex(KappaComplex('A(h[4], t[1]), A(h[1], t[2]), A(h[2], t[3]), A(h[3], t[4])'), False))
+        self.assertEqual(2, t7.get_number_of_embeddings_of_complex(KappaComplex('A(h[41], t[11]), A(h[11], t[21]), A(h[21], t[31]), A(h[31], t[41], b[91]), B(a[91])')))
+        self.assertEqual(2, t7.get_number_of_embeddings_of_complex(KappaComplex('A(h[41], t[11]), A(h[11], t[21]), A(h[21], t[31]), A(h[31], t[41], b[91]), B(a[91])'), False))
+        self.assertEqual(1, t7.get_number_of_embeddings_of_complex(KappaComplex('A(h[41], t[11]), A(h[11], t[21]), A(h[21], t[31]), A(h[31], t[41], b[91]), B(a[91], s{r})')))
+        self.assertEqual(0, t7.get_number_of_embeddings_of_complex(KappaComplex('A(h[41], t[11]), A(h[11], t[21]), A(h[21], t[31]), A(h[31], t[41], b[91]), B(a[91], s{x})')))
+        self.assertEqual(2, t7.get_number_of_embeddings_of_complex(KappaComplex('A(b[9]), B(a[9])')))
+        self.assertEqual(2, t7.get_number_of_embeddings_of_complex(KappaComplex('A(b[9]), B(a[9])'), False))
+
+
+
+    def test_get_number_of_embeddings(self):
+        t0 = KappaComplex(
+            'A(b[1]), B(a[1], b[2]{b}, c[4]), B(a[6], b[2]{a}, ba[3], bb[3], c[5]), C(b1[4]{s1}, b2[5]), A(b[6])')
+        c1 = KappaComplex('A(b[1]), B(a[1])')
+        s1 = 'A(b[1]), B(a[1])'
+        a2 = KappaAgent('B(b[_])')
+        s2 = 'B(b[_])'
+        self.assertEqual(t0.get_number_of_embeddings(c1), t0.get_number_of_embeddings(s1))
+        self.assertEqual(t0.get_number_of_embeddings(a2), t0.get_number_of_embeddings(s2))
+
     def test_get_agent_identifiers(self):
         self.assertTrue(33 in KappaComplex('x22:A(s[2]), x33:A(s[1])').get_agent_identifiers())
         self.assertTrue(22 in KappaComplex('x22:A(s[2]), x33:A(s[1])').get_agent_identifiers())
