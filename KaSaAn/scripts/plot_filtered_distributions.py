@@ -8,16 +8,14 @@ from KaSaAn.functions import plot_filtered_dist
 
 
 def main(args=None):
+    """View the pseudo-n-mer mass distribution of agents in a snapshot. This function filters out all other agents,
+    reporting exclusively the abundance of the agent of interest per species. For example, if a complex contains 5
+    agents of type X, 3 of type Y, we will get a pentamer if interested in X, a trimer if in Y, which will respectively
+    count as 5 Xs or 3 Ys in the mass fraction, per species. The collection of all these pseudo-n-mers is reported in
+    histogram format, one column per n-mer size."""
     if args is None:
         args = sys.argv[1:]
-    parser = argparse.ArgumentParser(description='View the pseudo-n-mer mass distribution of agents in a snapshot. This'
-                                                 ' function filters out all other agents, reporting exclusively the'
-                                                 ' abundance of the agent of interest per species. For example, if a'
-                                                 ' complex contains 5 agents of type X, 3 of type Y, we will get a'
-                                                 ' pentamer if interested in X, a trimer if in Y, which will respectively'
-                                                 ' count as 5 Xs or 3 Ys in the mass fraction, per species. The'
-                                                 ' collection of all these pseudo-n-mers is reported in histogram format,'
-                                                 ' one column per n-mer size.')
+    parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('-s', type=str, required=True,
                         help='Name of the snapshot file to be viewed.')
     parser.add_argument('-a', type=str, required=True,

@@ -12,7 +12,7 @@ import numpy as np
 from typing import List, Dict, Tuple
 
 
-def default_site_colors(number_of_sites) -> list:
+def _default_site_colors(number_of_sites) -> list:
     """Define a list of colors appropriate to the number of sites being drawn."""
     # Use built-in palettes: for 10 or less use the default colors
     if number_of_sites <= len(mpl.rcParams['axes.prop_cycle']):
@@ -29,7 +29,7 @@ def default_site_colors(number_of_sites) -> list:
     return color_list
 
 
-def file_name_to_string_list(contact_map_file_name: str) -> List[str]:
+def _file_name_to_string_list(contact_map_file_name: str) -> List[str]:
     """Read an "inputs.ka" style file containing contact map data, process into a clean list of 1-agent strings."""
     with open(contact_map_file_name, 'r') as cmf:
         raw_expression = cmf.read()
@@ -42,7 +42,7 @@ def file_name_to_string_list(contact_map_file_name: str) -> List[str]:
     return cleaned_list
 
 
-def raw_string_to_agent_sites_bond_types(raw_string: str) -> Tuple[str, dict]:
+def _raw_string_to_agent_sites_bond_types(raw_string: str) -> Tuple[str, dict]:
     """Process the raw string to extract the agent's name, the list of sites, the bond types for each site."""
     raw_expression = raw_string
     kappa_ident = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'
@@ -63,7 +63,7 @@ def raw_string_to_agent_sites_bond_types(raw_string: str) -> Tuple[str, dict]:
     return agent_name, sites_data
 
 
-def parsed_kappa_to_default_graphics(parsed_kappa_struct: dict, wedge_surf_dist=1, wedge_thick_ratio=0.5, grid_spacing=10):
+def _parsed_kappa_to_default_graphics(parsed_kappa_struct: dict, wedge_surf_dist=1, wedge_thick_ratio=0.5, grid_spacing=10):
     """Initialize agents as a square grid, sites superposed (i.e. default values)."""
     agent_graphics = {}
     grid_base = np.ceil(np.sqrt(len(parsed_kappa_struct.keys())))
@@ -92,7 +92,7 @@ def parsed_kappa_to_default_graphics(parsed_kappa_struct: dict, wedge_surf_dist=
     return agent_graphics
 
 
-def initialize_sites_graphic_structure(graphic_struct: dict, scale_wedges: bool = False) -> dict:
+def _initialize_sites_graphic_structure(graphic_struct: dict, scale_wedges: bool = False) -> dict:
     """Once the data structure has been created, it can now be initialized with plausible values."""
     init_site_graphics = graphic_struct
     for agent_name in init_site_graphics.keys():
@@ -105,7 +105,7 @@ def initialize_sites_graphic_structure(graphic_struct: dict, scale_wedges: bool 
         wedge_scaling_factor = np.sqrt(wedge_number) if scale_wedges else 1
         wedge_ends = np.rad2deg(np.linspace(0, 2*np.pi, wedge_number))
         # define default color palette based on number of wedges
-        site_palette = default_site_colors(bind_site_number)
+        site_palette = _default_site_colors(bind_site_number)
         # (re)initialize data, wedges scale in size with the number of wedges to draw
         wedge_center = (graphic_struct[agent_name]['loc_x'], graphic_struct[agent_name]['loc_y'])
         for bind_site_index, bind_site_name in enumerate(init_site_graphics[agent_name]['bnd_sites'].keys()):
@@ -124,7 +124,7 @@ def initialize_sites_graphic_structure(graphic_struct: dict, scale_wedges: bool 
     return init_site_graphics
 
 
-def get_bond_types(parsed_kappa_struct: dict) -> dict:
+def _get_bond_types(parsed_kappa_struct: dict) -> dict:
     """Define the agent and site points for later spline drawing."""
     bond_dict = {}
     for agent_a in parsed_kappa_struct.keys():
@@ -146,7 +146,7 @@ def get_bond_types(parsed_kappa_struct: dict) -> dict:
     return bond_dict
 
 
-def define_bond_spline_points(bond_type_dict, init_graphic_struct) -> dict:
+def _define_bond_spline_points(bond_type_dict, init_graphic_struct) -> dict:
     """Define point coordinates for drawing splines based on initialized agent & site data."""
     graphic_bond_points = {}
     for bond_name in bond_type_dict.keys():
@@ -188,7 +188,7 @@ def define_bond_spline_points(bond_type_dict, init_graphic_struct) -> dict:
     return graphic_bond_points
 
 
-def create_spline(point_dict: dict, bond_width=3):
+def _create_spline(point_dict: dict, bond_width=3):
     """Create a spline object."""
     path_data = [
         (matplotlib.path.Path.MOVETO, (point_dict['a_x'], point_dict['a_y'])),
@@ -203,7 +203,7 @@ def create_spline(point_dict: dict, bond_width=3):
     return spline
 
 
-def list_binding_wedges(agent_graphic_struct: dict) -> List[matplotlib.patches.Wedge]:
+def _list_binding_wedges(agent_graphic_struct: dict) -> List[matplotlib.patches.Wedge]:
     """Create a list of wedges from the binding data in the structure."""
     wedge_list = []
     for agent_name in agent_graphic_struct.keys():
@@ -214,7 +214,7 @@ def list_binding_wedges(agent_graphic_struct: dict) -> List[matplotlib.patches.W
     return wedge_list
 
 
-def list_flagpole_wedges(agent_graphic_struct: dict) -> List[matplotlib.patches.Wedge]:
+def _list_flagpole_wedges(agent_graphic_struct: dict) -> List[matplotlib.patches.Wedge]:
     """Create a list of wedges for the flagpoles in the structure."""
     wedge_list = []
     for agent_name in agent_graphic_struct.keys():
@@ -225,7 +225,7 @@ def list_flagpole_wedges(agent_graphic_struct: dict) -> List[matplotlib.patches.
     return wedge_list
 
 
-def annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
+def _annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
     """Annotate an axis with data from the binding sites"""
     agent_txt_kwrds = {'fontfamily': 'monospace', 'fontsize': 'medium',
                        'horizontalalignment': 'center', 'verticalalignment': 'center',
@@ -253,7 +253,7 @@ def annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
         figure_axis.text(s=agent_name, x=ag_x, y=ag_y, **agent_txt_kwrds)
 
 
-def draw_flagpole(agent_graphic_struct: dict, figure_axis, detailed_toggle: bool):
+def _draw_flagpole(agent_graphic_struct: dict, figure_axis, detailed_toggle: bool):
     """Draw the flagpole, line, site names, and state list"""
     for agent_name in agent_graphic_struct.keys():
         if agent_graphic_struct[agent_name]['flagpole_sites']:
@@ -288,7 +288,8 @@ def draw_flagpole(agent_graphic_struct: dict, figure_axis, detailed_toggle: bool
 
 
 class KappaContactMap:
-    """Represent a contact map."""
+    """Represent a contact map. Initializer expects a format like that found in the KaSim witness files, `inputs.ka`,
+    and is designed to read in from said files."""
     def __init__(self, file_name: str):
         # type internal structures
         self._raw_string_list: List[str]
@@ -298,36 +299,36 @@ class KappaContactMap:
         self._bond_spline_points: List[dict]
 
         # basic parse of the file into a sanitized structure
-        self._raw_string_list = file_name_to_string_list(file_name)
+        self._raw_string_list = _file_name_to_string_list(file_name)
         parsed_kappa = {}
         for raw_agent_exp in self._raw_string_list:
-            agent_name, agent_site_data = raw_string_to_agent_sites_bond_types(raw_agent_exp)
+            agent_name, agent_site_data = _raw_string_to_agent_sites_bond_types(raw_agent_exp)
             parsed_kappa[agent_name] = agent_site_data
         self._parsed_kappa = parsed_kappa
 
         # create structure used for storing location and plotting of agents and sites, then initialize it
-        self._agent_graphics = parsed_kappa_to_default_graphics(self._parsed_kappa)
-        self._agent_graphics = initialize_sites_graphic_structure(self._agent_graphics, scale_wedges=True)
+        self._agent_graphics = _parsed_kappa_to_default_graphics(self._parsed_kappa)
+        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics, scale_wedges=True)
 
         # create structure for storing the splines that mark bonds
-        self._bond_types = get_bond_types(self._parsed_kappa)
-        self._bond_spline_points = define_bond_spline_points(self._bond_types, self._agent_graphics)
+        self._bond_types = _get_bond_types(self._parsed_kappa)
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def move_agent_to(self, agent_name, new_x, new_y):
         """Change the location of an agent's center by specifying new coordinates."""
         self._agent_graphics[agent_name]['loc_x'] = new_x
         self._agent_graphics[agent_name]['loc_y'] = new_y
         # update
-        self._agent_graphics = initialize_sites_graphic_structure(self._agent_graphics)
-        self._bond_spline_points = define_bond_spline_points(self._bond_types, self._agent_graphics)
+        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def move_agent_by(self, agent_name, delta_x, delta_y):
         """Move the location of an agent's center by some amount."""
         self._agent_graphics[agent_name]['loc_x'] += delta_x
         self._agent_graphics[agent_name]['loc_y'] += delta_y
         # update
-        self._agent_graphics = initialize_sites_graphic_structure(self._agent_graphics)
-        self._bond_spline_points = define_bond_spline_points(self._bond_types, self._agent_graphics)
+        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def rotate_all_sites_of(self, agent_name, degrees):
         """Rotate all the sites on an agent by this many degrees."""
@@ -339,7 +340,7 @@ class KappaContactMap:
         self._agent_graphics[agent_name]['flagpole_loc']['theta1'] += degrees
         self._agent_graphics[agent_name]['flagpole_loc']['theta2'] += degrees
         # update
-        self._bond_spline_points = define_bond_spline_points(self._bond_types, self._agent_graphics)
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def swap_sites_of(self, agent_name, site_1, site_2):
         """Swap the positions of two sites."""
@@ -352,7 +353,7 @@ class KappaContactMap:
         self._agent_graphics[agent_name]['bnd_sites'][site_2]['theta1'] = s1_t_1
         self._agent_graphics[agent_name]['bnd_sites'][site_2]['theta2'] = s1_t_2
         # update
-        self._bond_spline_points = define_bond_spline_points(self._bond_types, self._agent_graphics)
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def set_site_color_of(self, agent_name, site_name, new_color):
         """Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color."""
@@ -362,20 +363,20 @@ class KappaContactMap:
         """Draw the contact map onto the supplied axis. If draw_state_flagpole is True, the flagpole will display all
          internal state data. If false, only a summary with the number of sites omitted."""
         # draw splines
-        spline_list = [create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
+        spline_list = [_create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
         target_axis.add_collection(PatchCollection(spline_list, match_original=True))
 
         # draw wedges: sites and flagpole
-        site_wedges = list_binding_wedges(self._agent_graphics)
-        flag_wedges = list_flagpole_wedges(self._agent_graphics)
+        site_wedges = _list_binding_wedges(self._agent_graphics)
+        flag_wedges = _list_flagpole_wedges(self._agent_graphics)
         target_axis.add_collection(PatchCollection(site_wedges, match_original=True))
         target_axis.add_collection(PatchCollection(flag_wedges, match_original=True))
 
         # draw labels for agents and sites
-        annotate_wedges_and_agents(self._agent_graphics, target_axis)
+        _annotate_wedges_and_agents(self._agent_graphics, target_axis)
 
         # draw flagpole with its text
-        draw_flagpole(self._agent_graphics, target_axis, draw_state_flagpole)
+        _draw_flagpole(self._agent_graphics, target_axis, draw_state_flagpole)
 
         # update limits, set aspect ratio
         target_axis.autoscale()

@@ -21,7 +21,8 @@ def observable_file_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarra
 def observable_list_axis_annotator(obs_axis, data: Tuple[list, np.ndarray],
                                    vars_indexes: List[int], vars_names: List[str],
                                    diff_toggle: bool = False, axis_x_log: bool = False, axis_y_log: bool = False):
-    """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object."""
+    """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object. See file
+     under `KaSaAn.scripts` for further usage."""
     leg_data, num_data = data
     # determine what observables to plot
     # by default, plot all observables except the first, which plots [T]

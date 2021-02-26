@@ -7,8 +7,8 @@ from .numerical_sort import numerical_sort
 
 
 def find_snapshot_names(target_directory: str = '.', name_pattern: str = 'snap*.ka') -> List[str]:
-    """Given a target directory (default <./>), and a snapshot naming scheme (default <snap*.ka>), return a list of
-     snapshot names sorted ascendingly by a numerical specifier. By default, KaSim inserts the event number into a
+    """Given a target directory (default `./`), and a snapshot naming scheme (default `snap*.ka`), return a list of
+     snapshot names sorted ascending by a numerical specifier. By default, KaSim inserts the event number into a
      snapshot's name."""
     target_path = pathlib.Path(target_directory)
     if not target_path.exists():

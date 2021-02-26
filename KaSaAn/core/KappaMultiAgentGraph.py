@@ -7,12 +7,15 @@ from .KappaEntity import KappaEntity
 
 
 class KappaMultiAgentGraph(KappaEntity):
+    """Abstract class containing common components to `KappaComplex` and `KappaSnapshot`, its subclasses."""
+
     @abstractmethod
     def __init__(self):
         pass
 
     @abstractmethod
     def to_networkx(self):
+        """Abstract method included as place-holder for typing reasons."""
         pass
 
     def _kappa_to_cytoscape_cx(self) -> List[Dict]:

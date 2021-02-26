@@ -14,8 +14,7 @@ from .KappaSite import KappaPort
 
 
 class KappaComplex(KappaMultiAgentGraph):
-    """Class for representing Kappa complexes. I.e. 'A(b[1] s{u}[.]), B(a[1] c[2]), C(b[2] a[3]), A(c[3] s[.]{x})'.
-    Note these must be connected components."""
+    """Class for representing Kappa complexes. E.g. `A(b[1] s{u}[.]), B(a[1] c[2]), C(b[2] a[3]), A(c[3] s[.]{x})`."""
 
     # define agent pattern
     _agent_idnt_pat = r'(?:x\d+:)?'
@@ -70,12 +69,11 @@ class KappaComplex(KappaMultiAgentGraph):
         return len(bonds)
 
     def get_size_of_complex(self) -> int:
-        """Returns the size, in agents, of this complex. This works by counting the number of agent signatures with
-        their open/close parentheses."""
+        """Returns the size, in agents, of this complex."""
         return len(self._agents)
 
     def get_agent_types(self) -> Set[KappaAgent]:
-        """Returns the set of agent names that make up the complex."""
+        """Returns the set of agent names (or agent types) that make up the complex."""
         return self._agent_types
 
     def get_all_agents(self) -> List[KappaAgent]:
@@ -84,8 +82,7 @@ class KappaComplex(KappaMultiAgentGraph):
         return self._agents
 
     def get_complex_composition(self) -> Dict[KappaAgent, int]:
-        """Returns a dictionary where the key is an agent, and the value the number of times that agent appears in
-        this complex."""
+        """Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number of times that agent appears in this complex."""
         return self._composition
 
     def get_number_of_embeddings_of_agent(self, query) -> int:
@@ -104,8 +101,8 @@ class KappaComplex(KappaMultiAgentGraph):
 
     def get_number_of_embeddings_of_complex(self, query, symmetry_adjust: bool = True) -> int:
         """Returns the number of embedding the query complex has on the KappaComplex. Optional parameter to not perform
-        the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries in
-        the query complex."""
+        the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries 
+        preserved in the query complex's image in the target."""
         if not type(query) is KappaComplex:
             q_complex = KappaComplex(query)
         else:
@@ -137,12 +134,12 @@ class KappaComplex(KappaMultiAgentGraph):
 
     def to_networkx(self, identifier_offset: int = 0) -> nx.MultiGraph:
         """Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
-        agents, edges their bonds. Nodes have an attribute dictionary where the key 'kappa' holds the KappaAgent.
-        Edges have an attribute dictionary where the key 'bond id' holds the bond identifier from the Kappa expression.
-        Node identifiers are integers, using the order of agent declaration. For a graph g, g.nodes.data() displays the
-        node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
-        identifiers as well as the kappa identifiers. The optional parameter 'identifier_offset' will offset all
-        numeric identifiers reported; used in unlabeled snapshots, or when combining graphs."""
+        agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent.
+        Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the Kappa expression.
+        Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays the
+        node identifiers and their corresponding `KappaAgents`, and `g.edges.data()` displays the edges, using the node
+        identifiers as well as the kappa identifiers.
+        The optional parameter `identifier_offset` will offset all numeric identifiers reported; used in unlabeled snapshots, or when combining graphs."""
         kappa_complex_multigraph = nx.MultiGraph()
         dangle_bond_dict = {}                       # store unpaired bonds he
         paired_bond_list = []                       # store tuples of (agent index 1, agent index 2, bond identifier)
@@ -186,10 +183,9 @@ class KappaComplex(KappaMultiAgentGraph):
     def to_cytoscape_cx(self) -> List[Dict]:
         """
         Export to a structure that, via some json encoding and dumping, can be read by Cytoscape as a CX file. Usage:
-
-        my_cx = my_complex.to_cytoscape_cx()
-        with open('my_cx.cx', 'w') as out_file:
-            json.dump(my_cx, out_file)
+        >>> my_cx = my_complex.to_cytoscape_cx()
+        >>> with open('my_cx.cx', 'w') as out_file:
+        json.dump(my_cx, out_file)
         """
         cx_data = self._kappa_to_cytoscape_cx()
         cx_network_attributes = [{'n': 'name', 'v': 'network'}]
@@ -199,8 +195,16 @@ class KappaComplex(KappaMultiAgentGraph):
 
 def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> \
         Tuple[List[List[Tuple[int, int]]], List[List[Tuple[int, int]]]]:
-    """Calculates all the embeddings of ka_query into ka_target, returning both the map of all embeddings, as well as
-    the map of embeddings corrected for the number of preserved automorphisms."""
+    """Calculates all the embeddings of `ka_query` into `ka_target`, returning both the map of all embeddings, as well as
+    the map of embeddings corrected for the number of preserved automorphisms. For a rotational symmetry:
+    >>> from KaSaAn.core.KappaComplex import embed_and_map, KappaComplex
+    >>> my_comp = KappaComplex('Bob(h[10], t[11]), Bob(h[11], t[12]), Bob(h[12], t[10])')
+    >>> maps_all, maps_unique = embed_and_map(my_comp, my_comp)
+    >>> maps_all
+    [[(0, 0), (2, 2), (1, 1)], [(0, 1), (2, 0), (1, 2)], [(0, 2), (2, 1), (1, 0)]]
+    >>> maps_unique
+    [[(0, 0), (2, 2), (1, 1)]]
+    """
     # litany of short circuits
     if ka_query.get_size_of_complex() > ka_target.get_size_of_complex():    # not enough agents
         return ([], [])
@@ -251,9 +255,9 @@ def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> \
 
 def _traverse_from(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_start: int, target_start: int) -> \
         List[Tuple[int, int]]:
-    """Attempt a traversal of target_net, starting at target_start, matched to query_start, following query_net's
-    topology. If successful, returns the network mapping: a list of q,t tuples, the indexes in the query and target
-    networks."""
+    """Attempt a traversal of `target_net`, starting at `target_start`, matched to `query_start`, following `query_net`'s
+    topology. If successful, returns the network mapping: a list of `(q,t)`, the indexes in the query and target
+    networks respectively."""
     # stack of node identifiers, integers from the networkx representation
     node_stack: Deque[Tuple[int, Union[int, None], int]] = deque()
     node_stack.append((query_start, None, target_start))
@@ -295,7 +299,7 @@ def _traverse_from(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_st
 
 
 def _node_match(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_node: int, target_node: int) -> bool:
-    """Special purpose matcher that ignores bond types, it only considers if sites are bound."""
+    """Special purpose matcher that ignores bond types, considering only if sites are bound. Internal states are matched normally."""
     match: bool = False
     query = query_net.nodes[query_node]['kappa']
     target = target_net.nodes[target_node]['kappa']

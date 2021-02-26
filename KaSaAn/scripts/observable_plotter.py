@@ -7,7 +7,8 @@ from KaSaAn.functions import observable_file_reader, observable_list_axis_annota
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Plot a trace file produced by KaSim.')
+    """Plot a trace file produced by KaSim."""
+    parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('-i', '--input_file_name', type=str, default='data.csv',
                         help='Name of the file with the time series traces to be plotted. By default it will look for'
                              ' <data.csv>')

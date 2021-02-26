@@ -7,7 +7,7 @@ from typing import Iterator, Tuple
 from ..core import KappaSnapshot, KappaAgent
 
 
-def filtered_dist(snapshot_file_name: str, agent_of_interest: str) -> Iterator[Tuple[int, int]]:
+def _filtered_dist(snapshot_file_name: str, agent_of_interest: str) -> Iterator[Tuple[int, int]]:
     """Given a specific agent of interest, get the filtered size distribution in the snapshot. If the agent appears 5
     times in a complex, interspersed with other agents, it will be reported as a pentamer. The abundance will be that of
     the parent species. This function returns a list of A,B pairs, where A corresponds to the abundance in the species
@@ -28,8 +28,9 @@ def filtered_dist(snapshot_file_name: str, agent_of_interest: str) -> Iterator[T
 
 def plot_filtered_dist(snapshot_file_name: str, agent_of_interest: str, perfect_bins: bool, cumulative_bins: bool,
                        plot_raw_counts: bool):
+    """See file under `KaSaAn.scripts` for usage."""
     # Unpack data, get maximer value, flatten into a vector
-    abundance_in_species, abundance_of_species = zip(*filtered_dist(snapshot_file_name, agent_of_interest))
+    abundance_in_species, abundance_of_species = zip(*_filtered_dist(snapshot_file_name, agent_of_interest))
     if not plot_raw_counts:
         abundance_of_species = [a * b for a, b in zip(abundance_in_species, abundance_of_species)]
     max_mer = max(abundance_in_species)

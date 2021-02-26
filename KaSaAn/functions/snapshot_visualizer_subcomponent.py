@@ -17,7 +17,7 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
                                     color_scheme_file_name: str, node_size: int, edge_width: float,
                                     fig_size: Tuple[float, float], print_distro: bool) -> List[plt.figure]:
     """"Take a KappaSnapshot, get complexes of a given size, render them as plain graphs, optionally highlighting
-     certain patterns."""
+     certain patterns. See file under `KaSaAn.scripts` for usage."""
     snapshot = KappaSnapshot(snapshot_file_name)
     if print_distro:
         print("Snapshot's distribution, size:abundance\n" + str(snapshot.get_size_distribution()))

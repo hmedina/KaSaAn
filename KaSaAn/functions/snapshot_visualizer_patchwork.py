@@ -17,7 +17,7 @@ from ..core.KappaAgent import KappaAgent
 
 
 def process_snapshot(snapshot: KappaSnapshot) -> List[dict]:
-    # Extract the relevant information from a snapshot: size, abundance, & compositions
+    """Extract relevant information from a snapshot: size, abundance, & compositions"""
     data = []
     for kappa_complex, abundance in snapshot.get_all_complexes_and_abundances():
         size = kappa_complex.get_size_of_complex()
@@ -29,7 +29,7 @@ def process_snapshot(snapshot: KappaSnapshot) -> List[dict]:
 
 
 def colorize_agents(agent_set: Set[KappaAgent]) -> Dict[KappaAgent, Any]:
-    # Generate & associate colors as a dictionary {Agent: Color}
+    """Generate & associate colors as a dictionary {Agent: Color}"""
     agent_list = list(agent_set)
     num_agents = len(agent_list)
     agent_colors = {}
@@ -50,7 +50,7 @@ def colorize_agents(agent_set: Set[KappaAgent]) -> Dict[KappaAgent, Any]:
     return agent_colors
 
 
-def sanity_check_colors(snapshot: KappaSnapshot, color_scheme: Dict[KappaAgent, Any]):
+def _sanity_check_colors(snapshot: KappaSnapshot, color_scheme: Dict[KappaAgent, Any]):
     """Sanity check a user-provided color-scheme."""
     agent_list = snapshot.get_agent_types_present()
     if color_scheme.keys() != agent_list:
@@ -70,6 +70,8 @@ def sanity_check_colors(snapshot: KappaSnapshot, color_scheme: Dict[KappaAgent, 
 
 def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent, Any], vis_mode: str,
                                 x_res: float, y_res: float) -> Tuple[List[matplotlib.patches.Rectangle], int]:
+    """Assemble a list of rectangles for MatPlotLib to plot, plus the size of the largest of these (for mass
+     normalization in trace movie making)."""
     if vis_mode != 'size' and vis_mode != 'count' and vis_mode != 'mass':
         warnings.warn('Unknown mode <<' + vis_mode + '>>')
     species_num = len(data)
@@ -133,8 +135,10 @@ def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent,
     return patch_list, max_value
 
 
-def snapshot_legend_simple(color_scheme: Dict[KappaAgent, Any], col_num: int) -> Tuple[list, list]:
-    # Add agent entries with their colors (as composition key)
+def snapshot_legend_simple(color_scheme: Dict[KappaAgent, Any], col_num: int) ->\
+        Tuple[List[mpl.patches.Rectangle], List[matplotlib.text.Text]]:
+    """Create legend components; their entries with appropriate colors (as composition key);
+     companion to snapshot_composition_simple."""
     position = 0    # var to track indexing
     x_dim = 0.5     # size of rectangle serving as color key
     y_dim = 0.5
@@ -152,7 +156,8 @@ def snapshot_legend_simple(color_scheme: Dict[KappaAgent, Any], col_num: int) ->
     return rect_list, text_list
 
 
-def snapshot_legend_maxima(vis_mode: str, max_mass: int, max_size: int, max_count: int) -> List[matplotlib.text.Text]:
+def _snapshot_legend_maxima(vis_mode: str, max_mass: int, max_size: int, max_count: int) -> List[matplotlib.text.Text]:
+    """Define the maxima to put on the legend based on visualization mode."""
     if vis_mode == 'all':
         # Add entries for maxima at the top
         max_mass_text = matplotlib.text.Text(x=0, y=4, text='Max mass: ' + str(max_mass), verticalalignment='top')
@@ -165,8 +170,8 @@ def snapshot_legend_maxima(vis_mode: str, max_mass: int, max_size: int, max_coun
     return text_list
 
 
-def snapshot_legend_maximum(max_data: int, vis_mode: str) -> matplotlib.text.Text:
-    # Same as snapshot_legend_maxima, but for a single maximum
+def _snapshot_legend_maximum(max_data: int, vis_mode: str) -> matplotlib.text.Text:
+    """Same as snapshot_legend_maxima, but for a single maximum."""
     max_text = matplotlib.text.Text(x=0, y=2, text='Max ' + vis_mode + ': ' + str(max_data), verticalalignment='top')
     return max_text
 
@@ -174,6 +179,14 @@ def snapshot_legend_maximum(max_data: int, vis_mode: str) -> matplotlib.text.Tex
 def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = None, vis_mode: str = 'all',
                                  fig_size: Tuple[float, float] = mpl.rcParams['figure.figsize'],
                                  fig_res: float = mpl.rcParams['figure.dpi']) -> plt.figure:
+    """Render a snapshot as a patchwork / tree-map diagram, using any of four supported modes:
+
+    * `count`: a complex' area is proportional to how many times it appears
+    * `size`: a complex' area is proportional to how big it is
+    * `mass`: a complex' area is proportional to how much mass it has, the product of its count times its mass
+    * `all`: plot all three side by side
+
+    See file under `KaSaAn.scripts` for further usage."""
     # Process the snapshot
     my_snapshot = KappaSnapshot(snapshot_file)
     my_data = process_snapshot(my_snapshot)
@@ -181,7 +194,7 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
         warnings.warn('Empty snapshot <<' + snapshot_file + '>>')
     # sanity check color scheme, or create one
     if color_scheme:
-        sanity_check_colors(snapshot=my_snapshot, color_scheme=color_scheme)
+        _sanity_check_colors(snapshot=my_snapshot, color_scheme=color_scheme)
         my_color_scheme = color_scheme
     else:
         agent_list = my_snapshot.get_agent_types_present()
@@ -225,7 +238,7 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
         ax_count.axis('tight')
 
         # Define maxima; proxy for scale bar
-        maxima_texts = snapshot_legend_maxima(
+        maxima_texts = _snapshot_legend_maxima(
             vis_mode=vis_mode, max_mass=my_max_mass, max_count=my_max_count, max_size=my_max_size)
         legend_top_edge = 4
         for text in maxima_texts:
@@ -242,7 +255,7 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
         ax_data.axis('tight')
 
         # Define maximum; proxy for scale bar
-        maxima_text = snapshot_legend_maximum(vis_mode=vis_mode, max_data=my_max_data)
+        maxima_text = _snapshot_legend_maximum(vis_mode=vis_mode, max_data=my_max_data)
         legend_top_edge = 2
         ax_legend.add_artist(maxima_text)
 

@@ -8,7 +8,8 @@ from KaSaAn.functions import render_snapshot_as_plain_graph
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Visualize a kappa snapshot using a plain graph.')
+    """Visualize a kappa snapshot using a plain graph."""
+    parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('-sf', '--snapshot_file_name', type=str, required=True,
                         help='Name of the snapshot file to be viewed.')
     parser.add_argument('-cs', '--coloring_scheme', type=str, default='',

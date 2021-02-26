@@ -9,8 +9,8 @@ from typing import List, Tuple
 from ..core import KappaAgent, KappaSnapshot
 
 
-def make_figure(s_times, p_matrix, agent_list, fig_size=mpl.rcParams['figure.figsize'],
-                x_scale='linear', y_scale='linear') -> plt.figure:
+def _make_figure(s_times, p_matrix, agent_list, fig_size=mpl.rcParams['figure.figsize'],
+                 x_scale='linear', y_scale='linear') -> plt.figure:
     fig, ax = plt.subplots(figsize=fig_size)
     ax.stackplot(s_times, p_matrix, baseline='zero', labels=agent_list)
     ax.set_xlabel('Snapshot time')
@@ -24,6 +24,7 @@ def make_figure(s_times, p_matrix, agent_list, fig_size=mpl.rcParams['figure.fig
 
 def snapshot_list_to_plot_matrix(snapshot_names, agent_names_requested=None) -> \
         Tuple[List[float], numpy.ndarray, List[KappaAgent]]:
+    """See file under `KaSaAn.scripts` for usage."""
     # obtain the composition of the largest complex per snapshot, skipping those
     # snapshots where there is ambiguity
     lc_compositions = []

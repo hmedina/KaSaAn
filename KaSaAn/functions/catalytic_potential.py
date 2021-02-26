@@ -8,8 +8,8 @@ from ..core import KappaSnapshot, KappaAgent
 from .numerical_sort import numerical_sort
 
 
-def get_potential_of_snapshot(snapshot, enzyme, substrate) -> int:
-    """"The catalytic potential of a snapshot is a number. Each molecular species will contain a (possibly zero)
+def _get_potential_of_snapshot(snapshot, enzyme, substrate) -> int:
+    """The catalytic potential of a snapshot is a number. Each molecular species will contain a (possibly zero)
     quantity of enzymes, and another of substrates. Their product is the catalytic potential of the species. The sum
     over the species in a snapshot yields the catalytic potential of the snapshot."""
     # If not already KappaEntities, try to convert them into ones, i.e. from strings for expressions or filenames
@@ -37,6 +37,7 @@ def get_potential_of_snapshot(snapshot, enzyme, substrate) -> int:
 
 def get_potential_of_folder(base_directory: str, enzyme: KappaAgent, substrate: KappaAgent,
                             verbosity: bool, snap_name_prefix: str) -> List[int]:
+    """See file under `KaSaAn.scripts` for usage."""
     if base_directory[-1] != '/':
         base_directory += '/'
     # Get the file names of snapshots in specified directory
@@ -53,5 +54,5 @@ def get_potential_of_folder(base_directory: str, enzyme: KappaAgent, substrate: 
         if verbosity:
             print('Now parsing file <{}>, {} of {}, {:.2%}'.format(
                 snap_name, snap_index, snap_num, snap_index/snap_num))
-        cat_pot_dist.append(get_potential_of_snapshot(KappaSnapshot(snap_name), enzyme, substrate))
+        cat_pot_dist.append(_get_potential_of_snapshot(KappaSnapshot(snap_name), enzyme, substrate))
     return cat_pot_dist

@@ -9,7 +9,7 @@ from .KappaError import AgentParseError, TokenParseError, PortParseError, Counte
 
 
 class KappaAgent(KappaEntity):
-    """Class for representing Kappa agents. I.e. <<A(b[1])>> or <<A(s{a}[.] a[1] b[.])>>."""
+    """Class for representing Kappa agents. I.e. `A(b[1])` or `A(s{a}[.] a[1] b[.])`."""
 
     # define pattern that makes up an agent
     _agent_idnt_pat = r'(?:x(\d+):)?'
@@ -132,8 +132,8 @@ class KappaAgent(KappaEntity):
         return self._agent_ports
 
     def get_bond_identifiers(self) -> List[str]:
-        """Return the list of bonds ending/starting at this agent, e.g. for <<A(a[.] b[1] c[2] d{a}[.])>> these would
-         be the list ['1','2']."""
+        """Return the list of bonds ending/starting at this agent, e.g. for `A(a[.] b[1] c[2] d{a}[.])` these would
+         be `['1','2']`."""
         return self._bond_identifiers
 
     def get_terminii_of_bond(self, bond_ident: str) -> List[str]:
@@ -147,17 +147,17 @@ class KappaAgent(KappaEntity):
         return name_list
 
     def get_abundance_change_operation(self) -> str:
-        """Return the operation being performed on this agent: creation, deletion, or empty string."""
+        """Return the operation being performed on this agent: `creation`, `deletion`, or an empty string."""
         return self._abundance_change
 
     def get_agent_identifier(self) -> int:
         """Returns the agent's unique numeric identifier, if any. These are generated in snapshots in the form
-         x[int]:[agent name][agent signature]"""
+         `x[int]:[agent name][agent signature]`"""
         return self._agent_identifier
 
 
 class KappaToken(KappaEntity):
-    """Class for representing Kappa tokens. I.e. <<X>>, or <<ATP>>."""
+    """Class for representing Kappa tokens. I.e. `X`, or `ATP`."""
 
     # define pattern that makes up a token
     _token_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'

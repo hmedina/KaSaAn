@@ -6,13 +6,13 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 from KaSaAn.functions import find_snapshot_names
-from KaSaAn.functions.graph_largest_complex_composition import snapshot_list_to_plot_matrix, make_figure
+from KaSaAn.functions.graph_largest_complex_composition import snapshot_list_to_plot_matrix, _make_figure
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Plot the evolution of the giant component in time from a set of snapshots located in a directory,'
-                    ' showing only the subset of agents specified.')
+    """Plot the evolution of the giant component in time from a set of snapshots located in a directory,'
+                    ' showing only the subset of agents specified."""
+    parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('-d', '--directory', type=str, default='.',
                         help='Name of the directory where snapshots are stored.')
     parser.add_argument('-p', '--pattern', type=str, default='snap*.ka',
@@ -42,13 +42,13 @@ def main():
     s_times, p_matrix, agent_list = snapshot_list_to_plot_matrix(snapshot_names=snap_name_list,
                                                                  agent_names_requested=args.agents)
     # scale plot
-    fig_lin_lin = make_figure(s_times, p_matrix, agent_list, args.figure_size, 'linear', 'linear')
+    fig_lin_lin = _make_figure(s_times, p_matrix, agent_list, args.figure_size, 'linear', 'linear')
     if args.lin_log:
-        fig_lin_log = make_figure(s_times, p_matrix, agent_list, args.figure_size, 'linear', 'log')
+        fig_lin_log = _make_figure(s_times, p_matrix, agent_list, args.figure_size, 'linear', 'log')
     if args.log_lin:
-        fig_log_lin = make_figure(s_times, p_matrix, agent_list, args.figure_size, 'log', 'linear')
+        fig_log_lin = _make_figure(s_times, p_matrix, agent_list, args.figure_size, 'log', 'linear')
     if args.log_log:
-        fig_log_log = make_figure(s_times, p_matrix, agent_list, args.figure_size, 'log', 'log')
+        fig_log_log = _make_figure(s_times, p_matrix, agent_list, args.figure_size, 'log', 'log')
     # save or display?
     if args.output_name:
         save_path = Path(args.output_name)

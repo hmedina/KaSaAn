@@ -13,9 +13,9 @@ from .KappaError import SnapshotAgentParseError, SnapshotTokenParseError, Snapsh
 
 
 class KappaSnapshot(KappaMultiAgentGraph):
-    """Class for representing Kappa snapshots. A snapshot is represented as a dictionary, where the kappa expression
+    """Class for representing Kappa snapshots. A snapshot contains a dictionary, where the kappa expression
      serves as the key, and the abundance serves as the value. Many of the methods for this class are simple re-namings
-     of the Dict() class', but with more informative names for Kappa entities."""
+     of the `Dict()` class', but with more informative names for Kappa entities."""
 
     # define pattern for the header
     _header_title_pat = r'//\sSnapshot\s'
@@ -114,7 +114,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
         return self._snapshot_time
 
     def get_snapshot_uuid(self) -> str:
-        """Returns the UUID (Universally unique identifier) of the snapshot."""
+        """Returns the UUID (universally unique identifier) of the snapshot."""
         return self._snapshot_uuid
 
     def get_snapshot_event(self) -> int:
@@ -122,7 +122,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
         return self._snapshot_event
 
     def get_all_complexes(self) -> List[KappaComplex]:
-        """Returns a list of KappaComplexes with all the complexes in the snapshot."""
+        """Returns a list of `KappaComplexes` with all the complexes in the snapshot."""
         return list(self._complexes.keys())
 
     def get_all_abundances(self) -> List[int]:
@@ -136,27 +136,27 @@ class KappaSnapshot(KappaMultiAgentGraph):
         return sizes
 
     def get_agent_types_present(self) -> Set[KappaAgent]:
-        """Returns a set with the names of the agents present in the snapshot."""
+        """Returns a set with the types of agents present in the snapshot."""
         agent_types = set()
         for key in self._complexes.keys():
             agent_types.update(key.get_agent_types())
         return agent_types
 
     def get_all_complexes_and_abundances(self) -> ItemsView[KappaComplex, int]:
-        """Returns a list of tuples, where the first element is a KappaComplex and the second is an int with the
+        """Returns an iterable of tuples, where the first element is a `KappaComplex` and the second is an int with the
         abundance of the corresponding complex."""
         return self._complexes.items()
 
     def get_total_mass(self) -> int:
-        """Returns an int with the total mass of the snapshot, measured in number of agents."""
+        """Returns an integer with the total mass of the snapshot, measured in number of agents."""
         total_mass = 0
         for i_complex, i_abundance in self._complexes.items():
             total_mass += i_complex.get_size_of_complex() * i_abundance
         return total_mass
 
     def get_abundance_of_agent(self, query_agent) -> int:
-        """Returns an int with the abundance of the given agent. Supports passing a string with the agent expression, or
-        and instance of a KappaAgent. Supports passing agents with signature, e.g. Bob(site{state})."""
+        """Returns an integer with the abundance of the given agent. Supports passing a string with the agent
+        expression, or an instance of a KappaAgent. Supports passing agents with signature, e.g. `Bob(site{state})`."""
         if type(query_agent) is not KappaAgent:
             query_agent = KappaAgent(query_agent)
         abundance = 0
@@ -166,8 +166,8 @@ class KappaSnapshot(KappaMultiAgentGraph):
         return abundance
 
     def get_composition(self) -> Dict[KappaAgent, int]:
-        """Return a dictionary where the keys are KappaAgents, their names, and their value is the abundance in the
-        snapshot of those agents."""
+        """Return a dictionary where the keys are `KappaAgents`, the types and their abundance in the snapshot. This is
+        akin to the sum formula of the snapshot."""
         agent_types = self.get_agent_types_present()
         composition = dict(zip(agent_types, [0] * len(agent_types)))
         for agent_type in agent_types:
@@ -178,7 +178,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
         return composition
 
     def get_complexes_with_abundance(self, query_abundance: int) -> List[KappaComplex]:
-        """Returns a list of KappaComplexes present in the snapshot at the query abundance. For example, get all
+        """Returns a list of `KappaComplexes` present in the snapshot at the queried abundance. For example, get all
         elements present in single copy."""
         result_complexes = []
         for complex_expression, complex_abundance in self._complexes.items():
@@ -187,7 +187,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
         return result_complexes
 
     def get_complexes_of_size(self, query_size: int) -> List[Tuple[KappaComplex, int]]:
-        """Returns the list tuples, with complexes and their abudnace, for complexes that are of the query size. For
+        """Returns a list tuples, with complexes and their abundance, for complexes that are of the query size. For
         example, get all the dimers and their respective abundances."""
         result_complexes = []
         for comp, abun in self.get_all_complexes_and_abundances():
@@ -218,7 +218,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
 
     def get_size_distribution(self) -> Dict[int, int]:
         """Returns a dictionary where the key is the size of a complex and the value is the amount of complexes with
-        that size. For example, {1:3, 4:5} indicates the mixture contains only three monomers and five tetramers.
+        that size. For example, `{1:3, 4:5}` indicates the mixture contains only three monomers and five tetramers.
         Dictionary is sorted by increasing complex size."""
         size_dist = dict()
         for complex_expression, complex_abundance in self.get_all_complexes_and_abundances():
@@ -231,7 +231,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
         return sorted_dist
 
     def get_all_tokens_and_values(self) -> Dict[str, float]:
-        """Returns a dictionary with the tokens present in the snapshot in the form of [name]:[value]."""
+        """Returns a dictionary with the tokens present in the snapshot in the form of `[name]:[value]`."""
         d = dict()
         for item in self._tokens.values():
             d[item.get_token_name()] = float(item.get_token_operation())
@@ -262,7 +262,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
 
     def get_complex_of_agent(self, query_identifier: int) -> KappaComplex:
         """Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
-        should always be numerically 1; the identifier print-out forces distinction of species that would otherwise
+        should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
         be identical, and identifiers are unique and stable throughout the simulation."""
         if self._identifier_complex_map:
             try:
@@ -300,10 +300,12 @@ class KappaSnapshot(KappaMultiAgentGraph):
 
     def to_cytoscape_cx(self) -> List[Dict]:
         """Export to a structure that via some json encoding and dumping can be read by Cytoscape as a CX file. Usage:
-
-        my_cx = my_snap.to_cytoscape_cx()
-        with open('my_cx.cx', 'w') as out_file:
-            json.dump(my_cx, out_file)
+        >>> import json
+        >>> from KaSaAn.core import KappaSnapshot
+        >>> my_snap = KappaSnapshot('some_snap.ka')
+        >>> my_cx = my_snap.to_cytoscape_cx()
+        >>> with open('my_cx.cx', 'w') as out_file:
+        >>>    json.dump(my_cx, out_file)
         """
         cx_data = self._kappa_to_cytoscape_cx()
         cx_network_attributes = [{'n': 'name', 'v': self.get_snapshot_file_name()},

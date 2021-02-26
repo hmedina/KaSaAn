@@ -11,12 +11,12 @@ from KaSaAn.functions import render_snapshot_as_patchwork
 
 
 def main(args=None):
+    """Visualize a kappa snapshot using a patchwork layout, where the area colored is proportional to the metric
+    assayed. Metrics supported are mass (default), size, or count of each molecular species. Composition of each
+    species is also displayed."""
     if args is None:
         args = sys.argv[1:]
-    parser = argparse.ArgumentParser(description='Visualize a kappa snapshot using a patchwork layout, where the area'
-                                                 ' colored is proportional to the metric assayed. Metrics supported are'
-                                                 ' mass (default), size, or count of each molecular species. Composition'
-                                                 ' of each species is also displayed.')
+    parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('-sf', '--snapshot_file', type=str, required=True,
                         help='Name of the snapshot file to be viewed.')
     parser.add_argument('-cs', '--coloring_scheme', type=str,
@@ -36,9 +36,9 @@ def main(args=None):
                              ' dictates the format. Valid choices include PNG, PDF, SVG (anything supported by'
                              ' MatPlotLib).')
     parser.add_argument('-fs', '--fig_size', type=float, default=mpl.rcParams['figure.figsize'], nargs=2,
-                        help='Size of the resulting figure, in inches, specified as two elements, width and height (text'
-                             ' size is specified in points, so this affects the size of text relative to other graph'
-                             ' elements).')
+                        help='Size of the resulting figure, in inches, specified as two elements, width and height'
+                             ' (text size is specified in points, so this affects the size of text relative to other'
+                             ' graph elements).')
     parser.add_argument('-dpi', '--dots_per_inch', type=float, default=mpl.rcParams['figure.dpi'],
                         help='Resolution of the figure, specified as dots per inch.')
     args = parser.parse_args()

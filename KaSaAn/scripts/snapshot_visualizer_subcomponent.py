@@ -8,7 +8,8 @@ from KaSaAn.functions import render_complexes_as_plain_graph
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Visualize a set of complexes from a kappa snapshot as plain graphs.')
+    """Visualize a set of complexes from a kappa snapshot as plain graphs."""
+    parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('-sf', '--snapshot_file_name', type=str, required=True,
                         help='Name of the snapshot file.')
     parser.add_argument('-s', '--sizes', nargs='*', type=int, default=[],

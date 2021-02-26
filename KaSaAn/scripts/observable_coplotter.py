@@ -8,8 +8,7 @@ from KaSaAn.functions import observable_coplot_axis_annotator
 
 def main():
     """Co-plot the same variable from multiple files, save as file or display the figure."""
-    parser = argparse.ArgumentParser(description='Co-plot the same variable form multiple files, save as file or '
-                                                 'display the figure.')
+    parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('-p', '--pattern', type=str, required=True,
                         help='Pattern, passed to glob.glob that would match the desired files to co-plot, should'
                              ' probably be quoted.')

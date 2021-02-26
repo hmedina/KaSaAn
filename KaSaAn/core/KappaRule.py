@@ -10,7 +10,7 @@ from .KappaError import RuleParseError
 
 
 class KappaRule(KappaEntity):
-    """Class to represent a Kappa Rule."""
+    """Class to represent a Kappa Rule. Work in Progress."""
     def __init__(self, raw_expression: str):
         self._name: str
         self._pattern: str

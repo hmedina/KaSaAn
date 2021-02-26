@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import glob
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
@@ -12,8 +11,8 @@ from .snapshot_visualizer_patchwork import process_snapshot, snapshot_compositio
 from ..core import KappaSnapshot, KappaAgent
 
 
-# Define consistent coloring scheme & maximum mass
-def define_agent_list_and_max_mass(snap_list: List[KappaSnapshot]) -> Tuple[Set[KappaAgent], int]:
+def _define_agent_list_and_max_mass(snap_list: List[KappaSnapshot]) -> Tuple[Set[KappaAgent], int]:
+    """Define consistent coloring scheme & maximum mass."""
     max_mass = 0
     agent_set = set()
     for snap in snap_list:
@@ -24,9 +23,9 @@ def define_agent_list_and_max_mass(snap_list: List[KappaSnapshot]) -> Tuple[Set[
     return agent_set, max_mass
 
 
-# Master function
 def movie_from_snapshots(directory: str, vis_mode: str, fig_width: int, xy_ratio: float, dont_scale_mass: bool,
                          legend_cols: int, frame_int: int, verbose: bool):
+    """Make a movie out of snapshots. See file under `KaSaAn.scripts` for usage."""
     # Find the snapshots in the directory; determine agent set; colorize it
     snapshots = []
     snapshot_names = find_snapshot_names(target_directory=directory, name_pattern='snapshot.*.ka')
@@ -36,7 +35,7 @@ def movie_from_snapshots(directory: str, vis_mode: str, fig_width: int, xy_ratio
         if verbose:
             print('Processing {}, {} of {}'.format(snapshot_name, snapshot_index + 1, len(snapshot_names)))
         snapshots.append(KappaSnapshot(snapshot_name))
-    my_agent_list, my_max_mass = define_agent_list_and_max_mass(snapshots)
+    my_agent_list, my_max_mass = _define_agent_list_and_max_mass(snapshots)
     if verbose:
         print('Trace contains ' + str(len(my_agent_list)) + ' agents in total.')
     color_scheme = colorize_agents(my_agent_list)

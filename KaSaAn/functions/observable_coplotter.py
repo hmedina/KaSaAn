@@ -8,7 +8,7 @@ from .observable_plotter import observable_file_reader
 from .numerical_sort import numerical_sort
 
 
-def find_data_files(pattern: str) -> List[str]:
+def _find_data_files(pattern: str) -> List[str]:
     """Find files that match the pattern."""
     file_list = glob.glob(pattern)
     if not file_list:
@@ -17,10 +17,10 @@ def find_data_files(pattern: str) -> List[str]:
     return sorted_file_list
 
 
-def observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tuple[List[str], np.array, str]],
-                                         coplot_index: int, coplot_name: str,
-                                         diff_toggle: bool = False, log_x: bool = False, log_y: bool = False):
-    """Co-plot the same variable from a list of files."""
+def _observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tuple[List[str], np.array, str]],
+                                          coplot_index: int, coplot_name: str,
+                                          diff_toggle: bool = False, log_x: bool = False, log_y: bool = False):
+    """Annotate the provided axis."""
     legend_entries = []
     for file_data in file_data_list:
         legend_data, numeric_data, file_name = file_data
@@ -75,7 +75,8 @@ def observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tupl
 def observable_coplot_axis_annotator(target_axis, file_pattern: str, variable_index: int, variable_name: str,
                                      differential_toggle: bool = False,
                                      log_axis_x: bool = False, log_axis_y: bool = False):
-    file_names = find_data_files(file_pattern)
+    """See file under `KaSaAn.scripts` for usage."""
+    file_names = _find_data_files(file_pattern)
     file_data_list = []
     for file_name in file_names:
         legend_data, numeric_data = observable_file_reader(file_name)
@@ -84,7 +85,7 @@ def observable_coplot_axis_annotator(target_axis, file_pattern: str, variable_in
         file_data_list.append((legend_data, numeric_data, file_name))
     if not variable_index and not variable_name:
         raise ValueError('Function requires the index of a variable, or a name for it.')
-    observable_multi_data_axis_annotator(co_plot_axis=target_axis, file_data_list=file_data_list,
-                                         coplot_index=variable_index, coplot_name=variable_name,
-                                         diff_toggle=differential_toggle, log_x=log_axis_x, log_y=log_axis_y)
+    _observable_multi_data_axis_annotator(co_plot_axis=target_axis, file_data_list=file_data_list,
+                                          coplot_index=variable_index, coplot_name=variable_name,
+                                          diff_toggle=differential_toggle, log_x=log_axis_x, log_y=log_axis_y)
     return target_axis

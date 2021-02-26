@@ -8,7 +8,7 @@ from .KappaError import PortParseError, CounterParseError, PortInclusionError
 
 
 class KappaSite(KappaEntity):
-    """Abstract base class for site sub-types: KappaPort and KappaCounter."""
+    """Abstract base class for site sub-types: `KappaPort` and `KappaCounter`."""
 
     @abstractmethod
     def __init__(self):
@@ -16,7 +16,7 @@ class KappaSite(KappaEntity):
 
 
 class KappaPort(KappaSite):
-    """Class for representing traditional Kappa Sites, e.g. 's[3]', 'g[.]{b}', or 'k[_]{#}'."""
+    """Class for representing traditional Kappa Sites, e.g. `s[3]`, `g[.]{b}`, or `k[_]{#}`."""
 
     # define patterns that make up a port
     __ident = r'[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*'
@@ -181,21 +181,21 @@ class KappaPort(KappaSite):
         return self._future_int_state
 
     def get_port_bond_operation(self) -> str:
-        """Returns the operation being performed on this port's bond: creation, deletion, swap, unknown, or an empty
-         string for none."""
+        """Returns the operation being performed on this port's bond: `creation`, `deletion`, `swap`, `unknown`, or
+         an empty string for none."""
         return self._bond_operation
 
     def has_bond_operation(self) -> bool:
-        """Returns true if the port has an operation being performed on its bond state."""
+        """Returns `true` if the port has an operation being performed on its bond state."""
         return True if self._bond_operand else False
 
     def has_state_operation(self) -> bool:
-        """Returns true if the port has an operation being performed on its internal state."""
+        """Returns `true` if the port has an operation being performed on its internal state."""
         return True if self._int_operand else False
 
 
 class KappaCounter(KappaSite):
-    """"Class for representing counters, pseudo-Kappa sites, e.g. 'c{=5}'."""
+    """Class for representing counters, pseudo-Kappa sites, e.g. `c{=5}`."""
 
     # define patterns that make up a counter
     __site_name_pat = r'([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)'

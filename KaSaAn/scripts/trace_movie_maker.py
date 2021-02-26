@@ -9,9 +9,10 @@ from KaSaAn.functions import movie_from_snapshots
 
 
 def main(args=None):
+    """Make a movie out of a set of snapshot files, and save it to disk."""
     if args is None:
         args = sys.argv[1:]
-    parser = argparse.ArgumentParser(description='Make a movie out of a set of snapshot files, and save it to disk.')
+    parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('-d', '--directory', type=str, default='./',
                         help='Directory where the snapshots are located. These should be named "snapshot.#.ka", i.e.'
                              ' the default naming scheme used by the Kappa Trace Query Language Engine. Default uses'
@@ -23,7 +24,8 @@ def main(args=None):
                              ' using a TK window.')
     parser.add_argument('-w', '--fig_width', type=int, default=16,
                         help='Number of inches for the width of the plot. Figure will be 2 times this value wide, with'
-                             ' the plot being this value wide and the legend being this value wide. Default value is 16.')
+                             ' the plot being this value wide and the legend being this value wide.'
+                             ' Default value is 16.')
     parser.add_argument('-r', '--XY_ratio', type=float, default=1.0,
                         help='X to Y ratio of the plot. Default value is 1: isometric view.')
     parser.add_argument('-s', '--do_not_scale_mass', action='store_true',
