@@ -1,22 +1,57 @@
 #!/usr/bin/env python3
+"""Contains `KappaPort` and `KappaCounter`; classes for representing the components of an agent signature."""
 
 import re
-from abc import abstractmethod
 
 from .KappaEntity import KappaEntity
-from .KappaError import PortParseError, CounterParseError, PortInclusionError
+from .KappaError import PortParseError, CounterParseError, PortSatisfactionError
 
 
-class KappaSite(KappaEntity):
-    """Abstract base class for site sub-types: `KappaPort` and `KappaCounter`."""
+class KappaPort(KappaEntity):
+    """
+Class for representing traditional Kappa Sites, e.g. `s[3]`, `g[.]{b}`, or `k[_]{#}`.
 
-    @abstractmethod
-    def __init__(self):
-        pass
+What is an embedding?
+---------------------
 
+The statement 'A contains B', or 'A in B', we interpret as meaning 'A embeds in B', specifically 'A satisfied by B',
+akin to saying 'B matches A', where 'match' is the inverse mapping to 'embed'. See `KappaPort.embeds_in` and
+`KappaPort.matches_to`
+Besides typing (e.g. can't satisfy `KappaPort` with a `KappaCounter`), this satisfaction requires three true components,
+the name, the internal state, and the bond state.
 
-class KappaPort(KappaSite):
-    """Class for representing traditional Kappa Sites, e.g. `s[3]`, `g[.]{b}`, or `k[_]{#}`."""
+Site names are only satisfied by equality of their string representation.
+
+Internal state truth table
+--------------------------
+
+* `s{#} in s{#}` <= True
+* `s{a} in s{#}` <= False
+* `s{#} in s{a}` <= True
+* `s{a} in s{a}` <= True
+* `s{a} in s{b}` <= False
+
+Bond state truth table
+----------------------
+
+* `s[#] in [#]` <= True
+* `s[_] in [#]` <= False
+* `s[.] in [#]` <= False
+* `s[8] in [#]` <= False
+* `s[#] in [_]` <= True
+* `s[_] in [_]` <= True
+* `s[.] in [_]` <= False
+* `s[7] in [_]` <= True
+* `s[#] in [.]` <= True
+* `s[_] in [.]` <= False
+* `s[.] in [.]` <= True
+* `s[6] in [.]` <= False
+* `s[#] in [5]` <= True
+* `s[_] in [5]` <= True
+* `s[.] in [5]` <= False
+* `s[5] in [5]` <= True
+* `s[3] in [4]` <= False
+    """
 
     # define patterns that make up a port
     __ident = r'[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*'
@@ -97,56 +132,32 @@ class KappaPort(KappaSite):
             '[' + self._present_bond_state + self._bond_operand + self._future_bond_state + ']' + \
             '{' + self._present_int_state + self._int_operand + self._future_int_state + '}'
 
-    def __contains__(self, item) -> bool:
-        # we can't compare ports to counters
-        if type(item) is KappaCounter:
-            raise PortParseError('Can not check for containment of supplied counter <' + item +
+    def __contains__(self, query) -> bool:
+        """"""
+
+        # we can't satisfy ports with counters
+        if type(query) is KappaCounter:
+            raise PortParseError('Can not check for containment of supplied counter <' + query +
                                  '> in port <' + self._kappa_expression + '>')
         # make it a KappaPort if it's not one already
-        elif not type(item) is KappaPort:
-            item = KappaPort(item)
-        # check if item is in self, Kappa-wise
-        contains = False
-        if self._int_operand or self._bond_operand:                 # if self has an operation, issue warning
-            raise PortInclusionError('Undefined inclusion test: <' + str(self) + '> has an operation in it.')
-        elif item._int_operand or item._bond_operand:               # if item has an operation, issue warning
-            raise PortInclusionError('Undefined inclusion test: <' + str(item) + '> has an operation in it.')
+        elif not type(query) is KappaPort:
+            query = KappaPort(query)
+        # check if item is satisfied by self, Kappa-wise
+        if self._int_operand or self._bond_operand:                     # if self has an operation, issue warning
+            raise PortSatisfactionError('Undefined satisfaction test: <' + str(self) + '> has an operation in it.')
+        elif query._int_operand or query._bond_operand:                 # if item has an operation, issue warning
+            raise PortSatisfactionError('Undefined satisfaction test: <' + str(query) + '> has an operation in it.')
         else:
-            if self._port_name == item._port_name:
-                if item._present_int_state == '#':
-                    if item._present_bond_state == '#':
-                        contains = True     # [#]{#} in [?]{?}
-                    elif self._present_bond_state == '#':
-                        contains = True     # [?]{#} in [#]{?}
-                    elif (self._present_bond_state == '_') & (item._present_bond_state != '.'):
-                        contains = True     # [.]{#} in! [_]{?}
-                    elif (item._present_bond_state == '_') & (self._present_bond_state != '.'):
-                        contains = True     # [_]{#} in! [.]{?}
-                    elif item._present_bond_state == self._present_bond_state:
-                        contains = True     # [x]{#} in [x]{?}
-                elif self._present_int_state == '#':
-                    if item._present_bond_state == '#':
-                        contains = True
-                    elif self._present_bond_state == '#':
-                        contains = True
-                    elif (self._present_bond_state == '_') & (item._present_bond_state != '.'):
-                        contains = True
-                    elif (item._present_bond_state == '_') & (self._present_bond_state != '.'):
-                        contains = True
-                    elif item._present_bond_state == self._present_bond_state:
-                        contains = True
-                elif item._present_int_state == self._present_int_state:
-                    if item._present_bond_state == '#':
-                        contains = True
-                    elif self._present_bond_state == '#':
-                        contains = True
-                    elif (self._present_bond_state == '_') & (item._present_bond_state != '.'):
-                        contains = True
-                    elif (item._present_bond_state == '_') & (self._present_bond_state != '.'):
-                        contains = True
-                    elif item._present_bond_state == self._present_bond_state:
-                        contains = True
-        return contains
+            satisfied = False
+            # site name satisfied?
+            if self._port_name == query._port_name:
+                # first check if internal state satisfied,
+                # then check if bond state satisfied
+                if query._present_int_state == '#':
+                    satisfied = _bond_state_satisfaction(query_port=query, target_port=self)
+                elif query._present_int_state == self._present_int_state:
+                    satisfied = _bond_state_satisfaction(query_port=query, target_port=self)
+        return satisfied
 
     def get_port_name(self) -> str:
         """Returns a string with the port's name."""
@@ -193,8 +204,18 @@ class KappaPort(KappaSite):
         """Returns `true` if the port has an operation being performed on its internal state."""
         return True if self._int_operand else False
 
+    def embeds_in(self, target) -> bool:
+        """Does the self entity embed in, is satisfied by, the target entity? The inverse mapping of an embedding is the
+        matching, see `KappaPort.matches_to`."""
+        return self in target
 
-class KappaCounter(KappaSite):
+    def matches_to(self, query) -> bool:
+        """Does the self entity match to the query entity, does it satisfy it's requirements?  The inverse mapping of a
+        matching is the embedding, see `KappaPort.embeds_in`."""
+        return query in self
+
+
+class KappaCounter(KappaEntity):
     """Class for representing counters, pseudo-Kappa sites, e.g. `c{=5}`."""
 
     # define patterns that make up a counter
@@ -246,3 +267,16 @@ class KappaCounter(KappaSite):
     def has_operation(self) -> bool:
         """Returns true if this counter has an operation being performed on it."""
         return True if self._counter_operand else False
+
+
+def _bond_state_satisfaction(query_port: KappaPort, target_port: KappaPort) -> bool:
+    """Is the query string satisfied by the target string, when read as bond states?"""
+    if query_port.get_port_current_bond() == '.':
+        satisfied = True if target_port.get_port_current_bond() == '.' else False
+    elif query_port.get_port_current_bond() == '_':
+        satisfied = True if target_port.get_port_current_bond() not in ['.', '#'] else False
+    elif query_port.get_port_current_bond() == '#':
+        satisfied = True
+    else:
+        satisfied = True if target_port.get_port_current_bond() == query_port.get_port_current_bond() else False
+    return satisfied

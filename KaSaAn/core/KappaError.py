@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Contains the various errors thrown when parsing."""
 
 
 class KappaError(Exception):
@@ -15,7 +16,7 @@ class PortParseError(KappaError):
     """Exception raised when failing to parse a port site."""
 
 
-class PortInclusionError(KappaError):
+class PortSatisfactionError(KappaError):
     """Exception raised when testing for inclusion of a port in a port."""
 
 

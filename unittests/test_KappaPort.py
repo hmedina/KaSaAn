@@ -68,16 +68,38 @@ class TestKappaPort(unittest.TestCase):
         self.assertTrue(KappaPort('~a{un/ph}[1/2]').has_state_operation())
         self.assertFalse(KappaPort('~a{ph}[2/.]').has_state_operation())
 
-    def test_inclusion_criteria(self):
-        self.assertTrue('a[1]' in KappaPort('a[1]{s}'))
-        self.assertTrue('a[_]' in KappaPort('a[1]{s}'))
-        self.assertTrue('a[.]' in KappaPort('a[.]{s}'))
-        self.assertTrue('a{s}' in KappaPort('a[1]{s}'))
-        self.assertTrue('a{#}' in KappaPort('a[1]{s}'))
-        self.assertTrue('a{s}' in KappaPort('a[1]{#}'))
-        self.assertTrue('a[1]' in KappaPort('a[_]{#}'))
-        self.assertTrue('a[1]' in KappaPort('a[#]{#}'))
-        self.assertTrue('a[1]' in KappaPort('a[1]'))
-        self.assertFalse('a[.]' in KappaPort('a[1]{s}'))
-        self.assertFalse('a[_]' in KappaPort('a[.]{s}'))
-        self.assertFalse('a{u}' in KappaPort('a[1]{s}'))
+    def test_satisfaction_port_name(self):
+        self.assertTrue('site' in KappaPort('site'))
+        self.assertFalse('site' in KappaPort('other_site'))
+
+    def test_satisfaction_internal_state(self):
+        self.assertTrue('site{#}' in KappaPort('site{#}'))
+        self.assertFalse('site{a}' in KappaPort('site{#}'))
+
+        self.assertTrue('site{#}' in KappaPort('site{b}'))
+        self.assertTrue('site{b}' in KappaPort('site{b}'))
+
+        self.assertFalse('site{c}' in KappaPort('site{d}'))
+
+    def test_satisfaction_bond_state(self):
+        self.assertTrue('site[#]' in KappaPort('site[#]'))
+        self.assertFalse('site[_]' in KappaPort('site[#]'))
+        self.assertFalse('site[.]' in KappaPort('site[#]'))
+        self.assertFalse('site[8]' in KappaPort('site[#]'))
+
+        self.assertTrue('site[#]' in KappaPort('site[_]'))
+        self.assertTrue('site[_]' in KappaPort('site[_]'))
+        self.assertFalse('site[.]' in KappaPort('site[_]'))
+        self.assertFalse('site[7]' in KappaPort('site[_]'))
+
+        self.assertTrue('site[#]' in KappaPort('site[.]'))
+        self.assertFalse('site[_]' in KappaPort('site[.]'))
+        self.assertTrue('site[.]' in KappaPort('site[.]'))
+        self.assertFalse('site[6]' in KappaPort('site[.]'))
+
+        self.assertTrue('site[#]' in KappaPort('site[5]'))
+        self.assertTrue('site[_]' in KappaPort('site[5]'))
+        self.assertFalse('site[.]' in KappaPort('site[5]'))
+        self.assertTrue('site[5]' in KappaPort('site[5]'))
+
+        self.assertFalse('site[4]' in KappaPort('site[3]'))
