@@ -1,4 +1,4 @@
-name: Python application
+name: Python application unittests
 
 # Run this workflow on every push
 on: [push]
