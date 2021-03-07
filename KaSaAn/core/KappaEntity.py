@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Contains the abstract base class from which all others are derived."""
 
 import re
 

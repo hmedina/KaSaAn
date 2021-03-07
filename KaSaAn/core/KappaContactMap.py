@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Contains `KappaContactMap`, class for representing and fine-tuning the layout of a contact map."""
 
 import colorsys
 import random

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Contains `KappaComplex`, a class to represents a list of agents chained into a larger entity, and the `embed_and_map`
+function."""
 
 import re
 import networkx as nx
@@ -195,7 +197,8 @@ class KappaComplex(KappaMultiAgentGraph):
 
 def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> \
         Tuple[List[List[Tuple[int, int]]], List[List[Tuple[int, int]]]]:
-    """Calculates all the embeddings of `ka_query` into `ka_target`, returning both the map of all embeddings, as well as
+    """
+    Calculates all the embeddings of `ka_query` into `ka_target`, returning both the map of all embeddings, as well as
     the map of embeddings corrected for the number of preserved automorphisms. For a rotational symmetry:
     >>> from KaSaAn.core.KappaComplex import embed_and_map, KappaComplex
     >>> my_comp = KappaComplex('Bob(h[10], t[11]), Bob(h[11], t[12]), Bob(h[12], t[10])')

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Contains the `KappaSnapshot` class, meant to represent a fully specified state of a reaction mixture."""
 
 import re
 import os

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+"""Contains `KappaAgent` and `KappaToken`; classes for representing the atomic components of a reaction mixture."""
 
 import re
 from typing import List, Union
 
 from .KappaEntity import KappaEntity
-from .KappaSite import KappaPort, KappaCounter, KappaSite
+from .KappaSite import KappaPort, KappaCounter
 from .KappaError import AgentParseError, TokenParseError, PortParseError, CounterParseError
 
 

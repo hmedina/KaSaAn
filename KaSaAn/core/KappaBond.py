@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
+"""Contains `KappaBond`, a class to represent the typed information of a realized bond (i.e. two paired stubs)."""
 
 from .KappaEntity import KappaEntity
 
 
 class KappaBond(KappaEntity):
-    """Class for representing kappa typed bonds. These are oriented, to guarantee an agent can only have at most
-    one of each type of bond; consider `Bob(tail[1]), Bob(head[1], tail[2]), Bob(head[2])`; the middle Bob will have
-    two bonds, one of each type `Bob.tail..head.Bob` and `Bob.head..tail.Bob`. Equality testing respects
-    orientation, whereas inclusion testing ignores orientation."""
+    """
+Class for representing kappa typed bonds. These are oriented, to guarantee an agent can only have at most
+one of each type of bond; consider
+
+`Bob(tail[1]), Bob(head[1], tail[2]), Bob(head[2])`
+
+the middle Bob will have two bonds, one of each type `Bob.tail..head.Bob` and `Bob.head..tail.Bob`. Equality testing
+respects orientation, whereas inclusion testing ignores orientation."""
 
     def __init__(self, agent_one: str, site_one: str, agent_two: str, site_two: str):
         self._kappa_expression: str

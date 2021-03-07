@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+"""Contains the parent class to `KappaSnapshot` and `KappaComplex`, with shared methods."""
 
 from abc import abstractmethod
 from typing import List, Dict

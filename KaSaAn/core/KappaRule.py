@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Contains the `KappaRule` class."""
 
 import re
 from typing import List, Set
