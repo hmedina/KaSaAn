@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>KaSaAn.core.KappaComplex API documentation</title>
+<meta name="description" content="Contains `KappaComplex`, a class to represents a list of agents chained into a larger entity, and the `embed_and_map`
+function." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>KaSaAn.core.KappaComplex</code></h1>
+</header>
+<section id="section-intro">
+<p>Contains <code><a title="KaSaAn.core.KappaComplex.KappaComplex" href="#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a></code>, a class to represents a list of agents chained into a larger entity, and the <code><a title="KaSaAn.core.KappaComplex.embed_and_map" href="#KaSaAn.core.KappaComplex.embed_and_map">embed_and_map()</a></code>
+function.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python3
+&#34;&#34;&#34;Contains `KappaComplex`, a class to represents a list of agents chained into a larger entity, and the `embed_and_map`
+function.&#34;&#34;&#34;
+
+import re
+import networkx as nx
+import numpy as np
+from collections import deque
+from typing import Deque, Dict, List, FrozenSet, Set, Tuple, Union
+
+from .KappaMultiAgentGraph import KappaMultiAgentGraph
+from .KappaAgent import KappaAgent
+from .KappaBond import KappaBond
+from .KappaError import ComplexParseError, AgentParseError
+from .KappaSite import KappaPort
+
+
+class KappaComplex(KappaMultiAgentGraph):
+    &#34;&#34;&#34;Class for representing Kappa complexes. E.g. `A(b[1] s{u}[.]), B(a[1] c[2]), C(b[2] a[3]), A(c[3] s[.]{x})`.&#34;&#34;&#34;
+
+    # define agent pattern
+    _agent_idnt_pat = r&#39;(?:x\d+:)?&#39;
+    _agent_name_pat = r&#39;(?:[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)&#39;
+    _agent_sign_pat = r&#39;\([^()]*\)&#39;
+    _agent_pat = _agent_idnt_pat + _agent_name_pat + _agent_sign_pat
+    _agent_pat_re = re.compile(_agent_pat)
+
+    def __init__(self, expression: str):
+        self._raw_expression: str
+        self._agents: List[KappaAgent]
+        self._agent_identifiers: List[int]
+        self._agent_types: Set[KappaAgent]
+        self._kappa_expression: str
+        self._composition: Dict[KappaAgent, int]
+
+        self._raw_expression = expression
+        # get the set of agents making up this complex
+        matches = self._agent_pat_re.findall(expression.strip())
+        if len(matches) == 0:
+            raise ComplexParseError(&#39;Complex &lt;&#39; + self._raw_expression + &#39;&gt; appears to have zero agents.&#39;)
+        try:
+            agent_list = []
+            agent_idents = []
+            agent_types = set()
+            composition = {}
+            for item in matches:
+                agent = KappaAgent(item)
+                agent_list.append(agent)
+                if agent.get_agent_identifier() is not None:
+                    agent_idents.append(agent.get_agent_identifier())
+                agent_type = KappaAgent(agent.get_agent_name() + &#39;()&#39;)
+                agent_types.update([agent_type])
+                if agent_type in composition:
+                    composition[agent_type] += 1
+                else:
+                    composition[agent_type] = 1
+        except AgentParseError as a:
+            raise ComplexParseError(&#39;Could not parse agents in complex &lt;&#39; + expression + &#39;&gt;.&#39;) from a
+        self._agents = sorted(agent_list)
+        self._agent_identifiers = agent_idents
+        self._agent_types = agent_types
+        self._composition = dict(sorted(composition.items(), key=lambda item: item[1]))
+        # canonicalize the kappa expression
+        self._kappa_expression = &#39;, &#39;.join([str(agent) for agent in self._agents])
+
+    def get_number_of_bonds(self) -&gt; int:
+        &#34;&#34;&#34;Returns the number of bonds in the complex.&#34;&#34;&#34;
+        bonds = set()
+        for agent in self._agents:
+            bonds.update(agent.get_bond_identifiers())
+        return len(bonds)
+
+    def get_size_of_complex(self) -&gt; int:
+        &#34;&#34;&#34;Returns the size, in agents, of this complex.&#34;&#34;&#34;
+        return len(self._agents)
+
+    def get_agent_types(self) -&gt; Set[KappaAgent]:
+        &#34;&#34;&#34;Returns the set of agent names (or agent types) that make up the complex.&#34;&#34;&#34;
+        return self._agent_types
+
+    def get_all_agents(self) -&gt; List[KappaAgent]:
+        &#34;&#34;&#34;Returns a list of KappaAgents, filled with agents plus their signatures, present in this complex.&#34;&#34;&#34;
+        # replace commas with spaces, then split string into a list at closing parenthesis
+        return self._agents
+
+    def get_complex_composition(self) -&gt; Dict[KappaAgent, int]:
+        &#34;&#34;&#34;Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number of times that agent appears in this complex.&#34;&#34;&#34;
+        return self._composition
+
+    def get_number_of_embeddings_of_agent(self, query) -&gt; int:
+        &#34;&#34;&#34;Returns the number of embeddings the query agent has on the KappaComplex.&#34;&#34;&#34;
+        # type the query into an Agent, if it&#39;s not one already
+        if not type(query) is KappaAgent:
+            q_agent = KappaAgent(query)
+        else:
+            q_agent = query
+        # iterate over agents, checking if query is in each agent
+        match_number = 0
+        for s_agent in self._agents:
+            if q_agent in s_agent:
+                match_number += 1
+        return match_number
+
+    def get_number_of_embeddings_of_complex(self, query, symmetry_adjust: bool = True) -&gt; int:
+        &#34;&#34;&#34;Returns the number of embedding the query complex has on the KappaComplex. Optional parameter to not perform
+        the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries 
+        preserved in the query complex&#39;s image in the target.&#34;&#34;&#34;
+        if not type(query) is KappaComplex:
+            q_complex = KappaComplex(query)
+        else:
+            q_complex = query
+        total_maps, unique_maps = embed_and_map(q_complex, self)
+        if symmetry_adjust:
+            return len(unique_maps)
+        else:
+            return len(total_maps)
+
+    def get_number_of_embeddings(self, query) -&gt; int:
+        &#34;&#34;&#34;Wrapper for the two specialized functions, for agent and complex.&#34;&#34;&#34;
+        if type(query) is KappaAgent:
+            return self.get_number_of_embeddings_of_agent(query)
+        elif type(query) is KappaComplex:
+            return self.get_number_of_embeddings_of_complex(query)
+        else:
+            try:
+                try:
+                    return self.get_number_of_embeddings_of_agent(KappaAgent(query))
+                except AgentParseError:
+                    return self.get_number_of_embeddings_of_complex(KappaComplex(query))
+            except ComplexParseError:
+                raise ValueError(&#39;Could not parse query as a KappaAgent nor as a KappaComplex.&#39;)
+
+    def get_agent_identifiers(self) -&gt; List[int]:
+        &#34;&#34;&#34;Returns a list with the numeric agent identifiers, if any.&#34;&#34;&#34;
+        return self._agent_identifiers
+
+    def to_networkx(self, identifier_offset: int = 0) -&gt; nx.MultiGraph:
+        &#34;&#34;&#34;Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
+        agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent.
+        Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the Kappa expression.
+        Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays the
+        node identifiers and their corresponding `KappaAgents`, and `g.edges.data()` displays the edges, using the node
+        identifiers as well as the kappa identifiers.
+        The optional parameter `identifier_offset` will offset all numeric identifiers reported; used in unlabeled snapshots, or when combining graphs.&#34;&#34;&#34;
+        kappa_complex_multigraph = nx.MultiGraph()
+        dangle_bond_dict = {}                       # store unpaired bonds he
+        paired_bond_list = []                       # store tuples of (agent index 1, agent index 2, bond identifier)
+        agent_counter = 0                           # if using un-labeled kappa, default to this
+        for agent in self.get_all_agents():
+            if agent.get_agent_identifier():
+                agent_global_id = agent.get_agent_identifier() + identifier_offset
+            else:
+                agent_global_id = agent_counter + identifier_offset
+            kappa_complex_multigraph.add_node(agent_global_id, kappa=agent)
+            for bond in agent.get_bond_identifiers():
+                # if we&#39;ve already seen this edge and it is in the dangling list, it&#39;s partner has already been matched,
+                # so we can add this terminus to the bond database and delete from the dangle list
+                if bond in dangle_bond_dict:
+                    # special case for self-bonds: the first pass already got the alphabetically lower terminus,
+                    # so this pass should get the second terminus of the bond
+                    if len(agent.get_terminii_of_bond(bond)) &gt; 1:
+                        second_terminus = agent.get_terminii_of_bond(bond)[1]
+                    else:
+                        second_terminus = agent.get_terminii_of_bond(bond)[0]
+                    paired_bond_list.append((dangle_bond_dict[bond][&#39;agent id&#39;], agent_global_id,
+                                             {&#39;bond id&#39;: bond, &#39;bond type&#39;:
+                                             KappaBond(agent_one=dangle_bond_dict[bond][&#39;agent name&#39;],
+                                                       site_one=dangle_bond_dict[bond][&#39;site name&#39;],
+                                                       agent_two=agent.get_agent_name(),
+                                                       site_two=second_terminus
+                                                       )}))
+                    del dangle_bond_dict[bond]
+                else:
+                    dangle_bond_dict[bond] = {&#39;agent id&#39;: agent_global_id,
+                                              &#39;agent name&#39;: agent.get_agent_name(),
+                                              &#39;site name&#39;: agent.get_terminii_of_bond(bond)[0]}
+            agent_counter += 1
+        # if anything remains in the dangling bond list, it means we failed to pair at least one bond terminus
+        if dangle_bond_dict:
+            raise ValueError(&#39;Dangling bonds &lt;&#39; + &#39;,&#39;.join(dangle_bond_dict.keys()) +
+                             &#39;&gt; found in complex: &#39; + self._raw_expression)
+        kappa_complex_multigraph.add_edges_from(paired_bond_list)
+        return kappa_complex_multigraph
+
+    def to_cytoscape_cx(self) -&gt; List[Dict]:
+        &#34;&#34;&#34;
+        Export to a structure that, via some json encoding and dumping, can be read by Cytoscape as a CX file. Usage:
+        &gt;&gt;&gt; my_cx = my_complex.to_cytoscape_cx()
+        &gt;&gt;&gt; with open(&#39;my_cx.cx&#39;, &#39;w&#39;) as out_file:
+        json.dump(my_cx, out_file)
+        &#34;&#34;&#34;
+        cx_data = self._kappa_to_cytoscape_cx()
+        cx_network_attributes = [{&#39;n&#39;: &#39;name&#39;, &#39;v&#39;: &#39;network&#39;}]
+        cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
+        return cx_data
+
+
+def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -&gt; \
+        Tuple[List[List[Tuple[int, int]]], List[List[Tuple[int, int]]]]:
+    &#34;&#34;&#34;
+    Calculates all the embeddings of `ka_query` into `ka_target`, returning both the map of all embeddings, as well as
+    the map of embeddings corrected for the number of preserved automorphisms. For a rotational symmetry:
+    &gt;&gt;&gt; from KaSaAn.core.KappaComplex import embed_and_map, KappaComplex
+    &gt;&gt;&gt; my_comp = KappaComplex(&#39;Bob(h[10], t[11]), Bob(h[11], t[12]), Bob(h[12], t[10])&#39;)
+    &gt;&gt;&gt; maps_all, maps_unique = embed_and_map(my_comp, my_comp)
+    &gt;&gt;&gt; maps_all
+    [[(0, 0), (2, 2), (1, 1)], [(0, 1), (2, 0), (1, 2)], [(0, 2), (2, 1), (1, 0)]]
+    &gt;&gt;&gt; maps_unique
+    [[(0, 0), (2, 2), (1, 1)]]
+    &#34;&#34;&#34;
+    # litany of short circuits
+    if ka_query.get_size_of_complex() &gt; ka_target.get_size_of_complex():    # not enough agents
+        return ([], [])
+    if ka_query.get_number_of_bonds() &gt; ka_target.get_number_of_bonds():    # not enough bonds
+        return ([], [])
+    query_comp = ka_query.get_complex_composition()
+    target_comp = ka_target.get_complex_composition()
+    if not set(query_comp) &lt;= set(target_comp):                             # query agent(s) not present in target
+        return ([], [])
+    for agent_type, query_abundance in query_comp.items():
+        if agent_type not in target_comp:                                   # query agent missing in target
+            return ([], [])
+        if target_comp[agent_type] &lt; query_abundance:                       # target sum formula too small
+            return ([], [])
+    # start from the least abundant type, get their node indexes in query network and target network
+    # from the &lt;&lt;query is improper subset of target&gt;&gt; check above, all of query&#39;s are in target, so query&#39;s minimum
+    # happens to also be the common minimum
+    common_min: KappaAgent = next(iter(query_comp))
+    query_network = ka_query.to_networkx()
+    target_network = ka_target.to_networkx()
+    if not nx.is_connected(query_network):
+        raise ValueError(&#39;Error: query is not a connected graph.&#39;)
+    if not nx.is_connected(target_network):
+        raise ValueError(&#39;Error: target is not a connected graph.&#39;)
+    # get node identifiers whose agent type is of the common_min
+    common_min_q: np.array = np.where([
+        common_min in ka_agent for ka_agent in [
+            query_network.nodes()[item][&#39;kappa&#39;] for item in query_network.nodes()]])[0]
+    common_min_t: np.array = np.where([
+        common_min in ka_agent for ka_agent in [
+            target_network.nodes()[item][&#39;kappa&#39;] for item in target_network.nodes()]])[0]
+    # embark on systematic traversal
+    query_start_node = common_min_q[0]
+    maps_all: List[List[Tuple[int, int]]] = []
+    maps_distinct:  List[List[Tuple[int, int]]] = []
+    map_set: Set[FrozenSet[int]] = set()
+    for target_start_node in common_min_t:
+        map_found = _traverse_from(query_network, target_network, query_start_node, target_start_node)
+        if map_found:
+            maps_all.append(map_found)
+            q_nodes, t_nodes = zip(*map_found)
+            t_nodes = frozenset(t_nodes)
+            if t_nodes not in map_set:
+                map_set.update([t_nodes])
+                maps_distinct.append(map_found)
+    return maps_all, maps_distinct
+
+
+def _traverse_from(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_start: int, target_start: int) -&gt; \
+        List[Tuple[int, int]]:
+    &#34;&#34;&#34;Attempt a traversal of `target_net`, starting at `target_start`, matched to `query_start`, following `query_net`&#39;s
+    topology. If successful, returns the network mapping: a list of `(q,t)`, the indexes in the query and target
+    networks respectively.&#34;&#34;&#34;
+    # stack of node identifiers, integers from the networkx representation
+    node_stack: Deque[Tuple[int, Union[int, None], int]] = deque()
+    node_stack.append((query_start, None, target_start))
+    nodes_visited: Set[int] = set()
+    network_map = []
+    while node_stack:
+        q_node, q_prev, t_node = node_stack.pop()
+        if q_node not in nodes_visited:
+            # update t_node according to what got us from q_prev to q_node
+            if q_prev is not None:
+                # uniqueness of site name per agent, plus orientation of bond types,
+                # guarantee a bond type can appear at most once in an agent&#39;s
+                # bond set when read with the right orientation; this yields &#34;rigidity&#34; to the matcher
+                transforming_bond_type: KappaBond = query_net.get_edge_data(q_prev, q_node)[0][&#39;bond type&#39;]
+                if q_prev &gt; q_node:
+                    transforming_bond_type = transforming_bond_type.reverse()
+                target_bonds: List[KappaBond] = []
+                # get oriented bond list, incident on target node
+                for a, b in nx.edges(target_net, t_node):
+                    bond_type: KappaBond = target_net.get_edge_data(a, b)[0][&#39;bond type&#39;]
+                    if a &lt; b:
+                        target_bonds.append(bond_type)
+                    else:
+                        target_bonds.append(bond_type.reverse())
+                target_transforming_bond_index: int = \
+                    np.where([transforming_bond_type == item for item in target_bonds])[0][0]
+                t_node = list(nx.edges(target_net, t_node))[target_transforming_bond_index][1]
+            # now at parity, match by node &amp; edge data
+            node_matched = _node_match(query_net, target_net, q_node, t_node)
+            edge_matched = _edge_match(query_net, target_net, q_node, t_node)
+            if node_matched and edge_matched:
+                network_map.append((q_node, t_node))
+                nodes_visited.add(q_node)
+                for q_neighbor in nx.neighbors(query_net, q_node):
+                    node_stack.append((q_neighbor, q_node, t_node))
+            else:
+                return []
+    return network_map
+
+
+def _node_match(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_node: int, target_node: int) -&gt; bool:
+    &#34;&#34;&#34;Special purpose matcher that ignores bond types, considering only if sites are bound. Internal states are matched normally.&#34;&#34;&#34;
+    match: bool = False
+    query = query_net.nodes[query_node][&#39;kappa&#39;]
+    target = target_net.nodes[target_node][&#39;kappa&#39;]
+    for site in query.get_agent_ports():
+        s_name = site.get_port_name()
+        s_stat = &#39;{&#39; + site.get_port_int_state() + &#39;}&#39;
+        s_bond = &#39;[&#39; + site.get_port_bond_state() + &#39;]&#39; if site.get_port_bond_state() in [&#39;.&#39;, &#39;_&#39;, &#39;#&#39;] else &#39;[_]&#39;
+        relaxed_port = KappaPort(s_name + s_bond + s_stat)
+        if not any([relaxed_port in t_site for t_site in target.get_agent_ports()]):
+            return match
+    match = True
+    return match
+
+
+def _edge_match(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_node: int, target_node: int) -&gt; bool:
+    &#34;&#34;&#34;Special purpose matcher that only compares bond types. Returns a tuple, where the first value is a boolean
+    holding whether the whole thing matched, and the second the list of neighbors in target for which there was a
+    bond-type match.&#34;&#34;&#34;
+    match: bool = False
+    query_edges = nx.edges(query_net, query_node)
+    query_bond_types: List[KappaBond] = []
+    for a, b in query_edges:
+        this_bond: KappaBond = query_net.get_edge_data(a, b)[0][&#39;bond type&#39;]
+        if a &lt; b:   # if nodes ascending, read bond left-to-right
+            query_bond_types.append(this_bond)
+        else:
+            query_bond_types.append(this_bond.reverse())
+    target_edges = list(nx.edges(target_net, target_node))
+    target_bond_types: List[KappaBond] = []
+    for a, b in target_edges:
+        this_bond: KappaBond = target_net.get_edge_data(a, b)[0][&#39;bond type&#39;]
+        if a &lt; b:   # if nodes ascending, read bond left-to-right
+            target_bond_types.append(this_bond)
+        else:
+            target_bond_types.append(this_bond.reverse())
+    for query_bond_type in query_bond_types:
+        if not any([query_bond_type == target_bond_type for target_bond_type in target_bond_types]):
+            return match
+    match = True
+    return match</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="KaSaAn.core.KappaComplex.embed_and_map"><code class="name flex">
+<span>def <span class="ident">embed_and_map</span></span>(<span>ka_query: <a title="KaSaAn.core.KappaComplex.KappaComplex" href="#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a>, ka_target: <a title="KaSaAn.core.KappaComplex.KappaComplex" href="#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a>) ‑> Tuple[List[List[Tuple[int, int]]], List[List[Tuple[int, int]]]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates all the embeddings of <code>ka_query</code> into <code>ka_target</code>, returning both the map of all embeddings, as well as
+the map of embeddings corrected for the number of preserved automorphisms. For a rotational symmetry:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core.KappaComplex import embed_and_map, KappaComplex
+&gt;&gt;&gt; my_comp = KappaComplex('Bob(h[10], t[11]), Bob(h[11], t[12]), Bob(h[12], t[10])')
+&gt;&gt;&gt; maps_all, maps_unique = embed_and_map(my_comp, my_comp)
+&gt;&gt;&gt; maps_all
+[[(0, 0), (2, 2), (1, 1)], [(0, 1), (2, 0), (1, 2)], [(0, 2), (2, 1), (1, 0)]]
+&gt;&gt;&gt; maps_unique
+[[(0, 0), (2, 2), (1, 1)]]
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -&gt; \
+        Tuple[List[List[Tuple[int, int]]], List[List[Tuple[int, int]]]]:
+    &#34;&#34;&#34;
+    Calculates all the embeddings of `ka_query` into `ka_target`, returning both the map of all embeddings, as well as
+    the map of embeddings corrected for the number of preserved automorphisms. For a rotational symmetry:
+    &gt;&gt;&gt; from KaSaAn.core.KappaComplex import embed_and_map, KappaComplex
+    &gt;&gt;&gt; my_comp = KappaComplex(&#39;Bob(h[10], t[11]), Bob(h[11], t[12]), Bob(h[12], t[10])&#39;)
+    &gt;&gt;&gt; maps_all, maps_unique = embed_and_map(my_comp, my_comp)
+    &gt;&gt;&gt; maps_all
+    [[(0, 0), (2, 2), (1, 1)], [(0, 1), (2, 0), (1, 2)], [(0, 2), (2, 1), (1, 0)]]
+    &gt;&gt;&gt; maps_unique
+    [[(0, 0), (2, 2), (1, 1)]]
+    &#34;&#34;&#34;
+    # litany of short circuits
+    if ka_query.get_size_of_complex() &gt; ka_target.get_size_of_complex():    # not enough agents
+        return ([], [])
+    if ka_query.get_number_of_bonds() &gt; ka_target.get_number_of_bonds():    # not enough bonds
+        return ([], [])
+    query_comp = ka_query.get_complex_composition()
+    target_comp = ka_target.get_complex_composition()
+    if not set(query_comp) &lt;= set(target_comp):                             # query agent(s) not present in target
+        return ([], [])
+    for agent_type, query_abundance in query_comp.items():
+        if agent_type not in target_comp:                                   # query agent missing in target
+            return ([], [])
+        if target_comp[agent_type] &lt; query_abundance:                       # target sum formula too small
+            return ([], [])
+    # start from the least abundant type, get their node indexes in query network and target network
+    # from the &lt;&lt;query is improper subset of target&gt;&gt; check above, all of query&#39;s are in target, so query&#39;s minimum
+    # happens to also be the common minimum
+    common_min: KappaAgent = next(iter(query_comp))
+    query_network = ka_query.to_networkx()
+    target_network = ka_target.to_networkx()
+    if not nx.is_connected(query_network):
+        raise ValueError(&#39;Error: query is not a connected graph.&#39;)
+    if not nx.is_connected(target_network):
+        raise ValueError(&#39;Error: target is not a connected graph.&#39;)
+    # get node identifiers whose agent type is of the common_min
+    common_min_q: np.array = np.where([
+        common_min in ka_agent for ka_agent in [
+            query_network.nodes()[item][&#39;kappa&#39;] for item in query_network.nodes()]])[0]
+    common_min_t: np.array = np.where([
+        common_min in ka_agent for ka_agent in [
+            target_network.nodes()[item][&#39;kappa&#39;] for item in target_network.nodes()]])[0]
+    # embark on systematic traversal
+    query_start_node = common_min_q[0]
+    maps_all: List[List[Tuple[int, int]]] = []
+    maps_distinct:  List[List[Tuple[int, int]]] = []
+    map_set: Set[FrozenSet[int]] = set()
+    for target_start_node in common_min_t:
+        map_found = _traverse_from(query_network, target_network, query_start_node, target_start_node)
+        if map_found:
+            maps_all.append(map_found)
+            q_nodes, t_nodes = zip(*map_found)
+            t_nodes = frozenset(t_nodes)
+            if t_nodes not in map_set:
+                map_set.update([t_nodes])
+                maps_distinct.append(map_found)
+    return maps_all, maps_distinct</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="KaSaAn.core.KappaComplex.KappaComplex"><code class="flex name class">
+<span>class <span class="ident">KappaComplex</span></span>
+<span>(</span><span>expression: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class for representing Kappa complexes. E.g. <code>A(b[1] s{u}[.]), B(a[1] c[2]), C(b[2] a[3]), A(c[3] s[.]{x})</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class KappaComplex(KappaMultiAgentGraph):
+    &#34;&#34;&#34;Class for representing Kappa complexes. E.g. `A(b[1] s{u}[.]), B(a[1] c[2]), C(b[2] a[3]), A(c[3] s[.]{x})`.&#34;&#34;&#34;
+
+    # define agent pattern
+    _agent_idnt_pat = r&#39;(?:x\d+:)?&#39;
+    _agent_name_pat = r&#39;(?:[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)&#39;
+    _agent_sign_pat = r&#39;\([^()]*\)&#39;
+    _agent_pat = _agent_idnt_pat + _agent_name_pat + _agent_sign_pat
+    _agent_pat_re = re.compile(_agent_pat)
+
+    def __init__(self, expression: str):
+        self._raw_expression: str
+        self._agents: List[KappaAgent]
+        self._agent_identifiers: List[int]
+        self._agent_types: Set[KappaAgent]
+        self._kappa_expression: str
+        self._composition: Dict[KappaAgent, int]
+
+        self._raw_expression = expression
+        # get the set of agents making up this complex
+        matches = self._agent_pat_re.findall(expression.strip())
+        if len(matches) == 0:
+            raise ComplexParseError(&#39;Complex &lt;&#39; + self._raw_expression + &#39;&gt; appears to have zero agents.&#39;)
+        try:
+            agent_list = []
+            agent_idents = []
+            agent_types = set()
+            composition = {}
+            for item in matches:
+                agent = KappaAgent(item)
+                agent_list.append(agent)
+                if agent.get_agent_identifier() is not None:
+                    agent_idents.append(agent.get_agent_identifier())
+                agent_type = KappaAgent(agent.get_agent_name() + &#39;()&#39;)
+                agent_types.update([agent_type])
+                if agent_type in composition:
+                    composition[agent_type] += 1
+                else:
+                    composition[agent_type] = 1
+        except AgentParseError as a:
+            raise ComplexParseError(&#39;Could not parse agents in complex &lt;&#39; + expression + &#39;&gt;.&#39;) from a
+        self._agents = sorted(agent_list)
+        self._agent_identifiers = agent_idents
+        self._agent_types = agent_types
+        self._composition = dict(sorted(composition.items(), key=lambda item: item[1]))
+        # canonicalize the kappa expression
+        self._kappa_expression = &#39;, &#39;.join([str(agent) for agent in self._agents])
+
+    def get_number_of_bonds(self) -&gt; int:
+        &#34;&#34;&#34;Returns the number of bonds in the complex.&#34;&#34;&#34;
+        bonds = set()
+        for agent in self._agents:
+            bonds.update(agent.get_bond_identifiers())
+        return len(bonds)
+
+    def get_size_of_complex(self) -&gt; int:
+        &#34;&#34;&#34;Returns the size, in agents, of this complex.&#34;&#34;&#34;
+        return len(self._agents)
+
+    def get_agent_types(self) -&gt; Set[KappaAgent]:
+        &#34;&#34;&#34;Returns the set of agent names (or agent types) that make up the complex.&#34;&#34;&#34;
+        return self._agent_types
+
+    def get_all_agents(self) -&gt; List[KappaAgent]:
+        &#34;&#34;&#34;Returns a list of KappaAgents, filled with agents plus their signatures, present in this complex.&#34;&#34;&#34;
+        # replace commas with spaces, then split string into a list at closing parenthesis
+        return self._agents
+
+    def get_complex_composition(self) -&gt; Dict[KappaAgent, int]:
+        &#34;&#34;&#34;Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number of times that agent appears in this complex.&#34;&#34;&#34;
+        return self._composition
+
+    def get_number_of_embeddings_of_agent(self, query) -&gt; int:
+        &#34;&#34;&#34;Returns the number of embeddings the query agent has on the KappaComplex.&#34;&#34;&#34;
+        # type the query into an Agent, if it&#39;s not one already
+        if not type(query) is KappaAgent:
+            q_agent = KappaAgent(query)
+        else:
+            q_agent = query
+        # iterate over agents, checking if query is in each agent
+        match_number = 0
+        for s_agent in self._agents:
+            if q_agent in s_agent:
+                match_number += 1
+        return match_number
+
+    def get_number_of_embeddings_of_complex(self, query, symmetry_adjust: bool = True) -&gt; int:
+        &#34;&#34;&#34;Returns the number of embedding the query complex has on the KappaComplex. Optional parameter to not perform
+        the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries 
+        preserved in the query complex&#39;s image in the target.&#34;&#34;&#34;
+        if not type(query) is KappaComplex:
+            q_complex = KappaComplex(query)
+        else:
+            q_complex = query
+        total_maps, unique_maps = embed_and_map(q_complex, self)
+        if symmetry_adjust:
+            return len(unique_maps)
+        else:
+            return len(total_maps)
+
+    def get_number_of_embeddings(self, query) -&gt; int:
+        &#34;&#34;&#34;Wrapper for the two specialized functions, for agent and complex.&#34;&#34;&#34;
+        if type(query) is KappaAgent:
+            return self.get_number_of_embeddings_of_agent(query)
+        elif type(query) is KappaComplex:
+            return self.get_number_of_embeddings_of_complex(query)
+        else:
+            try:
+                try:
+                    return self.get_number_of_embeddings_of_agent(KappaAgent(query))
+                except AgentParseError:
+                    return self.get_number_of_embeddings_of_complex(KappaComplex(query))
+            except ComplexParseError:
+                raise ValueError(&#39;Could not parse query as a KappaAgent nor as a KappaComplex.&#39;)
+
+    def get_agent_identifiers(self) -&gt; List[int]:
+        &#34;&#34;&#34;Returns a list with the numeric agent identifiers, if any.&#34;&#34;&#34;
+        return self._agent_identifiers
+
+    def to_networkx(self, identifier_offset: int = 0) -&gt; nx.MultiGraph:
+        &#34;&#34;&#34;Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
+        agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent.
+        Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the Kappa expression.
+        Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays the
+        node identifiers and their corresponding `KappaAgents`, and `g.edges.data()` displays the edges, using the node
+        identifiers as well as the kappa identifiers.
+        The optional parameter `identifier_offset` will offset all numeric identifiers reported; used in unlabeled snapshots, or when combining graphs.&#34;&#34;&#34;
+        kappa_complex_multigraph = nx.MultiGraph()
+        dangle_bond_dict = {}                       # store unpaired bonds he
+        paired_bond_list = []                       # store tuples of (agent index 1, agent index 2, bond identifier)
+        agent_counter = 0                           # if using un-labeled kappa, default to this
+        for agent in self.get_all_agents():
+            if agent.get_agent_identifier():
+                agent_global_id = agent.get_agent_identifier() + identifier_offset
+            else:
+                agent_global_id = agent_counter + identifier_offset
+            kappa_complex_multigraph.add_node(agent_global_id, kappa=agent)
+            for bond in agent.get_bond_identifiers():
+                # if we&#39;ve already seen this edge and it is in the dangling list, it&#39;s partner has already been matched,
+                # so we can add this terminus to the bond database and delete from the dangle list
+                if bond in dangle_bond_dict:
+                    # special case for self-bonds: the first pass already got the alphabetically lower terminus,
+                    # so this pass should get the second terminus of the bond
+                    if len(agent.get_terminii_of_bond(bond)) &gt; 1:
+                        second_terminus = agent.get_terminii_of_bond(bond)[1]
+                    else:
+                        second_terminus = agent.get_terminii_of_bond(bond)[0]
+                    paired_bond_list.append((dangle_bond_dict[bond][&#39;agent id&#39;], agent_global_id,
+                                             {&#39;bond id&#39;: bond, &#39;bond type&#39;:
+                                             KappaBond(agent_one=dangle_bond_dict[bond][&#39;agent name&#39;],
+                                                       site_one=dangle_bond_dict[bond][&#39;site name&#39;],
+                                                       agent_two=agent.get_agent_name(),
+                                                       site_two=second_terminus
+                                                       )}))
+                    del dangle_bond_dict[bond]
+                else:
+                    dangle_bond_dict[bond] = {&#39;agent id&#39;: agent_global_id,
+                                              &#39;agent name&#39;: agent.get_agent_name(),
+                                              &#39;site name&#39;: agent.get_terminii_of_bond(bond)[0]}
+            agent_counter += 1
+        # if anything remains in the dangling bond list, it means we failed to pair at least one bond terminus
+        if dangle_bond_dict:
+            raise ValueError(&#39;Dangling bonds &lt;&#39; + &#39;,&#39;.join(dangle_bond_dict.keys()) +
+                             &#39;&gt; found in complex: &#39; + self._raw_expression)
+        kappa_complex_multigraph.add_edges_from(paired_bond_list)
+        return kappa_complex_multigraph
+
+    def to_cytoscape_cx(self) -&gt; List[Dict]:
+        &#34;&#34;&#34;
+        Export to a structure that, via some json encoding and dumping, can be read by Cytoscape as a CX file. Usage:
+        &gt;&gt;&gt; my_cx = my_complex.to_cytoscape_cx()
+        &gt;&gt;&gt; with open(&#39;my_cx.cx&#39;, &#39;w&#39;) as out_file:
+        json.dump(my_cx, out_file)
+        &#34;&#34;&#34;
+        cx_data = self._kappa_to_cytoscape_cx()
+        cx_network_attributes = [{&#39;n&#39;: &#39;name&#39;, &#39;v&#39;: &#39;network&#39;}]
+        cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
+        return cx_data</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="KaSaAn.core.KappaMultiAgentGraph.KappaMultiAgentGraph" href="KappaMultiAgentGraph.html#KaSaAn.core.KappaMultiAgentGraph.KappaMultiAgentGraph">KappaMultiAgentGraph</a></li>
+<li><a title="KaSaAn.core.KappaEntity.KappaEntity" href="KappaEntity.html#KaSaAn.core.KappaEntity.KappaEntity">KappaEntity</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="KaSaAn.core.KappaComplex.KappaComplex.get_agent_identifiers"><code class="name flex">
+<span>def <span class="ident">get_agent_identifiers</span></span>(<span>self) ‑> List[int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list with the numeric agent identifiers, if any.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_agent_identifiers(self) -&gt; List[int]:
+    &#34;&#34;&#34;Returns a list with the numeric agent identifiers, if any.&#34;&#34;&#34;
+    return self._agent_identifiers</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaComplex.KappaComplex.get_agent_types"><code class="name flex">
+<span>def <span class="ident">get_agent_types</span></span>(<span>self) ‑> Set[<a title="KaSaAn.core.KappaAgent.KappaAgent" href="KappaAgent.html#KaSaAn.core.KappaAgent.KappaAgent">KappaAgent</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the set of agent names (or agent types) that make up the complex.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_agent_types(self) -&gt; Set[KappaAgent]:
+    &#34;&#34;&#34;Returns the set of agent names (or agent types) that make up the complex.&#34;&#34;&#34;
+    return self._agent_types</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaComplex.KappaComplex.get_all_agents"><code class="name flex">
+<span>def <span class="ident">get_all_agents</span></span>(<span>self) ‑> List[<a title="KaSaAn.core.KappaAgent.KappaAgent" href="KappaAgent.html#KaSaAn.core.KappaAgent.KappaAgent">KappaAgent</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of KappaAgents, filled with agents plus their signatures, present in this complex.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_agents(self) -&gt; List[KappaAgent]:
+    &#34;&#34;&#34;Returns a list of KappaAgents, filled with agents plus their signatures, present in this complex.&#34;&#34;&#34;
+    # replace commas with spaces, then split string into a list at closing parenthesis
+    return self._agents</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaComplex.KappaComplex.get_complex_composition"><code class="name flex">
+<span>def <span class="ident">get_complex_composition</span></span>(<span>self) ‑> Dict[<a title="KaSaAn.core.KappaAgent.KappaAgent" href="KappaAgent.html#KaSaAn.core.KappaAgent.KappaAgent">KappaAgent</a>, int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number of times that agent appears in this complex.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_complex_composition(self) -&gt; Dict[KappaAgent, int]:
+    &#34;&#34;&#34;Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number of times that agent appears in this complex.&#34;&#34;&#34;
+    return self._composition</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaComplex.KappaComplex.get_number_of_bonds"><code class="name flex">
+<span>def <span class="ident">get_number_of_bonds</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the number of bonds in the complex.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_number_of_bonds(self) -&gt; int:
+    &#34;&#34;&#34;Returns the number of bonds in the complex.&#34;&#34;&#34;
+    bonds = set()
+    for agent in self._agents:
+        bonds.update(agent.get_bond_identifiers())
+    return len(bonds)</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaComplex.KappaComplex.get_number_of_embeddings"><code class="name flex">
+<span>def <span class="ident">get_number_of_embeddings</span></span>(<span>self, query) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Wrapper for the two specialized functions, for agent and complex.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_number_of_embeddings(self, query) -&gt; int:
+    &#34;&#34;&#34;Wrapper for the two specialized functions, for agent and complex.&#34;&#34;&#34;
+    if type(query) is KappaAgent:
+        return self.get_number_of_embeddings_of_agent(query)
+    elif type(query) is KappaComplex:
+        return self.get_number_of_embeddings_of_complex(query)
+    else:
+        try:
+            try:
+                return self.get_number_of_embeddings_of_agent(KappaAgent(query))
+            except AgentParseError:
+                return self.get_number_of_embeddings_of_complex(KappaComplex(query))
+        except ComplexParseError:
+            raise ValueError(&#39;Could not parse query as a KappaAgent nor as a KappaComplex.&#39;)</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaComplex.KappaComplex.get_number_of_embeddings_of_agent"><code class="name flex">
+<span>def <span class="ident">get_number_of_embeddings_of_agent</span></span>(<span>self, query) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the number of embeddings the query agent has on the KappaComplex.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_number_of_embeddings_of_agent(self, query) -&gt; int:
+    &#34;&#34;&#34;Returns the number of embeddings the query agent has on the KappaComplex.&#34;&#34;&#34;
+    # type the query into an Agent, if it&#39;s not one already
+    if not type(query) is KappaAgent:
+        q_agent = KappaAgent(query)
+    else:
+        q_agent = query
+    # iterate over agents, checking if query is in each agent
+    match_number = 0
+    for s_agent in self._agents:
+        if q_agent in s_agent:
+            match_number += 1
+    return match_number</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaComplex.KappaComplex.get_number_of_embeddings_of_complex"><code class="name flex">
+<span>def <span class="ident">get_number_of_embeddings_of_complex</span></span>(<span>self, query, symmetry_adjust: bool = True) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the number of embedding the query complex has on the KappaComplex. Optional parameter to not perform
+the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries
+preserved in the query complex's image in the target.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_number_of_embeddings_of_complex(self, query, symmetry_adjust: bool = True) -&gt; int:
+    &#34;&#34;&#34;Returns the number of embedding the query complex has on the KappaComplex. Optional parameter to not perform
+    the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries 
+    preserved in the query complex&#39;s image in the target.&#34;&#34;&#34;
+    if not type(query) is KappaComplex:
+        q_complex = KappaComplex(query)
+    else:
+        q_complex = query
+    total_maps, unique_maps = embed_and_map(q_complex, self)
+    if symmetry_adjust:
+        return len(unique_maps)
+    else:
+        return len(total_maps)</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaComplex.KappaComplex.get_size_of_complex"><code class="name flex">
+<span>def <span class="ident">get_size_of_complex</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the size, in agents, of this complex.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_size_of_complex(self) -&gt; int:
+    &#34;&#34;&#34;Returns the size, in agents, of this complex.&#34;&#34;&#34;
+    return len(self._agents)</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaComplex.KappaComplex.to_cytoscape_cx"><code class="name flex">
+<span>def <span class="ident">to_cytoscape_cx</span></span>(<span>self) ‑> List[Dict]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Export to a structure that, via some json encoding and dumping, can be read by Cytoscape as a CX file. Usage:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; my_cx = my_complex.to_cytoscape_cx()
+&gt;&gt;&gt; with open('my_cx.cx', 'w') as out_file:
+json.dump(my_cx, out_file)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_cytoscape_cx(self) -&gt; List[Dict]:
+    &#34;&#34;&#34;
+    Export to a structure that, via some json encoding and dumping, can be read by Cytoscape as a CX file. Usage:
+    &gt;&gt;&gt; my_cx = my_complex.to_cytoscape_cx()
+    &gt;&gt;&gt; with open(&#39;my_cx.cx&#39;, &#39;w&#39;) as out_file:
+    json.dump(my_cx, out_file)
+    &#34;&#34;&#34;
+    cx_data = self._kappa_to_cytoscape_cx()
+    cx_network_attributes = [{&#39;n&#39;: &#39;name&#39;, &#39;v&#39;: &#39;network&#39;}]
+    cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
+    return cx_data</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaComplex.KappaComplex.to_networkx"><code class="name flex">
+<span>def <span class="ident">to_networkx</span></span>(<span>self, identifier_offset: int = 0) ‑> networkx.classes.multigraph.MultiGraph</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
+agents, edges their bonds. Nodes have an attribute dictionary where the key <code>kappa</code> holds the KappaAgent.
+Edges have an attribute dictionary where the key <code>bond id</code> holds the bond identifier from the Kappa expression.
+Node identifiers are integers, using the order of agent declaration. For a graph <code>g</code>, <code>g.nodes.data()</code> displays the
+node identifiers and their corresponding <code>KappaAgents</code>, and <code>g.edges.data()</code> displays the edges, using the node
+identifiers as well as the kappa identifiers.
+The optional parameter <code>identifier_offset</code> will offset all numeric identifiers reported; used in unlabeled snapshots, or when combining graphs.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_networkx(self, identifier_offset: int = 0) -&gt; nx.MultiGraph:
+    &#34;&#34;&#34;Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
+    agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent.
+    Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the Kappa expression.
+    Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays the
+    node identifiers and their corresponding `KappaAgents`, and `g.edges.data()` displays the edges, using the node
+    identifiers as well as the kappa identifiers.
+    The optional parameter `identifier_offset` will offset all numeric identifiers reported; used in unlabeled snapshots, or when combining graphs.&#34;&#34;&#34;
+    kappa_complex_multigraph = nx.MultiGraph()
+    dangle_bond_dict = {}                       # store unpaired bonds he
+    paired_bond_list = []                       # store tuples of (agent index 1, agent index 2, bond identifier)
+    agent_counter = 0                           # if using un-labeled kappa, default to this
+    for agent in self.get_all_agents():
+        if agent.get_agent_identifier():
+            agent_global_id = agent.get_agent_identifier() + identifier_offset
+        else:
+            agent_global_id = agent_counter + identifier_offset
+        kappa_complex_multigraph.add_node(agent_global_id, kappa=agent)
+        for bond in agent.get_bond_identifiers():
+            # if we&#39;ve already seen this edge and it is in the dangling list, it&#39;s partner has already been matched,
+            # so we can add this terminus to the bond database and delete from the dangle list
+            if bond in dangle_bond_dict:
+                # special case for self-bonds: the first pass already got the alphabetically lower terminus,
+                # so this pass should get the second terminus of the bond
+                if len(agent.get_terminii_of_bond(bond)) &gt; 1:
+                    second_terminus = agent.get_terminii_of_bond(bond)[1]
+                else:
+                    second_terminus = agent.get_terminii_of_bond(bond)[0]
+                paired_bond_list.append((dangle_bond_dict[bond][&#39;agent id&#39;], agent_global_id,
+                                         {&#39;bond id&#39;: bond, &#39;bond type&#39;:
+                                         KappaBond(agent_one=dangle_bond_dict[bond][&#39;agent name&#39;],
+                                                   site_one=dangle_bond_dict[bond][&#39;site name&#39;],
+                                                   agent_two=agent.get_agent_name(),
+                                                   site_two=second_terminus
+                                                   )}))
+                del dangle_bond_dict[bond]
+            else:
+                dangle_bond_dict[bond] = {&#39;agent id&#39;: agent_global_id,
+                                          &#39;agent name&#39;: agent.get_agent_name(),
+                                          &#39;site name&#39;: agent.get_terminii_of_bond(bond)[0]}
+        agent_counter += 1
+    # if anything remains in the dangling bond list, it means we failed to pair at least one bond terminus
+    if dangle_bond_dict:
+        raise ValueError(&#39;Dangling bonds &lt;&#39; + &#39;,&#39;.join(dangle_bond_dict.keys()) +
+                         &#39;&gt; found in complex: &#39; + self._raw_expression)
+    kappa_complex_multigraph.add_edges_from(paired_bond_list)
+    return kappa_complex_multigraph</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="KaSaAn.core" href="index.html">KaSaAn.core</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="KaSaAn.core.KappaComplex.embed_and_map" href="#KaSaAn.core.KappaComplex.embed_and_map">embed_and_map</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="KaSaAn.core.KappaComplex.KappaComplex" href="#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a></code></h4>
+<ul class="">
+<li><code><a title="KaSaAn.core.KappaComplex.KappaComplex.get_agent_identifiers" href="#KaSaAn.core.KappaComplex.KappaComplex.get_agent_identifiers">get_agent_identifiers</a></code></li>
+<li><code><a title="KaSaAn.core.KappaComplex.KappaComplex.get_agent_types" href="#KaSaAn.core.KappaComplex.KappaComplex.get_agent_types">get_agent_types</a></code></li>
+<li><code><a title="KaSaAn.core.KappaComplex.KappaComplex.get_all_agents" href="#KaSaAn.core.KappaComplex.KappaComplex.get_all_agents">get_all_agents</a></code></li>
+<li><code><a title="KaSaAn.core.KappaComplex.KappaComplex.get_complex_composition" href="#KaSaAn.core.KappaComplex.KappaComplex.get_complex_composition">get_complex_composition</a></code></li>
+<li><code><a title="KaSaAn.core.KappaComplex.KappaComplex.get_number_of_bonds" href="#KaSaAn.core.KappaComplex.KappaComplex.get_number_of_bonds">get_number_of_bonds</a></code></li>
+<li><code><a title="KaSaAn.core.KappaComplex.KappaComplex.get_number_of_embeddings" href="#KaSaAn.core.KappaComplex.KappaComplex.get_number_of_embeddings">get_number_of_embeddings</a></code></li>
+<li><code><a title="KaSaAn.core.KappaComplex.KappaComplex.get_number_of_embeddings_of_agent" href="#KaSaAn.core.KappaComplex.KappaComplex.get_number_of_embeddings_of_agent">get_number_of_embeddings_of_agent</a></code></li>
+<li><code><a title="KaSaAn.core.KappaComplex.KappaComplex.get_number_of_embeddings_of_complex" href="#KaSaAn.core.KappaComplex.KappaComplex.get_number_of_embeddings_of_complex">get_number_of_embeddings_of_complex</a></code></li>
+<li><code><a title="KaSaAn.core.KappaComplex.KappaComplex.get_size_of_complex" href="#KaSaAn.core.KappaComplex.KappaComplex.get_size_of_complex">get_size_of_complex</a></code></li>
+<li><code><a title="KaSaAn.core.KappaComplex.KappaComplex.to_cytoscape_cx" href="#KaSaAn.core.KappaComplex.KappaComplex.to_cytoscape_cx">to_cytoscape_cx</a></code></li>
+<li><code><a title="KaSaAn.core.KappaComplex.KappaComplex.to_networkx" href="#KaSaAn.core.KappaComplex.KappaComplex.to_networkx">to_networkx</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

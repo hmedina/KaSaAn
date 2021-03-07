@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>KaSaAn.core.KappaContactMap API documentation</title>
+<meta name="description" content="Contains `KappaContactMap`, class for representing and fine-tuning the layout of a contact map." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>KaSaAn.core.KappaContactMap</code></h1>
+</header>
+<section id="section-intro">
+<p>Contains <code><a title="KaSaAn.core.KappaContactMap.KappaContactMap" href="#KaSaAn.core.KappaContactMap.KappaContactMap">KappaContactMap</a></code>, class for representing and fine-tuning the layout of a contact map.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python3
+&#34;&#34;&#34;Contains `KappaContactMap`, class for representing and fine-tuning the layout of a contact map.&#34;&#34;&#34;
+
+import colorsys
+import random
+import re
+import matplotlib.path
+import matplotlib.patches
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from matplotlib.collections import PatchCollection
+import numpy as np
+from typing import List, Dict, Tuple
+
+
+def _default_site_colors(number_of_sites) -&gt; list:
+    &#34;&#34;&#34;Define a list of colors appropriate to the number of sites being drawn.&#34;&#34;&#34;
+    # Use built-in palettes: for 10 or less use the default colors
+    if number_of_sites &lt;= len(mpl.rcParams[&#39;axes.prop_cycle&#39;]):
+        color_set = [&#39;C&#39; + str(i) for i in range(len(mpl.rcParams[&#39;axes.prop_cycle&#39;]))]
+    # For 20 or more agents, use the tab20 colormap
+    elif number_of_sites &lt;= 20:
+        colormap = plt.get_cmap(&#39;tab20&#39;)
+        color_set = [colormap(i) for i in range(20)]
+    # For more than 20, pick linearly spaced values on HSV space
+    else:
+        hue_samples = np.linspace(start=0, stop=1, num=number_of_sites, endpoint=False)
+        color_set = [colorsys.hsv_to_rgb(h, 0.7, 0.75) for h in hue_samples]
+    color_list = random.sample(color_set, number_of_sites)
+    return color_list
+
+
+def _file_name_to_string_list(contact_map_file_name: str) -&gt; List[str]:
+    &#34;&#34;&#34;Read an &#34;inputs.ka&#34; style file containing contact map data, process into a clean list of 1-agent strings.&#34;&#34;&#34;
+    with open(contact_map_file_name, &#39;r&#39;) as cmf:
+        raw_expression = cmf.read()
+    spaced_string = re.sub(r&#39;\s+&#39;, &#39; &#39;, raw_expression)                 # condense spaces
+    flat_string = spaced_string.replace(&#39; [&#39;, &#39;[&#39;)                      # remove whitespace before bracket
+    flat_string = flat_string.replace(&#39; {&#39;, &#39;{&#39;)                        # remove whitespace before curly bracket
+    split_string = flat_string.split(&#39;%agent: &#39;)[1:]                    # break into list, discard empty first element
+    split_string[-1] = split_string[-1].split(&#39;)&#39;)[0] + &#39;)&#39;
+    cleaned_list = [agent_exp.strip() for agent_exp in split_string]    # clean trailing space
+    return cleaned_list
+
+
+def _raw_string_to_agent_sites_bond_types(raw_string: str) -&gt; Tuple[str, dict]:
+    &#34;&#34;&#34;Process the raw string to extract the agent&#39;s name, the list of sites, the bond types for each site.&#34;&#34;&#34;
+    raw_expression = raw_string
+    kappa_ident = r&#39;([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)&#39;
+    agent_sign_pat = r&#39;\(([^()]*)\)&#39;
+    agent_pat = r&#39;^&#39; + kappa_ident + agent_sign_pat + r&#39;$&#39;
+    agent_digest = re.match(agent_pat, raw_expression)
+    agent_name = agent_digest.group(1)
+    agent_sites = agent_digest.group(2)
+    sites_data = {}
+
+    if agent_sites:
+        site_expression_list = re.findall(kappa_ident + r&#39;(?:{([^}]+)})?(?:\[([^]]+)\])?&#39;, agent_sites)
+        for site_expression in site_expression_list:
+            site_name, site_internals_expr, site_bonds_expr = site_expression
+            site_int_states = site_internals_expr.split()
+            site_bnd_states = site_bonds_expr.split()
+            sites_data[site_name] = {&#39;int_states&#39;: site_int_states, &#39;bnd_states&#39;: site_bnd_states}
+    return agent_name, sites_data
+
+
+def _parsed_kappa_to_default_graphics(parsed_kappa_struct: dict, wedge_surf_dist=1, wedge_thick_ratio=0.5, grid_spacing=10):
+    &#34;&#34;&#34;Initialize agents as a square grid, sites superposed (i.e. default values).&#34;&#34;&#34;
+    agent_graphics = {}
+    grid_base = np.ceil(np.sqrt(len(parsed_kappa_struct.keys())))
+    for agent_index, agent_name in enumerate(parsed_kappa_struct.keys()):
+        agent_x = np.mod(agent_index, grid_base) * grid_spacing           # default values, square grid
+        agent_y = np.floor_divide(agent_index, grid_base) * grid_spacing
+        binding_sites = {}                                  # each site should be sent to one or both of these
+        flagpole_site_data = {}
+        for site_name in parsed_kappa_struct[agent_name].keys():
+            if parsed_kappa_struct[agent_name][site_name][&#39;bnd_states&#39;]:
+                binding_sites[site_name] = {&#39;center&#39;: (agent_x, agent_y),
+                                            &#39;r&#39;: wedge_surf_dist,
+                                            &#39;theta1&#39;: 0.0, &#39;theta2&#39;: 0.0,       # these will be initialized later
+                                            &#39;width&#39;: wedge_thick_ratio * wedge_surf_dist,
+                                            &#39;facecolor&#39;: &#39;#000000&#39;}
+            if parsed_kappa_struct[agent_name][site_name][&#39;int_states&#39;]:
+                flagpole_site_data[site_name] = parsed_kappa_struct[agent_name][site_name][&#39;int_states&#39;]
+        flagpole_location = {&#39;center&#39;: (agent_x, agent_y),
+                             &#39;r&#39;: wedge_surf_dist,
+                             &#39;theta1&#39;: 0.0, &#39;theta2&#39;: 0.0,                 # these will be initialized later
+                             &#39;width&#39;: wedge_thick_ratio * wedge_surf_dist,
+                             &#39;facecolor&#39;: &#39;#444444&#39;}
+        agent_graphics[agent_name] = {&#39;loc_x&#39;: agent_x, &#39;loc_y&#39;: agent_y,
+                                      &#39;bnd_sites&#39;: binding_sites, &#39;flagpole_sites&#39;: flagpole_site_data,
+                                      &#39;flagpole_loc&#39;: flagpole_location}
+    return agent_graphics
+
+
+def _initialize_sites_graphic_structure(graphic_struct: dict, scale_wedges: bool = False) -&gt; dict:
+    &#34;&#34;&#34;Once the data structure has been created, it can now be initialized with plausible values.&#34;&#34;&#34;
+    init_site_graphics = graphic_struct
+    for agent_name in init_site_graphics.keys():
+        # identify number of wedges to draw
+        bind_site_number = len(init_site_graphics[agent_name][&#39;bnd_sites&#39;])
+        if init_site_graphics[agent_name][&#39;flagpole_sites&#39;]:
+            wedge_number = bind_site_number + 2
+        else:
+            wedge_number = bind_site_number + 1
+        wedge_scaling_factor = np.sqrt(wedge_number) if scale_wedges else 1
+        wedge_ends = np.rad2deg(np.linspace(0, 2*np.pi, wedge_number))
+        # define default color palette based on number of wedges
+        site_palette = _default_site_colors(bind_site_number)
+        # (re)initialize data, wedges scale in size with the number of wedges to draw
+        wedge_center = (graphic_struct[agent_name][&#39;loc_x&#39;], graphic_struct[agent_name][&#39;loc_y&#39;])
+        for bind_site_index, bind_site_name in enumerate(init_site_graphics[agent_name][&#39;bnd_sites&#39;].keys()):
+            init_site_graphics[agent_name][&#39;bnd_sites&#39;][bind_site_name][&#39;theta1&#39;] = wedge_ends[bind_site_index]
+            init_site_graphics[agent_name][&#39;bnd_sites&#39;][bind_site_name][&#39;theta2&#39;] = wedge_ends[bind_site_index+1]
+            init_site_graphics[agent_name][&#39;bnd_sites&#39;][bind_site_name][&#39;facecolor&#39;] = site_palette[bind_site_index]
+            init_site_graphics[agent_name][&#39;bnd_sites&#39;][bind_site_name][&#39;center&#39;] = wedge_center
+            init_site_graphics[agent_name][&#39;bnd_sites&#39;][bind_site_name][&#39;r&#39;] *= wedge_scaling_factor
+            init_site_graphics[agent_name][&#39;bnd_sites&#39;][bind_site_name][&#39;width&#39;] *= wedge_scaling_factor
+        if init_site_graphics[agent_name][&#39;flagpole_sites&#39;]:
+            init_site_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;theta1&#39;] = wedge_ends[-2]
+            init_site_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;theta2&#39;] = wedge_ends[-1]
+            init_site_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;center&#39;] = wedge_center
+            init_site_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;r&#39;] *= wedge_scaling_factor
+            init_site_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;width&#39;] *= wedge_scaling_factor
+    return init_site_graphics
+
+
+def _get_bond_types(parsed_kappa_struct: dict) -&gt; dict:
+    &#34;&#34;&#34;Define the agent and site points for later spline drawing.&#34;&#34;&#34;
+    bond_dict = {}
+    for agent_a in parsed_kappa_struct.keys():
+        for site_a in parsed_kappa_struct[agent_a].keys():
+            for type_data in parsed_kappa_struct[agent_a][site_a][&#39;bnd_states&#39;]:
+                raw_exp = type_data
+                site_b, agent_b = raw_exp.split(&#39;.&#39;)
+                # canonicalize bond name by alphabetical agent number, site name if equal: avoids duplication
+                if agent_a &lt; agent_b:
+                    bond_name = agent_a + &#39;.&#39; + site_a + &#39;..&#39; + site_b + &#39;.&#39; + agent_b
+                elif agent_a &gt; agent_b:
+                    bond_name = agent_b + &#39;.&#39; + site_b + &#39;..&#39; + site_a + &#39;.&#39; + agent_a
+                else:
+                    if site_a &lt; site_b:
+                        bond_name = agent_a + &#39;.&#39; + site_a + &#39;..&#39; + site_b + &#39;.&#39; + agent_b
+                    else:
+                        bond_name = agent_b + &#39;.&#39; + site_b + &#39;..&#39; + site_a + &#39;.&#39; + agent_a
+                bond_dict[bond_name] = {&#39;ag_1&#39;: agent_a, &#39;st_1&#39;: site_a, &#39;st_2&#39;: site_b, &#39;ag_2&#39;: agent_b}
+    return bond_dict
+
+
+def _define_bond_spline_points(bond_type_dict, init_graphic_struct) -&gt; dict:
+    &#34;&#34;&#34;Define point coordinates for drawing splines based on initialized agent &amp; site data.&#34;&#34;&#34;
+    graphic_bond_points = {}
+    for bond_name in bond_type_dict.keys():
+        point_dict = {}
+        # get agent &amp; site names
+        ag_1_name = bond_type_dict[bond_name][&#39;ag_1&#39;]
+        ag_2_name = bond_type_dict[bond_name][&#39;ag_2&#39;]
+        st_1_name = bond_type_dict[bond_name][&#39;st_1&#39;]
+        st_2_name = bond_type_dict[bond_name][&#39;st_2&#39;]
+        # find agent center positions
+        ag_1_center_x = init_graphic_struct[ag_1_name][&#39;loc_x&#39;]
+        ag_1_center_y = init_graphic_struct[ag_1_name][&#39;loc_y&#39;]
+        ag_2_center_x = init_graphic_struct[ag_2_name][&#39;loc_x&#39;]
+        ag_2_center_y = init_graphic_struct[ag_2_name][&#39;loc_y&#39;]
+        # find site midline angles, special case for symmetric dimerization
+        if (ag_1_name == ag_2_name) and (st_1_name == st_2_name):
+            st_1_midline = (1.2 * init_graphic_struct[ag_1_name][&#39;bnd_sites&#39;][st_1_name][&#39;theta1&#39;] +
+                            0.8 * init_graphic_struct[ag_1_name][&#39;bnd_sites&#39;][st_1_name][&#39;theta2&#39;]) / 2
+            st_2_midline = (0.8 * init_graphic_struct[ag_2_name][&#39;bnd_sites&#39;][st_2_name][&#39;theta1&#39;] +
+                            1.2 * init_graphic_struct[ag_2_name][&#39;bnd_sites&#39;][st_2_name][&#39;theta2&#39;]) / 2
+        else:
+            st_1_midline = (init_graphic_struct[ag_1_name][&#39;bnd_sites&#39;][st_1_name][&#39;theta1&#39;] +
+                            init_graphic_struct[ag_1_name][&#39;bnd_sites&#39;][st_1_name][&#39;theta2&#39;]) / 2
+            st_2_midline = (init_graphic_struct[ag_2_name][&#39;bnd_sites&#39;][st_2_name][&#39;theta1&#39;] +
+                            init_graphic_struct[ag_2_name][&#39;bnd_sites&#39;][st_2_name][&#39;theta2&#39;]) / 2
+        # find agent mantle and surface radii
+        ag_1_surface = init_graphic_struct[ag_1_name][&#39;bnd_sites&#39;][st_1_name][&#39;r&#39;]
+        ag_2_surface = init_graphic_struct[ag_2_name][&#39;bnd_sites&#39;][st_2_name][&#39;r&#39;]
+        # get point coordinates in cartesian space
+        point_dict[&#39;a_x&#39;] = ag_1_center_x + np.cos(np.deg2rad(st_1_midline)) * ag_1_surface
+        point_dict[&#39;a_y&#39;] = ag_1_center_y + np.sin(np.deg2rad(st_1_midline)) * ag_1_surface
+        point_dict[&#39;d_x&#39;] = ag_2_center_x + np.cos(np.deg2rad(st_2_midline)) * ag_2_surface
+        point_dict[&#39;d_y&#39;] = ag_2_center_y + np.sin(np.deg2rad(st_2_midline)) * ag_2_surface
+        point_dict[&#39;b_x&#39;] = ag_1_center_x + np.cos(np.deg2rad(st_1_midline)) * 3 * ag_1_surface
+        point_dict[&#39;b_y&#39;] = ag_1_center_y + np.sin(np.deg2rad(st_1_midline)) * 3 * ag_1_surface
+        point_dict[&#39;c_x&#39;] = ag_2_center_x + np.cos(np.deg2rad(st_2_midline)) * 3 * ag_2_surface
+        point_dict[&#39;c_y&#39;] = ag_2_center_y + np.sin(np.deg2rad(st_2_midline)) * 3 * ag_2_surface
+        graphic_bond_points[bond_name] = point_dict
+    return graphic_bond_points
+
+
+def _create_spline(point_dict: dict, bond_width=3):
+    &#34;&#34;&#34;Create a spline object.&#34;&#34;&#34;
+    path_data = [
+        (matplotlib.path.Path.MOVETO, (point_dict[&#39;a_x&#39;], point_dict[&#39;a_y&#39;])),
+        (matplotlib.path.Path.CURVE4, (point_dict[&#39;b_x&#39;], point_dict[&#39;b_y&#39;])),
+        (matplotlib.path.Path.CURVE4, (point_dict[&#39;c_x&#39;], point_dict[&#39;c_y&#39;])),
+        (matplotlib.path.Path.CURVE4, (point_dict[&#39;d_x&#39;], point_dict[&#39;d_y&#39;]))
+    ]
+    # ax.plot([Ax,Bx,Cx,Dx],[Ay,By,Cy,Dy],&#39;ro&#39;) #draw the spline&#39;s control points
+    spline_codes, spline_vertices = zip(*path_data)
+    path = matplotlib.path.Path(vertices=spline_vertices, codes=spline_codes)
+    spline = matplotlib.patches.PathPatch(path, edgecolor=&#39;k&#39;, facecolor=&#39;none&#39;, linewidth=bond_width)
+    return spline
+
+
+def _list_binding_wedges(agent_graphic_struct: dict) -&gt; List[matplotlib.patches.Wedge]:
+    &#34;&#34;&#34;Create a list of wedges from the binding data in the structure.&#34;&#34;&#34;
+    wedge_list = []
+    for agent_name in agent_graphic_struct.keys():
+        for site_name in agent_graphic_struct[agent_name][&#39;bnd_sites&#39;].keys():
+            wedge_parms = agent_graphic_struct[agent_name][&#39;bnd_sites&#39;][site_name]
+            this_wedge = matplotlib.patches.Wedge(**wedge_parms, label=site_name)
+            wedge_list.append(this_wedge)
+    return wedge_list
+
+
+def _list_flagpole_wedges(agent_graphic_struct: dict) -&gt; List[matplotlib.patches.Wedge]:
+    &#34;&#34;&#34;Create a list of wedges for the flagpoles in the structure.&#34;&#34;&#34;
+    wedge_list = []
+    for agent_name in agent_graphic_struct.keys():
+        if agent_graphic_struct[agent_name][&#39;flagpole_sites&#39;]:
+            wedge_parms = agent_graphic_struct[agent_name][&#39;flagpole_loc&#39;]
+            this_wedge = matplotlib.patches.Wedge(**wedge_parms)
+            wedge_list.append(this_wedge)
+    return wedge_list
+
+
+def _annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
+    &#34;&#34;&#34;Annotate an axis with data from the binding sites&#34;&#34;&#34;
+    agent_txt_kwrds = {&#39;fontfamily&#39;: &#39;monospace&#39;, &#39;fontsize&#39;: &#39;medium&#39;,
+                       &#39;horizontalalignment&#39;: &#39;center&#39;, &#39;verticalalignment&#39;: &#39;center&#39;,
+                       &#39;bbox&#39;: {&#39;boxstyle&#39;: &#39;round&#39;, &#39;fc&#39;: &#39;#ffffffaa&#39;}}
+    wedge_txt_kwrds = {&#39;backgroundcolor&#39;: &#39;#ddddddaa&#39;, &#39;fontfamily&#39;: &#39;monospace&#39;, &#39;fontsize&#39;: &#39;x-small&#39;,
+                       &#39;verticalalignment&#39;: &#39;center&#39;, &#39;rotation_mode&#39;: &#39;anchor&#39;}
+    for agent_name in agent_graphic_struct.keys():
+        ag_x = agent_graphic_struct[agent_name][&#39;loc_x&#39;]
+        ag_y = agent_graphic_struct[agent_name][&#39;loc_y&#39;]
+        for site_name in agent_graphic_struct[agent_name][&#39;bnd_sites&#39;].keys():
+            site_data = agent_graphic_struct[agent_name][&#39;bnd_sites&#39;][site_name]
+            st_midline = (site_data[&#39;theta1&#39;] + site_data[&#39;theta2&#39;]) / 2
+            txt_x = ag_x + np.cos(np.deg2rad(st_midline)) * (site_data[&#39;r&#39;] - site_data[&#39;width&#39;])
+            txt_y = ag_y + np.sin(np.deg2rad(st_midline)) * (site_data[&#39;r&#39;] - site_data[&#39;width&#39;])
+            if np.cos(np.deg2rad(st_midline)) &gt; 0:
+                text_rotation = 0
+                horz_align = &#39;left&#39;
+            else:
+                text_rotation = 180
+                horz_align = &#39;right&#39;
+            txt_rot = st_midline + text_rotation
+            figure_axis.text(s=site_name, x=txt_x, y=txt_y, rotation=txt_rot, **wedge_txt_kwrds,
+                             ha=horz_align)
+        # agent name should overlay wedge names
+        figure_axis.text(s=agent_name, x=ag_x, y=ag_y, **agent_txt_kwrds)
+
+
+def _draw_flagpole(agent_graphic_struct: dict, figure_axis, detailed_toggle: bool):
+    &#34;&#34;&#34;Draw the flagpole, line, site names, and state list&#34;&#34;&#34;
+    for agent_name in agent_graphic_struct.keys():
+        if agent_graphic_struct[agent_name][&#39;flagpole_sites&#39;]:
+            # find coordinates for text and lines
+            ag_x = agent_graphic_struct[agent_name][&#39;loc_x&#39;]
+            ag_y = agent_graphic_struct[agent_name][&#39;loc_y&#39;]
+            fp_loc = agent_graphic_struct[agent_name][&#39;flagpole_loc&#39;]
+            fp_midline = (fp_loc[&#39;theta1&#39;] + fp_loc[&#39;theta2&#39;]) / 2
+            fp_x_base = ag_x + np.cos(np.deg2rad(fp_midline)) * fp_loc[&#39;r&#39;]
+            fp_y_base = ag_y + np.sin(np.deg2rad(fp_midline)) * fp_loc[&#39;r&#39;]
+            fp_x_offs = ag_x + np.cos(np.deg2rad(fp_midline)) * (fp_loc[&#39;width&#39;] + fp_loc[&#39;r&#39;])
+            fp_y_offs = ag_y + np.sin(np.deg2rad(fp_midline)) * (fp_loc[&#39;width&#39;] + fp_loc[&#39;r&#39;])
+            # define string
+            fp_strings = []
+            for site_name in agent_graphic_struct[agent_name][&#39;flagpole_sites&#39;].keys():
+                state_list = agent_graphic_struct[agent_name][&#39;flagpole_sites&#39;][site_name]
+                fp_strings.append(site_name + &#39;: &#39; + &#39;, &#39;.join(state_list))
+            fp_string = &#39;\n&#39;.join(fp_strings)
+            # define align keywords
+            text_kwrds = {&#39;ha&#39;: &#39;left&#39; if np.cos(np.deg2rad(fp_midline)) &gt; 0 else &#39;right&#39;,
+                          &#39;va&#39;: &#39;bottom&#39; if np.sin(np.deg2rad(fp_midline)) &gt; 0 else &#39;top&#39;,
+                          &#39;fontsize&#39;: &#39;xx-small&#39;, &#39;fontfamily&#39;: &#39;monospace&#39;,
+                          &#39;backgroundcolor&#39;: &#39;#bbbbbb99&#39;}
+            # draw the actual flagpole?
+            figure_axis.plot([fp_x_base, fp_x_offs], [fp_y_base, fp_y_offs], color=&#39;k&#39;)
+            if detailed_toggle:
+                final_string = fp_string
+            else:
+                fp_annot = &#39; internal states\nnot shown&#39; if len(fp_strings) &gt; 1 else &#39; internal state\nnot shown&#39;
+                final_string = str(len(fp_strings)) + fp_annot
+            figure_axis.text(s=final_string, x=fp_x_offs, y=fp_y_offs, **text_kwrds)
+
+
+class KappaContactMap:
+    &#34;&#34;&#34;Represent a contact map. Initializer expects a format like that found in the KaSim witness files, `inputs.ka`,
+    and is designed to read in from said files.&#34;&#34;&#34;
+    def __init__(self, file_name: str):
+        # type internal structures
+        self._raw_string_list: List[str]
+        self._parsed_kappa: Dict[str: dict]
+        self._agent_graphics: Dict[str, dict]
+        self._bond_types: Dict[dict]
+        self._bond_spline_points: List[dict]
+
+        # basic parse of the file into a sanitized structure
+        self._raw_string_list = _file_name_to_string_list(file_name)
+        parsed_kappa = {}
+        for raw_agent_exp in self._raw_string_list:
+            agent_name, agent_site_data = _raw_string_to_agent_sites_bond_types(raw_agent_exp)
+            parsed_kappa[agent_name] = agent_site_data
+        self._parsed_kappa = parsed_kappa
+
+        # create structure used for storing location and plotting of agents and sites, then initialize it
+        self._agent_graphics = _parsed_kappa_to_default_graphics(self._parsed_kappa)
+        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics, scale_wedges=True)
+
+        # create structure for storing the splines that mark bonds
+        self._bond_types = _get_bond_types(self._parsed_kappa)
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
+
+    def move_agent_to(self, agent_name, new_x, new_y):
+        &#34;&#34;&#34;Change the location of an agent&#39;s center by specifying new coordinates.&#34;&#34;&#34;
+        self._agent_graphics[agent_name][&#39;loc_x&#39;] = new_x
+        self._agent_graphics[agent_name][&#39;loc_y&#39;] = new_y
+        # update
+        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
+
+    def move_agent_by(self, agent_name, delta_x, delta_y):
+        &#34;&#34;&#34;Move the location of an agent&#39;s center by some amount.&#34;&#34;&#34;
+        self._agent_graphics[agent_name][&#39;loc_x&#39;] += delta_x
+        self._agent_graphics[agent_name][&#39;loc_y&#39;] += delta_y
+        # update
+        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
+
+    def rotate_all_sites_of(self, agent_name, degrees):
+        &#34;&#34;&#34;Rotate all the sites on an agent by this many degrees.&#34;&#34;&#34;
+        # rotate binding sites
+        for site_name in self._agent_graphics[agent_name][&#39;bnd_sites&#39;].keys():
+            self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;theta1&#39;] += degrees
+            self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;theta2&#39;] += degrees
+        # rotate flagpole site
+        self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;theta1&#39;] += degrees
+        self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;theta2&#39;] += degrees
+        # update
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
+
+    def swap_sites_of(self, agent_name, site_1, site_2):
+        &#34;&#34;&#34;Swap the positions of two sites.&#34;&#34;&#34;
+        s1_t_1 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta1&#39;]
+        s1_t_2 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta2&#39;]
+        s2_t_1 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta1&#39;]
+        s2_t_2 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta2&#39;]
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta1&#39;] = s2_t_1
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta2&#39;] = s2_t_2
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta1&#39;] = s1_t_1
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta2&#39;] = s1_t_2
+        # update
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
+
+    def set_site_color_of(self, agent_name, site_name, new_color):
+        &#34;&#34;&#34;Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color.&#34;&#34;&#34;
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;facecolor&#39;] = new_color
+
+    def draw(self, target_axis, draw_state_flagpole: bool = True):
+        &#34;&#34;&#34;Draw the contact map onto the supplied axis. If draw_state_flagpole is True, the flagpole will display all
+         internal state data. If false, only a summary with the number of sites omitted.&#34;&#34;&#34;
+        # draw splines
+        spline_list = [_create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
+        target_axis.add_collection(PatchCollection(spline_list, match_original=True))
+
+        # draw wedges: sites and flagpole
+        site_wedges = _list_binding_wedges(self._agent_graphics)
+        flag_wedges = _list_flagpole_wedges(self._agent_graphics)
+        target_axis.add_collection(PatchCollection(site_wedges, match_original=True))
+        target_axis.add_collection(PatchCollection(flag_wedges, match_original=True))
+
+        # draw labels for agents and sites
+        _annotate_wedges_and_agents(self._agent_graphics, target_axis)
+
+        # draw flagpole with its text
+        _draw_flagpole(self._agent_graphics, target_axis, draw_state_flagpole)
+
+        # update limits, set aspect ratio
+        target_axis.autoscale()
+        target_axis.set_aspect(&#39;equal&#39;)
+        return target_axis</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="KaSaAn.core.KappaContactMap.KappaContactMap"><code class="flex name class">
+<span>class <span class="ident">KappaContactMap</span></span>
+<span>(</span><span>file_name: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represent a contact map. Initializer expects a format like that found in the KaSim witness files, <code>inputs.ka</code>,
+and is designed to read in from said files.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class KappaContactMap:
+    &#34;&#34;&#34;Represent a contact map. Initializer expects a format like that found in the KaSim witness files, `inputs.ka`,
+    and is designed to read in from said files.&#34;&#34;&#34;
+    def __init__(self, file_name: str):
+        # type internal structures
+        self._raw_string_list: List[str]
+        self._parsed_kappa: Dict[str: dict]
+        self._agent_graphics: Dict[str, dict]
+        self._bond_types: Dict[dict]
+        self._bond_spline_points: List[dict]
+
+        # basic parse of the file into a sanitized structure
+        self._raw_string_list = _file_name_to_string_list(file_name)
+        parsed_kappa = {}
+        for raw_agent_exp in self._raw_string_list:
+            agent_name, agent_site_data = _raw_string_to_agent_sites_bond_types(raw_agent_exp)
+            parsed_kappa[agent_name] = agent_site_data
+        self._parsed_kappa = parsed_kappa
+
+        # create structure used for storing location and plotting of agents and sites, then initialize it
+        self._agent_graphics = _parsed_kappa_to_default_graphics(self._parsed_kappa)
+        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics, scale_wedges=True)
+
+        # create structure for storing the splines that mark bonds
+        self._bond_types = _get_bond_types(self._parsed_kappa)
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
+
+    def move_agent_to(self, agent_name, new_x, new_y):
+        &#34;&#34;&#34;Change the location of an agent&#39;s center by specifying new coordinates.&#34;&#34;&#34;
+        self._agent_graphics[agent_name][&#39;loc_x&#39;] = new_x
+        self._agent_graphics[agent_name][&#39;loc_y&#39;] = new_y
+        # update
+        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
+
+    def move_agent_by(self, agent_name, delta_x, delta_y):
+        &#34;&#34;&#34;Move the location of an agent&#39;s center by some amount.&#34;&#34;&#34;
+        self._agent_graphics[agent_name][&#39;loc_x&#39;] += delta_x
+        self._agent_graphics[agent_name][&#39;loc_y&#39;] += delta_y
+        # update
+        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
+
+    def rotate_all_sites_of(self, agent_name, degrees):
+        &#34;&#34;&#34;Rotate all the sites on an agent by this many degrees.&#34;&#34;&#34;
+        # rotate binding sites
+        for site_name in self._agent_graphics[agent_name][&#39;bnd_sites&#39;].keys():
+            self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;theta1&#39;] += degrees
+            self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;theta2&#39;] += degrees
+        # rotate flagpole site
+        self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;theta1&#39;] += degrees
+        self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;theta2&#39;] += degrees
+        # update
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
+
+    def swap_sites_of(self, agent_name, site_1, site_2):
+        &#34;&#34;&#34;Swap the positions of two sites.&#34;&#34;&#34;
+        s1_t_1 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta1&#39;]
+        s1_t_2 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta2&#39;]
+        s2_t_1 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta1&#39;]
+        s2_t_2 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta2&#39;]
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta1&#39;] = s2_t_1
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta2&#39;] = s2_t_2
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta1&#39;] = s1_t_1
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta2&#39;] = s1_t_2
+        # update
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
+
+    def set_site_color_of(self, agent_name, site_name, new_color):
+        &#34;&#34;&#34;Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color.&#34;&#34;&#34;
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;facecolor&#39;] = new_color
+
+    def draw(self, target_axis, draw_state_flagpole: bool = True):
+        &#34;&#34;&#34;Draw the contact map onto the supplied axis. If draw_state_flagpole is True, the flagpole will display all
+         internal state data. If false, only a summary with the number of sites omitted.&#34;&#34;&#34;
+        # draw splines
+        spline_list = [_create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
+        target_axis.add_collection(PatchCollection(spline_list, match_original=True))
+
+        # draw wedges: sites and flagpole
+        site_wedges = _list_binding_wedges(self._agent_graphics)
+        flag_wedges = _list_flagpole_wedges(self._agent_graphics)
+        target_axis.add_collection(PatchCollection(site_wedges, match_original=True))
+        target_axis.add_collection(PatchCollection(flag_wedges, match_original=True))
+
+        # draw labels for agents and sites
+        _annotate_wedges_and_agents(self._agent_graphics, target_axis)
+
+        # draw flagpole with its text
+        _draw_flagpole(self._agent_graphics, target_axis, draw_state_flagpole)
+
+        # update limits, set aspect ratio
+        target_axis.autoscale()
+        target_axis.set_aspect(&#39;equal&#39;)
+        return target_axis</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="KaSaAn.core.KappaContactMap.KappaContactMap.draw"><code class="name flex">
+<span>def <span class="ident">draw</span></span>(<span>self, target_axis, draw_state_flagpole: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Draw the contact map onto the supplied axis. If draw_state_flagpole is True, the flagpole will display all
+internal state data. If false, only a summary with the number of sites omitted.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def draw(self, target_axis, draw_state_flagpole: bool = True):
+    &#34;&#34;&#34;Draw the contact map onto the supplied axis. If draw_state_flagpole is True, the flagpole will display all
+     internal state data. If false, only a summary with the number of sites omitted.&#34;&#34;&#34;
+    # draw splines
+    spline_list = [_create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
+    target_axis.add_collection(PatchCollection(spline_list, match_original=True))
+
+    # draw wedges: sites and flagpole
+    site_wedges = _list_binding_wedges(self._agent_graphics)
+    flag_wedges = _list_flagpole_wedges(self._agent_graphics)
+    target_axis.add_collection(PatchCollection(site_wedges, match_original=True))
+    target_axis.add_collection(PatchCollection(flag_wedges, match_original=True))
+
+    # draw labels for agents and sites
+    _annotate_wedges_and_agents(self._agent_graphics, target_axis)
+
+    # draw flagpole with its text
+    _draw_flagpole(self._agent_graphics, target_axis, draw_state_flagpole)
+
+    # update limits, set aspect ratio
+    target_axis.autoscale()
+    target_axis.set_aspect(&#39;equal&#39;)
+    return target_axis</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaContactMap.KappaContactMap.move_agent_by"><code class="name flex">
+<span>def <span class="ident">move_agent_by</span></span>(<span>self, agent_name, delta_x, delta_y)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Move the location of an agent's center by some amount.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def move_agent_by(self, agent_name, delta_x, delta_y):
+    &#34;&#34;&#34;Move the location of an agent&#39;s center by some amount.&#34;&#34;&#34;
+    self._agent_graphics[agent_name][&#39;loc_x&#39;] += delta_x
+    self._agent_graphics[agent_name][&#39;loc_y&#39;] += delta_y
+    # update
+    self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+    self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaContactMap.KappaContactMap.move_agent_to"><code class="name flex">
+<span>def <span class="ident">move_agent_to</span></span>(<span>self, agent_name, new_x, new_y)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Change the location of an agent's center by specifying new coordinates.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def move_agent_to(self, agent_name, new_x, new_y):
+    &#34;&#34;&#34;Change the location of an agent&#39;s center by specifying new coordinates.&#34;&#34;&#34;
+    self._agent_graphics[agent_name][&#39;loc_x&#39;] = new_x
+    self._agent_graphics[agent_name][&#39;loc_y&#39;] = new_y
+    # update
+    self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+    self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaContactMap.KappaContactMap.rotate_all_sites_of"><code class="name flex">
+<span>def <span class="ident">rotate_all_sites_of</span></span>(<span>self, agent_name, degrees)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Rotate all the sites on an agent by this many degrees.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rotate_all_sites_of(self, agent_name, degrees):
+    &#34;&#34;&#34;Rotate all the sites on an agent by this many degrees.&#34;&#34;&#34;
+    # rotate binding sites
+    for site_name in self._agent_graphics[agent_name][&#39;bnd_sites&#39;].keys():
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;theta1&#39;] += degrees
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;theta2&#39;] += degrees
+    # rotate flagpole site
+    self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;theta1&#39;] += degrees
+    self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;theta2&#39;] += degrees
+    # update
+    self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaContactMap.KappaContactMap.set_site_color_of"><code class="name flex">
+<span>def <span class="ident">set_site_color_of</span></span>(<span>self, agent_name, site_name, new_color)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_site_color_of(self, agent_name, site_name, new_color):
+    &#34;&#34;&#34;Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color.&#34;&#34;&#34;
+    self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;facecolor&#39;] = new_color</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaContactMap.KappaContactMap.swap_sites_of"><code class="name flex">
+<span>def <span class="ident">swap_sites_of</span></span>(<span>self, agent_name, site_1, site_2)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Swap the positions of two sites.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def swap_sites_of(self, agent_name, site_1, site_2):
+    &#34;&#34;&#34;Swap the positions of two sites.&#34;&#34;&#34;
+    s1_t_1 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta1&#39;]
+    s1_t_2 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta2&#39;]
+    s2_t_1 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta1&#39;]
+    s2_t_2 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta2&#39;]
+    self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta1&#39;] = s2_t_1
+    self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta2&#39;] = s2_t_2
+    self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta1&#39;] = s1_t_1
+    self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta2&#39;] = s1_t_2
+    # update
+    self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="KaSaAn.core" href="index.html">KaSaAn.core</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="KaSaAn.core.KappaContactMap.KappaContactMap" href="#KaSaAn.core.KappaContactMap.KappaContactMap">KappaContactMap</a></code></h4>
+<ul class="two-column">
+<li><code><a title="KaSaAn.core.KappaContactMap.KappaContactMap.draw" href="#KaSaAn.core.KappaContactMap.KappaContactMap.draw">draw</a></code></li>
+<li><code><a title="KaSaAn.core.KappaContactMap.KappaContactMap.move_agent_by" href="#KaSaAn.core.KappaContactMap.KappaContactMap.move_agent_by">move_agent_by</a></code></li>
+<li><code><a title="KaSaAn.core.KappaContactMap.KappaContactMap.move_agent_to" href="#KaSaAn.core.KappaContactMap.KappaContactMap.move_agent_to">move_agent_to</a></code></li>
+<li><code><a title="KaSaAn.core.KappaContactMap.KappaContactMap.rotate_all_sites_of" href="#KaSaAn.core.KappaContactMap.KappaContactMap.rotate_all_sites_of">rotate_all_sites_of</a></code></li>
+<li><code><a title="KaSaAn.core.KappaContactMap.KappaContactMap.set_site_color_of" href="#KaSaAn.core.KappaContactMap.KappaContactMap.set_site_color_of">set_site_color_of</a></code></li>
+<li><code><a title="KaSaAn.core.KappaContactMap.KappaContactMap.swap_sites_of" href="#KaSaAn.core.KappaContactMap.KappaContactMap.swap_sites_of">swap_sites_of</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

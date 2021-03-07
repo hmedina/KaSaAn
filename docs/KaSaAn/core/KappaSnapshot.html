@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>KaSaAn.core.KappaSnapshot API documentation</title>
+<meta name="description" content="Contains the `KappaSnapshot` class, meant to represent a fully specified state of a reaction mixture." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>KaSaAn.core.KappaSnapshot</code></h1>
+</header>
+<section id="section-intro">
+<p>Contains the <code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot">KappaSnapshot</a></code> class, meant to represent a fully specified state of a reaction mixture.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python3
+&#34;&#34;&#34;Contains the `KappaSnapshot` class, meant to represent a fully specified state of a reaction mixture.&#34;&#34;&#34;
+
+import re
+import os
+import warnings
+import networkx as nx
+from typing import List, Set, ItemsView, Dict, Tuple
+
+from .KappaMultiAgentGraph import KappaMultiAgentGraph
+from .KappaComplex import KappaComplex
+from .KappaAgent import KappaAgent, KappaToken
+from .KappaError import SnapshotAgentParseError, SnapshotTokenParseError, SnapshotParseError
+
+
+class KappaSnapshot(KappaMultiAgentGraph):
+    &#34;&#34;&#34;Class for representing Kappa snapshots. A snapshot contains a dictionary, where the kappa expression
+     serves as the key, and the abundance serves as the value. Many of the methods for this class are simple re-namings
+     of the `Dict()` class&#39;, but with more informative names for Kappa entities.&#34;&#34;&#34;
+
+    # define pattern for the header
+    _header_title_pat = r&#39;//\sSnapshot\s&#39;
+    _header_event_pat = r&#39;\[Event:\s(\d+)\]//\s&#39;
+    _header_uuid_pat = r&#39;\&#34;uuid\&#34;\s:\s\&#34;(\w+)&#39;
+    _header_t_zero_pat = r&#39;\&#34;%def:\s\&#34;T0\&#34;\s\&#34;&#39; + \
+                         r&#39;([0-9]+|([0-9]+[eE][+-]?[0-9+])|((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+-]?[0-9]+)?))\&#34;&#39;
+    _header_pat_re = re.compile(_header_title_pat + _header_event_pat + _header_uuid_pat + _header_t_zero_pat)
+    # define pattern for a KappaComplex entry line
+    _line_complex_re = re.compile(r&#39;^(\d+)\s/\*(\d+)\sagents\*/\s(.+)$&#39;)
+    # define pattern for a KappaToken entry line
+    _token_value_pat = r&#39;((?:(?:\d+\.\d+)|(?:\d+\.)|(?:\.\d+)|(?:\d+))[eE]?[+-]?\d?)&#39;
+    _token_name_pat = r&#39;([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)&#39;
+    _line_token_pat = r&#39;^&#39; + _token_value_pat + r&#39;\s&#39; + _token_name_pat + r&#39;$&#39;
+    _line_token_re = re.compile(_line_token_pat)
+
+    def __init__(self, snapshot_file_name: str):
+        # type declarations
+        self._file_name: str
+        self._complexes: Dict[KappaComplex, int]
+        self._tokens: Dict[str: KappaToken]
+        self._known_sizes: List[int]
+        self._identifier_complex_map: Dict[int, KappaComplex]
+        self._raw_expression: str
+        self._kappa_expression: str
+        self._snapshot_event: int
+        self._snapshot_uuid: str
+        self._snapshot_time: float
+        # initialization of structures
+        self._file_name = os.path.split(snapshot_file_name)[1]
+        self._complexes = dict()
+        self._tokens = dict()
+        self._known_sizes = []
+        self._identifier_complex_map = {}
+        # read file into a single string
+        with open(snapshot_file_name, &#39;r&#39;) as kf:
+            self._raw_expression = kf.read()
+        # remove newlines, split by &#34;%init:&#34; keyword
+        digest: List[str] = self._raw_expression.replace(&#39;\n&#39;, &#39;&#39;).split(&#39;%init: &#39;)
+        # parse header and get event, uuid, time
+        g = self._header_pat_re.match(digest[0])
+        if not g:
+            raise SnapshotParseError(&#39;Header &lt;&#39; + digest[0] + &#39;&gt; not be parsed in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+        self._snapshot_event = int(g.group(1))
+        self._snapshot_uuid = str(g.group(2))
+        self._snapshot_time = float(g.group(3))
+        # parse the complexes into instances of KappaComplexes, get their abundance, cross-check their size
+        for entry in digest[1:]:
+            try:
+                try:
+                    # try to parse as a KappaComplex line, with agents
+                    g = self._line_complex_re.match(entry)
+                    if not g:
+                        raise SnapshotAgentParseError(
+                            &#39;Abundance, length, &amp; complex not found in &lt;&#39; + entry + &#39;&gt; in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+                    abundance = int(g.group(1))
+                    size = int(g.group(2))
+                    species = KappaComplex(g.group(3))
+                    if not size == species.get_size_of_complex():
+                        raise ValueError(
+                            &#39;Size mismatch: snapshot declares &lt;&#39; + str(size) + &#39;&gt;, I counted &lt;&#39; +
+                            str(species.get_size_of_complex()) + &#39;&gt; in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+                    # assign the complex as a key to the dictionary
+                    self._complexes[species] = abundance
+                    self._known_sizes.append(size)
+                    # define identifier -&gt; complex map
+                    if species.get_agent_identifiers():
+                        for identifier in species.get_agent_identifiers():
+                            self._identifier_complex_map[identifier] = species
+                except SnapshotAgentParseError:
+                    # try to parse as a token line instead
+                    g = self._line_token_re.match(entry)
+                    if not g:
+                        raise SnapshotTokenParseError(
+                            &#39;Abundance &amp; token name not found in &lt;&#39; + entry + &#39;&gt; in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+                    # assign the token as a key to the dictionary
+                    tk = KappaToken(g.group(0))
+                    self._tokens[tk.get_token_name()] = tk
+            except SnapshotTokenParseError:
+                raise SnapshotParseError(
+                    &#39;Complex and token parse failed for &lt;&#39; + entry + &#39;&gt; in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+        # canonicalize the kappa expression: tokens
+        self._kappa_expression = &#39;\n&#39;.join([&#39;%init: &#39; + str(float(tk.get_token_operation())) + &#39; &#39; + tk.get_token_name()
+                                            for tk in self._tokens.values()])
+        self._kappa_expression += &#39;\n&#39; if self._tokens else &#39;&#39;
+        # canonicalize the kappa expression: complexes
+        self._kappa_expression += &#39;\n&#39;.join([&#39;%init: &#39; + str(self._complexes[cx]) + &#39; &#39; + str(cx)
+                                             for cx in self._complexes.keys()])
+
+    def get_snapshot_file_name(self) -&gt; str:
+        &#34;&#34;&#34;Returns a string with the name of the file this snapshot came from.&#34;&#34;&#34;
+        return self._file_name
+
+    def get_snapshot_time(self) -&gt; float:
+        &#34;&#34;&#34;Returns a float with the time at which this snapshot was taken.&#34;&#34;&#34;
+        return self._snapshot_time
+
+    def get_snapshot_uuid(self) -&gt; str:
+        &#34;&#34;&#34;Returns the UUID (universally unique identifier) of the snapshot.&#34;&#34;&#34;
+        return self._snapshot_uuid
+
+    def get_snapshot_event(self) -&gt; int:
+        &#34;&#34;&#34;Returns an integer with the event number the snapshot was taken at.&#34;&#34;&#34;
+        return self._snapshot_event
+
+    def get_all_complexes(self) -&gt; List[KappaComplex]:
+        &#34;&#34;&#34;Returns a list of `KappaComplexes` with all the complexes in the snapshot.&#34;&#34;&#34;
+        return list(self._complexes.keys())
+
+    def get_all_abundances(self) -&gt; List[int]:
+        &#34;&#34;&#34;Returns a list of integers with all the abundances in the snapshot.&#34;&#34;&#34;
+        return list(self._complexes.values())
+
+    def get_all_sizes(self) -&gt; List[int]:
+        &#34;&#34;&#34;Returns a list of integers with all the complex sizes visible in the snapshot, one item per complex (i.e. can
+        contain repeat numbers if they correspond to different complexes).&#34;&#34;&#34;
+        sizes = [key.get_size_of_complex() for key in self._complexes.keys()]
+        return sizes
+
+    def get_agent_types_present(self) -&gt; Set[KappaAgent]:
+        &#34;&#34;&#34;Returns a set with the types of agents present in the snapshot.&#34;&#34;&#34;
+        agent_types = set()
+        for key in self._complexes.keys():
+            agent_types.update(key.get_agent_types())
+        return agent_types
+
+    def get_all_complexes_and_abundances(self) -&gt; ItemsView[KappaComplex, int]:
+        &#34;&#34;&#34;Returns an iterable of tuples, where the first element is a `KappaComplex` and the second is an int with the
+        abundance of the corresponding complex.&#34;&#34;&#34;
+        return self._complexes.items()
+
+    def get_total_mass(self) -&gt; int:
+        &#34;&#34;&#34;Returns an integer with the total mass of the snapshot, measured in number of agents.&#34;&#34;&#34;
+        total_mass = 0
+        for i_complex, i_abundance in self._complexes.items():
+            total_mass += i_complex.get_size_of_complex() * i_abundance
+        return total_mass
+
+    def get_abundance_of_agent(self, query_agent) -&gt; int:
+        &#34;&#34;&#34;Returns an integer with the abundance of the given agent. Supports passing a string with the agent
+        expression, or an instance of a KappaAgent. Supports passing agents with signature, e.g. `Bob(site{state})`.&#34;&#34;&#34;
+        if type(query_agent) is not KappaAgent:
+            query_agent = KappaAgent(query_agent)
+        abundance = 0
+        for cx, cx_ab in self.get_all_complexes_and_abundances():
+            intra_cx_ab = cx.get_number_of_embeddings_of_agent(query_agent)
+            abundance += intra_cx_ab * cx_ab
+        return abundance
+
+    def get_composition(self) -&gt; Dict[KappaAgent, int]:
+        &#34;&#34;&#34;Return a dictionary where the keys are `KappaAgents`, the types and their abundance in the snapshot. This is
+        akin to the sum formula of the snapshot.&#34;&#34;&#34;
+        agent_types = self.get_agent_types_present()
+        composition = dict(zip(agent_types, [0] * len(agent_types)))
+        for agent_type in agent_types:
+            for kappa_complex, abundance in self.get_all_complexes_and_abundances():
+                complex_composition = kappa_complex.get_complex_composition()
+                local_abundance = complex_composition[agent_type] if agent_type in complex_composition else 0
+                composition[agent_type] += abundance * local_abundance
+        return composition
+
+    def get_complexes_with_abundance(self, query_abundance: int) -&gt; List[KappaComplex]:
+        &#34;&#34;&#34;Returns a list of `KappaComplexes` present in the snapshot at the queried abundance. For example, get all
+        elements present in single copy.&#34;&#34;&#34;
+        result_complexes = []
+        for complex_expression, complex_abundance in self._complexes.items():
+            if query_abundance == complex_abundance:
+                result_complexes.append(complex_expression)
+        return result_complexes
+
+    def get_complexes_of_size(self, query_size: int) -&gt; List[Tuple[KappaComplex, int]]:
+        &#34;&#34;&#34;Returns a list tuples, with complexes and their abundance, for complexes that are of the query size. For
+        example, get all the dimers and their respective abundances.&#34;&#34;&#34;
+        result_complexes = []
+        for comp, abun in self.get_all_complexes_and_abundances():
+            if query_size == comp.get_size_of_complex():
+                result_complexes.append((comp, abun))
+        return result_complexes
+
+    def get_largest_complexes(self) -&gt; List[Tuple[KappaComplex, int]]:
+        &#34;&#34;&#34;Returns a list of KappaComplexes of the largest size, measured in number of constituting agents.&#34;&#34;&#34;
+        max_known_size = max(self._known_sizes)
+        return self.get_complexes_of_size(max_known_size)
+
+    def get_smallest_complexes(self) -&gt; List[Tuple[KappaComplex, int]]:
+        &#34;&#34;&#34;Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents.&#34;&#34;&#34;
+        min_known_size = min(self._known_sizes)
+        return self.get_complexes_of_size(min_known_size)
+
+    def get_most_abundant_complexes(self) -&gt; List[KappaComplex]:
+        &#34;&#34;&#34;Returns the list of complexes found to be the most abundant. These could be the monomers for example.&#34;&#34;&#34;
+        max_abundance = max(self.get_all_abundances())
+        return self.get_complexes_with_abundance(max_abundance)
+
+    def get_least_abundant_complexes(self) -&gt; List[KappaComplex]:
+        &#34;&#34;&#34;Returns the list of complexes found to be the least abundant. For example, this would be the giant component,
+        or the set of largest entities.&#34;&#34;&#34;
+        min_abundance = min(self.get_all_abundances())
+        return self.get_complexes_with_abundance(min_abundance)
+
+    def get_size_distribution(self) -&gt; Dict[int, int]:
+        &#34;&#34;&#34;Returns a dictionary where the key is the size of a complex and the value is the amount of complexes with
+        that size. For example, `{1:3, 4:5}` indicates the mixture contains only three monomers and five tetramers.
+        Dictionary is sorted by increasing complex size.&#34;&#34;&#34;
+        size_dist = dict()
+        for complex_expression, complex_abundance in self.get_all_complexes_and_abundances():
+            current_size = complex_expression.get_size_of_complex()
+            if current_size in size_dist:
+                size_dist[current_size] += complex_abundance
+            else:
+                size_dist[current_size] = complex_abundance
+        sorted_dist = dict(sorted(size_dist.items(), key=lambda item: item[0]))
+        return sorted_dist
+
+    def get_all_tokens_and_values(self) -&gt; Dict[str, float]:
+        &#34;&#34;&#34;Returns a dictionary with the tokens present in the snapshot in the form of `[name]:[value]`.&#34;&#34;&#34;
+        d = dict()
+        for item in self._tokens.values():
+            d[item.get_token_name()] = float(item.get_token_operation())
+        return d
+
+    def get_value_of_token(self, query) -&gt; float:
+        &#34;&#34;&#34;Returns the value of a token.&#34;&#34;&#34;
+        # make it a KappaToken, if it&#39;s not one already
+        if not type(query) is KappaToken:
+            q = KappaToken(query)
+        else:
+            q = query
+        # return value, if token is present
+        if q.get_token_name() in self._tokens:
+            value = float(self._tokens[q].get_token_operation())
+        else:
+            warnings.warn(&#39;Token &lt;&#39; + str(query) + &#39;&gt; not found in this snapshot.&#39;)
+            value = None
+        return value
+
+    def get_token_names(self) -&gt; List[str]:
+        &#34;&#34;&#34;Returns the token names present in the snapshot.&#34;&#34;&#34;
+        return list(self._tokens.keys())
+
+    def get_agent_identifiers(self) -&gt; List[int]:
+        &#34;&#34;&#34;Returns a list with all the agent identifiers held in the snapshot.&#34;&#34;&#34;
+        return list(self._identifier_complex_map.keys())
+
+    def get_complex_of_agent(self, query_identifier: int) -&gt; KappaComplex:
+        &#34;&#34;&#34;Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
+        should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
+        be identical, and identifiers are unique and stable throughout the simulation.&#34;&#34;&#34;
+        if self._identifier_complex_map:
+            try:
+                return self._identifier_complex_map[query_identifier]
+            except KeyError as e:
+                raise ValueError(&#39;Identifier &lt;{}&gt; not present in snapshot &lt;{}&gt;.&#39;.format(
+                    query_identifier, self.get_snapshot_file_name())) from e
+        else:
+            raise ValueError(&#39;Snapshot &lt;{}&gt; was not found to contain agent identifiers (i.e. raw formatted).&#39;.format(
+                self.get_snapshot_file_name()))
+
+    def to_networkx(self) -&gt; nx.MultiGraph:
+        &#34;&#34;&#34;Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent
+        agents, edges their bonds. Nodes have an attribute dictionary where the key &#39;kappa&#39; holds the KappaAgent.
+        Edges have an attribute dictionary where the key &#39;bond id&#39; holds the bond identifier from the Kappa expression.
+        Node identifiers are integers, using the order of agent declaration. For a graph g, g.nodes.data() displays the
+        node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
+        identifiers as well as the kappa identifiers.&#34;&#34;&#34;
+        agent_id_counter = 0
+        snapshot_network = nx.MultiGraph()
+        # iterate over all molecular species
+        # then iterate over the number of times that species appears in the mix
+        for molecular_species, species_abundance in self.get_all_complexes_and_abundances():
+            for species_copy in range(species_abundance):
+                species_network = molecular_species.to_networkx(identifier_offset=agent_id_counter)
+                snapshot_network.update(species_network)
+                # if we are not dealing with labeled agents, increase offset once per network added
+                if not self.get_agent_identifiers():
+                    agent_id_counter += molecular_species.get_size_of_complex()
+        if snapshot_network.number_of_nodes() != self.get_total_mass():
+            raise SnapshotParseError(&#39;Mismatch between snapshot mass &lt;&#39; + str(self.get_total_mass()) +
+                                     &#39;&gt; and number of nodes in network &lt;&#39; + str(snapshot_network.number_of_nodes()) +
+                                     &#39;&gt; for snapshot &lt;&#39; + self.get_snapshot_file_name() + &#39;&gt;&#39;)
+        return snapshot_network
+
+    def to_cytoscape_cx(self) -&gt; List[Dict]:
+        &#34;&#34;&#34;Export to a structure that via some json encoding and dumping can be read by Cytoscape as a CX file. Usage:
+        &gt;&gt;&gt; import json
+        &gt;&gt;&gt; from KaSaAn.core import KappaSnapshot
+        &gt;&gt;&gt; my_snap = KappaSnapshot(&#39;some_snap.ka&#39;)
+        &gt;&gt;&gt; my_cx = my_snap.to_cytoscape_cx()
+        &gt;&gt;&gt; with open(&#39;my_cx.cx&#39;, &#39;w&#39;) as out_file:
+        &gt;&gt;&gt;    json.dump(my_cx, out_file)
+        &#34;&#34;&#34;
+        cx_data = self._kappa_to_cytoscape_cx()
+        cx_network_attributes = [{&#39;n&#39;: &#39;name&#39;, &#39;v&#39;: self.get_snapshot_file_name()},
+                                 {&#39;n&#39;: &#39;time&#39;, &#39;v&#39;: self.get_snapshot_time()},
+                                 {&#39;n&#39;: &#39;event&#39;, &#39;v&#39;: self.get_snapshot_event()},
+                                 {&#39;n&#39;: &#39;UUID&#39;, &#39;v&#39;: self.get_snapshot_uuid()}]
+        cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
+        return cx_data</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot"><code class="flex name class">
+<span>class <span class="ident">KappaSnapshot</span></span>
+<span>(</span><span>snapshot_file_name: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class for representing Kappa snapshots. A snapshot contains a dictionary, where the kappa expression
+serves as the key, and the abundance serves as the value. Many of the methods for this class are simple re-namings
+of the <code>Dict()</code> class', but with more informative names for Kappa entities.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class KappaSnapshot(KappaMultiAgentGraph):
+    &#34;&#34;&#34;Class for representing Kappa snapshots. A snapshot contains a dictionary, where the kappa expression
+     serves as the key, and the abundance serves as the value. Many of the methods for this class are simple re-namings
+     of the `Dict()` class&#39;, but with more informative names for Kappa entities.&#34;&#34;&#34;
+
+    # define pattern for the header
+    _header_title_pat = r&#39;//\sSnapshot\s&#39;
+    _header_event_pat = r&#39;\[Event:\s(\d+)\]//\s&#39;
+    _header_uuid_pat = r&#39;\&#34;uuid\&#34;\s:\s\&#34;(\w+)&#39;
+    _header_t_zero_pat = r&#39;\&#34;%def:\s\&#34;T0\&#34;\s\&#34;&#39; + \
+                         r&#39;([0-9]+|([0-9]+[eE][+-]?[0-9+])|((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+-]?[0-9]+)?))\&#34;&#39;
+    _header_pat_re = re.compile(_header_title_pat + _header_event_pat + _header_uuid_pat + _header_t_zero_pat)
+    # define pattern for a KappaComplex entry line
+    _line_complex_re = re.compile(r&#39;^(\d+)\s/\*(\d+)\sagents\*/\s(.+)$&#39;)
+    # define pattern for a KappaToken entry line
+    _token_value_pat = r&#39;((?:(?:\d+\.\d+)|(?:\d+\.)|(?:\.\d+)|(?:\d+))[eE]?[+-]?\d?)&#39;
+    _token_name_pat = r&#39;([_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*)&#39;
+    _line_token_pat = r&#39;^&#39; + _token_value_pat + r&#39;\s&#39; + _token_name_pat + r&#39;$&#39;
+    _line_token_re = re.compile(_line_token_pat)
+
+    def __init__(self, snapshot_file_name: str):
+        # type declarations
+        self._file_name: str
+        self._complexes: Dict[KappaComplex, int]
+        self._tokens: Dict[str: KappaToken]
+        self._known_sizes: List[int]
+        self._identifier_complex_map: Dict[int, KappaComplex]
+        self._raw_expression: str
+        self._kappa_expression: str
+        self._snapshot_event: int
+        self._snapshot_uuid: str
+        self._snapshot_time: float
+        # initialization of structures
+        self._file_name = os.path.split(snapshot_file_name)[1]
+        self._complexes = dict()
+        self._tokens = dict()
+        self._known_sizes = []
+        self._identifier_complex_map = {}
+        # read file into a single string
+        with open(snapshot_file_name, &#39;r&#39;) as kf:
+            self._raw_expression = kf.read()
+        # remove newlines, split by &#34;%init:&#34; keyword
+        digest: List[str] = self._raw_expression.replace(&#39;\n&#39;, &#39;&#39;).split(&#39;%init: &#39;)
+        # parse header and get event, uuid, time
+        g = self._header_pat_re.match(digest[0])
+        if not g:
+            raise SnapshotParseError(&#39;Header &lt;&#39; + digest[0] + &#39;&gt; not be parsed in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+        self._snapshot_event = int(g.group(1))
+        self._snapshot_uuid = str(g.group(2))
+        self._snapshot_time = float(g.group(3))
+        # parse the complexes into instances of KappaComplexes, get their abundance, cross-check their size
+        for entry in digest[1:]:
+            try:
+                try:
+                    # try to parse as a KappaComplex line, with agents
+                    g = self._line_complex_re.match(entry)
+                    if not g:
+                        raise SnapshotAgentParseError(
+                            &#39;Abundance, length, &amp; complex not found in &lt;&#39; + entry + &#39;&gt; in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+                    abundance = int(g.group(1))
+                    size = int(g.group(2))
+                    species = KappaComplex(g.group(3))
+                    if not size == species.get_size_of_complex():
+                        raise ValueError(
+                            &#39;Size mismatch: snapshot declares &lt;&#39; + str(size) + &#39;&gt;, I counted &lt;&#39; +
+                            str(species.get_size_of_complex()) + &#39;&gt; in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+                    # assign the complex as a key to the dictionary
+                    self._complexes[species] = abundance
+                    self._known_sizes.append(size)
+                    # define identifier -&gt; complex map
+                    if species.get_agent_identifiers():
+                        for identifier in species.get_agent_identifiers():
+                            self._identifier_complex_map[identifier] = species
+                except SnapshotAgentParseError:
+                    # try to parse as a token line instead
+                    g = self._line_token_re.match(entry)
+                    if not g:
+                        raise SnapshotTokenParseError(
+                            &#39;Abundance &amp; token name not found in &lt;&#39; + entry + &#39;&gt; in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+                    # assign the token as a key to the dictionary
+                    tk = KappaToken(g.group(0))
+                    self._tokens[tk.get_token_name()] = tk
+            except SnapshotTokenParseError:
+                raise SnapshotParseError(
+                    &#39;Complex and token parse failed for &lt;&#39; + entry + &#39;&gt; in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+        # canonicalize the kappa expression: tokens
+        self._kappa_expression = &#39;\n&#39;.join([&#39;%init: &#39; + str(float(tk.get_token_operation())) + &#39; &#39; + tk.get_token_name()
+                                            for tk in self._tokens.values()])
+        self._kappa_expression += &#39;\n&#39; if self._tokens else &#39;&#39;
+        # canonicalize the kappa expression: complexes
+        self._kappa_expression += &#39;\n&#39;.join([&#39;%init: &#39; + str(self._complexes[cx]) + &#39; &#39; + str(cx)
+                                             for cx in self._complexes.keys()])
+
+    def get_snapshot_file_name(self) -&gt; str:
+        &#34;&#34;&#34;Returns a string with the name of the file this snapshot came from.&#34;&#34;&#34;
+        return self._file_name
+
+    def get_snapshot_time(self) -&gt; float:
+        &#34;&#34;&#34;Returns a float with the time at which this snapshot was taken.&#34;&#34;&#34;
+        return self._snapshot_time
+
+    def get_snapshot_uuid(self) -&gt; str:
+        &#34;&#34;&#34;Returns the UUID (universally unique identifier) of the snapshot.&#34;&#34;&#34;
+        return self._snapshot_uuid
+
+    def get_snapshot_event(self) -&gt; int:
+        &#34;&#34;&#34;Returns an integer with the event number the snapshot was taken at.&#34;&#34;&#34;
+        return self._snapshot_event
+
+    def get_all_complexes(self) -&gt; List[KappaComplex]:
+        &#34;&#34;&#34;Returns a list of `KappaComplexes` with all the complexes in the snapshot.&#34;&#34;&#34;
+        return list(self._complexes.keys())
+
+    def get_all_abundances(self) -&gt; List[int]:
+        &#34;&#34;&#34;Returns a list of integers with all the abundances in the snapshot.&#34;&#34;&#34;
+        return list(self._complexes.values())
+
+    def get_all_sizes(self) -&gt; List[int]:
+        &#34;&#34;&#34;Returns a list of integers with all the complex sizes visible in the snapshot, one item per complex (i.e. can
+        contain repeat numbers if they correspond to different complexes).&#34;&#34;&#34;
+        sizes = [key.get_size_of_complex() for key in self._complexes.keys()]
+        return sizes
+
+    def get_agent_types_present(self) -&gt; Set[KappaAgent]:
+        &#34;&#34;&#34;Returns a set with the types of agents present in the snapshot.&#34;&#34;&#34;
+        agent_types = set()
+        for key in self._complexes.keys():
+            agent_types.update(key.get_agent_types())
+        return agent_types
+
+    def get_all_complexes_and_abundances(self) -&gt; ItemsView[KappaComplex, int]:
+        &#34;&#34;&#34;Returns an iterable of tuples, where the first element is a `KappaComplex` and the second is an int with the
+        abundance of the corresponding complex.&#34;&#34;&#34;
+        return self._complexes.items()
+
+    def get_total_mass(self) -&gt; int:
+        &#34;&#34;&#34;Returns an integer with the total mass of the snapshot, measured in number of agents.&#34;&#34;&#34;
+        total_mass = 0
+        for i_complex, i_abundance in self._complexes.items():
+            total_mass += i_complex.get_size_of_complex() * i_abundance
+        return total_mass
+
+    def get_abundance_of_agent(self, query_agent) -&gt; int:
+        &#34;&#34;&#34;Returns an integer with the abundance of the given agent. Supports passing a string with the agent
+        expression, or an instance of a KappaAgent. Supports passing agents with signature, e.g. `Bob(site{state})`.&#34;&#34;&#34;
+        if type(query_agent) is not KappaAgent:
+            query_agent = KappaAgent(query_agent)
+        abundance = 0
+        for cx, cx_ab in self.get_all_complexes_and_abundances():
+            intra_cx_ab = cx.get_number_of_embeddings_of_agent(query_agent)
+            abundance += intra_cx_ab * cx_ab
+        return abundance
+
+    def get_composition(self) -&gt; Dict[KappaAgent, int]:
+        &#34;&#34;&#34;Return a dictionary where the keys are `KappaAgents`, the types and their abundance in the snapshot. This is
+        akin to the sum formula of the snapshot.&#34;&#34;&#34;
+        agent_types = self.get_agent_types_present()
+        composition = dict(zip(agent_types, [0] * len(agent_types)))
+        for agent_type in agent_types:
+            for kappa_complex, abundance in self.get_all_complexes_and_abundances():
+                complex_composition = kappa_complex.get_complex_composition()
+                local_abundance = complex_composition[agent_type] if agent_type in complex_composition else 0
+                composition[agent_type] += abundance * local_abundance
+        return composition
+
+    def get_complexes_with_abundance(self, query_abundance: int) -&gt; List[KappaComplex]:
+        &#34;&#34;&#34;Returns a list of `KappaComplexes` present in the snapshot at the queried abundance. For example, get all
+        elements present in single copy.&#34;&#34;&#34;
+        result_complexes = []
+        for complex_expression, complex_abundance in self._complexes.items():
+            if query_abundance == complex_abundance:
+                result_complexes.append(complex_expression)
+        return result_complexes
+
+    def get_complexes_of_size(self, query_size: int) -&gt; List[Tuple[KappaComplex, int]]:
+        &#34;&#34;&#34;Returns a list tuples, with complexes and their abundance, for complexes that are of the query size. For
+        example, get all the dimers and their respective abundances.&#34;&#34;&#34;
+        result_complexes = []
+        for comp, abun in self.get_all_complexes_and_abundances():
+            if query_size == comp.get_size_of_complex():
+                result_complexes.append((comp, abun))
+        return result_complexes
+
+    def get_largest_complexes(self) -&gt; List[Tuple[KappaComplex, int]]:
+        &#34;&#34;&#34;Returns a list of KappaComplexes of the largest size, measured in number of constituting agents.&#34;&#34;&#34;
+        max_known_size = max(self._known_sizes)
+        return self.get_complexes_of_size(max_known_size)
+
+    def get_smallest_complexes(self) -&gt; List[Tuple[KappaComplex, int]]:
+        &#34;&#34;&#34;Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents.&#34;&#34;&#34;
+        min_known_size = min(self._known_sizes)
+        return self.get_complexes_of_size(min_known_size)
+
+    def get_most_abundant_complexes(self) -&gt; List[KappaComplex]:
+        &#34;&#34;&#34;Returns the list of complexes found to be the most abundant. These could be the monomers for example.&#34;&#34;&#34;
+        max_abundance = max(self.get_all_abundances())
+        return self.get_complexes_with_abundance(max_abundance)
+
+    def get_least_abundant_complexes(self) -&gt; List[KappaComplex]:
+        &#34;&#34;&#34;Returns the list of complexes found to be the least abundant. For example, this would be the giant component,
+        or the set of largest entities.&#34;&#34;&#34;
+        min_abundance = min(self.get_all_abundances())
+        return self.get_complexes_with_abundance(min_abundance)
+
+    def get_size_distribution(self) -&gt; Dict[int, int]:
+        &#34;&#34;&#34;Returns a dictionary where the key is the size of a complex and the value is the amount of complexes with
+        that size. For example, `{1:3, 4:5}` indicates the mixture contains only three monomers and five tetramers.
+        Dictionary is sorted by increasing complex size.&#34;&#34;&#34;
+        size_dist = dict()
+        for complex_expression, complex_abundance in self.get_all_complexes_and_abundances():
+            current_size = complex_expression.get_size_of_complex()
+            if current_size in size_dist:
+                size_dist[current_size] += complex_abundance
+            else:
+                size_dist[current_size] = complex_abundance
+        sorted_dist = dict(sorted(size_dist.items(), key=lambda item: item[0]))
+        return sorted_dist
+
+    def get_all_tokens_and_values(self) -&gt; Dict[str, float]:
+        &#34;&#34;&#34;Returns a dictionary with the tokens present in the snapshot in the form of `[name]:[value]`.&#34;&#34;&#34;
+        d = dict()
+        for item in self._tokens.values():
+            d[item.get_token_name()] = float(item.get_token_operation())
+        return d
+
+    def get_value_of_token(self, query) -&gt; float:
+        &#34;&#34;&#34;Returns the value of a token.&#34;&#34;&#34;
+        # make it a KappaToken, if it&#39;s not one already
+        if not type(query) is KappaToken:
+            q = KappaToken(query)
+        else:
+            q = query
+        # return value, if token is present
+        if q.get_token_name() in self._tokens:
+            value = float(self._tokens[q].get_token_operation())
+        else:
+            warnings.warn(&#39;Token &lt;&#39; + str(query) + &#39;&gt; not found in this snapshot.&#39;)
+            value = None
+        return value
+
+    def get_token_names(self) -&gt; List[str]:
+        &#34;&#34;&#34;Returns the token names present in the snapshot.&#34;&#34;&#34;
+        return list(self._tokens.keys())
+
+    def get_agent_identifiers(self) -&gt; List[int]:
+        &#34;&#34;&#34;Returns a list with all the agent identifiers held in the snapshot.&#34;&#34;&#34;
+        return list(self._identifier_complex_map.keys())
+
+    def get_complex_of_agent(self, query_identifier: int) -&gt; KappaComplex:
+        &#34;&#34;&#34;Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
+        should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
+        be identical, and identifiers are unique and stable throughout the simulation.&#34;&#34;&#34;
+        if self._identifier_complex_map:
+            try:
+                return self._identifier_complex_map[query_identifier]
+            except KeyError as e:
+                raise ValueError(&#39;Identifier &lt;{}&gt; not present in snapshot &lt;{}&gt;.&#39;.format(
+                    query_identifier, self.get_snapshot_file_name())) from e
+        else:
+            raise ValueError(&#39;Snapshot &lt;{}&gt; was not found to contain agent identifiers (i.e. raw formatted).&#39;.format(
+                self.get_snapshot_file_name()))
+
+    def to_networkx(self) -&gt; nx.MultiGraph:
+        &#34;&#34;&#34;Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent
+        agents, edges their bonds. Nodes have an attribute dictionary where the key &#39;kappa&#39; holds the KappaAgent.
+        Edges have an attribute dictionary where the key &#39;bond id&#39; holds the bond identifier from the Kappa expression.
+        Node identifiers are integers, using the order of agent declaration. For a graph g, g.nodes.data() displays the
+        node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
+        identifiers as well as the kappa identifiers.&#34;&#34;&#34;
+        agent_id_counter = 0
+        snapshot_network = nx.MultiGraph()
+        # iterate over all molecular species
+        # then iterate over the number of times that species appears in the mix
+        for molecular_species, species_abundance in self.get_all_complexes_and_abundances():
+            for species_copy in range(species_abundance):
+                species_network = molecular_species.to_networkx(identifier_offset=agent_id_counter)
+                snapshot_network.update(species_network)
+                # if we are not dealing with labeled agents, increase offset once per network added
+                if not self.get_agent_identifiers():
+                    agent_id_counter += molecular_species.get_size_of_complex()
+        if snapshot_network.number_of_nodes() != self.get_total_mass():
+            raise SnapshotParseError(&#39;Mismatch between snapshot mass &lt;&#39; + str(self.get_total_mass()) +
+                                     &#39;&gt; and number of nodes in network &lt;&#39; + str(snapshot_network.number_of_nodes()) +
+                                     &#39;&gt; for snapshot &lt;&#39; + self.get_snapshot_file_name() + &#39;&gt;&#39;)
+        return snapshot_network
+
+    def to_cytoscape_cx(self) -&gt; List[Dict]:
+        &#34;&#34;&#34;Export to a structure that via some json encoding and dumping can be read by Cytoscape as a CX file. Usage:
+        &gt;&gt;&gt; import json
+        &gt;&gt;&gt; from KaSaAn.core import KappaSnapshot
+        &gt;&gt;&gt; my_snap = KappaSnapshot(&#39;some_snap.ka&#39;)
+        &gt;&gt;&gt; my_cx = my_snap.to_cytoscape_cx()
+        &gt;&gt;&gt; with open(&#39;my_cx.cx&#39;, &#39;w&#39;) as out_file:
+        &gt;&gt;&gt;    json.dump(my_cx, out_file)
+        &#34;&#34;&#34;
+        cx_data = self._kappa_to_cytoscape_cx()
+        cx_network_attributes = [{&#39;n&#39;: &#39;name&#39;, &#39;v&#39;: self.get_snapshot_file_name()},
+                                 {&#39;n&#39;: &#39;time&#39;, &#39;v&#39;: self.get_snapshot_time()},
+                                 {&#39;n&#39;: &#39;event&#39;, &#39;v&#39;: self.get_snapshot_event()},
+                                 {&#39;n&#39;: &#39;UUID&#39;, &#39;v&#39;: self.get_snapshot_uuid()}]
+        cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
+        return cx_data</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="KaSaAn.core.KappaMultiAgentGraph.KappaMultiAgentGraph" href="KappaMultiAgentGraph.html#KaSaAn.core.KappaMultiAgentGraph.KappaMultiAgentGraph">KappaMultiAgentGraph</a></li>
+<li><a title="KaSaAn.core.KappaEntity.KappaEntity" href="KappaEntity.html#KaSaAn.core.KappaEntity.KappaEntity">KappaEntity</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_abundance_of_agent"><code class="name flex">
+<span>def <span class="ident">get_abundance_of_agent</span></span>(<span>self, query_agent) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns an integer with the abundance of the given agent. Supports passing a string with the agent
+expression, or an instance of a KappaAgent. Supports passing agents with signature, e.g. <code>Bob(site{state})</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_abundance_of_agent(self, query_agent) -&gt; int:
+    &#34;&#34;&#34;Returns an integer with the abundance of the given agent. Supports passing a string with the agent
+    expression, or an instance of a KappaAgent. Supports passing agents with signature, e.g. `Bob(site{state})`.&#34;&#34;&#34;
+    if type(query_agent) is not KappaAgent:
+        query_agent = KappaAgent(query_agent)
+    abundance = 0
+    for cx, cx_ab in self.get_all_complexes_and_abundances():
+        intra_cx_ab = cx.get_number_of_embeddings_of_agent(query_agent)
+        abundance += intra_cx_ab * cx_ab
+    return abundance</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_agent_identifiers"><code class="name flex">
+<span>def <span class="ident">get_agent_identifiers</span></span>(<span>self) ‑> List[int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list with all the agent identifiers held in the snapshot.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_agent_identifiers(self) -&gt; List[int]:
+    &#34;&#34;&#34;Returns a list with all the agent identifiers held in the snapshot.&#34;&#34;&#34;
+    return list(self._identifier_complex_map.keys())</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_agent_types_present"><code class="name flex">
+<span>def <span class="ident">get_agent_types_present</span></span>(<span>self) ‑> Set[<a title="KaSaAn.core.KappaAgent.KappaAgent" href="KappaAgent.html#KaSaAn.core.KappaAgent.KappaAgent">KappaAgent</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a set with the types of agents present in the snapshot.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_agent_types_present(self) -&gt; Set[KappaAgent]:
+    &#34;&#34;&#34;Returns a set with the types of agents present in the snapshot.&#34;&#34;&#34;
+    agent_types = set()
+    for key in self._complexes.keys():
+        agent_types.update(key.get_agent_types())
+    return agent_types</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_abundances"><code class="name flex">
+<span>def <span class="ident">get_all_abundances</span></span>(<span>self) ‑> List[int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of integers with all the abundances in the snapshot.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_abundances(self) -&gt; List[int]:
+    &#34;&#34;&#34;Returns a list of integers with all the abundances in the snapshot.&#34;&#34;&#34;
+    return list(self._complexes.values())</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_complexes"><code class="name flex">
+<span>def <span class="ident">get_all_complexes</span></span>(<span>self) ‑> List[<a title="KaSaAn.core.KappaComplex.KappaComplex" href="KappaComplex.html#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of <code>KappaComplexes</code> with all the complexes in the snapshot.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_complexes(self) -&gt; List[KappaComplex]:
+    &#34;&#34;&#34;Returns a list of `KappaComplexes` with all the complexes in the snapshot.&#34;&#34;&#34;
+    return list(self._complexes.keys())</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_complexes_and_abundances"><code class="name flex">
+<span>def <span class="ident">get_all_complexes_and_abundances</span></span>(<span>self) ‑> ItemsView[<a title="KaSaAn.core.KappaComplex.KappaComplex" href="KappaComplex.html#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a>, int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns an iterable of tuples, where the first element is a <code>KappaComplex</code> and the second is an int with the
+abundance of the corresponding complex.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_complexes_and_abundances(self) -&gt; ItemsView[KappaComplex, int]:
+    &#34;&#34;&#34;Returns an iterable of tuples, where the first element is a `KappaComplex` and the second is an int with the
+    abundance of the corresponding complex.&#34;&#34;&#34;
+    return self._complexes.items()</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_sizes"><code class="name flex">
+<span>def <span class="ident">get_all_sizes</span></span>(<span>self) ‑> List[int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of integers with all the complex sizes visible in the snapshot, one item per complex (i.e. can
+contain repeat numbers if they correspond to different complexes).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_sizes(self) -&gt; List[int]:
+    &#34;&#34;&#34;Returns a list of integers with all the complex sizes visible in the snapshot, one item per complex (i.e. can
+    contain repeat numbers if they correspond to different complexes).&#34;&#34;&#34;
+    sizes = [key.get_size_of_complex() for key in self._complexes.keys()]
+    return sizes</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_tokens_and_values"><code class="name flex">
+<span>def <span class="ident">get_all_tokens_and_values</span></span>(<span>self) ‑> Dict[str, float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a dictionary with the tokens present in the snapshot in the form of <code>[name]:[value]</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_tokens_and_values(self) -&gt; Dict[str, float]:
+    &#34;&#34;&#34;Returns a dictionary with the tokens present in the snapshot in the form of `[name]:[value]`.&#34;&#34;&#34;
+    d = dict()
+    for item in self._tokens.values():
+        d[item.get_token_name()] = float(item.get_token_operation())
+    return d</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_complex_of_agent"><code class="name flex">
+<span>def <span class="ident">get_complex_of_agent</span></span>(<span>self, query_identifier: int) ‑> <a title="KaSaAn.core.KappaComplex.KappaComplex" href="KappaComplex.html#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
+should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
+be identical, and identifiers are unique and stable throughout the simulation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_complex_of_agent(self, query_identifier: int) -&gt; KappaComplex:
+    &#34;&#34;&#34;Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
+    should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
+    be identical, and identifiers are unique and stable throughout the simulation.&#34;&#34;&#34;
+    if self._identifier_complex_map:
+        try:
+            return self._identifier_complex_map[query_identifier]
+        except KeyError as e:
+            raise ValueError(&#39;Identifier &lt;{}&gt; not present in snapshot &lt;{}&gt;.&#39;.format(
+                query_identifier, self.get_snapshot_file_name())) from e
+    else:
+        raise ValueError(&#39;Snapshot &lt;{}&gt; was not found to contain agent identifiers (i.e. raw formatted).&#39;.format(
+            self.get_snapshot_file_name()))</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_complexes_of_size"><code class="name flex">
+<span>def <span class="ident">get_complexes_of_size</span></span>(<span>self, query_size: int) ‑> List[Tuple[<a title="KaSaAn.core.KappaComplex.KappaComplex" href="KappaComplex.html#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a>, int]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list tuples, with complexes and their abundance, for complexes that are of the query size. For
+example, get all the dimers and their respective abundances.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_complexes_of_size(self, query_size: int) -&gt; List[Tuple[KappaComplex, int]]:
+    &#34;&#34;&#34;Returns a list tuples, with complexes and their abundance, for complexes that are of the query size. For
+    example, get all the dimers and their respective abundances.&#34;&#34;&#34;
+    result_complexes = []
+    for comp, abun in self.get_all_complexes_and_abundances():
+        if query_size == comp.get_size_of_complex():
+            result_complexes.append((comp, abun))
+    return result_complexes</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_complexes_with_abundance"><code class="name flex">
+<span>def <span class="ident">get_complexes_with_abundance</span></span>(<span>self, query_abundance: int) ‑> List[<a title="KaSaAn.core.KappaComplex.KappaComplex" href="KappaComplex.html#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of <code>KappaComplexes</code> present in the snapshot at the queried abundance. For example, get all
+elements present in single copy.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_complexes_with_abundance(self, query_abundance: int) -&gt; List[KappaComplex]:
+    &#34;&#34;&#34;Returns a list of `KappaComplexes` present in the snapshot at the queried abundance. For example, get all
+    elements present in single copy.&#34;&#34;&#34;
+    result_complexes = []
+    for complex_expression, complex_abundance in self._complexes.items():
+        if query_abundance == complex_abundance:
+            result_complexes.append(complex_expression)
+    return result_complexes</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_composition"><code class="name flex">
+<span>def <span class="ident">get_composition</span></span>(<span>self) ‑> Dict[<a title="KaSaAn.core.KappaAgent.KappaAgent" href="KappaAgent.html#KaSaAn.core.KappaAgent.KappaAgent">KappaAgent</a>, int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a dictionary where the keys are <code>KappaAgents</code>, the types and their abundance in the snapshot. This is
+akin to the sum formula of the snapshot.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_composition(self) -&gt; Dict[KappaAgent, int]:
+    &#34;&#34;&#34;Return a dictionary where the keys are `KappaAgents`, the types and their abundance in the snapshot. This is
+    akin to the sum formula of the snapshot.&#34;&#34;&#34;
+    agent_types = self.get_agent_types_present()
+    composition = dict(zip(agent_types, [0] * len(agent_types)))
+    for agent_type in agent_types:
+        for kappa_complex, abundance in self.get_all_complexes_and_abundances():
+            complex_composition = kappa_complex.get_complex_composition()
+            local_abundance = complex_composition[agent_type] if agent_type in complex_composition else 0
+            composition[agent_type] += abundance * local_abundance
+    return composition</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_largest_complexes"><code class="name flex">
+<span>def <span class="ident">get_largest_complexes</span></span>(<span>self) ‑> List[Tuple[<a title="KaSaAn.core.KappaComplex.KappaComplex" href="KappaComplex.html#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a>, int]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of KappaComplexes of the largest size, measured in number of constituting agents.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_largest_complexes(self) -&gt; List[Tuple[KappaComplex, int]]:
+    &#34;&#34;&#34;Returns a list of KappaComplexes of the largest size, measured in number of constituting agents.&#34;&#34;&#34;
+    max_known_size = max(self._known_sizes)
+    return self.get_complexes_of_size(max_known_size)</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_least_abundant_complexes"><code class="name flex">
+<span>def <span class="ident">get_least_abundant_complexes</span></span>(<span>self) ‑> List[<a title="KaSaAn.core.KappaComplex.KappaComplex" href="KappaComplex.html#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the list of complexes found to be the least abundant. For example, this would be the giant component,
+or the set of largest entities.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_least_abundant_complexes(self) -&gt; List[KappaComplex]:
+    &#34;&#34;&#34;Returns the list of complexes found to be the least abundant. For example, this would be the giant component,
+    or the set of largest entities.&#34;&#34;&#34;
+    min_abundance = min(self.get_all_abundances())
+    return self.get_complexes_with_abundance(min_abundance)</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_most_abundant_complexes"><code class="name flex">
+<span>def <span class="ident">get_most_abundant_complexes</span></span>(<span>self) ‑> List[<a title="KaSaAn.core.KappaComplex.KappaComplex" href="KappaComplex.html#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the list of complexes found to be the most abundant. These could be the monomers for example.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_most_abundant_complexes(self) -&gt; List[KappaComplex]:
+    &#34;&#34;&#34;Returns the list of complexes found to be the most abundant. These could be the monomers for example.&#34;&#34;&#34;
+    max_abundance = max(self.get_all_abundances())
+    return self.get_complexes_with_abundance(max_abundance)</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_size_distribution"><code class="name flex">
+<span>def <span class="ident">get_size_distribution</span></span>(<span>self) ‑> Dict[int, int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a dictionary where the key is the size of a complex and the value is the amount of complexes with
+that size. For example, <code>{1:3, 4:5}</code> indicates the mixture contains only three monomers and five tetramers.
+Dictionary is sorted by increasing complex size.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_size_distribution(self) -&gt; Dict[int, int]:
+    &#34;&#34;&#34;Returns a dictionary where the key is the size of a complex and the value is the amount of complexes with
+    that size. For example, `{1:3, 4:5}` indicates the mixture contains only three monomers and five tetramers.
+    Dictionary is sorted by increasing complex size.&#34;&#34;&#34;
+    size_dist = dict()
+    for complex_expression, complex_abundance in self.get_all_complexes_and_abundances():
+        current_size = complex_expression.get_size_of_complex()
+        if current_size in size_dist:
+            size_dist[current_size] += complex_abundance
+        else:
+            size_dist[current_size] = complex_abundance
+    sorted_dist = dict(sorted(size_dist.items(), key=lambda item: item[0]))
+    return sorted_dist</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_smallest_complexes"><code class="name flex">
+<span>def <span class="ident">get_smallest_complexes</span></span>(<span>self) ‑> List[Tuple[<a title="KaSaAn.core.KappaComplex.KappaComplex" href="KappaComplex.html#KaSaAn.core.KappaComplex.KappaComplex">KappaComplex</a>, int]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_smallest_complexes(self) -&gt; List[Tuple[KappaComplex, int]]:
+    &#34;&#34;&#34;Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents.&#34;&#34;&#34;
+    min_known_size = min(self._known_sizes)
+    return self.get_complexes_of_size(min_known_size)</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_snapshot_event"><code class="name flex">
+<span>def <span class="ident">get_snapshot_event</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns an integer with the event number the snapshot was taken at.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_snapshot_event(self) -&gt; int:
+    &#34;&#34;&#34;Returns an integer with the event number the snapshot was taken at.&#34;&#34;&#34;
+    return self._snapshot_event</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_snapshot_file_name"><code class="name flex">
+<span>def <span class="ident">get_snapshot_file_name</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a string with the name of the file this snapshot came from.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_snapshot_file_name(self) -&gt; str:
+    &#34;&#34;&#34;Returns a string with the name of the file this snapshot came from.&#34;&#34;&#34;
+    return self._file_name</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_snapshot_time"><code class="name flex">
+<span>def <span class="ident">get_snapshot_time</span></span>(<span>self) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a float with the time at which this snapshot was taken.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_snapshot_time(self) -&gt; float:
+    &#34;&#34;&#34;Returns a float with the time at which this snapshot was taken.&#34;&#34;&#34;
+    return self._snapshot_time</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_snapshot_uuid"><code class="name flex">
+<span>def <span class="ident">get_snapshot_uuid</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the UUID (universally unique identifier) of the snapshot.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_snapshot_uuid(self) -&gt; str:
+    &#34;&#34;&#34;Returns the UUID (universally unique identifier) of the snapshot.&#34;&#34;&#34;
+    return self._snapshot_uuid</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_token_names"><code class="name flex">
+<span>def <span class="ident">get_token_names</span></span>(<span>self) ‑> List[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the token names present in the snapshot.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_token_names(self) -&gt; List[str]:
+    &#34;&#34;&#34;Returns the token names present in the snapshot.&#34;&#34;&#34;
+    return list(self._tokens.keys())</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_total_mass"><code class="name flex">
+<span>def <span class="ident">get_total_mass</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns an integer with the total mass of the snapshot, measured in number of agents.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_total_mass(self) -&gt; int:
+    &#34;&#34;&#34;Returns an integer with the total mass of the snapshot, measured in number of agents.&#34;&#34;&#34;
+    total_mass = 0
+    for i_complex, i_abundance in self._complexes.items():
+        total_mass += i_complex.get_size_of_complex() * i_abundance
+    return total_mass</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_value_of_token"><code class="name flex">
+<span>def <span class="ident">get_value_of_token</span></span>(<span>self, query) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the value of a token.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_value_of_token(self, query) -&gt; float:
+    &#34;&#34;&#34;Returns the value of a token.&#34;&#34;&#34;
+    # make it a KappaToken, if it&#39;s not one already
+    if not type(query) is KappaToken:
+        q = KappaToken(query)
+    else:
+        q = query
+    # return value, if token is present
+    if q.get_token_name() in self._tokens:
+        value = float(self._tokens[q].get_token_operation())
+    else:
+        warnings.warn(&#39;Token &lt;&#39; + str(query) + &#39;&gt; not found in this snapshot.&#39;)
+        value = None
+    return value</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.to_cytoscape_cx"><code class="name flex">
+<span>def <span class="ident">to_cytoscape_cx</span></span>(<span>self) ‑> List[Dict]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Export to a structure that via some json encoding and dumping can be read by Cytoscape as a CX file. Usage:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; import json
+&gt;&gt;&gt; from KaSaAn.core import KappaSnapshot
+&gt;&gt;&gt; my_snap = KappaSnapshot('some_snap.ka')
+&gt;&gt;&gt; my_cx = my_snap.to_cytoscape_cx()
+&gt;&gt;&gt; with open('my_cx.cx', 'w') as out_file:
+&gt;&gt;&gt;    json.dump(my_cx, out_file)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_cytoscape_cx(self) -&gt; List[Dict]:
+    &#34;&#34;&#34;Export to a structure that via some json encoding and dumping can be read by Cytoscape as a CX file. Usage:
+    &gt;&gt;&gt; import json
+    &gt;&gt;&gt; from KaSaAn.core import KappaSnapshot
+    &gt;&gt;&gt; my_snap = KappaSnapshot(&#39;some_snap.ka&#39;)
+    &gt;&gt;&gt; my_cx = my_snap.to_cytoscape_cx()
+    &gt;&gt;&gt; with open(&#39;my_cx.cx&#39;, &#39;w&#39;) as out_file:
+    &gt;&gt;&gt;    json.dump(my_cx, out_file)
+    &#34;&#34;&#34;
+    cx_data = self._kappa_to_cytoscape_cx()
+    cx_network_attributes = [{&#39;n&#39;: &#39;name&#39;, &#39;v&#39;: self.get_snapshot_file_name()},
+                             {&#39;n&#39;: &#39;time&#39;, &#39;v&#39;: self.get_snapshot_time()},
+                             {&#39;n&#39;: &#39;event&#39;, &#39;v&#39;: self.get_snapshot_event()},
+                             {&#39;n&#39;: &#39;UUID&#39;, &#39;v&#39;: self.get_snapshot_uuid()}]
+    cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
+    return cx_data</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaSnapshot.KappaSnapshot.to_networkx"><code class="name flex">
+<span>def <span class="ident">to_networkx</span></span>(<span>self) ‑> networkx.classes.multigraph.MultiGraph</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent
+agents, edges their bonds. Nodes have an attribute dictionary where the key 'kappa' holds the KappaAgent.
+Edges have an attribute dictionary where the key 'bond id' holds the bond identifier from the Kappa expression.
+Node identifiers are integers, using the order of agent declaration. For a graph g, g.nodes.data() displays the
+node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
+identifiers as well as the kappa identifiers.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_networkx(self) -&gt; nx.MultiGraph:
+    &#34;&#34;&#34;Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent
+    agents, edges their bonds. Nodes have an attribute dictionary where the key &#39;kappa&#39; holds the KappaAgent.
+    Edges have an attribute dictionary where the key &#39;bond id&#39; holds the bond identifier from the Kappa expression.
+    Node identifiers are integers, using the order of agent declaration. For a graph g, g.nodes.data() displays the
+    node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
+    identifiers as well as the kappa identifiers.&#34;&#34;&#34;
+    agent_id_counter = 0
+    snapshot_network = nx.MultiGraph()
+    # iterate over all molecular species
+    # then iterate over the number of times that species appears in the mix
+    for molecular_species, species_abundance in self.get_all_complexes_and_abundances():
+        for species_copy in range(species_abundance):
+            species_network = molecular_species.to_networkx(identifier_offset=agent_id_counter)
+            snapshot_network.update(species_network)
+            # if we are not dealing with labeled agents, increase offset once per network added
+            if not self.get_agent_identifiers():
+                agent_id_counter += molecular_species.get_size_of_complex()
+    if snapshot_network.number_of_nodes() != self.get_total_mass():
+        raise SnapshotParseError(&#39;Mismatch between snapshot mass &lt;&#39; + str(self.get_total_mass()) +
+                                 &#39;&gt; and number of nodes in network &lt;&#39; + str(snapshot_network.number_of_nodes()) +
+                                 &#39;&gt; for snapshot &lt;&#39; + self.get_snapshot_file_name() + &#39;&gt;&#39;)
+    return snapshot_network</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="KaSaAn.core" href="index.html">KaSaAn.core</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot">KappaSnapshot</a></code></h4>
+<ul class="">
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_abundance_of_agent" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_abundance_of_agent">get_abundance_of_agent</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_agent_identifiers" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_agent_identifiers">get_agent_identifiers</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_agent_types_present" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_agent_types_present">get_agent_types_present</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_abundances" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_abundances">get_all_abundances</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_complexes" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_complexes">get_all_complexes</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_complexes_and_abundances" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_complexes_and_abundances">get_all_complexes_and_abundances</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_sizes" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_sizes">get_all_sizes</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_tokens_and_values" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_all_tokens_and_values">get_all_tokens_and_values</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_complex_of_agent" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_complex_of_agent">get_complex_of_agent</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_complexes_of_size" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_complexes_of_size">get_complexes_of_size</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_complexes_with_abundance" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_complexes_with_abundance">get_complexes_with_abundance</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_composition" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_composition">get_composition</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_largest_complexes" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_largest_complexes">get_largest_complexes</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_least_abundant_complexes" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_least_abundant_complexes">get_least_abundant_complexes</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_most_abundant_complexes" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_most_abundant_complexes">get_most_abundant_complexes</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_size_distribution" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_size_distribution">get_size_distribution</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_smallest_complexes" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_smallest_complexes">get_smallest_complexes</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_snapshot_event" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_snapshot_event">get_snapshot_event</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_snapshot_file_name" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_snapshot_file_name">get_snapshot_file_name</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_snapshot_time" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_snapshot_time">get_snapshot_time</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_snapshot_uuid" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_snapshot_uuid">get_snapshot_uuid</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_token_names" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_token_names">get_token_names</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_total_mass" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_total_mass">get_total_mass</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.get_value_of_token" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.get_value_of_token">get_value_of_token</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.to_cytoscape_cx" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.to_cytoscape_cx">to_cytoscape_cx</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.KappaSnapshot.to_networkx" href="#KaSaAn.core.KappaSnapshot.KappaSnapshot.to_networkx">to_networkx</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

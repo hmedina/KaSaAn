@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>KaSaAn.scripts.trace_movie_maker API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>KaSaAn.scripts.trace_movie_maker</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python3
+
+import argparse
+import sys
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+
+from KaSaAn.functions import movie_from_snapshots
+
+
+def main(args=None):
+    &#34;&#34;&#34;Make a movie out of a set of snapshot files, and save it to disk.&#34;&#34;&#34;
+    if args is None:
+        args = sys.argv[1:]
+    parser = argparse.ArgumentParser(description=main.__doc__)
+    parser.add_argument(&#39;-d&#39;, &#39;--directory&#39;, type=str, default=&#39;./&#39;,
+                        help=&#39;Directory where the snapshots are located. These should be named &#34;snapshot.#.ka&#34;, i.e.&#39;
+                             &#39; the default naming scheme used by the Kappa Trace Query Language Engine. Default uses&#39;
+                             &#39; current directory.&#39;)
+    parser.add_argument(&#39;-m&#39;, &#39;--vis_mode&#39;, type=str, default=&#39;mass&#39;, choices=[&#39;mass&#39;, &#39;count&#39;, &#39;size&#39;],
+                        help=&#39;Specify the type of visualization to render. Default uses mass.&#39;)
+    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=str, default=&#39;&#39;,
+                        help=&#39;Optional name of file for saving the movie. If unset, the movie will be shown instead,&#39;
+                             &#39; using a TK window.&#39;)
+    parser.add_argument(&#39;-w&#39;, &#39;--fig_width&#39;, type=int, default=16,
+                        help=&#39;Number of inches for the width of the plot. Figure will be 2 times this value wide, with&#39;
+                             &#39; the plot being this value wide and the legend being this value wide.&#39;
+                             &#39; Default value is 16.&#39;)
+    parser.add_argument(&#39;-r&#39;, &#39;--XY_ratio&#39;, type=float, default=1.0,
+                        help=&#39;X to Y ratio of the plot. Default value is 1: isometric view.&#39;)
+    parser.add_argument(&#39;-s&#39;, &#39;--do_not_scale_mass&#39;, action=&#39;store_true&#39;,
+                        help=&#39;Rescale each snapshot to use the total plot area? If specified, each snapshot will be&#39;
+                             &#39; viewed using the entire plot area: the amount of mass a pixel will represent will not be&#39;
+                             &#39; consistent across snapshots (unless there is neither creation nor deletion of agents in&#39;
+                             &#39; the model).&#39;)
+    parser.add_argument(&#39;-l&#39;, &#39;--legend_columns&#39;, type=int, default=2,
+                        help=&#39;Number of columns in the legend. Increase this number to have more entries per row.&#39;
+                             &#39; Default value is 2.&#39;)
+    parser.add_argument(&#39;-f&#39;, &#39;--frame_interval&#39;, type=int, default=500,
+                        help=&#39;Number of mili-seconds between frames in the animation.&#39;)
+    parser.add_argument(&#39;-v&#39;, &#39;--verbose&#39;, action=&#39;store_true&#39;,
+                        help=&#39;Display information about number of snapshots found.&#39;)
+    args = parser.parse_args()
+    # make the animation
+    my_animation = movie_from_snapshots(directory=args.directory,
+                                        vis_mode=args.vis_mode,
+                                        fig_width=args.fig_width,
+                                        xy_ratio=args.XY_ratio,
+                                        dont_scale_mass=args.do_not_scale_mass,
+                                        legend_cols=args.legend_columns,
+                                        frame_int=args.frame_interval,
+                                        verbose=args.verbose)
+    # Save to file, or show the figure
+    if args.output_file:
+        # Use the ImageMagick writer if a gif was requested; else use the default mpeg writer
+        if args.output_file[-4:] == &#39;.gif&#39;:
+            my_writer = animation.ImageMagickFileWriter()
+        else:
+            my_writer = &#39;ffmpeg&#39;
+        if args.verbose:
+            print(&#39;Now saving animation to file &lt;&lt;&#39; + args.output_file + &#39;&gt;&gt;&#39;)
+        my_animation.save(filename=args.output_file, writer=my_writer)
+    else:
+        plt.show()
+
+
+if __name__ == &#39;__main__&#39;:
+    main()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="KaSaAn.scripts.trace_movie_maker.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>args=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Make a movie out of a set of snapshot files, and save it to disk.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def main(args=None):
+    &#34;&#34;&#34;Make a movie out of a set of snapshot files, and save it to disk.&#34;&#34;&#34;
+    if args is None:
+        args = sys.argv[1:]
+    parser = argparse.ArgumentParser(description=main.__doc__)
+    parser.add_argument(&#39;-d&#39;, &#39;--directory&#39;, type=str, default=&#39;./&#39;,
+                        help=&#39;Directory where the snapshots are located. These should be named &#34;snapshot.#.ka&#34;, i.e.&#39;
+                             &#39; the default naming scheme used by the Kappa Trace Query Language Engine. Default uses&#39;
+                             &#39; current directory.&#39;)
+    parser.add_argument(&#39;-m&#39;, &#39;--vis_mode&#39;, type=str, default=&#39;mass&#39;, choices=[&#39;mass&#39;, &#39;count&#39;, &#39;size&#39;],
+                        help=&#39;Specify the type of visualization to render. Default uses mass.&#39;)
+    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=str, default=&#39;&#39;,
+                        help=&#39;Optional name of file for saving the movie. If unset, the movie will be shown instead,&#39;
+                             &#39; using a TK window.&#39;)
+    parser.add_argument(&#39;-w&#39;, &#39;--fig_width&#39;, type=int, default=16,
+                        help=&#39;Number of inches for the width of the plot. Figure will be 2 times this value wide, with&#39;
+                             &#39; the plot being this value wide and the legend being this value wide.&#39;
+                             &#39; Default value is 16.&#39;)
+    parser.add_argument(&#39;-r&#39;, &#39;--XY_ratio&#39;, type=float, default=1.0,
+                        help=&#39;X to Y ratio of the plot. Default value is 1: isometric view.&#39;)
+    parser.add_argument(&#39;-s&#39;, &#39;--do_not_scale_mass&#39;, action=&#39;store_true&#39;,
+                        help=&#39;Rescale each snapshot to use the total plot area? If specified, each snapshot will be&#39;
+                             &#39; viewed using the entire plot area: the amount of mass a pixel will represent will not be&#39;
+                             &#39; consistent across snapshots (unless there is neither creation nor deletion of agents in&#39;
+                             &#39; the model).&#39;)
+    parser.add_argument(&#39;-l&#39;, &#39;--legend_columns&#39;, type=int, default=2,
+                        help=&#39;Number of columns in the legend. Increase this number to have more entries per row.&#39;
+                             &#39; Default value is 2.&#39;)
+    parser.add_argument(&#39;-f&#39;, &#39;--frame_interval&#39;, type=int, default=500,
+                        help=&#39;Number of mili-seconds between frames in the animation.&#39;)
+    parser.add_argument(&#39;-v&#39;, &#39;--verbose&#39;, action=&#39;store_true&#39;,
+                        help=&#39;Display information about number of snapshots found.&#39;)
+    args = parser.parse_args()
+    # make the animation
+    my_animation = movie_from_snapshots(directory=args.directory,
+                                        vis_mode=args.vis_mode,
+                                        fig_width=args.fig_width,
+                                        xy_ratio=args.XY_ratio,
+                                        dont_scale_mass=args.do_not_scale_mass,
+                                        legend_cols=args.legend_columns,
+                                        frame_int=args.frame_interval,
+                                        verbose=args.verbose)
+    # Save to file, or show the figure
+    if args.output_file:
+        # Use the ImageMagick writer if a gif was requested; else use the default mpeg writer
+        if args.output_file[-4:] == &#39;.gif&#39;:
+            my_writer = animation.ImageMagickFileWriter()
+        else:
+            my_writer = &#39;ffmpeg&#39;
+        if args.verbose:
+            print(&#39;Now saving animation to file &lt;&lt;&#39; + args.output_file + &#39;&gt;&gt;&#39;)
+        my_animation.save(filename=args.output_file, writer=my_writer)
+    else:
+        plt.show()</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="KaSaAn.scripts" href="index.html">KaSaAn.scripts</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="KaSaAn.scripts.trace_movie_maker.main" href="#KaSaAn.scripts.trace_movie_maker.main">main</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
