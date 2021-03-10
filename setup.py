@@ -1,26 +1,7 @@
 #!/usr/bin/env python3
 from setuptools import setup
 
-"""This package provides tools for analyzing Kappa entities, notably snapshots, and visualizing snapshots and rules."""
-
 setup(
-    name='KaSaAn',
-    version='0.1.1',
-    packages=['KaSaAn', 'KaSaAn.core', 'KaSaAn.functions', 'KaSaAn.scripts'],
-    package_dir={'': '.'},
-    url='https://github.com/hmedina/KaSaAn',
-    license='MIT',
-    author='Hector Medina',
-    author_email='hector.f.medina.a@gmail.com',
-    description='Kappa snapshot analysis & WIP tools.',
-    long_description=__doc__,
-    install_requires=[
-        'matplotlib>=3.0.2<3.3.4',
-        'numpy>=1.16<1.19.5',
-        'squarify>=0.3.0<0.5.0',
-        'networkx>=2.4<2.6'
-    ],
-    python_requires='>=3.7<3.10',
     entry_points={
         'console_scripts': [
             'kappa_catalytic_potential = KaSaAn.scripts.catalytic_potential:main',
