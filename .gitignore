@@ -10,3 +10,5 @@
 /KaSaAn/scripts/__pycache__/
 /unittests/__pycache__/
 *.pyc
+.vscode/.ropeproject/config.py
+.vscode/.ropeproject/objectdb

@@ -18,6 +18,7 @@ my_contact_map.rotate_all_sites_of('Bar', -10)
 
 my_contact_map.draw(ax, draw_state_flagpole=True)
 ax.axis('off')
+plt.tight_layout()
 
 fig.savefig('contact_map.png')
 plt.show()
