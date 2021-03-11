@@ -79,6 +79,7 @@ class KappaComplex(KappaMultiAgentGraph):
                 agent_list.append(agent)
                 if agent.get_agent_identifier() is not None:
                     agent_idents.append(agent.get_agent_identifier())
+                # update type set, composition structures
                 agent_type = KappaAgent(agent.get_agent_name() + &#39;()&#39;)
                 agent_types.update([agent_type])
                 if agent_type in composition:
@@ -115,11 +116,13 @@ class KappaComplex(KappaMultiAgentGraph):
         return self._agents
 
     def get_complex_composition(self) -&gt; Dict[KappaAgent, int]:
-        &#34;&#34;&#34;Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number of times that agent appears in this complex.&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number
+        of times that agent appears in this complex.&#34;&#34;&#34;
         return self._composition
 
     def get_number_of_embeddings_of_agent(self, query) -&gt; int:
-        &#34;&#34;&#34;Returns the number of embeddings the query agent has on the KappaComplex.&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns the number of embeddings the query agent has on the KappaComplex. For the &#39;truth table&#39; of site
+        nomenclature, see `KappaPort`.&#34;&#34;&#34;
         # type the query into an Agent, if it&#39;s not one already
         if not type(query) is KappaAgent:
             q_agent = KappaAgent(query)
@@ -133,7 +136,7 @@ class KappaComplex(KappaMultiAgentGraph):
         return match_number
 
     def get_number_of_embeddings_of_complex(self, query, symmetry_adjust: bool = True) -&gt; int:
-        &#34;&#34;&#34;Returns the number of embedding the query complex has on the KappaComplex. Optional parameter to not perform
+        &#34;&#34;&#34;Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
         the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries 
         preserved in the query complex&#39;s image in the target.&#34;&#34;&#34;
         if not type(query) is KappaComplex:
@@ -159,7 +162,7 @@ class KappaComplex(KappaMultiAgentGraph):
                 except AgentParseError:
                     return self.get_number_of_embeddings_of_complex(KappaComplex(query))
             except ComplexParseError:
-                raise ValueError(&#39;Could not parse query as a KappaAgent nor as a KappaComplex.&#39;)
+                raise ValueError(&#39;Could not parse &lt;{}&gt; as a KappaAgent nor as a KappaComplex.&#39;.format(query))
 
     def get_agent_identifiers(self) -&gt; List[int]:
         &#34;&#34;&#34;Returns a list with the numeric agent identifiers, if any.&#34;&#34;&#34;
@@ -169,10 +172,11 @@ class KappaComplex(KappaMultiAgentGraph):
         &#34;&#34;&#34;Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
         agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent.
         Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the Kappa expression.
-        Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays the
-        node identifiers and their corresponding `KappaAgents`, and `g.edges.data()` displays the edges, using the node
-        identifiers as well as the kappa identifiers.
-        The optional parameter `identifier_offset` will offset all numeric identifiers reported; used in unlabeled snapshots, or when combining graphs.&#34;&#34;&#34;
+        Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays
+        the node identifiers and their corresponding `KappaAgents`, and `g.edges.data()` displays the edges, using the
+        node identifiers as well as the kappa identifiers.
+        The optional parameter `identifier_offset` will offset all numeric identifiers reported; used in unlabeled
+        snapshots, or when combining graphs.&#34;&#34;&#34;
         kappa_complex_multigraph = nx.MultiGraph()
         dangle_bond_dict = {}                       # store unpaired bonds he
         paired_bond_list = []                       # store tuples of (agent index 1, agent index 2, bond identifier)
@@ -289,9 +293,9 @@ def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -&gt; \
 
 def _traverse_from(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_start: int, target_start: int) -&gt; \
         List[Tuple[int, int]]:
-    &#34;&#34;&#34;Attempt a traversal of `target_net`, starting at `target_start`, matched to `query_start`, following `query_net`&#39;s
-    topology. If successful, returns the network mapping: a list of `(q,t)`, the indexes in the query and target
-    networks respectively.&#34;&#34;&#34;
+    &#34;&#34;&#34;Attempt a traversal of `target_net`, starting at `target_start`, matched to `query_start`, following
+    `query_net`&#39;s topology. If successful, returns the network mapping: a list of `(q,t)`, the indexes in the query and
+    target networks respectively.&#34;&#34;&#34;
     # stack of node identifiers, integers from the networkx representation
     node_stack: Deque[Tuple[int, Union[int, None], int]] = deque()
     node_stack.append((query_start, None, target_start))
@@ -333,7 +337,8 @@ def _traverse_from(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_st
 
 
 def _node_match(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_node: int, target_node: int) -&gt; bool:
-    &#34;&#34;&#34;Special purpose matcher that ignores bond types, considering only if sites are bound. Internal states are matched normally.&#34;&#34;&#34;
+    &#34;&#34;&#34;Special purpose matcher that ignores bond types, considering only if sites are bound. Internal states are
+    matched normally.&#34;&#34;&#34;
     match: bool = False
     query = query_net.nodes[query_node][&#39;kappa&#39;]
     target = target_net.nodes[target_node][&#39;kappa&#39;]
@@ -510,6 +515,7 @@ the map of embeddings corrected for the number of preserved automorphisms. For a
                 agent_list.append(agent)
                 if agent.get_agent_identifier() is not None:
                     agent_idents.append(agent.get_agent_identifier())
+                # update type set, composition structures
                 agent_type = KappaAgent(agent.get_agent_name() + &#39;()&#39;)
                 agent_types.update([agent_type])
                 if agent_type in composition:
@@ -546,11 +552,13 @@ the map of embeddings corrected for the number of preserved automorphisms. For a
         return self._agents
 
     def get_complex_composition(self) -&gt; Dict[KappaAgent, int]:
-        &#34;&#34;&#34;Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number of times that agent appears in this complex.&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number
+        of times that agent appears in this complex.&#34;&#34;&#34;
         return self._composition
 
     def get_number_of_embeddings_of_agent(self, query) -&gt; int:
-        &#34;&#34;&#34;Returns the number of embeddings the query agent has on the KappaComplex.&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns the number of embeddings the query agent has on the KappaComplex. For the &#39;truth table&#39; of site
+        nomenclature, see `KappaPort`.&#34;&#34;&#34;
         # type the query into an Agent, if it&#39;s not one already
         if not type(query) is KappaAgent:
             q_agent = KappaAgent(query)
@@ -564,7 +572,7 @@ the map of embeddings corrected for the number of preserved automorphisms. For a
         return match_number
 
     def get_number_of_embeddings_of_complex(self, query, symmetry_adjust: bool = True) -&gt; int:
-        &#34;&#34;&#34;Returns the number of embedding the query complex has on the KappaComplex. Optional parameter to not perform
+        &#34;&#34;&#34;Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
         the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries 
         preserved in the query complex&#39;s image in the target.&#34;&#34;&#34;
         if not type(query) is KappaComplex:
@@ -590,7 +598,7 @@ the map of embeddings corrected for the number of preserved automorphisms. For a
                 except AgentParseError:
                     return self.get_number_of_embeddings_of_complex(KappaComplex(query))
             except ComplexParseError:
-                raise ValueError(&#39;Could not parse query as a KappaAgent nor as a KappaComplex.&#39;)
+                raise ValueError(&#39;Could not parse &lt;{}&gt; as a KappaAgent nor as a KappaComplex.&#39;.format(query))
 
     def get_agent_identifiers(self) -&gt; List[int]:
         &#34;&#34;&#34;Returns a list with the numeric agent identifiers, if any.&#34;&#34;&#34;
@@ -600,10 +608,11 @@ the map of embeddings corrected for the number of preserved automorphisms. For a
         &#34;&#34;&#34;Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
         agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent.
         Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the Kappa expression.
-        Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays the
-        node identifiers and their corresponding `KappaAgents`, and `g.edges.data()` displays the edges, using the node
-        identifiers as well as the kappa identifiers.
-        The optional parameter `identifier_offset` will offset all numeric identifiers reported; used in unlabeled snapshots, or when combining graphs.&#34;&#34;&#34;
+        Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays
+        the node identifiers and their corresponding `KappaAgents`, and `g.edges.data()` displays the edges, using the
+        node identifiers as well as the kappa identifiers.
+        The optional parameter `identifier_offset` will offset all numeric identifiers reported; used in unlabeled
+        snapshots, or when combining graphs.&#34;&#34;&#34;
         kappa_complex_multigraph = nx.MultiGraph()
         dangle_bond_dict = {}                       # store unpaired bonds he
         paired_bond_list = []                       # store tuples of (agent index 1, agent index 2, bond identifier)
@@ -711,13 +720,15 @@ the map of embeddings corrected for the number of preserved automorphisms. For a
 <span>def <span class="ident">get_complex_composition</span></span>(<span>self) ‑> Dict[<a title="KaSaAn.core.KappaAgent.KappaAgent" href="KappaAgent.html#KaSaAn.core.KappaAgent.KappaAgent">KappaAgent</a>, int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number of times that agent appears in this complex.</p></div>
+<div class="desc"><p>Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number
+of times that agent appears in this complex.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_complex_composition(self) -&gt; Dict[KappaAgent, int]:
-    &#34;&#34;&#34;Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number of times that agent appears in this complex.&#34;&#34;&#34;
+    &#34;&#34;&#34;Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number
+    of times that agent appears in this complex.&#34;&#34;&#34;
     return self._composition</code></pre>
 </details>
 </dd>
@@ -760,20 +771,22 @@ the map of embeddings corrected for the number of preserved automorphisms. For a
             except AgentParseError:
                 return self.get_number_of_embeddings_of_complex(KappaComplex(query))
         except ComplexParseError:
-            raise ValueError(&#39;Could not parse query as a KappaAgent nor as a KappaComplex.&#39;)</code></pre>
+            raise ValueError(&#39;Could not parse &lt;{}&gt; as a KappaAgent nor as a KappaComplex.&#39;.format(query))</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.KappaComplex.get_number_of_embeddings_of_agent"><code class="name flex">
 <span>def <span class="ident">get_number_of_embeddings_of_agent</span></span>(<span>self, query) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the number of embeddings the query agent has on the KappaComplex.</p></div>
+<div class="desc"><p>Returns the number of embeddings the query agent has on the KappaComplex. For the 'truth table' of site
+nomenclature, see <code>KappaPort</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_number_of_embeddings_of_agent(self, query) -&gt; int:
-    &#34;&#34;&#34;Returns the number of embeddings the query agent has on the KappaComplex.&#34;&#34;&#34;
+    &#34;&#34;&#34;Returns the number of embeddings the query agent has on the KappaComplex. For the &#39;truth table&#39; of site
+    nomenclature, see `KappaPort`.&#34;&#34;&#34;
     # type the query into an Agent, if it&#39;s not one already
     if not type(query) is KappaAgent:
         q_agent = KappaAgent(query)
@@ -791,7 +804,7 @@ the map of embeddings corrected for the number of preserved automorphisms. For a
 <span>def <span class="ident">get_number_of_embeddings_of_complex</span></span>(<span>self, query, symmetry_adjust: bool = True) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the number of embedding the query complex has on the KappaComplex. Optional parameter to not perform
+<div class="desc"><p>Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
 the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries
 preserved in the query complex's image in the target.</p></div>
 <details class="source">
@@ -799,7 +812,7 @@ preserved in the query complex's image in the target.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_number_of_embeddings_of_complex(self, query, symmetry_adjust: bool = True) -&gt; int:
-    &#34;&#34;&#34;Returns the number of embedding the query complex has on the KappaComplex. Optional parameter to not perform
+    &#34;&#34;&#34;Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
     the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries 
     preserved in the query complex&#39;s image in the target.&#34;&#34;&#34;
     if not type(query) is KappaComplex:
@@ -860,10 +873,11 @@ json.dump(my_cx, out_file)
 <div class="desc"><p>Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
 agents, edges their bonds. Nodes have an attribute dictionary where the key <code>kappa</code> holds the KappaAgent.
 Edges have an attribute dictionary where the key <code>bond id</code> holds the bond identifier from the Kappa expression.
-Node identifiers are integers, using the order of agent declaration. For a graph <code>g</code>, <code>g.nodes.data()</code> displays the
-node identifiers and their corresponding <code>KappaAgents</code>, and <code>g.edges.data()</code> displays the edges, using the node
-identifiers as well as the kappa identifiers.
-The optional parameter <code>identifier_offset</code> will offset all numeric identifiers reported; used in unlabeled snapshots, or when combining graphs.</p></div>
+Node identifiers are integers, using the order of agent declaration. For a graph <code>g</code>, <code>g.nodes.data()</code> displays
+the node identifiers and their corresponding <code>KappaAgents</code>, and <code>g.edges.data()</code> displays the edges, using the
+node identifiers as well as the kappa identifiers.
+The optional parameter <code>identifier_offset</code> will offset all numeric identifiers reported; used in unlabeled
+snapshots, or when combining graphs.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -872,10 +886,11 @@ The optional parameter <code>identifier_offset</code> will offset all numeric id
     &#34;&#34;&#34;Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
     agents, edges their bonds. Nodes have an attribute dictionary where the key `kappa` holds the KappaAgent.
     Edges have an attribute dictionary where the key `bond id` holds the bond identifier from the Kappa expression.
-    Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays the
-    node identifiers and their corresponding `KappaAgents`, and `g.edges.data()` displays the edges, using the node
-    identifiers as well as the kappa identifiers.
-    The optional parameter `identifier_offset` will offset all numeric identifiers reported; used in unlabeled snapshots, or when combining graphs.&#34;&#34;&#34;
+    Node identifiers are integers, using the order of agent declaration. For a graph `g`, `g.nodes.data()` displays
+    the node identifiers and their corresponding `KappaAgents`, and `g.edges.data()` displays the edges, using the
+    node identifiers as well as the kappa identifiers.
+    The optional parameter `identifier_offset` will offset all numeric identifiers reported; used in unlabeled
+    snapshots, or when combining graphs.&#34;&#34;&#34;
     kappa_complex_multigraph = nx.MultiGraph()
     dangle_bond_dict = {}                       # store unpaired bonds he
     paired_bond_list = []                       # store tuples of (agent index 1, agent index 2, bond identifier)

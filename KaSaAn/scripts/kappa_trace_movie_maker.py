@@ -1,4 +1,26 @@
 #!/usr/bin/env python3
+"""
+Make a movie out of a set of snapshot files, and save it to disk.
+
+``` {.text}
+usage: kappa_trace_movie_maker
+[-h]                    Show detailed help.
+[-d DIRECTORY]          Directory where snapshots are located, default <.>
+[-m {mass,count,size}]  What dictates area; default is mass.
+[-o OUTPUT_FILE]        File name for saving the movie. If unset, shown.
+[-w FIG_WIDTH]          Number of inches for the width of the plot. Default value is 16.
+[-r XY_RATIO]           X to Y ratio of the plot. Default value is 1.
+[-s]                    Rescale each snapshot to use the total plot area?
+[-l LEGEND_COLUMNS]     Number of columns in the legend. Default value is 2.
+[-f FRAME_INTERVAL]     Number of mili-seconds between frames in the animation.
+[-v]                    Display information about number of snapshots found.
+```
+
+For example:
+
+.. image:: ../../img/trace_movie.gif
+
+"""
 
 import argparse
 import sys

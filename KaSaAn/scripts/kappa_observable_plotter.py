@@ -1,4 +1,22 @@
 #!/usr/bin/env python3
+"""
+Plot a trace file produced by KaSim.
+
+``` {.text}
+usage: kappa_observable_plotter
+[-h]                    Show detailed help.
+[-i INPUT_FILE_NAME]    File to be plotted, <data.csv> if omitted.
+[-o OUTPUT_FILE_NAME]   If given, save plot to file; else show.
+[-p FILE_NAME]          Dump ordered observables to file, one per line, for indexing.
+[-vi [...]]             The list of observable indexes to be plotted; all if omitted.
+[-vn [...]]             The name of observables to be plotted; all if omitted.
+[-fs WIDTH HEIGHT]      Size of the resulting figure, in inches.
+[-dpi DOTS_PER_INCH]    Resolution of the figure, specified as dots per inch.
+[-d]                    If passed, plot discrete differential over time.
+[-lx]                   Plot the X axis in logarithmic scale.
+[-ly]                   Plot the Y axis in logarithmic scale.
+```
+"""
 
 import argparse
 import matplotlib as mpl

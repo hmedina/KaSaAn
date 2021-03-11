@@ -1,4 +1,20 @@
 #! /usr/bin/env python3
+"""
+Plot a variable from several output files.
+
+``` {.text}
+usage: kappa_observable_coplotter
+[-h]                        Show detailed help.
+-p PATTERN                  (quoted) Pattern matching desired files.
+[-vi VARIABLE_BY_INDEX]     Index of the variable to be co-plotted.
+[-vn VARIABLE_BY_NAME]      Name of the variable to be co-plotted.
+[-o OUT_FILE]               If given, save plot to file; else show.
+[-d]                        If passed, plot discrete differential over time.
+[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
+[-lx]                       Plot the X axis in logarithmic scale.
+[-ly]                       Plot the Y axis in logarithmic scale.
+```
+"""
 
 import argparse
 import matplotlib as mpl

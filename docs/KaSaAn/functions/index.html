@@ -34,13 +34,11 @@ sub-module).</p>
 &#34;&#34;&#34;Utility functions used stand-alone, or as the main component of entry-points (defined under `KaSaAn.scripts`
  sub-module).&#34;&#34;&#34;
 
-from .catalytic_potential import _get_potential_of_snapshot, get_potential_of_folder
+from .catalytic_potential import get_potential_of_folder
 from .find_snapshot_names import find_snapshot_names
 from .numerical_sort import numerical_sort
 from .observable_plotter import observable_file_reader, observable_list_axis_annotator
 from .observable_coplotter import observable_coplot_axis_annotator, _observable_multi_data_axis_annotator
-from .plot_filtered_distributions import plot_filtered_dist
-from .prefixed_snapshot_analyzer import prefixed_snapshot_analyzer
 from .snapshot_visualizer_patchwork import render_snapshot_as_patchwork
 from .snapshot_visualizer_network import render_snapshot_as_plain_graph
 from .snapshot_visualizer_subcomponent import render_complexes_as_plain_graph
@@ -71,14 +69,6 @@ from .trace_movie_maker import movie_from_snapshots</code></pre>
 <div class="desc"></div>
 </dd>
 <dt><code class="name"><a title="KaSaAn.functions.observable_plotter" href="observable_plotter.html">KaSaAn.functions.observable_plotter</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="KaSaAn.functions.plot_filtered_distributions" href="plot_filtered_distributions.html">KaSaAn.functions.plot_filtered_distributions</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="KaSaAn.functions.prefixed_snapshot_analyzer" href="prefixed_snapshot_analyzer.html">KaSaAn.functions.prefixed_snapshot_analyzer</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -126,8 +116,6 @@ from .trace_movie_maker import movie_from_snapshots</code></pre>
 <li><code><a title="KaSaAn.functions.numerical_sort" href="numerical_sort.html">KaSaAn.functions.numerical_sort</a></code></li>
 <li><code><a title="KaSaAn.functions.observable_coplotter" href="observable_coplotter.html">KaSaAn.functions.observable_coplotter</a></code></li>
 <li><code><a title="KaSaAn.functions.observable_plotter" href="observable_plotter.html">KaSaAn.functions.observable_plotter</a></code></li>
-<li><code><a title="KaSaAn.functions.plot_filtered_distributions" href="plot_filtered_distributions.html">KaSaAn.functions.plot_filtered_distributions</a></code></li>
-<li><code><a title="KaSaAn.functions.prefixed_snapshot_analyzer" href="prefixed_snapshot_analyzer.html">KaSaAn.functions.prefixed_snapshot_analyzer</a></code></li>
 <li><code><a title="KaSaAn.functions.snapshot_visualizer_network" href="snapshot_visualizer_network.html">KaSaAn.functions.snapshot_visualizer_network</a></code></li>
 <li><code><a title="KaSaAn.functions.snapshot_visualizer_patchwork" href="snapshot_visualizer_patchwork.html">KaSaAn.functions.snapshot_visualizer_patchwork</a></code></li>
 <li><code><a title="KaSaAn.functions.snapshot_visualizer_subcomponent" href="snapshot_visualizer_subcomponent.html">KaSaAn.functions.snapshot_visualizer_subcomponent</a></code></li>

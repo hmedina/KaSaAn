@@ -1,4 +1,21 @@
 #! /usr/bin/env python3
+"""
+Visualize a set of complexes from a kappa snapshot as plain graphs.
+
+``` {.text}
+usage: kappa_snapshot_visualizer_subcomponent
+[-h]                        Show detailed help.
+-sf SNAPSHOT_FILE_NAME      Name of snapshot to visualize.
+[-s [...]]                  Complex sizes to be viewed. Biggest if not given.
+[-cs COLORING_SCHEME]       File specifying a coloring scheme.
+[-p [...]]                  Patterns to highlight.
+[-of OUTPUT_FILE]           The common file name for saving figures; shown if not given.
+[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
+[-ns NODE_SIZE]             Size of nodes; default of 300 as used by NetworkX.
+[-ew EDGE_WIDTH]            Width of edges; default of 1.0 as used by NetworkX.
+[-d]                        Print to standard output the size distribution.
+```
+"""
 
 import argparse
 import matplotlib as mpl

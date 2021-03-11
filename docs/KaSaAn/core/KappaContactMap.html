@@ -93,27 +93,28 @@ def _raw_string_to_agent_sites_bond_types(raw_string: str) -&gt; Tuple[str, dict
     return agent_name, sites_data
 
 
-def _parsed_kappa_to_default_graphics(parsed_kappa_struct: dict, wedge_surf_dist=1, wedge_thick_ratio=0.5, grid_spacing=10):
+def _parsed_kappa_to_default_graphics(parsed_kappa_struct: dict,
+                                      wedge_surf_dist=1, wedge_thick_ratio=0.5, grid_spacing=10) -&gt; dict:
     &#34;&#34;&#34;Initialize agents as a square grid, sites superposed (i.e. default values).&#34;&#34;&#34;
     agent_graphics = {}
     grid_base = np.ceil(np.sqrt(len(parsed_kappa_struct.keys())))
     for agent_index, agent_name in enumerate(parsed_kappa_struct.keys()):
-        agent_x = np.mod(agent_index, grid_base) * grid_spacing           # default values, square grid
-        agent_y = np.floor_divide(agent_index, grid_base) * grid_spacing
-        binding_sites = {}                                  # each site should be sent to one or both of these
+        agent_x: int = np.mod(agent_index, grid_base) * grid_spacing           # default values, square grid
+        agent_y: int = np.floor_divide(agent_index, grid_base) * grid_spacing
+        binding_sites = {}
         flagpole_site_data = {}
         for site_name in parsed_kappa_struct[agent_name].keys():
             if parsed_kappa_struct[agent_name][site_name][&#39;bnd_states&#39;]:
                 binding_sites[site_name] = {&#39;center&#39;: (agent_x, agent_y),
                                             &#39;r&#39;: wedge_surf_dist,
-                                            &#39;theta1&#39;: 0.0, &#39;theta2&#39;: 0.0,       # these will be initialized later
+                                            &#39;theta1&#39;: 0.0, &#39;theta2&#39;: 0.0,       # these will be set later
                                             &#39;width&#39;: wedge_thick_ratio * wedge_surf_dist,
                                             &#39;facecolor&#39;: &#39;#000000&#39;}
             if parsed_kappa_struct[agent_name][site_name][&#39;int_states&#39;]:
                 flagpole_site_data[site_name] = parsed_kappa_struct[agent_name][site_name][&#39;int_states&#39;]
         flagpole_location = {&#39;center&#39;: (agent_x, agent_y),
                              &#39;r&#39;: wedge_surf_dist,
-                             &#39;theta1&#39;: 0.0, &#39;theta2&#39;: 0.0,                 # these will be initialized later
+                             &#39;theta1&#39;: 0.0, &#39;theta2&#39;: 0.0,                      # these will be set later
                              &#39;width&#39;: wedge_thick_ratio * wedge_surf_dist,
                              &#39;facecolor&#39;: &#39;#444444&#39;}
         agent_graphics[agent_name] = {&#39;loc_x&#39;: agent_x, &#39;loc_y&#39;: agent_y,
@@ -319,7 +320,28 @@ def _draw_flagpole(agent_graphic_struct: dict, figure_axis, detailed_toggle: boo
 
 class KappaContactMap:
     &#34;&#34;&#34;Represent a contact map. Initializer expects a format like that found in the KaSim witness files, `inputs.ka`,
-    and is designed to read in from said files.&#34;&#34;&#34;
+    and is designed to read in from said files. Example usage:
+&gt;&gt;&gt; import matplotlib.pyplot as plt
+&gt;&gt;&gt; from KaSaAn.core import KappaContactMap
+
+&gt;&gt;&gt; my_contact_map = KappaContactMap(&#39;inputs.ka&#39;)
+&gt;&gt;&gt; fig, ax = plt.subplots(figsize=(6, 6))
+
+&gt;&gt;&gt; my_contact_map.move_agent_to(&#39;Fitz&#39;, 5, 5)
+&gt;&gt;&gt; my_contact_map.move_agent_to(&#39;Foo&#39;, 10, 15)
+&gt;&gt;&gt; my_contact_map.move_agent_to(&#39;Bar&#39;, 12.5, 2.5)
+&gt;&gt;&gt; my_contact_map.move_agent_to(&#39;Baz&#39;, 0, 12.5)
+
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of(&#39;Foo&#39;, 190)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of(&#39;Baz&#39;, -180)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of(&#39;Fitz&#39;, 30)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of(&#39;Bar&#39;, -10)
+
+&gt;&gt;&gt; my_contact_map.draw(ax, draw_state_flagpole=True)
+&gt;&gt;&gt; ax.axis(&#39;off&#39;)
+&gt;&gt;&gt; plt.tight_layout()
+&gt;&gt;&gt; plt.show()
+    &#34;&#34;&#34;
     def __init__(self, file_name: str):
         # type internal structures
         self._raw_string_list: List[str]
@@ -344,24 +366,24 @@ class KappaContactMap:
         self._bond_types = _get_bond_types(self._parsed_kappa)
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def move_agent_to(self, agent_name, new_x, new_y):
-        &#34;&#34;&#34;Change the location of an agent&#39;s center by specifying new coordinates.&#34;&#34;&#34;
+    def move_agent_to(self, agent_name: str, new_x: float, new_y: float):
+        &#34;&#34;&#34;Change the location of an agent&#39;s center by specifying new coordinates, in MatPlotLib &#34;data units&#34;.&#34;&#34;&#34;
         self._agent_graphics[agent_name][&#39;loc_x&#39;] = new_x
         self._agent_graphics[agent_name][&#39;loc_y&#39;] = new_y
         # update
         self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def move_agent_by(self, agent_name, delta_x, delta_y):
-        &#34;&#34;&#34;Move the location of an agent&#39;s center by some amount.&#34;&#34;&#34;
+    def move_agent_by(self, agent_name: str, delta_x: float, delta_y: float):
+        &#34;&#34;&#34;Move the location of an agent&#39;s center by some amount, in MatPlotLib &#34;data units&#34;.&#34;&#34;&#34;
         self._agent_graphics[agent_name][&#39;loc_x&#39;] += delta_x
         self._agent_graphics[agent_name][&#39;loc_y&#39;] += delta_y
         # update
         self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def rotate_all_sites_of(self, agent_name, degrees):
-        &#34;&#34;&#34;Rotate all the sites on an agent by this many degrees.&#34;&#34;&#34;
+    def rotate_all_sites_of(self, agent_name: str, degrees: float):
+        &#34;&#34;&#34;Rotate all the sites on an agent by this many degrees; positive rotates counter-clockwise.&#34;&#34;&#34;
         # rotate binding sites
         for site_name in self._agent_graphics[agent_name][&#39;bnd_sites&#39;].keys():
             self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;theta1&#39;] += degrees
@@ -372,8 +394,9 @@ class KappaContactMap:
         # update
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def swap_sites_of(self, agent_name, site_1, site_2):
-        &#34;&#34;&#34;Swap the positions of two sites.&#34;&#34;&#34;
+    def swap_sites_of(self, agent_name: str, site_1: str, site_2: str):
+        &#34;&#34;&#34;Swap the positions of two specific sites on a given agent (flagpole not eligible as it&#39;s a meta-site; use
+         `rotate_all_sites_of`).&#34;&#34;&#34;
         s1_t_1 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta1&#39;]
         s1_t_2 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta2&#39;]
         s2_t_1 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta1&#39;]
@@ -385,33 +408,31 @@ class KappaContactMap:
         # update
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def set_site_color_of(self, agent_name, site_name, new_color):
-        &#34;&#34;&#34;Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color.&#34;&#34;&#34;
+    def set_site_color_of(self, agent_name: str, site_name: str, new_color):
+        &#34;&#34;&#34;Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color, e.g.
+        `#0f0f0f` (hex RGB[A]), `(0.5, 0.5, 0.5)` (decimal RGB[A]), `xkcd:puke green` (XKCD color survey names).&#34;&#34;&#34;
         self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;facecolor&#39;] = new_color
 
-    def draw(self, target_axis, draw_state_flagpole: bool = True):
-        &#34;&#34;&#34;Draw the contact map onto the supplied axis. If draw_state_flagpole is True, the flagpole will display all
-         internal state data. If false, only a summary with the number of sites omitted.&#34;&#34;&#34;
+    def draw(self, target_axis: mpl.axes.Axes, draw_state_flagpole: bool = True):
+        &#34;&#34;&#34;Draw the contact map onto the supplied axis. If `draw_state_flagpole` is `True`, the flagpole will display
+        all internal state data. If `False`, it will only display a summary with the number of sites omitted. By
+        default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents
+        would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).&#34;&#34;&#34;
         # draw splines
         spline_list = [_create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
         target_axis.add_collection(PatchCollection(spline_list, match_original=True))
-
         # draw wedges: sites and flagpole
         site_wedges = _list_binding_wedges(self._agent_graphics)
         flag_wedges = _list_flagpole_wedges(self._agent_graphics)
         target_axis.add_collection(PatchCollection(site_wedges, match_original=True))
         target_axis.add_collection(PatchCollection(flag_wedges, match_original=True))
-
         # draw labels for agents and sites
         _annotate_wedges_and_agents(self._agent_graphics, target_axis)
-
         # draw flagpole with its text
         _draw_flagpole(self._agent_graphics, target_axis, draw_state_flagpole)
-
         # update limits, set aspect ratio
         target_axis.autoscale()
-        target_axis.set_aspect(&#39;equal&#39;)
-        return target_axis</code></pre>
+        target_axis.set_aspect(&#39;equal&#39;)</code></pre>
 </details>
 </section>
 <section>
@@ -429,14 +450,56 @@ class KappaContactMap:
 </code></dt>
 <dd>
 <div class="desc"><p>Represent a contact map. Initializer expects a format like that found in the KaSim witness files, <code>inputs.ka</code>,
-and is designed to read in from said files.</p></div>
+and is designed to read in from said files. Example usage:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; import matplotlib.pyplot as plt
+&gt;&gt;&gt; from KaSaAn.core import KappaContactMap
+</code></pre>
+<pre><code class="language-python-repl">&gt;&gt;&gt; my_contact_map = KappaContactMap('inputs.ka')
+&gt;&gt;&gt; fig, ax = plt.subplots(figsize=(6, 6))
+</code></pre>
+<pre><code class="language-python-repl">&gt;&gt;&gt; my_contact_map.move_agent_to('Fitz', 5, 5)
+&gt;&gt;&gt; my_contact_map.move_agent_to('Foo', 10, 15)
+&gt;&gt;&gt; my_contact_map.move_agent_to('Bar', 12.5, 2.5)
+&gt;&gt;&gt; my_contact_map.move_agent_to('Baz', 0, 12.5)
+</code></pre>
+<pre><code class="language-python-repl">&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Foo', 190)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Baz', -180)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Fitz', 30)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Bar', -10)
+</code></pre>
+<pre><code class="language-python-repl">&gt;&gt;&gt; my_contact_map.draw(ax, draw_state_flagpole=True)
+&gt;&gt;&gt; ax.axis('off')
+&gt;&gt;&gt; plt.tight_layout()
+&gt;&gt;&gt; plt.show()
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class KappaContactMap:
     &#34;&#34;&#34;Represent a contact map. Initializer expects a format like that found in the KaSim witness files, `inputs.ka`,
-    and is designed to read in from said files.&#34;&#34;&#34;
+    and is designed to read in from said files. Example usage:
+&gt;&gt;&gt; import matplotlib.pyplot as plt
+&gt;&gt;&gt; from KaSaAn.core import KappaContactMap
+
+&gt;&gt;&gt; my_contact_map = KappaContactMap(&#39;inputs.ka&#39;)
+&gt;&gt;&gt; fig, ax = plt.subplots(figsize=(6, 6))
+
+&gt;&gt;&gt; my_contact_map.move_agent_to(&#39;Fitz&#39;, 5, 5)
+&gt;&gt;&gt; my_contact_map.move_agent_to(&#39;Foo&#39;, 10, 15)
+&gt;&gt;&gt; my_contact_map.move_agent_to(&#39;Bar&#39;, 12.5, 2.5)
+&gt;&gt;&gt; my_contact_map.move_agent_to(&#39;Baz&#39;, 0, 12.5)
+
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of(&#39;Foo&#39;, 190)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of(&#39;Baz&#39;, -180)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of(&#39;Fitz&#39;, 30)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of(&#39;Bar&#39;, -10)
+
+&gt;&gt;&gt; my_contact_map.draw(ax, draw_state_flagpole=True)
+&gt;&gt;&gt; ax.axis(&#39;off&#39;)
+&gt;&gt;&gt; plt.tight_layout()
+&gt;&gt;&gt; plt.show()
+    &#34;&#34;&#34;
     def __init__(self, file_name: str):
         # type internal structures
         self._raw_string_list: List[str]
@@ -461,24 +524,24 @@ and is designed to read in from said files.</p></div>
         self._bond_types = _get_bond_types(self._parsed_kappa)
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def move_agent_to(self, agent_name, new_x, new_y):
-        &#34;&#34;&#34;Change the location of an agent&#39;s center by specifying new coordinates.&#34;&#34;&#34;
+    def move_agent_to(self, agent_name: str, new_x: float, new_y: float):
+        &#34;&#34;&#34;Change the location of an agent&#39;s center by specifying new coordinates, in MatPlotLib &#34;data units&#34;.&#34;&#34;&#34;
         self._agent_graphics[agent_name][&#39;loc_x&#39;] = new_x
         self._agent_graphics[agent_name][&#39;loc_y&#39;] = new_y
         # update
         self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def move_agent_by(self, agent_name, delta_x, delta_y):
-        &#34;&#34;&#34;Move the location of an agent&#39;s center by some amount.&#34;&#34;&#34;
+    def move_agent_by(self, agent_name: str, delta_x: float, delta_y: float):
+        &#34;&#34;&#34;Move the location of an agent&#39;s center by some amount, in MatPlotLib &#34;data units&#34;.&#34;&#34;&#34;
         self._agent_graphics[agent_name][&#39;loc_x&#39;] += delta_x
         self._agent_graphics[agent_name][&#39;loc_y&#39;] += delta_y
         # update
         self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def rotate_all_sites_of(self, agent_name, degrees):
-        &#34;&#34;&#34;Rotate all the sites on an agent by this many degrees.&#34;&#34;&#34;
+    def rotate_all_sites_of(self, agent_name: str, degrees: float):
+        &#34;&#34;&#34;Rotate all the sites on an agent by this many degrees; positive rotates counter-clockwise.&#34;&#34;&#34;
         # rotate binding sites
         for site_name in self._agent_graphics[agent_name][&#39;bnd_sites&#39;].keys():
             self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;theta1&#39;] += degrees
@@ -489,8 +552,9 @@ and is designed to read in from said files.</p></div>
         # update
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def swap_sites_of(self, agent_name, site_1, site_2):
-        &#34;&#34;&#34;Swap the positions of two sites.&#34;&#34;&#34;
+    def swap_sites_of(self, agent_name: str, site_1: str, site_2: str):
+        &#34;&#34;&#34;Swap the positions of two specific sites on a given agent (flagpole not eligible as it&#39;s a meta-site; use
+         `rotate_all_sites_of`).&#34;&#34;&#34;
         s1_t_1 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta1&#39;]
         s1_t_2 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta2&#39;]
         s2_t_1 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta1&#39;]
@@ -502,82 +566,79 @@ and is designed to read in from said files.</p></div>
         # update
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def set_site_color_of(self, agent_name, site_name, new_color):
-        &#34;&#34;&#34;Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color.&#34;&#34;&#34;
+    def set_site_color_of(self, agent_name: str, site_name: str, new_color):
+        &#34;&#34;&#34;Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color, e.g.
+        `#0f0f0f` (hex RGB[A]), `(0.5, 0.5, 0.5)` (decimal RGB[A]), `xkcd:puke green` (XKCD color survey names).&#34;&#34;&#34;
         self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;facecolor&#39;] = new_color
 
-    def draw(self, target_axis, draw_state_flagpole: bool = True):
-        &#34;&#34;&#34;Draw the contact map onto the supplied axis. If draw_state_flagpole is True, the flagpole will display all
-         internal state data. If false, only a summary with the number of sites omitted.&#34;&#34;&#34;
+    def draw(self, target_axis: mpl.axes.Axes, draw_state_flagpole: bool = True):
+        &#34;&#34;&#34;Draw the contact map onto the supplied axis. If `draw_state_flagpole` is `True`, the flagpole will display
+        all internal state data. If `False`, it will only display a summary with the number of sites omitted. By
+        default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents
+        would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).&#34;&#34;&#34;
         # draw splines
         spline_list = [_create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
         target_axis.add_collection(PatchCollection(spline_list, match_original=True))
-
         # draw wedges: sites and flagpole
         site_wedges = _list_binding_wedges(self._agent_graphics)
         flag_wedges = _list_flagpole_wedges(self._agent_graphics)
         target_axis.add_collection(PatchCollection(site_wedges, match_original=True))
         target_axis.add_collection(PatchCollection(flag_wedges, match_original=True))
-
         # draw labels for agents and sites
         _annotate_wedges_and_agents(self._agent_graphics, target_axis)
-
         # draw flagpole with its text
         _draw_flagpole(self._agent_graphics, target_axis, draw_state_flagpole)
-
         # update limits, set aspect ratio
         target_axis.autoscale()
-        target_axis.set_aspect(&#39;equal&#39;)
-        return target_axis</code></pre>
+        target_axis.set_aspect(&#39;equal&#39;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
 <dt id="KaSaAn.core.KappaContactMap.KappaContactMap.draw"><code class="name flex">
-<span>def <span class="ident">draw</span></span>(<span>self, target_axis, draw_state_flagpole: bool = True)</span>
+<span>def <span class="ident">draw</span></span>(<span>self, target_axis: matplotlib.axes._axes.Axes, draw_state_flagpole: bool = True)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Draw the contact map onto the supplied axis. If draw_state_flagpole is True, the flagpole will display all
-internal state data. If false, only a summary with the number of sites omitted.</p></div>
+<div class="desc"><p>Draw the contact map onto the supplied axis. If <code>draw_state_flagpole</code> is <code>True</code>, the flagpole will display
+all internal state data. If <code>False</code>, it will only display a summary with the number of sites omitted. By
+default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents
+would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def draw(self, target_axis, draw_state_flagpole: bool = True):
-    &#34;&#34;&#34;Draw the contact map onto the supplied axis. If draw_state_flagpole is True, the flagpole will display all
-     internal state data. If false, only a summary with the number of sites omitted.&#34;&#34;&#34;
+<pre><code class="python">def draw(self, target_axis: mpl.axes.Axes, draw_state_flagpole: bool = True):
+    &#34;&#34;&#34;Draw the contact map onto the supplied axis. If `draw_state_flagpole` is `True`, the flagpole will display
+    all internal state data. If `False`, it will only display a summary with the number of sites omitted. By
+    default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents
+    would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).&#34;&#34;&#34;
     # draw splines
     spline_list = [_create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
     target_axis.add_collection(PatchCollection(spline_list, match_original=True))
-
     # draw wedges: sites and flagpole
     site_wedges = _list_binding_wedges(self._agent_graphics)
     flag_wedges = _list_flagpole_wedges(self._agent_graphics)
     target_axis.add_collection(PatchCollection(site_wedges, match_original=True))
     target_axis.add_collection(PatchCollection(flag_wedges, match_original=True))
-
     # draw labels for agents and sites
     _annotate_wedges_and_agents(self._agent_graphics, target_axis)
-
     # draw flagpole with its text
     _draw_flagpole(self._agent_graphics, target_axis, draw_state_flagpole)
-
     # update limits, set aspect ratio
     target_axis.autoscale()
-    target_axis.set_aspect(&#39;equal&#39;)
-    return target_axis</code></pre>
+    target_axis.set_aspect(&#39;equal&#39;)</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.KappaContactMap.move_agent_by"><code class="name flex">
-<span>def <span class="ident">move_agent_by</span></span>(<span>self, agent_name, delta_x, delta_y)</span>
+<span>def <span class="ident">move_agent_by</span></span>(<span>self, agent_name: str, delta_x: float, delta_y: float)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Move the location of an agent's center by some amount.</p></div>
+<div class="desc"><p>Move the location of an agent's center by some amount, in MatPlotLib "data units".</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def move_agent_by(self, agent_name, delta_x, delta_y):
-    &#34;&#34;&#34;Move the location of an agent&#39;s center by some amount.&#34;&#34;&#34;
+<pre><code class="python">def move_agent_by(self, agent_name: str, delta_x: float, delta_y: float):
+    &#34;&#34;&#34;Move the location of an agent&#39;s center by some amount, in MatPlotLib &#34;data units&#34;.&#34;&#34;&#34;
     self._agent_graphics[agent_name][&#39;loc_x&#39;] += delta_x
     self._agent_graphics[agent_name][&#39;loc_y&#39;] += delta_y
     # update
@@ -586,16 +647,16 @@ internal state data. If false, only a summary with the number of sites omitted.<
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.KappaContactMap.move_agent_to"><code class="name flex">
-<span>def <span class="ident">move_agent_to</span></span>(<span>self, agent_name, new_x, new_y)</span>
+<span>def <span class="ident">move_agent_to</span></span>(<span>self, agent_name: str, new_x: float, new_y: float)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Change the location of an agent's center by specifying new coordinates.</p></div>
+<div class="desc"><p>Change the location of an agent's center by specifying new coordinates, in MatPlotLib "data units".</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def move_agent_to(self, agent_name, new_x, new_y):
-    &#34;&#34;&#34;Change the location of an agent&#39;s center by specifying new coordinates.&#34;&#34;&#34;
+<pre><code class="python">def move_agent_to(self, agent_name: str, new_x: float, new_y: float):
+    &#34;&#34;&#34;Change the location of an agent&#39;s center by specifying new coordinates, in MatPlotLib &#34;data units&#34;.&#34;&#34;&#34;
     self._agent_graphics[agent_name][&#39;loc_x&#39;] = new_x
     self._agent_graphics[agent_name][&#39;loc_y&#39;] = new_y
     # update
@@ -604,16 +665,16 @@ internal state data. If false, only a summary with the number of sites omitted.<
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.KappaContactMap.rotate_all_sites_of"><code class="name flex">
-<span>def <span class="ident">rotate_all_sites_of</span></span>(<span>self, agent_name, degrees)</span>
+<span>def <span class="ident">rotate_all_sites_of</span></span>(<span>self, agent_name: str, degrees: float)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Rotate all the sites on an agent by this many degrees.</p></div>
+<div class="desc"><p>Rotate all the sites on an agent by this many degrees; positive rotates counter-clockwise.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def rotate_all_sites_of(self, agent_name, degrees):
-    &#34;&#34;&#34;Rotate all the sites on an agent by this many degrees.&#34;&#34;&#34;
+<pre><code class="python">def rotate_all_sites_of(self, agent_name: str, degrees: float):
+    &#34;&#34;&#34;Rotate all the sites on an agent by this many degrees; positive rotates counter-clockwise.&#34;&#34;&#34;
     # rotate binding sites
     for site_name in self._agent_graphics[agent_name][&#39;bnd_sites&#39;].keys():
         self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;theta1&#39;] += degrees
@@ -626,30 +687,34 @@ internal state data. If false, only a summary with the number of sites omitted.<
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.KappaContactMap.set_site_color_of"><code class="name flex">
-<span>def <span class="ident">set_site_color_of</span></span>(<span>self, agent_name, site_name, new_color)</span>
+<span>def <span class="ident">set_site_color_of</span></span>(<span>self, agent_name: str, site_name: str, new_color)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color.</p></div>
+<div class="desc"><p>Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color, e.g.
+<code>#0f0f0f</code> (hex RGB[A]), <code>(0.5, 0.5, 0.5)</code> (decimal RGB[A]), <code>xkcd:puke green</code> (XKCD color survey names).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def set_site_color_of(self, agent_name, site_name, new_color):
-    &#34;&#34;&#34;Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color.&#34;&#34;&#34;
+<pre><code class="python">def set_site_color_of(self, agent_name: str, site_name: str, new_color):
+    &#34;&#34;&#34;Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color, e.g.
+    `#0f0f0f` (hex RGB[A]), `(0.5, 0.5, 0.5)` (decimal RGB[A]), `xkcd:puke green` (XKCD color survey names).&#34;&#34;&#34;
     self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;facecolor&#39;] = new_color</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.KappaContactMap.swap_sites_of"><code class="name flex">
-<span>def <span class="ident">swap_sites_of</span></span>(<span>self, agent_name, site_1, site_2)</span>
+<span>def <span class="ident">swap_sites_of</span></span>(<span>self, agent_name: str, site_1: str, site_2: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Swap the positions of two sites.</p></div>
+<div class="desc"><p>Swap the positions of two specific sites on a given agent (flagpole not eligible as it's a meta-site; use
+<code>rotate_all_sites_of</code>).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def swap_sites_of(self, agent_name, site_1, site_2):
-    &#34;&#34;&#34;Swap the positions of two sites.&#34;&#34;&#34;
+<pre><code class="python">def swap_sites_of(self, agent_name: str, site_1: str, site_2: str):
+    &#34;&#34;&#34;Swap the positions of two specific sites on a given agent (flagpole not eligible as it&#39;s a meta-site; use
+     `rotate_all_sites_of`).&#34;&#34;&#34;
     s1_t_1 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta1&#39;]
     s1_t_2 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_1][&#39;theta2&#39;]
     s2_t_1 = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_2][&#39;theta1&#39;]

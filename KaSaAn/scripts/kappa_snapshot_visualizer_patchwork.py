@@ -1,4 +1,23 @@
 #!/usr/bin/env python3
+"""
+Visualize a kappa snapshot using a plain graph.
+
+``` {.text}
+usage: kappa_snapshot_visualizer_network
+[-h]                        Show detailed help.
+-sf SNAPSHOT_FILE_NAME      Name of snapshot to visualize.
+[-cs FILE_NAME]             File specifying a coloring scheme.
+[-vm [all|mass|count|size]] How to scale area; default plots all three.
+[-of OUTPUT_FILE]           The common file name for saving figures; shown if not given.
+[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
+[-dpi DOTS_PER_INCH]        Resolution of the figure.
+```
+
+For example:
+
+.. image:: ../../img/kite_snap_patchwork.png
+
+"""
 
 import argparse
 import ast

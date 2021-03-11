@@ -1,4 +1,18 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
+"""
+Get the catalytic potential per snapshot for a series.
+
+``` {.text}
+usage: kappa_catalytic_potential
+[-h]                Show detailed help.
+[-d DIRECTORY]      Directory containing the snapshots.
+-e ENZYME_NAME      Name of the first agent.
+-s SUBSTRATE_NAME   Name of the second agent.
+[-v]                If set, print additional information to standard output.
+[-o OUTPUT_FILE]    If specified, save to file; else print to standard output.
+-p SNAPSHOT_PREFIX  The prefix by which the snapshots are named.
+```
+"""
 
 import argparse
 import sys

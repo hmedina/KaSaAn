@@ -1,4 +1,20 @@
 #! /usr/bin/env python3
+"""
+Plot the compostion of the giant component in time from a set of snapshots located in a directory.
+
+``` {.text}
+usage: kappa_snapshot_largest_complex_time
+[-h]                    Show detailed help.
+[-d DIRECTORY]          Directory where snapshots are stored, default is <.>
+[-p PATTERN]            Pattern that groups desired snapshots names; default 'snap_*.ka'.
+[-a [...]]              Agents that should be plotted; omiting plots all.
+[-o OUTPUT_NAME]        The common file name for saving figures; shown if not given.
+[-fs WIDTH HEIGHT]      Size of the resulting figure, in inches.
+[--lin_log]             If specified, produce an additional plot with linear X-axis and logarithmic Y-axis.
+[--log_lin]             If specified, produce an additional plot with logarithmic X-axis and linear Y-axis.
+[--log_log]             If specified, produce an additional plot with logarithmic X-axis and logarithmic Y-axis.
+```
+"""
 
 import argparse
 import matplotlib as mpl
@@ -10,8 +26,8 @@ from KaSaAn.functions.graph_largest_complex_composition import snapshot_list_to_
 
 
 def main():
-    """Plot the evolution of the giant component in time from a set of snapshots located in a directory,'
-                    ' showing only the subset of agents specified."""
+    """Plot the evolution of the giant component in time from a set of snapshots located in a directory, showing only
+    the subset of agents specified."""
     parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('-d', '--directory', type=str, default='.',
                         help='Name of the directory where snapshots are stored.')
@@ -22,9 +38,9 @@ def main():
                              ' specification; does not follow bonds.')
     parser.add_argument('-o', '--output_name', type=str,
                         help='If specified, the name of the file where the figure should be saved. If not given,'
-                             ' figure will be shown instead. If alternate scale options are given, a "_log_lin" or similar'
-                             ' will be inserted between the file-name and the extension requested to distinguish the'
-                             ' additional requested files.')
+                             ' figure will be shown instead. If alternate scale options are given, a "_log_lin" or'
+                             ' similar will be inserted between the file-name and the extension requested to'
+                             ' distinguish the additional requested files.')
     parser.add_argument('-fs', '--figure_size', type=float, default=mpl.rcParams['figure.figsize'], nargs=2,
                         help='Size of the resulting figure, in inches, specified as two elements, width and height'
                              ' (text size is specified in points, so this affects the size of text relative to other'
