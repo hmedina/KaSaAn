@@ -116,6 +116,20 @@ class TestKappaSnapshot(unittest.TestCase):
         self.assertEqual(ref_snap_kte.get_abundance_of_agent('B(c{ph})'), 3)
         self.assertEqual(ref_snap_kte.get_abundance_of_agent('A(c[_])'), 3)
 
+    def test_get_abundance_of_pattern(self, snap_wi_lab=snap_prz_labeled, snap_wo_lab=snap_prz_unlabeled, snap_kite=snap_kte):
+        self.assertEqual((21, 21), snap_wi_lab.get_abundance_of_pattern('C(b[.])'))
+        self.assertEqual((21, 21), snap_wo_lab.get_abundance_of_pattern('C(b[.])'))
+        self.assertEqual((1, 1), snap_wi_lab.get_abundance_of_pattern('B(a[.] c[.])'))
+        self.assertEqual((1, 1), snap_wo_lab.get_abundance_of_pattern('B(a[.] c[.])'))
+        self.assertEqual((4, 4), snap_wi_lab.get_abundance_of_pattern('B(a[.] c[1]), C(b[1])'))
+        self.assertEqual((4, 4), snap_wo_lab.get_abundance_of_pattern('B(a[.] c[1]), C(b[1])'))
+        self.assertEqual((5, 5), snap_wi_lab.get_abundance_of_pattern('A(b[1]), B(a[1] c[2]), C(b[2])'))
+        self.assertEqual((5, 5), snap_wo_lab.get_abundance_of_pattern('A(b[1]), B(a[1] c[2]), C(b[2])'))
+        self.assertEqual((5, 5), snap_wi_lab.get_abundance_of_pattern('x23:A(b[1]), x54:B(a[1] c[2]), x97:C(b[2])'))
+        self.assertEqual((5, 5), snap_wo_lab.get_abundance_of_pattern('x0:A(b[1]), x9:B(a[1] c[2]), x99:C(b[2])'))
+        self.assertEqual((12, 3), snap_kite.get_abundance_of_pattern('A(a[4], b[1]), A(a[1], b[2]), A(a[2], b[3]), A(a[3], b[4])'))
+        self.assertEqual(snap_kite.get_abundance_of_pattern('A(a[4], b[1]), A(a[1], b[2]), A(a[2], b[3]), A(a[3], b[4])', multi_thread=False), snap_kite.get_abundance_of_pattern('A(a[4], b[1]), A(a[1], b[2]), A(a[2], b[3]), A(a[3], b[4])', multi_thread=True))
+
     def test_get_composition(self, ref_snap_abc=snap_abc, ref_snap_dim=snap_dim, ref_snap_kte=snap_kte):
         self.assertEqual(ref_snap_abc.get_composition(),
                          {KappaAgent("Aa()"): 1000, KappaAgent("Ab()"): 1000, KappaAgent("Ac()"): 1000,

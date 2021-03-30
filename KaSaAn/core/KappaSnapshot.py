@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """Contains the `KappaSnapshot` class, meant to represent a fully specified state of a reaction mixture."""
 
+#import multiprocessing
+import concurrent.futures as cofu
 import re
 import os
 import warnings
 import networkx as nx
+import numpy as np
 from typing import List, Set, ItemsView, Dict, Tuple
 
 from .KappaMultiAgentGraph import KappaMultiAgentGraph
-from .KappaComplex import KappaComplex
+from .KappaComplex import KappaComplex, embed_and_map
 from .KappaAgent import KappaAgent, KappaToken
-from .KappaError import SnapshotAgentParseError, SnapshotTokenParseError, SnapshotParseError
+from .KappaError import SnapshotAgentParseError, SnapshotTokenParseError, SnapshotParseError, AgentParseError, ComplexParseError
 
 
 class KappaSnapshot(KappaMultiAgentGraph):
@@ -166,6 +169,60 @@ class KappaSnapshot(KappaMultiAgentGraph):
             abundance += intra_cx_ab * cx_ab
         return abundance
 
+    def get_abundance_of_pattern(self, query_pattern, multi_thread: bool = False) -> Tuple[int, int]:
+        """
+Returns the number of times the pattern appears in the query, both the raw embedding number as well as
+the symmetry-corrected one. For single-agent patterns, there are no symmetry corrections needed, so the same
+value is returned twice.
+
+Optional parameter to use a multi-process pool of workers for embedding the pattern on the various
+complexes in the mixture, false by default. My intuition told me it would be faster to check multiple complexes
+at a time; however my regular usage shows marginal gains in some cases, negligible ones often, and frequently
+markedly slower performance with multi-threading than without. Case-specific, your milage may vary.
+        """
+        # if given string, attempt to cast
+        if type(query_pattern) is str:
+            try:
+                try:
+                    query_pattern = KappaAgent(query_pattern)
+                except AgentParseError:
+                    query_pattern = KappaComplex(query_pattern)
+            except ComplexParseError:
+                raise ValueError('Could not parse input <{}> as KappaAgent nor KappaComplex'.format(query_pattern))
+        # once cast, proceed
+        if type(query_pattern) is KappaAgent:
+            return tuple([self.get_abundance_of_agent(query_pattern)] * 2)
+        elif type(query_pattern) is KappaComplex:
+            abundances_all = np.zeros(len(self.get_all_complexes()))
+            abundances_unique = np.zeros(len(self.get_all_complexes()))
+            if not multi_thread:
+                for ka_index, ka_details in enumerate(self.get_all_complexes_and_abundances()):
+                    map_all, map_unique = embed_and_map(query_pattern, ka_details[0])
+                    abundances_all[ka_index] += len(map_all) * ka_details[1]
+                    abundances_unique[ka_index] += len(map_unique) * ka_details[1]
+            else:
+                map_inputs = zip([query_pattern] * len(self.get_all_complexes()), self.get_all_complexes())
+                maps_all = []
+                maps_unique = []
+                with cofu.ThreadPoolExecutor() as executor:
+                    jobs_submitted = {executor.submit(embed_and_map, *map_input): map_input for map_input in map_inputs}
+                    for job in cofu.as_completed(jobs_submitted):
+                        input_used = jobs_submitted[job]
+                        try:
+                            data = job.result()
+                        except Exception as exc:
+                            print('{} generated an exception: {}'.format(input_used, exc))
+                        else:
+                            maps_all.append(data[0])
+                            maps_unique.append(data[1])
+                abundances_all = [len(item) for item in maps_all]
+                abundances_unique = [len(item) for item in maps_unique]
+                abundances_all *= np.array(self.get_all_abundances())
+                abundances_unique *= np.array(self.get_all_abundances())
+            return np.sum(abundances_all, dtype=int), np.sum(abundances_unique, dtype=int)
+        else:
+            raise ValueError('Expected string, KappaAgent, or KappaComplex, got {}'.format(type(query_pattern)))
+
     def get_composition(self) -> Dict[KappaAgent, int]:
         """Return a dictionary where the keys are `KappaAgents`, the types and their abundance in the snapshot. This is
         akin to the sum formula of the snapshot."""
@@ -287,7 +344,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
         # iterate over all molecular species
         # then iterate over the number of times that species appears in the mix
         for molecular_species, species_abundance in self.get_all_complexes_and_abundances():
-            for species_copy in range(species_abundance):
+            for _ in range(species_abundance):
                 species_network = molecular_species.to_networkx(identifier_offset=agent_id_counter)
                 snapshot_network.update(species_network)
                 # if we are not dealing with labeled agents, increase offset once per network added

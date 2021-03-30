@@ -106,8 +106,8 @@ class KappaComplex(KappaMultiAgentGraph):
 
     def get_number_of_embeddings_of_complex(self, query, symmetry_adjust: bool = True) -> int:
         """Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
-        the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries 
-        preserved in the query complex's image in the target."""
+        the symmetry adjustment and report number of raw embeddings. See the `embed_and_map` function for examples and
+        advanced usage."""
         if not type(query) is KappaComplex:
             q_complex = KappaComplex(query)
         else:
@@ -118,18 +118,20 @@ class KappaComplex(KappaMultiAgentGraph):
         else:
             return len(total_maps)
 
-    def get_number_of_embeddings(self, query) -> int:
-        """Wrapper for the two specialized functions, for agent and complex."""
+    def get_number_of_embeddings(self, query, symmetry_adjust: bool = True) -> int:
+        """Wrapper for the two specialized functions, for agent and complex. Optional parameter to not perform
+        the symmetry adjustment and report the number of raw embeddings. See the `embed_and_map` function for examples
+        and advanced usage."""
         if type(query) is KappaAgent:
             return self.get_number_of_embeddings_of_agent(query)
         elif type(query) is KappaComplex:
-            return self.get_number_of_embeddings_of_complex(query)
+            return self.get_number_of_embeddings_of_complex(query, symmetry_adjust)
         else:
             try:
                 try:
                     return self.get_number_of_embeddings_of_agent(KappaAgent(query))
                 except AgentParseError:
-                    return self.get_number_of_embeddings_of_complex(KappaComplex(query))
+                    return self.get_number_of_embeddings_of_complex(KappaComplex(query), symmetry_adjust)
             except ComplexParseError:
                 raise ValueError('Could not parse <{}> as a KappaAgent nor as a KappaComplex.'.format(query))
 
@@ -211,6 +213,11 @@ def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> \
     [[(0, 0), (2, 2), (1, 1)], [(0, 1), (2, 0), (1, 2)], [(0, 2), (2, 1), (1, 0)]]
     >>> maps_unique
     [[(0, 0), (2, 2), (1, 1)]]
+
+    There are three ways of satisfying the query in the target, and these rotations inflate the number of "embeddings".
+    However, the set of identifiers making up the image of the query in the target is the same for these three:
+    `(0, 2, 1)`, `(1, 0, 2)`, and `(2, 1, 0)` are equivalent, and so the target contains only one copy of the query.
+    These dual-purpose interpretation of the "embedding" concept yields a function that returns both.
     """
     # litany of short circuits
     if ka_query.get_size_of_complex() > ka_target.get_size_of_complex():    # not enough agents
@@ -226,9 +233,10 @@ def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> \
             return ([], [])
         if target_comp[agent_type] < query_abundance:                       # target sum formula too small
             return ([], [])
-    # start from the least abundant type, get their node indexes in query network and target network
-    # from the <<query is improper subset of target>> check above, all of query's are in target, so query's minimum
-    # happens to also be the common minimum
+    # start from the least abundant type, get their node indexes in query network and target network;
+    # from the <<query is improper subset of target>> check above, all of query's are in target by type, so query's
+    # minimum must be a type in common; moreover all query's type abundances are equal or greater in target, so if 
+    # a type is the minimum in query, its abundance will also be either *the*, or just *a*, minimum in target
     common_min: KappaAgent = next(iter(query_comp))
     query_network = ka_query.to_networkx()
     target_network = ka_target.to_networkx()
@@ -236,13 +244,14 @@ def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> \
         raise ValueError('Error: query is not a connected graph.')
     if not nx.is_connected(target_network):
         raise ValueError('Error: target is not a connected graph.')
-    # get node identifiers whose agent type is of the common_min
-    common_min_q: np.array = np.where([
-        common_min in ka_agent for ka_agent in [
-            query_network.nodes()[item]['kappa'] for item in query_network.nodes()]])[0]
-    common_min_t: np.array = np.where([
-        common_min in ka_agent for ka_agent in [
-            target_network.nodes()[item]['kappa'] for item in target_network.nodes()]])[0]
+    common_min_q = []
+    for node_id in query_network.nodes:
+        if common_min in query_network.nodes[node_id]['kappa']:
+            common_min_q.append(node_id)
+    common_min_t = []
+    for node_id in target_network.nodes:
+        if common_min in target_network.nodes[node_id]['kappa']:
+            common_min_t.append(node_id)
     # embark on systematic traversal
     query_start_node = common_min_q[0]
     maps_all: List[List[Tuple[int, int]]] = []
@@ -252,7 +261,7 @@ def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> \
         map_found = _traverse_from(query_network, target_network, query_start_node, target_start_node)
         if map_found:
             maps_all.append(map_found)
-            q_nodes, t_nodes = zip(*map_found)
+            _, t_nodes = zip(*map_found)
             t_nodes = frozenset(t_nodes)
             if t_nodes not in map_set:
                 map_set.update([t_nodes])
@@ -279,13 +288,21 @@ def _traverse_from(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_st
                 # guarantee a bond type can appear at most once in an agent's
                 # bond set when read with the right orientation; this yields "rigidity" to the matcher
                 transforming_bond_type: KappaBond = query_net.get_edge_data(q_prev, q_node)[0]['bond type']
-                if q_prev > q_node:
+                transform_index_source = np.where([node == q_prev for node in query_net.nodes])[0][0]
+                transform_index_destin = np.where([node == q_node for node in query_net.nodes])[0][0]
+                if transform_index_destin < transform_index_source:
                     transforming_bond_type = transforming_bond_type.reverse()
                 target_bonds: List[KappaBond] = []
                 # get oriented bond list, incident on target node
                 for a, b in nx.edges(target_net, t_node):
                     bond_type: KappaBond = target_net.get_edge_data(a, b)[0]['bond type']
-                    if a < b:
+                    if a == t_node:
+                        source_index = np.where([node == a for node in target_net.nodes])[0][0]
+                        destin_index = np.where([node == b for node in target_net.nodes])[0][0]
+                    else:
+                        source_index = np.where([node == b for node in target_net.nodes])[0][0]
+                        destin_index = np.where([node == a for node in target_net.nodes])[0][0]
+                    if source_index < destin_index:
                         target_bonds.append(bond_type)
                     else:
                         target_bonds.append(bond_type.reverse())
@@ -323,26 +340,52 @@ def _node_match(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_node:
 
 
 def _edge_match(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_node: int, target_node: int) -> bool:
-    """Special purpose matcher that only compares bond types. Returns a tuple, where the first value is a boolean
-    holding whether the whole thing matched, and the second the list of neighbors in target for which there was a
-    bond-type match."""
+    """
+Special purpose matcher that only compares bond types. Returns a tuple, where the first value is a boolean
+holding whether the whole thing matched, and the second the list of neighbors in target for which there was a
+bond-type match.
+
+Rigidity in bonds in addition to site ordering!
+Since there is at maximum one of any bond type per node in the network, finding it means finding the only path
+like it, reducing the search space. This relies on the bonds being oriented, in this case I chose "outgoing" from
+the current node. Since agent identifiers can be written in arbitrary order, I can't rely on just a<b comparison
+at the identifier level to know if the bond's string was written in that same direction; to resolve this one must
+compare the order of node introduction, which tracks the order of edge / node declaration.
+    """
     match: bool = False
     query_edges = nx.edges(query_net, query_node)
     query_bond_types: List[KappaBond] = []
+    # orient bonds so as to be read outgoing
     for a, b in query_edges:
         this_bond: KappaBond = query_net.get_edge_data(a, b)[0]['bond type']
-        if a < b:   # if nodes ascending, read bond left-to-right
+        # NetworkX appears to return the edges in incident format (a,b), where the 'a' identifier
+        # is the same as the requested node, so for all, a==target_node (just to be safe, I have
+        # a manual check...)
+        if a == query_node:
+            source_index = np.where([node == a for node in query_net.nodes])[0][0]
+            destin_index = np.where([node == b for node in query_net.nodes])[0][0]
+        else:
+            source_index = np.where([node == b for node in query_net.nodes])[0][0]
+            destin_index = np.where([node == a for node in query_net.nodes])[0][0]
+        if source_index < destin_index:
             query_bond_types.append(this_bond)
         else:
             query_bond_types.append(this_bond.reverse())
-    target_edges = list(nx.edges(target_net, target_node))
+    target_edges = nx.edges(target_net, target_node)
     target_bond_types: List[KappaBond] = []
     for a, b in target_edges:
         this_bond: KappaBond = target_net.get_edge_data(a, b)[0]['bond type']
-        if a < b:   # if nodes ascending, read bond left-to-right
+        if a == target_node:
+            source_index = np.where([node == a for node in target_net.nodes])[0][0]
+            destin_index = np.where([node == b for node in target_net.nodes])[0][0]
+        else:
+            source_index = np.where([node == b for node in target_net.nodes])[0][0]
+            destin_index = np.where([node == a for node in target_net.nodes])[0][0]
+        if source_index < destin_index:
             target_bond_types.append(this_bond)
         else:
             target_bond_types.append(this_bond.reverse())
+    # check now-oriented bonds
     for query_bond_type in query_bond_types:
         if not any([query_bond_type == target_bond_type for target_bond_type in target_bond_types]):
             return match
