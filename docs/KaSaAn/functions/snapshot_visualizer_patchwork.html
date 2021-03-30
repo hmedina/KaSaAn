@@ -308,7 +308,7 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="KaSaAn.functions.snapshot_visualizer_patchwork.colorize_agents"><code class="name flex">
-<span>def <span class="ident">colorize_agents</span></span>(<span>agent_set: Set[<a title="KaSaAn.core.KappaAgent.KappaAgent" href="../core/KappaAgent.html#KaSaAn.core.KappaAgent.KappaAgent">KappaAgent</a>]) ‑> Dict[<a title="KaSaAn.core.KappaAgent.KappaAgent" href="../core/KappaAgent.html#KaSaAn.core.KappaAgent.KappaAgent">KappaAgent</a>, Any]</span>
+<span>def <span class="ident">colorize_agents</span></span>(<span>agent_set: Set[KaSaAn.core.KappaAgent.KappaAgent]) ‑> Dict[KaSaAn.core.KappaAgent.KappaAgent, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Generate &amp; associate colors as a dictionary {Agent: Color}</p></div>
@@ -339,7 +339,7 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
 </details>
 </dd>
 <dt id="KaSaAn.functions.snapshot_visualizer_patchwork.process_snapshot"><code class="name flex">
-<span>def <span class="ident">process_snapshot</span></span>(<span>snapshot: <a title="KaSaAn.core.KappaSnapshot.KappaSnapshot" href="../core/KappaSnapshot.html#KaSaAn.core.KappaSnapshot.KappaSnapshot">KappaSnapshot</a>) ‑> List[dict]</span>
+<span>def <span class="ident">process_snapshot</span></span>(<span>snapshot: KaSaAn.core.KappaSnapshot.KappaSnapshot) ‑> List[dict]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Extract relevant information from a snapshot: size, abundance, &amp; compositions</p></div>
@@ -360,7 +360,7 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
 </details>
 </dd>
 <dt id="KaSaAn.functions.snapshot_visualizer_patchwork.render_snapshot_as_patchwork"><code class="name flex">
-<span>def <span class="ident">render_snapshot_as_patchwork</span></span>(<span>snapshot_file: str, color_scheme: Dict[<a title="KaSaAn.core.KappaAgent.KappaAgent" href="../core/KappaAgent.html#KaSaAn.core.KappaAgent.KappaAgent">KappaAgent</a>, Any] = None, vis_mode: str = 'all', fig_size: Tuple[float, float] = [6.4, 4.8], fig_res: float = 100.0) ‑> <function figure at 0x7f7579da1dc0></span>
+<span>def <span class="ident">render_snapshot_as_patchwork</span></span>(<span>snapshot_file: str, color_scheme: Dict[KaSaAn.core.KappaAgent.KappaAgent, Any] = None, vis_mode: str = 'all', fig_size: Tuple[float, float] = [6.4, 4.8], fig_res: float = 100.0) ‑> <function figure at 0x7f78854d8a60></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Render a snapshot as a patchwork / tree-map diagram, using any of four supported modes:</p>
@@ -472,7 +472,7 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
 </details>
 </dd>
 <dt id="KaSaAn.functions.snapshot_visualizer_patchwork.snapshot_composition_simple"><code class="name flex">
-<span>def <span class="ident">snapshot_composition_simple</span></span>(<span>data: List[dict], color_scheme: Dict[<a title="KaSaAn.core.KappaAgent.KappaAgent" href="../core/KappaAgent.html#KaSaAn.core.KappaAgent.KappaAgent">KappaAgent</a>, Any], vis_mode: str, x_res: float, y_res: float) ‑> Tuple[List[matplotlib.patches.Rectangle], int]</span>
+<span>def <span class="ident">snapshot_composition_simple</span></span>(<span>data: List[dict], color_scheme: Dict[KaSaAn.core.KappaAgent.KappaAgent, Any], vis_mode: str, x_res: float, y_res: float) ‑> Tuple[List[matplotlib.patches.Rectangle], int]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Assemble a list of rectangles for MatPlotLib to plot, plus the size of the largest of these (for mass
@@ -549,7 +549,7 @@ normalization in trace movie making).</p></div>
 </details>
 </dd>
 <dt id="KaSaAn.functions.snapshot_visualizer_patchwork.snapshot_legend_simple"><code class="name flex">
-<span>def <span class="ident">snapshot_legend_simple</span></span>(<span>color_scheme: Dict[<a title="KaSaAn.core.KappaAgent.KappaAgent" href="../core/KappaAgent.html#KaSaAn.core.KappaAgent.KappaAgent">KappaAgent</a>, Any], col_num: int) ‑> Tuple[List[matplotlib.patches.Rectangle], List[matplotlib.text.Text]]</span>
+<span>def <span class="ident">snapshot_legend_simple</span></span>(<span>color_scheme: Dict[KaSaAn.core.KappaAgent.KappaAgent, Any], col_num: int) ‑> Tuple[List[matplotlib.patches.Rectangle], List[matplotlib.text.Text]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create legend components; their entries with appropriate colors (as composition key);

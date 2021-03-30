@@ -7,6 +7,10 @@ from .KappaComplex import KappaComplex
 from .KappaBond import KappaBond
 from .KappaAgent import KappaAgent, KappaToken
 from .KappaSite import KappaPort, KappaCounter
-from .KappaRule import KappaRule
 from .KappaContactMap import KappaContactMap
+from .KappaRule import KappaRule
 
+__all__ = ['KappaSnapshot', 'KappaComplex',
+           'KappaBond', 'KappaAgent', 'KappaToken',
+           'KappaCounter', 'KappaPort',
+           'KappaContactMap']

@@ -4,6 +4,8 @@ This provides several tools to analyze [Kappa](https://kappalanguage.org/) snaps
 
 Full documentation at https://hmedina.github.io/KaSaAn/KaSaAn/index.html
 
+To make local documentation: `pdoc3 --html --force -o ./docs KaSaAn`
+
 All nodes                             | Nodes that match a pattern
 :-------------------------------------|:-----------------------------------------
 ![](./docs/img/kite_snap_network.png) | ![](./docs/img/kite_snap_network_0.png)

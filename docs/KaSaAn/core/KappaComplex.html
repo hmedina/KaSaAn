@@ -137,8 +137,8 @@ class KappaComplex(KappaMultiAgentGraph):
 
     def get_number_of_embeddings_of_complex(self, query, symmetry_adjust: bool = True) -&gt; int:
         &#34;&#34;&#34;Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
-        the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries 
-        preserved in the query complex&#39;s image in the target.&#34;&#34;&#34;
+        the symmetry adjustment and report number of raw embeddings. See the `embed_and_map` function for examples and
+        advanced usage.&#34;&#34;&#34;
         if not type(query) is KappaComplex:
             q_complex = KappaComplex(query)
         else:
@@ -242,6 +242,11 @@ def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -&gt; \
     [[(0, 0), (2, 2), (1, 1)], [(0, 1), (2, 0), (1, 2)], [(0, 2), (2, 1), (1, 0)]]
     &gt;&gt;&gt; maps_unique
     [[(0, 0), (2, 2), (1, 1)]]
+
+    There are three ways of satisfying the query in the target, and these rotations inflate the number of &#34;embeddings&#34;.
+    However, the set of identifiers making up the image of the query in the target is the same for these three:
+    `(0, 2, 1)`, `(1, 0, 2)`, and `(2, 1, 0)` are equivalent, and so the target contains only one copy of the query.
+    These dual-purpose interpretation of the &#34;embedding&#34; concept yields a function that returns both.
     &#34;&#34;&#34;
     # litany of short circuits
     if ka_query.get_size_of_complex() &gt; ka_target.get_size_of_complex():    # not enough agents
@@ -283,7 +288,7 @@ def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -&gt; \
         map_found = _traverse_from(query_network, target_network, query_start_node, target_start_node)
         if map_found:
             maps_all.append(map_found)
-            q_nodes, t_nodes = zip(*map_found)
+            _, t_nodes = zip(*map_found)
             t_nodes = frozenset(t_nodes)
             if t_nodes not in map_set:
                 map_set.update([t_nodes])
@@ -401,7 +406,11 @@ the map of embeddings corrected for the number of preserved automorphisms. For a
 [[(0, 0), (2, 2), (1, 1)], [(0, 1), (2, 0), (1, 2)], [(0, 2), (2, 1), (1, 0)]]
 &gt;&gt;&gt; maps_unique
 [[(0, 0), (2, 2), (1, 1)]]
-</code></pre></div>
+</code></pre>
+<p>There are three ways of satisfying the query in the target, and these rotations inflate the number of "embeddings".
+However, the set of identifiers making up the image of the query in the target is the same for these three:
+<code>(0, 2, 1)</code>, <code>(1, 0, 2)</code>, and <code>(2, 1, 0)</code> are equivalent, and so the target contains only one copy of the query.
+These dual-purpose interpretation of the "embedding" concept yields a function that returns both.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -418,6 +427,11 @@ the map of embeddings corrected for the number of preserved automorphisms. For a
     [[(0, 0), (2, 2), (1, 1)], [(0, 1), (2, 0), (1, 2)], [(0, 2), (2, 1), (1, 0)]]
     &gt;&gt;&gt; maps_unique
     [[(0, 0), (2, 2), (1, 1)]]
+
+    There are three ways of satisfying the query in the target, and these rotations inflate the number of &#34;embeddings&#34;.
+    However, the set of identifiers making up the image of the query in the target is the same for these three:
+    `(0, 2, 1)`, `(1, 0, 2)`, and `(2, 1, 0)` are equivalent, and so the target contains only one copy of the query.
+    These dual-purpose interpretation of the &#34;embedding&#34; concept yields a function that returns both.
     &#34;&#34;&#34;
     # litany of short circuits
     if ka_query.get_size_of_complex() &gt; ka_target.get_size_of_complex():    # not enough agents
@@ -459,7 +473,7 @@ the map of embeddings corrected for the number of preserved automorphisms. For a
         map_found = _traverse_from(query_network, target_network, query_start_node, target_start_node)
         if map_found:
             maps_all.append(map_found)
-            q_nodes, t_nodes = zip(*map_found)
+            _, t_nodes = zip(*map_found)
             t_nodes = frozenset(t_nodes)
             if t_nodes not in map_set:
                 map_set.update([t_nodes])
@@ -573,8 +587,8 @@ the map of embeddings corrected for the number of preserved automorphisms. For a
 
     def get_number_of_embeddings_of_complex(self, query, symmetry_adjust: bool = True) -&gt; int:
         &#34;&#34;&#34;Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
-        the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries 
-        preserved in the query complex&#39;s image in the target.&#34;&#34;&#34;
+        the symmetry adjustment and report number of raw embeddings. See the `embed_and_map` function for examples and
+        advanced usage.&#34;&#34;&#34;
         if not type(query) is KappaComplex:
             q_complex = KappaComplex(query)
         else:
@@ -805,16 +819,16 @@ nomenclature, see <code>KappaPort</code>.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
-the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries
-preserved in the query complex's image in the target.</p></div>
+the symmetry adjustment and report number of raw embeddings. See the <code><a title="KaSaAn.core.KappaComplex.embed_and_map" href="#KaSaAn.core.KappaComplex.embed_and_map">embed_and_map()</a></code> function for examples and
+advanced usage.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_number_of_embeddings_of_complex(self, query, symmetry_adjust: bool = True) -&gt; int:
     &#34;&#34;&#34;Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
-    the symmetry adjustment and report number of raw embeddings, without dividing by the number of symmetries 
-    preserved in the query complex&#39;s image in the target.&#34;&#34;&#34;
+    the symmetry adjustment and report number of raw embeddings. See the `embed_and_map` function for examples and
+    advanced usage.&#34;&#34;&#34;
     if not type(query) is KappaComplex:
         q_complex = KappaComplex(query)
     else:
