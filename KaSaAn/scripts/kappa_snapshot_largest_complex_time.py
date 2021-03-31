@@ -6,13 +6,14 @@ Plot the compostion of the giant component in time from a set of snapshots locat
 usage: kappa_snapshot_largest_complex_time
 [-h]                    Show detailed help.
 [-d DIRECTORY]          Directory where snapshots are stored, default is <.>
-[-p PATTERN]            Pattern that groups desired snapshots names; default 'snap_*.ka'.
-[-a [...]]              Agents that should be plotted; omiting plots all.
+[-p PATTERN]            Pattern that groups desired snapshots names; default 'snap*.ka'.
+[-a [...]]              Patterns that should be plotted; omiting plots sum formula.
 [-o OUTPUT_NAME]        The common file name for saving figures; shown if not given.
 [-fs WIDTH HEIGHT]      Size of the resulting figure, in inches.
 [--lin_log]             If specified, produce an additional plot with linear X-axis and logarithmic Y-axis.
 [--log_lin]             If specified, produce an additional plot with logarithmic X-axis and linear Y-axis.
 [--log_log]             If specified, produce an additional plot with logarithmic X-axis and logarithmic Y-axis.
+[--un_stacked]          If given, produce regular non-stacked plot.
 ```
 """
 
@@ -27,15 +28,17 @@ from KaSaAn.functions.graph_largest_complex_composition import snapshot_list_to_
 
 def main():
     """Plot the evolution of the giant component in time from a set of snapshots located in a directory, showing only
-    the subset of agents specified."""
+    the subset of patterns specified."""
     parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('-d', '--directory', type=str, default='.',
-                        help='Name of the directory where snapshots are stored.')
+                        help='Name of the directory where snapshots are stored; default is current directory.')
     parser.add_argument('-p', '--pattern', type=str, default='snap*.ka',
-                        help='Pattern that should be used to get the snapshot names; default is as produced by KaSim.')
-    parser.add_argument('-a', '--agents', type=str, default=None, nargs='*',
-                        help='Name of the agents that should be plotted; leave blank or omit to plot all. Supports site'
-                             ' specification; does not follow bonds.')
+                        help='Pattern that should be used to get the snapshot names; default is as produced by KaSim,'
+                        ' `snap*.ka`')
+    parser.add_argument('-a', '--agent-patterns', type=str, default=None, nargs='*',
+                        help='Patterns whose number of symmetry-adjusted embeddings into the giant component'
+                             ' should be plotted; leave blank or omit to plot all agent types (i.e. sum formula)'
+                             ' instead.')
     parser.add_argument('-o', '--output_name', type=str,
                         help='If specified, the name of the file where the figure should be saved. If not given,'
                              ' figure will be shown instead. If alternate scale options are given, a "_log_lin" or'
@@ -51,20 +54,24 @@ def main():
                         help='If specified, produce an additional plot with logarithmic X-axis and linear Y-axis.')
     parser.add_argument('--log_log', action='store_true',
                         help='If specified, produce an additional plot with logarithmic X-axis and logarithmic Y-axis.')
+    parser.add_argument('--un_stacked', action='store_true',
+                        help='If given, produce a conventional plot rather than a filled stacked plot (meant for sum'
+                        ' formulae). Useful when plotting patterns that may overlap, ergo whose stacking would not be'
+                        ' as intuitive.')
 
     args = parser.parse_args()
 
     snap_name_list = find_snapshot_names(target_directory=args.directory, name_pattern=args.pattern)
-    s_times, p_matrix, agent_list = snapshot_list_to_plot_matrix(snapshot_names=snap_name_list,
-                                                                 agent_names_requested=args.agents)
+    s_times, p_matrix, pattern_list = snapshot_list_to_plot_matrix(snapshot_names=snap_name_list,
+                                                                   agent_patterns_requested=args.agent_patterns)
     # scale plot
-    fig_lin_lin = _make_figure(s_times, p_matrix, agent_list, args.figure_size, 'linear', 'linear')
+    fig_lin_lin = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'linear', 'linear', args.un_stacked)
     if args.lin_log:
-        fig_lin_log = _make_figure(s_times, p_matrix, agent_list, args.figure_size, 'linear', 'log')
+        fig_lin_log = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'linear', 'log', args.un_stacked)
     if args.log_lin:
-        fig_log_lin = _make_figure(s_times, p_matrix, agent_list, args.figure_size, 'log', 'linear')
+        fig_log_lin = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'log', 'linear', args.un_stacked)
     if args.log_log:
-        fig_log_log = _make_figure(s_times, p_matrix, agent_list, args.figure_size, 'log', 'log')
+        fig_log_log = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'log', 'log', args.un_stacked)
     # save or display?
     if args.output_name:
         save_path = Path(args.output_name)
