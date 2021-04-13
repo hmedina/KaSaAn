@@ -2035,12 +2035,14 @@ markedly slower performance with multi-threading than without. Case-specific, yo
         return result_complexes
 
     def get_largest_complexes(self) -&gt; List[Tuple[KappaComplex, int]]:
-        &#34;&#34;&#34;Returns a list of KappaComplexes of the largest size, measured in number of constituting agents.&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns a list of KappaComplexes of the largest size, measured in number of constituting agents, along with
+        their abundance in the snapshot.&#34;&#34;&#34;
         max_known_size = max(self._known_sizes)
         return self.get_complexes_of_size(max_known_size)
 
     def get_smallest_complexes(self) -&gt; List[Tuple[KappaComplex, int]]:
-        &#34;&#34;&#34;Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents.&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents,
+        along with their abundance in the snapshot.&#34;&#34;&#34;
         min_known_size = min(self._known_sizes)
         return self.get_complexes_of_size(min_known_size)
 
@@ -2456,13 +2458,15 @@ akin to the sum formula of the snapshot.</p></div>
 <span>def <span class="ident">get_largest_complexes</span></span>(<span>self) ‑> List[Tuple[KaSaAn.core.KappaComplex.KappaComplex, int]]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list of KappaComplexes of the largest size, measured in number of constituting agents.</p></div>
+<div class="desc"><p>Returns a list of KappaComplexes of the largest size, measured in number of constituting agents, along with
+their abundance in the snapshot.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_largest_complexes(self) -&gt; List[Tuple[KappaComplex, int]]:
-    &#34;&#34;&#34;Returns a list of KappaComplexes of the largest size, measured in number of constituting agents.&#34;&#34;&#34;
+    &#34;&#34;&#34;Returns a list of KappaComplexes of the largest size, measured in number of constituting agents, along with
+    their abundance in the snapshot.&#34;&#34;&#34;
     max_known_size = max(self._known_sizes)
     return self.get_complexes_of_size(max_known_size)</code></pre>
 </details>
@@ -2529,13 +2533,15 @@ Dictionary is sorted by increasing complex size.</p></div>
 <span>def <span class="ident">get_smallest_complexes</span></span>(<span>self) ‑> List[Tuple[KaSaAn.core.KappaComplex.KappaComplex, int]]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents.</p></div>
+<div class="desc"><p>Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents,
+along with their abundance in the snapshot.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_smallest_complexes(self) -&gt; List[Tuple[KappaComplex, int]]:
-    &#34;&#34;&#34;Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents.&#34;&#34;&#34;
+    &#34;&#34;&#34;Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents,
+    along with their abundance in the snapshot.&#34;&#34;&#34;
     min_known_size = min(self._known_sizes)
     return self.get_complexes_of_size(min_known_size)</code></pre>
 </details>

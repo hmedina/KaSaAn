@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Contains the `KappaSnapshot` class, meant to represent a fully specified state of a reaction mixture."""
 
-#import multiprocessing
 import concurrent.futures as cofu
 import re
 import os
@@ -254,12 +253,14 @@ markedly slower performance with multi-threading than without. Case-specific, yo
         return result_complexes
 
     def get_largest_complexes(self) -> List[Tuple[KappaComplex, int]]:
-        """Returns a list of KappaComplexes of the largest size, measured in number of constituting agents."""
+        """Returns a list of KappaComplexes of the largest size, measured in number of constituting agents, along with
+        their abundance in the snapshot."""
         max_known_size = max(self._known_sizes)
         return self.get_complexes_of_size(max_known_size)
 
     def get_smallest_complexes(self) -> List[Tuple[KappaComplex, int]]:
-        """Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents."""
+        """Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents,
+        along with their abundance in the snapshot."""
         min_known_size = min(self._known_sizes)
         return self.get_complexes_of_size(min_known_size)
 

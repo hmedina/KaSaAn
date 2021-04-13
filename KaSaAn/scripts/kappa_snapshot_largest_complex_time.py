@@ -14,6 +14,7 @@ usage: kappa_snapshot_largest_complex_time
 [--log_lin]             If specified, produce an additional plot with logarithmic X-axis and linear Y-axis.
 [--log_log]             If specified, produce an additional plot with logarithmic X-axis and logarithmic Y-axis.
 [--un_stacked]          If given, produce regular non-stacked plot.
+[--mt THREADS]          Launch multiple threads for reading snapshots. Safe, but always less performant: WIP.
 ```
 """
 
@@ -58,12 +59,16 @@ def main():
                         help='If given, produce a conventional plot rather than a filled stacked plot (meant for sum'
                         ' formulae). Useful when plotting patterns that may overlap, ergo whose stacking would not be'
                         ' as intuitive.')
+    parser.add_argument('-mt', '--multi_thread', type=int, default=1,
+                        help='Number of threads for the concurrent pool of workers to read-in snapshots. Default uses'
+                        ' 1, so a single-threaded for-loop.')
 
     args = parser.parse_args()
 
     snap_name_list = find_snapshot_names(target_directory=args.directory, name_pattern=args.pattern)
     s_times, p_matrix, pattern_list = snapshot_list_to_plot_matrix(snapshot_names=snap_name_list,
-                                                                   agent_patterns_requested=args.agent_patterns)
+                                                                   agent_patterns_requested=args.agent_patterns,
+                                                                   thread_number=args.multi_thread)
     # scale plot
     fig_lin_lin = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'linear', 'linear', args.un_stacked)
     if args.lin_log:
