@@ -13,6 +13,7 @@ usage: kappa_observable_coplotter
 [-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
 [-lx]                       Plot the X axis in logarithmic scale.
 [-ly]                       Plot the Y axis in logarithmic scale.
+[-nl]                       Do not insert a legend with filenames.
 ```
 """
 
@@ -48,6 +49,8 @@ def main():
                         help='Plot the X axis in logarithmic scale.')
     parser.add_argument('-ly', '--log_y', action='store_true',
                         help='Plot the Y axis in logarithmic scale.')
+    parser.add_argument('-nl', '--no_legend', action='store_true',
+                        help='Do not insert a legend with the filenames.')
     args = parser.parse_args()
     fig, ax = plt.subplots(figsize=args.figure_size)
     observable_coplot_axis_annotator(target_axis=ax,
@@ -56,7 +59,8 @@ def main():
                                      variable_name=args.variable_by_name,
                                      differential_toggle=args.differential,
                                      log_axis_x=args.log_x,
-                                     log_axis_y=args.log_y)
+                                     log_axis_y=args.log_y,
+                                     no_legend=args.no_legend)
     if args.out_file:
         plt.tight_layout()
         fig.savefig(args.out_file)

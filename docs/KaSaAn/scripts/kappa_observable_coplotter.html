@@ -33,6 +33,7 @@
 [-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
 [-lx]                       Plot the X axis in logarithmic scale.
 [-ly]                       Plot the Y axis in logarithmic scale.
+[-nl]                       Do not insert a legend with filenames.
 </code></pre>
 <details class="source">
 <summary>
@@ -53,6 +54,7 @@ usage: kappa_observable_coplotter
 [-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
 [-lx]                       Plot the X axis in logarithmic scale.
 [-ly]                       Plot the Y axis in logarithmic scale.
+[-nl]                       Do not insert a legend with filenames.
 ```
 &#34;&#34;&#34;
 
@@ -88,6 +90,8 @@ def main():
                         help=&#39;Plot the X axis in logarithmic scale.&#39;)
     parser.add_argument(&#39;-ly&#39;, &#39;--log_y&#39;, action=&#39;store_true&#39;,
                         help=&#39;Plot the Y axis in logarithmic scale.&#39;)
+    parser.add_argument(&#39;-nl&#39;, &#39;--no_legend&#39;, action=&#39;store_true&#39;,
+                        help=&#39;Do not insert a legend with the filenames.&#39;)
     args = parser.parse_args()
     fig, ax = plt.subplots(figsize=args.figure_size)
     observable_coplot_axis_annotator(target_axis=ax,
@@ -96,7 +100,8 @@ def main():
                                      variable_name=args.variable_by_name,
                                      differential_toggle=args.differential,
                                      log_axis_x=args.log_x,
-                                     log_axis_y=args.log_y)
+                                     log_axis_y=args.log_y,
+                                     no_legend=args.no_legend)
     if args.out_file:
         plt.tight_layout()
         fig.savefig(args.out_file)
@@ -150,6 +155,8 @@ if __name__ == &#39;__main__&#39;:
                         help=&#39;Plot the X axis in logarithmic scale.&#39;)
     parser.add_argument(&#39;-ly&#39;, &#39;--log_y&#39;, action=&#39;store_true&#39;,
                         help=&#39;Plot the Y axis in logarithmic scale.&#39;)
+    parser.add_argument(&#39;-nl&#39;, &#39;--no_legend&#39;, action=&#39;store_true&#39;,
+                        help=&#39;Do not insert a legend with the filenames.&#39;)
     args = parser.parse_args()
     fig, ax = plt.subplots(figsize=args.figure_size)
     observable_coplot_axis_annotator(target_axis=ax,
@@ -158,7 +165,8 @@ if __name__ == &#39;__main__&#39;:
                                      variable_name=args.variable_by_name,
                                      differential_toggle=args.differential,
                                      log_axis_x=args.log_x,
-                                     log_axis_y=args.log_y)
+                                     log_axis_y=args.log_y,
+                                     no_legend=args.no_legend)
     if args.out_file:
         plt.tight_layout()
         fig.savefig(args.out_file)

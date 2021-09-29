@@ -19,7 +19,8 @@ def _find_data_files(pattern: str) -> List[str]:
 
 def _observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tuple[List[str], np.array, str]],
                                           coplot_index: int, coplot_name: str,
-                                          diff_toggle: bool = False, log_x: bool = False, log_y: bool = False):
+                                          diff_toggle: bool = False, log_x: bool = False, log_y: bool = False,
+                                          omit_legend: bool = False):
     """Annotate the provided axis."""
     legend_entries = []
     for file_data in file_data_list:
@@ -61,9 +62,11 @@ def _observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tup
     # else use the variable names that resulted from the requested index
     if len(set(legend_entries)) == 1:
         co_plot_axis.set_title(legend_entries[0])
-        co_plot_axis.legend([item[2] for item in file_data_list])
+        if not omit_legend:
+            co_plot_axis.legend([item[2] for item in file_data_list])
     else:
-        co_plot_axis.legend()
+        if not omit_legend:
+            co_plot_axis.legend()
     # adjust plot scales
     if log_x:
         co_plot_axis.set_xscale('log')
@@ -74,7 +77,7 @@ def _observable_multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tup
 
 def observable_coplot_axis_annotator(target_axis, file_pattern: str, variable_index: int, variable_name: str,
                                      differential_toggle: bool = False,
-                                     log_axis_x: bool = False, log_axis_y: bool = False):
+                                     log_axis_x: bool = False, log_axis_y: bool = False, no_legend: bool = False):
     """See file under `KaSaAn.scripts` for usage."""
     file_names = _find_data_files(file_pattern)
     file_data_list = []
@@ -87,5 +90,6 @@ def observable_coplot_axis_annotator(target_axis, file_pattern: str, variable_in
         raise ValueError('Function requires the index of a variable, or a name for it.')
     _observable_multi_data_axis_annotator(co_plot_axis=target_axis, file_data_list=file_data_list,
                                           coplot_index=variable_index, coplot_name=variable_name,
-                                          diff_toggle=differential_toggle, log_x=log_axis_x, log_y=log_axis_y)
+                                          diff_toggle=differential_toggle, log_x=log_axis_x, log_y=log_axis_y,
+                                          omit_legend=no_legend)
     return target_axis
