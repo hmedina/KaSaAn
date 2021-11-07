@@ -10,6 +10,7 @@ usage: kappa_observable_plotter
 [-p FILE_NAME]          Dump ordered observables to file, one per line, for indexing.
 [-vi [...]]             The list of observable indexes to be plotted; all if omitted.
 [-vn [...]]             The name of observables to be plotted; all if omitted.
+[-ve [...]]]            Algebraic expressions of variable names.
 [-fs WIDTH HEIGHT]      Size of the resulting figure, in inches.
 [-dpi DOTS_PER_INCH]    Resolution of the figure, specified as dots per inch.
 [-d]                    If passed, plot discrete differential over time.
@@ -21,6 +22,7 @@ usage: kappa_observable_plotter
 import argparse
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import warnings
 from KaSaAn.functions import observable_file_reader, observable_list_axis_annotator
 
 
@@ -39,11 +41,14 @@ def main():
                         help='The list of variable / observable indexes that should be plotted. Observables are plotted'
                              ' in their declaration order, see option <-p> to print their order. If neither <-vi> nor'
                              ' <-vn> are specified, all variables will be plotted. Options <-vi> and <-vn> can be '
-                             'called together, and their set will be plotted.')
+                             'called together, and their set will be plotted. Ignored with <-ve>.')
     parser.add_argument('-vn', '--variable_names', type=str, default='', nargs='*',
                         help='List of variable names that should be plotted. If neither <-vi> nor <-vn> are specified,'
                              ' all variables will be plotted. Options <-vi> and <-vn> can be called together, and their'
-                             ' set will be plotted.')
+                             ' set will be plotted. Ignored with <-ve>.')
+    parser.add_argument('-ve', '--variable_expressions', type=str, default='', nargs='*',
+                        help='A list of strings, each with one algebraic expression using variable names held in the'
+                             ' file (e.g. -ve \'"Axn.Axn" / "Axn"\' \'1 - ( "Axn.Axn" / "Axn")\')')
     parser.add_argument('-fs', '--fig_size', type=float, default=mpl.rcParams['figure.figsize'], nargs=2,
                         help='Size of the resulting figure, in inches, specified as two elements, width and height '
                              '(text size is specified in points, so this affects the size of text relative to other'
@@ -62,8 +67,14 @@ def main():
     # parse data
     this_data = observable_file_reader(args.input_file_name)
     fig, ax = plt.subplots(figsize=args.fig_size, dpi=args.dots_per_inch)
+    if args.variable_expressions:
+        if args.variable_indexes:
+            warnings.warn('Option "-vi" supplied along with "-ve"; ignoring "-vi".')
+        elif args.variable_names:
+            warnings.warn('Option "-vn" supplied along with "-ve"; ignoring "-vn".')
     observable_list_axis_annotator(obs_axis=ax, data=this_data,
                                    vars_indexes=args.variable_indexes, vars_names=args.variable_names,
+                                   vars_exprs=args.variable_expressions,
                                    diff_toggle=args.differential, axis_x_log=args.log_x, axis_y_log=args.log_y)
 
     # print out observables
