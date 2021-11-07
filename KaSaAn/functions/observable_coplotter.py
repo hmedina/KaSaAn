@@ -118,7 +118,8 @@ def observable_coplot_axis_annotator(target_axis, file_pattern: str,
             warnings.warn('Only one time point in file ' + file_name)
         file_data_list.append((legend_data, numeric_data, file_name))
     if not variable_index and not variable_name and not variable_expr:
-        raise ValueError('Function requires the index of a variable, a name for one, or an expression of variables found in the observable file.')
+        raise ValueError('Function requires the index of a variable,'
+                         ' a name for one, or an expression of variables found in the observable file.')
     _multi_data_axis_annotator(co_plot_axis=target_axis, file_data_list=file_data_list,
                                coplot_index=variable_index, coplot_name=variable_name, coplot_expression=variable_expr,
                                diff_toggle=differential_toggle, log_x=log_axis_x, log_y=log_axis_y,

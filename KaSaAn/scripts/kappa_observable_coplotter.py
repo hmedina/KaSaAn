@@ -8,6 +8,7 @@ usage: kappa_observable_coplotter
 -p PATTERN                  (quoted) Pattern matching desired files.
 [-vi VARIABLE_BY_INDEX]     Index of the variable to be co-plotted.
 [-vn VARIABLE_BY_NAME]      Name of the variable to be co-plotted.
+[-ve VARIABLE_EXPRESSION]   Algebraic expression of variable names.
 [-o OUT_FILE]               If given, save plot to file; else show.
 [-d]                        If passed, plot discrete differential over time.
 [-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
