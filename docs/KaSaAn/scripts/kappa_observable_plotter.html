@@ -30,6 +30,7 @@
 [-p FILE_NAME]          Dump ordered observables to file, one per line, for indexing.
 [-vi [...]]             The list of observable indexes to be plotted; all if omitted.
 [-vn [...]]             The name of observables to be plotted; all if omitted.
+[-ve [...]]]            Algebraic expressions of variable names.
 [-fs WIDTH HEIGHT]      Size of the resulting figure, in inches.
 [-dpi DOTS_PER_INCH]    Resolution of the figure, specified as dots per inch.
 [-d]                    If passed, plot discrete differential over time.
@@ -52,6 +53,7 @@ usage: kappa_observable_plotter
 [-p FILE_NAME]          Dump ordered observables to file, one per line, for indexing.
 [-vi [...]]             The list of observable indexes to be plotted; all if omitted.
 [-vn [...]]             The name of observables to be plotted; all if omitted.
+[-ve [...]]]            Algebraic expressions of variable names.
 [-fs WIDTH HEIGHT]      Size of the resulting figure, in inches.
 [-dpi DOTS_PER_INCH]    Resolution of the figure, specified as dots per inch.
 [-d]                    If passed, plot discrete differential over time.
@@ -63,6 +65,7 @@ usage: kappa_observable_plotter
 import argparse
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import warnings
 from KaSaAn.functions import observable_file_reader, observable_list_axis_annotator
 
 
@@ -81,11 +84,14 @@ def main():
                         help=&#39;The list of variable / observable indexes that should be plotted. Observables are plotted&#39;
                              &#39; in their declaration order, see option &lt;-p&gt; to print their order. If neither &lt;-vi&gt; nor&#39;
                              &#39; &lt;-vn&gt; are specified, all variables will be plotted. Options &lt;-vi&gt; and &lt;-vn&gt; can be &#39;
-                             &#39;called together, and their set will be plotted.&#39;)
+                             &#39;called together, and their set will be plotted. Ignored with &lt;-ve&gt;.&#39;)
     parser.add_argument(&#39;-vn&#39;, &#39;--variable_names&#39;, type=str, default=&#39;&#39;, nargs=&#39;*&#39;,
                         help=&#39;List of variable names that should be plotted. If neither &lt;-vi&gt; nor &lt;-vn&gt; are specified,&#39;
                              &#39; all variables will be plotted. Options &lt;-vi&gt; and &lt;-vn&gt; can be called together, and their&#39;
-                             &#39; set will be plotted.&#39;)
+                             &#39; set will be plotted. Ignored with &lt;-ve&gt;.&#39;)
+    parser.add_argument(&#39;-ve&#39;, &#39;--variable_expressions&#39;, type=str, default=&#39;&#39;, nargs=&#39;*&#39;,
+                        help=&#39;A list of strings, each with one algebraic expression using variable names held in the&#39;
+                             &#39; file (e.g. -ve \&#39;&#34;Axn.Axn&#34; / &#34;Axn&#34;\&#39; \&#39;1 - ( &#34;Axn.Axn&#34; / &#34;Axn&#34;)\&#39;)&#39;)
     parser.add_argument(&#39;-fs&#39;, &#39;--fig_size&#39;, type=float, default=mpl.rcParams[&#39;figure.figsize&#39;], nargs=2,
                         help=&#39;Size of the resulting figure, in inches, specified as two elements, width and height &#39;
                              &#39;(text size is specified in points, so this affects the size of text relative to other&#39;
@@ -104,8 +110,14 @@ def main():
     # parse data
     this_data = observable_file_reader(args.input_file_name)
     fig, ax = plt.subplots(figsize=args.fig_size, dpi=args.dots_per_inch)
+    if args.variable_expressions:
+        if args.variable_indexes:
+            warnings.warn(&#39;Option &#34;-vi&#34; supplied along with &#34;-ve&#34;; ignoring &#34;-vi&#34;.&#39;)
+        elif args.variable_names:
+            warnings.warn(&#39;Option &#34;-vn&#34; supplied along with &#34;-ve&#34;; ignoring &#34;-vn&#34;.&#39;)
     observable_list_axis_annotator(obs_axis=ax, data=this_data,
                                    vars_indexes=args.variable_indexes, vars_names=args.variable_names,
+                                   vars_exprs=args.variable_expressions,
                                    diff_toggle=args.differential, axis_x_log=args.log_x, axis_y_log=args.log_y)
 
     # print out observables
@@ -157,11 +169,14 @@ if __name__ == &#39;__main__&#39;:
                         help=&#39;The list of variable / observable indexes that should be plotted. Observables are plotted&#39;
                              &#39; in their declaration order, see option &lt;-p&gt; to print their order. If neither &lt;-vi&gt; nor&#39;
                              &#39; &lt;-vn&gt; are specified, all variables will be plotted. Options &lt;-vi&gt; and &lt;-vn&gt; can be &#39;
-                             &#39;called together, and their set will be plotted.&#39;)
+                             &#39;called together, and their set will be plotted. Ignored with &lt;-ve&gt;.&#39;)
     parser.add_argument(&#39;-vn&#39;, &#39;--variable_names&#39;, type=str, default=&#39;&#39;, nargs=&#39;*&#39;,
                         help=&#39;List of variable names that should be plotted. If neither &lt;-vi&gt; nor &lt;-vn&gt; are specified,&#39;
                              &#39; all variables will be plotted. Options &lt;-vi&gt; and &lt;-vn&gt; can be called together, and their&#39;
-                             &#39; set will be plotted.&#39;)
+                             &#39; set will be plotted. Ignored with &lt;-ve&gt;.&#39;)
+    parser.add_argument(&#39;-ve&#39;, &#39;--variable_expressions&#39;, type=str, default=&#39;&#39;, nargs=&#39;*&#39;,
+                        help=&#39;A list of strings, each with one algebraic expression using variable names held in the&#39;
+                             &#39; file (e.g. -ve \&#39;&#34;Axn.Axn&#34; / &#34;Axn&#34;\&#39; \&#39;1 - ( &#34;Axn.Axn&#34; / &#34;Axn&#34;)\&#39;)&#39;)
     parser.add_argument(&#39;-fs&#39;, &#39;--fig_size&#39;, type=float, default=mpl.rcParams[&#39;figure.figsize&#39;], nargs=2,
                         help=&#39;Size of the resulting figure, in inches, specified as two elements, width and height &#39;
                              &#39;(text size is specified in points, so this affects the size of text relative to other&#39;
@@ -180,8 +195,14 @@ if __name__ == &#39;__main__&#39;:
     # parse data
     this_data = observable_file_reader(args.input_file_name)
     fig, ax = plt.subplots(figsize=args.fig_size, dpi=args.dots_per_inch)
+    if args.variable_expressions:
+        if args.variable_indexes:
+            warnings.warn(&#39;Option &#34;-vi&#34; supplied along with &#34;-ve&#34;; ignoring &#34;-vi&#34;.&#39;)
+        elif args.variable_names:
+            warnings.warn(&#39;Option &#34;-vn&#34; supplied along with &#34;-ve&#34;; ignoring &#34;-vn&#34;.&#39;)
     observable_list_axis_annotator(obs_axis=ax, data=this_data,
                                    vars_indexes=args.variable_indexes, vars_names=args.variable_names,
+                                   vars_exprs=args.variable_expressions,
                                    diff_toggle=args.differential, axis_x_log=args.log_x, axis_y_log=args.log_y)
 
     # print out observables

@@ -28,6 +28,7 @@
 -p PATTERN                  (quoted) Pattern matching desired files.
 [-vi VARIABLE_BY_INDEX]     Index of the variable to be co-plotted.
 [-vn VARIABLE_BY_NAME]      Name of the variable to be co-plotted.
+[-ve VARIABLE_EXPRESSION]   Algebraic expression of variable names.
 [-o OUT_FILE]               If given, save plot to file; else show.
 [-d]                        If passed, plot discrete differential over time.
 [-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
@@ -49,6 +50,7 @@ usage: kappa_observable_coplotter
 -p PATTERN                  (quoted) Pattern matching desired files.
 [-vi VARIABLE_BY_INDEX]     Index of the variable to be co-plotted.
 [-vn VARIABLE_BY_NAME]      Name of the variable to be co-plotted.
+[-ve VARIABLE_EXPRESSION]   Algebraic expression of variable names.
 [-o OUT_FILE]               If given, save plot to file; else show.
 [-d]                        If passed, plot discrete differential over time.
 [-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
@@ -76,6 +78,9 @@ def main():
                              &#39; plots column #1).&#39;)
     parser.add_argument(&#39;-vn&#39;, &#39;--variable_by_name&#39;, type=str, default=&#39;&#39;,
                         help=&#39;Name of the variable to be co-plotted.&#39;)
+    parser.add_argument(&#39;-ve&#39;, &#39;--variable_expression&#39;, type=str, default=&#39;&#39;,
+                        help=&#39;A string with one algebraic expression using variable names held in the file&#39;
+                             &#39; (e.g. -ve &#34;1 - (\&#39;Axn.Axn\&#39; + \&#39;Axn_mono\&#39; ) / \&#39;Axn\&#39;&#34;)&#39;)
     parser.add_argument(&#39;-o&#39;, &#39;--out_file&#39;, type=str, default=&#39;&#39;,
                         help=&#39;Name of the file where the figure should be saved. If left blank or omitted, the figure&#39;
                              &#39; will be shown instead.&#39;)
@@ -98,6 +103,7 @@ def main():
                                      file_pattern=args.pattern,
                                      variable_index=args.variable_by_index,
                                      variable_name=args.variable_by_name,
+                                     variable_expr=args.variable_expression,
                                      differential_toggle=args.differential,
                                      log_axis_x=args.log_x,
                                      log_axis_y=args.log_y,
@@ -141,6 +147,9 @@ if __name__ == &#39;__main__&#39;:
                              &#39; plots column #1).&#39;)
     parser.add_argument(&#39;-vn&#39;, &#39;--variable_by_name&#39;, type=str, default=&#39;&#39;,
                         help=&#39;Name of the variable to be co-plotted.&#39;)
+    parser.add_argument(&#39;-ve&#39;, &#39;--variable_expression&#39;, type=str, default=&#39;&#39;,
+                        help=&#39;A string with one algebraic expression using variable names held in the file&#39;
+                             &#39; (e.g. -ve &#34;1 - (\&#39;Axn.Axn\&#39; + \&#39;Axn_mono\&#39; ) / \&#39;Axn\&#39;&#34;)&#39;)
     parser.add_argument(&#39;-o&#39;, &#39;--out_file&#39;, type=str, default=&#39;&#39;,
                         help=&#39;Name of the file where the figure should be saved. If left blank or omitted, the figure&#39;
                              &#39; will be shown instead.&#39;)
@@ -163,6 +172,7 @@ if __name__ == &#39;__main__&#39;:
                                      file_pattern=args.pattern,
                                      variable_index=args.variable_by_index,
                                      variable_name=args.variable_by_name,
+                                     variable_expr=args.variable_expression,
                                      differential_toggle=args.differential,
                                      log_axis_x=args.log_x,
                                      log_axis_y=args.log_y,
