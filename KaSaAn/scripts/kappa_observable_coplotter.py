@@ -35,6 +35,9 @@ def main():
                              ' plots column #1).')
     parser.add_argument('-vn', '--variable_by_name', type=str, default='',
                         help='Name of the variable to be co-plotted.')
+    parser.add_argument('-ve', '--variable_expression', type=str, default='',
+                        help='A string with one algebraic expression using variable names held in the file'
+                             ' (e.g. -ve "1 - (\'Axn.Axn\' + \'Axn_mono\' ) / \'Axn\'")')
     parser.add_argument('-o', '--out_file', type=str, default='',
                         help='Name of the file where the figure should be saved. If left blank or omitted, the figure'
                              ' will be shown instead.')
@@ -57,6 +60,7 @@ def main():
                                      file_pattern=args.pattern,
                                      variable_index=args.variable_by_index,
                                      variable_name=args.variable_by_name,
+                                     variable_expr=args.variable_expression,
                                      differential_toggle=args.differential,
                                      log_axis_x=args.log_x,
                                      log_axis_y=args.log_y,
