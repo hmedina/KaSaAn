@@ -55,13 +55,13 @@ def snapshot_list_to_plot_matrix(snapshot_names, agent_patterns_requested=None, 
     """See file under `KaSaAn.scripts` for usage."""
     lc_compositions = []
     snap_times = []
+    holding_struct = {}
     # iterate over the snapshots
     if thread_number > 1:
         with cofu.ThreadPoolExecutor(max_workers=thread_number) as executor:
             inputs_jobs = ((snap_name, agent_patterns_requested) for snap_name in snapshot_names)
             jobs_submitted = {executor.submit(_process_snapshot_helper, *inputs_job): inputs_job
                               for inputs_job in inputs_jobs}
-            holding_struct = {}
             for job in cofu.as_completed(jobs_submitted):
                 input_used = jobs_submitted[job]
                 try:
@@ -71,15 +71,14 @@ def snapshot_list_to_plot_matrix(snapshot_names, agent_patterns_requested=None, 
                 else:
                     if job_results is not None:
                         holding_struct[job_results[0]] = job_results[1]
-        # sort by snapshot time, split dictionary into two iterables
-        snap_times, lc_compositions = zip(*sorted(holding_struct.items(), key=itemgetter(0)))
     else:
         for snap_name in snapshot_names:
             print('Processing {}, {} of {}'.format(snap_name, snapshot_names.index(snap_name) + 1, len(snapshot_names)))
             job_results = _process_snapshot_helper(snap_name, agent_patterns_requested)
             if job_results is not None:
-                snap_times.append(job_results[0])
-                lc_compositions.append(job_results[1])
+                holding_struct[job_results[0]] = job_results[1]
+    # sort by snapshot time, split dictionary into two iterables
+    snap_times, lc_compositions = zip(*sorted(holding_struct.items(), key=itemgetter(0)))
 
     # obtain and sort the superset of patterns; used for defining the number of lines to plot
     # a pattern may not have been present in a snapshot, so we need to fill in a zero at some
