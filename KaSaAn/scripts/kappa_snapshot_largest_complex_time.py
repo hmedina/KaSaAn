@@ -7,7 +7,11 @@ usage: kappa_snapshot_largest_complex_time
 [-h]                    Show detailed help.
 [-d DIRECTORY]          Directory where snapshots are stored, default is <.>
 [-p PATTERN]            Pattern that groups desired snapshots names; default 'snap*.ka'.
-[-a [...]]              Patterns that should be plotted; omiting plots sum formula.
+[-cs FILE]              Optional file containing a dictionary with color scheme to use for species composition. E.g.
+                        <{"Bob": #fff, "Mary": #999, "Sue": #222}>, where the color can be anything converable to a
+                        color by MatPlotLib (e.g. RGB[A] tuples, hex-strings, XKCD colors...). Supports KappaAgents,
+                        with or without agent signature, as well as KappaComplexes. If not provided, the sum formula
+                        will be displayed (arbitrary colors per agent, discarding agent signature).
 [-o OUTPUT_NAME]        The common file name for saving figures; shown if not given.
 [-fs WIDTH HEIGHT]      Size of the resulting figure, in inches.
 [--lin_log]             If specified, produce an additional plot with linear X-axis and logarithmic Y-axis.
@@ -19,10 +23,12 @@ usage: kappa_snapshot_largest_complex_time
 """
 
 import argparse
+import ast
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from pathlib import Path
-
+from KaSaAn.core.KappaError import ComplexParseError
+from KaSaAn.core.KappaComplex import KappaComplex
 from KaSaAn.functions import find_snapshot_names
 from KaSaAn.functions.graph_largest_complex_composition import snapshot_list_to_plot_matrix, _make_figure
 
@@ -36,10 +42,13 @@ def main():
     parser.add_argument('-p', '--pattern', type=str, default='snap*.ka',
                         help='Pattern that should be used to get the snapshot names; default is as produced by KaSim,'
                         ' `snap*.ka`')
-    parser.add_argument('-a', '--agent-patterns', type=str, default=None, nargs='*',
-                        help='Patterns whose number of symmetry-adjusted embeddings into the giant component'
-                             ' should be plotted; leave blank or omit to plot all agent types (i.e. sum formula)'
-                             ' instead.')
+    parser.add_argument('-cs', '--coloring_scheme', type=str,
+                        help='Optional file containing a dictionary with color scheme to use for species composition.'
+                             ' E.g. <{"Bob": #fff, "Mary": #999, "Sue": #222}>, where the color can be anything'
+                             ' converable to a color by MatPlotLib (e.g. RGB[A] tuples, hex-strings, XKCD colors...).'
+                             ' Supports KappaAgents, with or without agent signature, as well as KappaComplexes.'
+                             ' If not provided, the sum formula will be displayed (arbitrary colors per agent,'
+                             ' discarding agent signature).')
     parser.add_argument('-o', '--output_name', type=str,
                         help='If specified, the name of the file where the figure should be saved. If not given,'
                              ' figure will be shown instead. If alternate scale options are given, a "_log_lin" or'
@@ -65,18 +74,33 @@ def main():
 
     args = parser.parse_args()
 
+    # for user-defined coloring schemes, read the dictionary from a file, convert keys
+    # Since single-agents can be interpreted as KappaComplexes, and that preserves sorting & comparisons, we cast
+    # as KappaComplexes all keys, even if KappaAgent could be a smaller representation.
+    if args.coloring_scheme:
+        coloring_scheme = {}
+        with open(args.coloring_scheme, 'r') as cs_file:
+            coloring_scheme_raw = ast.literal_eval(cs_file.read())
+            for key, value in coloring_scheme_raw.items():
+                try:
+                    coloring_scheme[KappaComplex(key)] = value
+                except ComplexParseError:
+                    raise ValueError('Could not parse <' + key + '> as a KappaComplex.')
+    else:
+        coloring_scheme = None
+
     snap_name_list = find_snapshot_names(target_directory=args.directory, name_pattern=args.pattern)
     s_times, p_matrix, pattern_list = snapshot_list_to_plot_matrix(snapshot_names=snap_name_list,
-                                                                   agent_patterns_requested=args.agent_patterns,
+                                                                   patterns_requested=coloring_scheme,
                                                                    thread_number=args.multi_thread)
     # scale plot
-    fig_lin_lin = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'linear', 'linear', args.un_stacked)
+    fig_lin_lin = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'linear', 'linear', args.un_stacked, coloring_scheme)
     if args.lin_log:
-        fig_lin_log = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'linear', 'log', args.un_stacked)
+        fig_lin_log = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'linear', 'log', args.un_stacked, coloring_scheme)
     if args.log_lin:
-        fig_log_lin = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'log', 'linear', args.un_stacked)
+        fig_log_lin = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'log', 'linear', args.un_stacked, coloring_scheme)
     if args.log_log:
-        fig_log_log = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'log', 'log', args.un_stacked)
+        fig_log_log = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'log', 'log', args.un_stacked, coloring_scheme)
     # save or display?
     if args.output_name:
         save_path = Path(args.output_name)

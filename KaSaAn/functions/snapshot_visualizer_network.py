@@ -7,13 +7,13 @@ import matplotlib.pyplot as plt
 from networkx.drawing.nx_agraph import graphviz_layout
 from typing import List, Tuple
 from ..core import KappaSnapshot, KappaAgent
-from .snapshot_visualizer_patchwork import colorize_agents
+from .agent_color_assignment import colorize_observables, sanity_check_agent_colors
 
 
 def render_snapshot_as_plain_graph(snapshot_file_name: str, highlight_patterns: List[str],
                                    color_scheme_file_name: str, node_size: int, edge_width: float,
                                    fig_size: Tuple[float, float]) -> List[plt.figure]:
-    """"Take a KappaSnapshot and render it as a plain graph, optionally highlighting certain patterns.
+    """Take a KappaSnapshot and render it as a plain graph, optionally highlighting certain patterns.
     See file under `KaSaAn.scripts` for usage."""
     snapshot = KappaSnapshot(snapshot_file_name)
     snapshot_agents = snapshot.get_agent_types_present()
@@ -27,8 +27,9 @@ def render_snapshot_as_plain_graph(snapshot_file_name: str, highlight_patterns: 
             coloring_scheme_raw = ast.literal_eval(cs_file.read())
             for key, value in coloring_scheme_raw.items():
                 color_scheme[KappaAgent(key)] = value
+        sanity_check_agent_colors(snapshot_agents, color_scheme)
     else:
-        color_scheme = colorize_agents(snapshot_agents)
+        color_scheme = colorize_observables(snapshot_agents)
     # start assembling the list of figures
     fig_list = []
     # 1: construct the all-agent figure

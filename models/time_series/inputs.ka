@@ -1,0 +1,45 @@
+// "uuid" : "114466891"
+%def: "seed" "110283574"
+%def: "dumpIfDeadlocked" "true"
+%def: "maxConsecutiveClash" "3"
+%def: "progressBarSize" "70"
+%def: "progressBarSymbol" "#"
+%def: "plotPeriod" "1" "t.u."
+%def: "outputFileName" "data.csv"
+
+%agent: A(n[m.A m.B m.C] m[n.A n.B n.C])
+%agent: B(n[m.A m.B m.C] m[n.A n.B n.C])
+%agent: C(n[m.A m.B m.C] m[n.A n.B n.C])
+
+%plot: [T]
+A(n[./1]), A(m[./1]) @ 1000 {0.}
+A(n[1/.]), A(m[1/.]) @ 1
+B(n[./1]), B(m[./1]) @ 1000 {0.}
+B(n[1/.]), B(m[1/.]) @ 1
+C(n[./1]), C(m[./1]) @ 1000 {0.}
+C(n[1/.]), C(m[1/.]) @ 1
+A(n[./1]), B(m[./1]) @ 1000 {0.}
+A(n[1/.]), B(m[1/.]) @ 1
+B(n[./1]), C(m[./1]) @ 1000 {0.}
+B(n[1/.]), C(m[1/.]) @ 1
+C(n[./1]), A(m[./1]) @ 1000 {0.}
+C(n[1/.]), A(m[1/.]) @ 1
+B(n[./1]), A(m[./1]) @ 1000 {0.}
+B(n[1/.]), A(m[1/.]) @ 1
+C(n[./1]), B(m[./1]) @ 1000 {0.}
+C(n[1/.]), B(m[1/.]) @ 1
+A(n[./1]), C(m[./1]) @ 1000 {0.}
+A(n[1/.]), C(m[1/.]) @ 1
+
+/*0*/%mod: ([E] = 100) do $SNAPSHOT ("snap_".[E].".ka"); repeat [false]
+/*1*/%mod: ([E] = 200) do $SNAPSHOT ("snap_".[E].".ka"); repeat [false]
+/*2*/%mod: ([E] = 300) do $SNAPSHOT ("snap_".[E].".ka"); repeat [false]
+/*3*/%mod: ([E] = 400) do $SNAPSHOT ("snap_".[E].".ka"); repeat [false]
+/*4*/%mod: ([E] = 500) do $SNAPSHOT ("snap_".[E].".ka"); repeat [false]
+/*5*/%mod: ([E] = 600) do $SNAPSHOT ("snap_".[E].".ka"); $STOP ; repeat [false]
+
+%init: 100 A(n[.] m[.])
+%init: 100 B(n[.] m[.])
+%init: 100 C(n[.] m[.])
+
+%mod: [E] = 600 do $STOP;

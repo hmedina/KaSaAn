@@ -21,12 +21,12 @@ class KappaSnapshot(KappaMultiAgentGraph):
      of the `Dict()` class', but with more informative names for Kappa entities."""
 
     # define pattern for the header
-    _header_title_pat = r'//\sSnapshot\s'
-    _header_event_pat = r'\[Event:\s(\d+)\]//\s'
-    _header_uuid_pat = r'\"uuid\"\s:\s\"(\w+)'
-    _header_t_zero_pat = r'\"%def:\s\"T0\"\s\"' + \
-                         r'([0-9]+|([0-9]+[eE][+-]?[0-9+])|((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+-]?[0-9]+)?))\"'
-    _header_pat_re = re.compile(_header_title_pat + _header_event_pat + _header_uuid_pat + _header_t_zero_pat)
+    _header_title_pat = r"//\sSnapshot\s\[Event:\s(\d+)\]"
+    _header_uuid_pat = r"//\s\"uuid\"\s:\s\"(\w+)\""
+    _header_t_zero_pat = r"%def:\s\"T0\"\s\"" + \
+                         r"([0-9]+|([0-9]+[eE][+-]?[0-9+])|((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+-]?[0-9]+)?))\""
+    _header_pat_re = re.compile(_header_title_pat + _header_uuid_pat + _header_t_zero_pat)
+    _header_pat_vr = re.compile(_header_title_pat + _header_t_zero_pat)
     # define pattern for a KappaComplex entry line
     _line_complex_re = re.compile(r'^(\d+)\s/\*(\d+)\sagents\*/\s(.+)$')
     # define pattern for a KappaToken entry line
@@ -60,11 +60,19 @@ class KappaSnapshot(KappaMultiAgentGraph):
         digest: List[str] = self._raw_expression.replace('\n', '').split('%init: ')
         # parse header and get event, uuid, time
         g = self._header_pat_re.match(digest[0])
+        if g:
+            self._snapshot_event = int(g.group(1))
+            self._snapshot_uuid = str(g.group(2))
+            self._snapshot_time = float(g.group(3))
         if not g:
-            raise SnapshotParseError('Header <' + digest[0] + '> not be parsed in <' + snapshot_file_name + '>')
-        self._snapshot_event = int(g.group(1))
-        self._snapshot_uuid = str(g.group(2))
-        self._snapshot_time = float(g.group(3))
+            g = self._header_pat_vr.match(digest[0])
+            if g:
+                self._snapshot_event = int(g.group(1))
+                self._snapshot_uuid = ''
+                self._snapshot_time = float(g.group(2))
+            if not g:
+                raise SnapshotParseError('Header <' + digest[0] + '> not be parsed in <' + snapshot_file_name + '>')
+
         # parse the complexes into instances of KappaComplexes, get their abundance, cross-check their size
         for entry in digest[1:]:
             try:

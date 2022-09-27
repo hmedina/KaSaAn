@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>KaSaAn.functions.graph_largest_complex_composition API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -34,30 +34,44 @@ import matplotlib.pyplot as plt
 import numpy
 import warnings
 from operator import itemgetter
-from typing import List, Tuple, Union
+from typing import Dict, List, Tuple, Set
 
-from ..core import KappaAgent, KappaComplex, KappaSnapshot
+from ..functions.agent_color_assignment import colorize_observables
+from ..core import KappaComplex, KappaSnapshot
 
 
-def _make_figure(s_times, p_matrix, agent_list, fig_size=mpl.rcParams[&#39;figure.figsize&#39;],
-                 x_scale=&#39;linear&#39;, y_scale=&#39;linear&#39;, un_stacked: bool = False) -&gt; plt.figure:
+def _make_figure(s_times, p_matrix, observable_set: Set[KappaComplex],
+                 fig_size=mpl.rcParams[&#39;figure.figsize&#39;],
+                 x_scale=&#39;linear&#39;, y_scale=&#39;linear&#39;,
+                 un_stacked: bool = False,
+                 supplied_scheme: Dict = None) -&gt; plt.figure:
     fig, ax = plt.subplots(figsize=fig_size)
+    # colors for the labels
+    color_list = []
+    if not supplied_scheme:
+        color_scheme = colorize_observables(observable_set)
+    else:
+        color_scheme = supplied_scheme
+    color_list = [color_scheme[obs] for obs in observable_set]
     if un_stacked:
-        for x, y, n in zip((s_times for item in agent_list), p_matrix, agent_list):
+        for x, y, n in zip((s_times for item in observable_set), p_matrix, observable_set):
             ax.plot(x, y, label=n)
     else:
-        ax.stackplot(s_times, p_matrix, baseline=&#39;zero&#39;, labels=agent_list)
+        ax.stackplot(s_times, p_matrix, baseline=&#39;zero&#39;, labels=observable_set, colors=color_list)
     ax.set_xlabel(&#39;Snapshot time&#39;)
     ax.set_ylabel(&#39;Abundance of pattern in largest complex&#39;)
-    fig.legend()
+    if not supplied_scheme:
+        fig.legend(title=&#39;Agents&#39;)
+    else:
+        fig.legend(title=&#39;Patterns&#39;)
     ax.set_xscale(x_scale)
     ax.set_yscale(y_scale)
     plt.tight_layout()
     return fig
 
 
-def _process_snapshot_helper(snapshot_name: str, patterns_requested=None) -&gt; Tuple[float, dict]:
-    &#34;&#34;&#34;Helper function to process snapshots.&#34;&#34;&#34;
+def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[KappaComplex] = None) -&gt; Tuple[float, dict]:
+    &#34;&#34;&#34;Helper function to process snapshots and extract an arbitrary compositon.&#34;&#34;&#34;
     snap = KappaSnapshot(snapshot_name)
     big_o_mers = snap.get_largest_complexes()
     # obtain the composition of the largest complex per snapshot, skipping those
@@ -78,18 +92,22 @@ def _process_snapshot_helper(snapshot_name: str, patterns_requested=None) -&gt; 
     return snap.get_snapshot_time(), lc_composition
 
 
-def snapshot_list_to_plot_matrix(snapshot_names, agent_patterns_requested=None, thread_number: int = 1) -&gt; \
-        Tuple[List[float], numpy.ndarray, List[Union[KappaAgent, KappaComplex]]]:
+def snapshot_list_to_plot_matrix(snapshot_names, patterns_requested: Dict = None, thread_number: int = 1) -&gt; \
+        Tuple[List[float], numpy.ndarray, List[KappaComplex]]:
     &#34;&#34;&#34;See file under `KaSaAn.scripts` for usage.&#34;&#34;&#34;
     lc_compositions = []
     snap_times = []
+    holding_struct = {}
+    if patterns_requested:
+        pattern_keys: Set[KappaComplex] = patterns_requested.keys()
+    else:
+        pattern_keys = None
     # iterate over the snapshots
     if thread_number &gt; 1:
         with cofu.ThreadPoolExecutor(max_workers=thread_number) as executor:
-            inputs_jobs = ((snap_name, agent_patterns_requested) for snap_name in snapshot_names)
-            jobs_submitted = {executor.submit(_process_snapshot_helper, *inputs_job): inputs_job
+            inputs_jobs = ((snap_name, pattern_keys) for snap_name in snapshot_names)
+            jobs_submitted = {executor.submit(process_snapshot_helper, *inputs_job): inputs_job
                               for inputs_job in inputs_jobs}
-            holding_struct = {}
             for job in cofu.as_completed(jobs_submitted):
                 input_used = jobs_submitted[job]
                 try:
@@ -99,15 +117,14 @@ def snapshot_list_to_plot_matrix(snapshot_names, agent_patterns_requested=None, 
                 else:
                     if job_results is not None:
                         holding_struct[job_results[0]] = job_results[1]
-        # sort by snapshot time, split dictionary into two iterables
-        snap_times, lc_compositions = zip(*sorted(holding_struct.items(), key=itemgetter(0)))
     else:
         for snap_name in snapshot_names:
             print(&#39;Processing {}, {} of {}&#39;.format(snap_name, snapshot_names.index(snap_name) + 1, len(snapshot_names)))
-            job_results = _process_snapshot_helper(snap_name, agent_patterns_requested)
+            job_results = process_snapshot_helper(snap_name, pattern_keys)
             if job_results is not None:
-                snap_times.append(job_results[0])
-                lc_compositions.append(job_results[1])
+                holding_struct[job_results[0]] = job_results[1]
+    # sort by snapshot time, split dictionary into two iterables
+    snap_times, lc_compositions = zip(*sorted(holding_struct.items(), key=itemgetter(0)))
 
     # obtain and sort the superset of patterns; used for defining the number of lines to plot
     # a pattern may not have been present in a snapshot, so we need to fill in a zero at some
@@ -134,8 +151,39 @@ def snapshot_list_to_plot_matrix(snapshot_names, agent_patterns_requested=None, 
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="KaSaAn.functions.graph_largest_complex_composition.process_snapshot_helper"><code class="name flex">
+<span>def <span class="ident">process_snapshot_helper</span></span>(<span>snapshot_name: str, patterns_requested: Set[KaSaAn.core.KappaComplex.KappaComplex] = None) ‑> Tuple[float, dict]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function to process snapshots and extract an arbitrary compositon.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[KappaComplex] = None) -&gt; Tuple[float, dict]:
+    &#34;&#34;&#34;Helper function to process snapshots and extract an arbitrary compositon.&#34;&#34;&#34;
+    snap = KappaSnapshot(snapshot_name)
+    big_o_mers = snap.get_largest_complexes()
+    # obtain the composition of the largest complex per snapshot, skipping those
+    # snapshots where there is ambiguity
+    if len(big_o_mers) &gt; 1:
+        warnings.warn(&#39;Snapshot {} had more than one class of largest complex; omitting it.&#39;.format(
+            snap.get_snapshot_file_name()))
+        return None
+    lc_complex, _ = big_o_mers[0]
+    # filter out agents if requested
+    if patterns_requested:
+        filtered_composition = {}
+        for ka_pattern in patterns_requested:
+            filtered_composition[ka_pattern] = lc_complex.get_number_of_embeddings(ka_pattern)
+        lc_composition = filtered_composition
+    else:
+        lc_composition = lc_complex.get_complex_composition()
+    return snap.get_snapshot_time(), lc_composition</code></pre>
+</details>
+</dd>
 <dt id="KaSaAn.functions.graph_largest_complex_composition.snapshot_list_to_plot_matrix"><code class="name flex">
-<span>def <span class="ident">snapshot_list_to_plot_matrix</span></span>(<span>snapshot_names, agent_patterns_requested=None, thread_number: int = 1) ‑> Tuple[List[float], numpy.ndarray, List[Union[KaSaAn.core.KappaAgent.KappaAgent, KaSaAn.core.KappaComplex.KappaComplex]]]</span>
+<span>def <span class="ident">snapshot_list_to_plot_matrix</span></span>(<span>snapshot_names, patterns_requested: Dict = None, thread_number: int = 1) ‑> Tuple[List[float], numpy.ndarray, List[KaSaAn.core.KappaComplex.KappaComplex]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>See file under <code><a title="KaSaAn.scripts" href="../scripts/index.html">KaSaAn.scripts</a></code> for usage.</p></div>
@@ -143,18 +191,22 @@ def snapshot_list_to_plot_matrix(snapshot_names, agent_patterns_requested=None, 
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def snapshot_list_to_plot_matrix(snapshot_names, agent_patterns_requested=None, thread_number: int = 1) -&gt; \
-        Tuple[List[float], numpy.ndarray, List[Union[KappaAgent, KappaComplex]]]:
+<pre><code class="python">def snapshot_list_to_plot_matrix(snapshot_names, patterns_requested: Dict = None, thread_number: int = 1) -&gt; \
+        Tuple[List[float], numpy.ndarray, List[KappaComplex]]:
     &#34;&#34;&#34;See file under `KaSaAn.scripts` for usage.&#34;&#34;&#34;
     lc_compositions = []
     snap_times = []
+    holding_struct = {}
+    if patterns_requested:
+        pattern_keys: Set[KappaComplex] = patterns_requested.keys()
+    else:
+        pattern_keys = None
     # iterate over the snapshots
     if thread_number &gt; 1:
         with cofu.ThreadPoolExecutor(max_workers=thread_number) as executor:
-            inputs_jobs = ((snap_name, agent_patterns_requested) for snap_name in snapshot_names)
-            jobs_submitted = {executor.submit(_process_snapshot_helper, *inputs_job): inputs_job
+            inputs_jobs = ((snap_name, pattern_keys) for snap_name in snapshot_names)
+            jobs_submitted = {executor.submit(process_snapshot_helper, *inputs_job): inputs_job
                               for inputs_job in inputs_jobs}
-            holding_struct = {}
             for job in cofu.as_completed(jobs_submitted):
                 input_used = jobs_submitted[job]
                 try:
@@ -164,15 +216,14 @@ def snapshot_list_to_plot_matrix(snapshot_names, agent_patterns_requested=None, 
                 else:
                     if job_results is not None:
                         holding_struct[job_results[0]] = job_results[1]
-        # sort by snapshot time, split dictionary into two iterables
-        snap_times, lc_compositions = zip(*sorted(holding_struct.items(), key=itemgetter(0)))
     else:
         for snap_name in snapshot_names:
             print(&#39;Processing {}, {} of {}&#39;.format(snap_name, snapshot_names.index(snap_name) + 1, len(snapshot_names)))
-            job_results = _process_snapshot_helper(snap_name, agent_patterns_requested)
+            job_results = process_snapshot_helper(snap_name, pattern_keys)
             if job_results is not None:
-                snap_times.append(job_results[0])
-                lc_compositions.append(job_results[1])
+                holding_struct[job_results[0]] = job_results[1]
+    # sort by snapshot time, split dictionary into two iterables
+    snap_times, lc_compositions = zip(*sorted(holding_struct.items(), key=itemgetter(0)))
 
     # obtain and sort the superset of patterns; used for defining the number of lines to plot
     # a pattern may not have been present in a snapshot, so we need to fill in a zero at some
@@ -210,6 +261,7 @@ def snapshot_list_to_plot_matrix(snapshot_names, agent_patterns_requested=None, 
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="KaSaAn.functions.graph_largest_complex_composition.process_snapshot_helper" href="#KaSaAn.functions.graph_largest_complex_composition.process_snapshot_helper">process_snapshot_helper</a></code></li>
 <li><code><a title="KaSaAn.functions.graph_largest_complex_composition.snapshot_list_to_plot_matrix" href="#KaSaAn.functions.graph_largest_complex_composition.snapshot_list_to_plot_matrix">snapshot_list_to_plot_matrix</a></code></li>
 </ul>
 </li>
@@ -217,7 +269,7 @@ def snapshot_list_to_plot_matrix(snapshot_names, agent_patterns_requested=None, 
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

@@ -10,13 +10,13 @@ import matplotlib.pyplot as plt
 from networkx.drawing.nx_agraph import graphviz_layout
 from typing import List, Tuple
 from ..core import KappaSnapshot, KappaComplex, KappaAgent
-from .snapshot_visualizer_patchwork import colorize_agents
+from .agent_color_assignment import colorize_observables
 
 
 def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: List[int], highlight_patterns: List[str],
                                     color_scheme_file_name: str, node_size: int, edge_width: float,
                                     fig_size: Tuple[float, float], print_distro: bool) -> List[plt.figure]:
-    """"Take a KappaSnapshot, get complexes of a given size, render them as plain graphs, optionally highlighting
+    """Take a KappaSnapshot, get complexes of a given size, render them as plain graphs, optionally highlighting
      certain patterns. See file under `KaSaAn.scripts` for usage."""
     snapshot = KappaSnapshot(snapshot_file_name)
     if print_distro:
@@ -53,7 +53,7 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
             for key, value in coloring_scheme_raw.items():
                 color_scheme[KappaAgent(key)] = value
     else:
-        color_scheme = colorize_agents(snapshot_agents)
+        color_scheme = colorize_observables(snapshot_agents)
     # using squarify to define axis locations based on complex sizes
     fig_width = 1
     fig_height = 1

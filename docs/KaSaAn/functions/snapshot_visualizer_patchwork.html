@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>KaSaAn.functions.snapshot_visualizer_patchwork API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -28,20 +28,19 @@
 </summary>
 <pre><code class="python">#!/usr/bin/env python3
 
-import colorsys
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.patches
 import matplotlib.text
-import numpy
 import squarify
 import warnings
 from matplotlib.collections import PatchCollection
 from operator import itemgetter
-from typing import List, Set, Dict, Tuple, Any
+from typing import List, Dict, Tuple, Any
 
 from ..core.KappaSnapshot import KappaSnapshot
 from ..core.KappaAgent import KappaAgent
+from .agent_color_assignment import sanity_check_agent_colors, colorize_observables
 
 
 def process_snapshot(snapshot: KappaSnapshot) -&gt; List[dict]:
@@ -54,46 +53,6 @@ def process_snapshot(snapshot: KappaSnapshot) -&gt; List[dict]:
     if len(data) &lt; 1:
         warnings.warn(&#39;Empty snapshot &lt;&lt;&#39; + str(snapshot) + &#39;&gt;&gt;&#39;)
     return data
-
-
-def colorize_agents(agent_set: Set[KappaAgent]) -&gt; Dict[KappaAgent, Any]:
-    &#34;&#34;&#34;Generate &amp; associate colors as a dictionary {Agent: Color}&#34;&#34;&#34;
-    agent_list = list(agent_set)
-    num_agents = len(agent_list)
-    agent_colors = {}
-    # Use built-in palettes: for 10 or less use the default colors
-    if num_agents &lt;= len(mpl.rcParams[&#39;axes.prop_cycle&#39;]):
-        for agent in range(num_agents):
-            agent_colors[agent_list[agent]] = &#39;C&#39; + str(agent)
-    # For 20 or more agents, use the tab20 colormap
-    elif num_agents &lt;= 20:
-        colormap = plt.get_cmap(&#39;tab20&#39;)
-        for agent in range(num_agents):
-            agent_colors[agent_list[agent]] = colormap(agent)
-    # For more than 20, pick linearly spaced values on HSV space
-    else:
-        h = numpy.linspace(start=0, stop=1, num=num_agents, endpoint=False)
-        for agent in range(num_agents):
-            agent_colors[agent_list[agent]] = colorsys.hsv_to_rgb(h[agent], 0.7, 0.75)
-    return agent_colors
-
-
-def _sanity_check_colors(snapshot: KappaSnapshot, color_scheme: Dict[KappaAgent, Any]):
-    &#34;&#34;&#34;Sanity check a user-provided color-scheme.&#34;&#34;&#34;
-    agent_list = snapshot.get_agent_types_present()
-    if color_scheme.keys() != agent_list:
-        for agent in color_scheme:
-            if agent not in agent_list:
-                warnings.warn(
-                    &#39;Agent &lt;&#39; + agent.get_agent_name() +
-                    &#39;&gt; provided in coloring scheme is not present in snapshot &lt;&#39; +
-                    snapshot.get_snapshot_file_name() + &#39;&gt;.&#39;)
-        for agent in agent_list:
-            if agent not in color_scheme:
-                warnings.warn(
-                    &#39;Agent &lt;&#39; + agent.get_agent_name() +
-                    &#39;&gt; present in snapshot &lt;&#39; + snapshot.get_snapshot_file_name() +
-                    &#39;&gt; has no color assigned in the scheme provided.&#39;)
 
 
 def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent, Any], vis_mode: str,
@@ -222,14 +181,14 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
         warnings.warn(&#39;Empty snapshot &lt;&lt;&#39; + snapshot_file + &#39;&gt;&gt;&#39;)
     # sanity check color scheme, or create one
     if color_scheme:
-        _sanity_check_colors(snapshot=my_snapshot, color_scheme=color_scheme)
+        sanity_check_agent_colors(agents_found=my_snapshot.get_agent_types_present(), color_scheme=color_scheme)
         my_color_scheme = color_scheme
     else:
-        agent_list = my_snapshot.get_agent_types_present()
-        if len(agent_list) &gt; 20:
+        agent_set = my_snapshot.get_agent_types_present()
+        if len(agent_set) &gt; 20:
             print(&#39;Over 20 agents found: palette might be ugly. &#39;
-                  &#39;Try googling &lt;&lt;iwanthue&gt;&gt; for a tool to generate distinct colors.&#39;)
-        my_color_scheme = colorize_agents(agent_list)
+                  &#39;Try googling &lt;&lt;iwanthue&gt;&gt; for a tool to generate distinct colors, then provide a custom palette to this tool.&#39;)
+        my_color_scheme = colorize_observables(agent_set)
 
     # Define figure definition &amp; resolution
     res_w = fig_res * fig_size[0]
@@ -307,37 +266,6 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="KaSaAn.functions.snapshot_visualizer_patchwork.colorize_agents"><code class="name flex">
-<span>def <span class="ident">colorize_agents</span></span>(<span>agent_set: Set[KaSaAn.core.KappaAgent.KappaAgent]) ‑> Dict[KaSaAn.core.KappaAgent.KappaAgent, Any]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Generate &amp; associate colors as a dictionary {Agent: Color}</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def colorize_agents(agent_set: Set[KappaAgent]) -&gt; Dict[KappaAgent, Any]:
-    &#34;&#34;&#34;Generate &amp; associate colors as a dictionary {Agent: Color}&#34;&#34;&#34;
-    agent_list = list(agent_set)
-    num_agents = len(agent_list)
-    agent_colors = {}
-    # Use built-in palettes: for 10 or less use the default colors
-    if num_agents &lt;= len(mpl.rcParams[&#39;axes.prop_cycle&#39;]):
-        for agent in range(num_agents):
-            agent_colors[agent_list[agent]] = &#39;C&#39; + str(agent)
-    # For 20 or more agents, use the tab20 colormap
-    elif num_agents &lt;= 20:
-        colormap = plt.get_cmap(&#39;tab20&#39;)
-        for agent in range(num_agents):
-            agent_colors[agent_list[agent]] = colormap(agent)
-    # For more than 20, pick linearly spaced values on HSV space
-    else:
-        h = numpy.linspace(start=0, stop=1, num=num_agents, endpoint=False)
-        for agent in range(num_agents):
-            agent_colors[agent_list[agent]] = colorsys.hsv_to_rgb(h[agent], 0.7, 0.75)
-    return agent_colors</code></pre>
-</details>
-</dd>
 <dt id="KaSaAn.functions.snapshot_visualizer_patchwork.process_snapshot"><code class="name flex">
 <span>def <span class="ident">process_snapshot</span></span>(<span>snapshot: KaSaAn.core.KappaSnapshot.KappaSnapshot) ‑> List[dict]</span>
 </code></dt>
@@ -360,7 +288,7 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
 </details>
 </dd>
 <dt id="KaSaAn.functions.snapshot_visualizer_patchwork.render_snapshot_as_patchwork"><code class="name flex">
-<span>def <span class="ident">render_snapshot_as_patchwork</span></span>(<span>snapshot_file: str, color_scheme: Dict[KaSaAn.core.KappaAgent.KappaAgent, Any] = None, vis_mode: str = 'all', fig_size: Tuple[float, float] = [6.4, 4.8], fig_res: float = 100.0) ‑> <function figure at 0x7f265e98ed30></span>
+<span>def <span class="ident">render_snapshot_as_patchwork</span></span>(<span>snapshot_file: str, color_scheme: Dict[KaSaAn.core.KappaAgent.KappaAgent, Any] = None, vis_mode: str = 'all', fig_size: Tuple[float, float] = [6.4, 4.8], fig_res: float = 100.0) ‑> <function figure at 0x7fa4059b84c0></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Render a snapshot as a patchwork / tree-map diagram, using any of four supported modes:</p>
@@ -393,14 +321,14 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
         warnings.warn(&#39;Empty snapshot &lt;&lt;&#39; + snapshot_file + &#39;&gt;&gt;&#39;)
     # sanity check color scheme, or create one
     if color_scheme:
-        _sanity_check_colors(snapshot=my_snapshot, color_scheme=color_scheme)
+        sanity_check_agent_colors(agents_found=my_snapshot.get_agent_types_present(), color_scheme=color_scheme)
         my_color_scheme = color_scheme
     else:
-        agent_list = my_snapshot.get_agent_types_present()
-        if len(agent_list) &gt; 20:
+        agent_set = my_snapshot.get_agent_types_present()
+        if len(agent_set) &gt; 20:
             print(&#39;Over 20 agents found: palette might be ugly. &#39;
-                  &#39;Try googling &lt;&lt;iwanthue&gt;&gt; for a tool to generate distinct colors.&#39;)
-        my_color_scheme = colorize_agents(agent_list)
+                  &#39;Try googling &lt;&lt;iwanthue&gt;&gt; for a tool to generate distinct colors, then provide a custom palette to this tool.&#39;)
+        my_color_scheme = colorize_observables(agent_set)
 
     # Define figure definition &amp; resolution
     res_w = fig_res * fig_size[0]
@@ -597,7 +525,6 @@ companion to snapshot_composition_simple.</p></div>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="KaSaAn.functions.snapshot_visualizer_patchwork.colorize_agents" href="#KaSaAn.functions.snapshot_visualizer_patchwork.colorize_agents">colorize_agents</a></code></li>
 <li><code><a title="KaSaAn.functions.snapshot_visualizer_patchwork.process_snapshot" href="#KaSaAn.functions.snapshot_visualizer_patchwork.process_snapshot">process_snapshot</a></code></li>
 <li><code><a title="KaSaAn.functions.snapshot_visualizer_patchwork.render_snapshot_as_patchwork" href="#KaSaAn.functions.snapshot_visualizer_patchwork.render_snapshot_as_patchwork">render_snapshot_as_patchwork</a></code></li>
 <li><code><a title="KaSaAn.functions.snapshot_visualizer_patchwork.snapshot_composition_simple" href="#KaSaAn.functions.snapshot_visualizer_patchwork.snapshot_composition_simple">snapshot_composition_simple</a></code></li>
@@ -608,7 +535,7 @@ companion to snapshot_composition_simple.</p></div>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

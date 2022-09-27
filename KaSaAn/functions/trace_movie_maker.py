@@ -6,7 +6,7 @@ from matplotlib.collections import PatchCollection
 from typing import List, Tuple, Set
 
 from .find_snapshot_names import find_snapshot_names
-from .snapshot_visualizer_patchwork import process_snapshot, snapshot_composition_simple, colorize_agents, \
+from .snapshot_visualizer_patchwork import process_snapshot, snapshot_composition_simple, colorize_observables, \
     snapshot_legend_simple
 from ..core import KappaSnapshot, KappaAgent
 
@@ -38,7 +38,7 @@ def movie_from_snapshots(directory: str, vis_mode: str, fig_width: int, xy_ratio
     my_agent_list, my_max_mass = _define_agent_list_and_max_mass(snapshots)
     if verbose:
         print('Trace contains ' + str(len(my_agent_list)) + ' agents in total.')
-    color_scheme = colorize_agents(my_agent_list)
+    color_scheme = colorize_observables(my_agent_list)
 
     # Define figure & sizes
     x_res = 1000

@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 
-import colorsys
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.patches
 import matplotlib.text
-import numpy
 import squarify
 import warnings
 from matplotlib.collections import PatchCollection
 from operator import itemgetter
-from typing import List, Set, Dict, Tuple, Any
+from typing import List, Dict, Tuple, Any
 
 from ..core.KappaSnapshot import KappaSnapshot
 from ..core.KappaAgent import KappaAgent
+from .agent_color_assignment import sanity_check_agent_colors, colorize_observables
 
 
 def process_snapshot(snapshot: KappaSnapshot) -> List[dict]:
@@ -26,46 +25,6 @@ def process_snapshot(snapshot: KappaSnapshot) -> List[dict]:
     if len(data) < 1:
         warnings.warn('Empty snapshot <<' + str(snapshot) + '>>')
     return data
-
-
-def colorize_agents(agent_set: Set[KappaAgent]) -> Dict[KappaAgent, Any]:
-    """Generate & associate colors as a dictionary {Agent: Color}"""
-    agent_list = list(agent_set)
-    num_agents = len(agent_list)
-    agent_colors = {}
-    # Use built-in palettes: for 10 or less use the default colors
-    if num_agents <= len(mpl.rcParams['axes.prop_cycle']):
-        for agent in range(num_agents):
-            agent_colors[agent_list[agent]] = 'C' + str(agent)
-    # For 20 or more agents, use the tab20 colormap
-    elif num_agents <= 20:
-        colormap = plt.get_cmap('tab20')
-        for agent in range(num_agents):
-            agent_colors[agent_list[agent]] = colormap(agent)
-    # For more than 20, pick linearly spaced values on HSV space
-    else:
-        h = numpy.linspace(start=0, stop=1, num=num_agents, endpoint=False)
-        for agent in range(num_agents):
-            agent_colors[agent_list[agent]] = colorsys.hsv_to_rgb(h[agent], 0.7, 0.75)
-    return agent_colors
-
-
-def _sanity_check_colors(snapshot: KappaSnapshot, color_scheme: Dict[KappaAgent, Any]):
-    """Sanity check a user-provided color-scheme."""
-    agent_list = snapshot.get_agent_types_present()
-    if color_scheme.keys() != agent_list:
-        for agent in color_scheme:
-            if agent not in agent_list:
-                warnings.warn(
-                    'Agent <' + agent.get_agent_name() +
-                    '> provided in coloring scheme is not present in snapshot <' +
-                    snapshot.get_snapshot_file_name() + '>.')
-        for agent in agent_list:
-            if agent not in color_scheme:
-                warnings.warn(
-                    'Agent <' + agent.get_agent_name() +
-                    '> present in snapshot <' + snapshot.get_snapshot_file_name() +
-                    '> has no color assigned in the scheme provided.')
 
 
 def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent, Any], vis_mode: str,
@@ -194,14 +153,14 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
         warnings.warn('Empty snapshot <<' + snapshot_file + '>>')
     # sanity check color scheme, or create one
     if color_scheme:
-        _sanity_check_colors(snapshot=my_snapshot, color_scheme=color_scheme)
+        sanity_check_agent_colors(agents_found=my_snapshot.get_agent_types_present(), color_scheme=color_scheme)
         my_color_scheme = color_scheme
     else:
-        agent_list = my_snapshot.get_agent_types_present()
-        if len(agent_list) > 20:
+        agent_set = my_snapshot.get_agent_types_present()
+        if len(agent_set) > 20:
             print('Over 20 agents found: palette might be ugly. '
-                  'Try googling <<iwanthue>> for a tool to generate distinct colors.')
-        my_color_scheme = colorize_agents(agent_list)
+                  'Try googling <<iwanthue>> for a tool to generate distinct colors, then provide a custom palette to this tool.')
+        my_color_scheme = colorize_observables(agent_set)
 
     # Define figure definition & resolution
     res_w = fig_res * fig_size[0]

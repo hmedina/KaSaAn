@@ -3,6 +3,7 @@
 """Utility functions used stand-alone, or as the main component of entry-points (defined under `KaSaAn.scripts`
  sub-module)."""
 
+from .agent_color_assignment import colorize_observables, sanity_check_agent_colors
 from .catalytic_potential import get_potential_of_folder
 from .find_snapshot_names import find_snapshot_names
 from .numerical_sort import numerical_sort
