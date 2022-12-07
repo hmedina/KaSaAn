@@ -3,6 +3,7 @@
 from typing import List, Tuple
 import ast
 import csv
+import matplotlib.axes as mpa
 import numpy as np
 
 
@@ -19,9 +20,10 @@ def observable_file_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarra
     return leg_data, num_data
 
 
-def observable_list_axis_annotator(obs_axis, data: Tuple[list, np.ndarray],
+def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndarray],
                                    vars_indexes: List[int], vars_names: List[str], vars_exprs: List[str],
-                                   diff_toggle: bool = False, axis_x_log: bool = False, axis_y_log: bool = False):
+                                   axis_x_log: bool = False, axis_y_log: bool = False,
+                                   diff_toggle: bool = False):
     """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object. See file
      under `KaSaAn.scripts` for further usage."""
     leg_data, num_data = data
@@ -29,51 +31,57 @@ def observable_list_axis_annotator(obs_axis, data: Tuple[list, np.ndarray],
     legend_to_plot = []
     # determine what observables to plot
     # by default, plot all observables except the first, which plots [T]
-    if not vars_exprs:
-        if not vars_indexes and not vars_names:
-            vars_to_plot = range(2, len(leg_data) + 1)
-        else:
-            vars_to_plot = []
-            if vars_indexes:
-                for var in vars_indexes:
-                    if var not in range(1, len(leg_data) + 1):
-                        raise ValueError('Variable <' + str(var) + '> not in observables present: 1-' + str(len(leg_data)))
-                    else:
-                        vars_to_plot.append(var)
-            if vars_names:
-                for var_name in vars_names:
-                    vars_to_plot.append(leg_data.index(var_name) + 1)
-        for variable in vars_to_plot:
-            data_to_plot.append(num_data[:, variable - 1])
-            legend_to_plot.append(leg_data[variable - 1])
+    if not vars_exprs and not vars_indexes and not vars_names:
+        vars_to_plot = range(2, len(leg_data) + 1)
     else:
-        for alg_expression in vars_exprs:
-            # to render an algebraic expression, we create an abstract syntax tree,
-            #  then replace the tokens that are strings found in the legend with
-            #  the name of the data array, with proper indexing; finally
-            #  the new tree can be executed (with fixed linenos & indents).
-            # TokenTransformer is declared here so it can include in its scope
-            #  the legend_data values; this avoids more extensive subclassing
-            class TokenTransformer(ast.NodeTransformer):
-                """Swap column names for the indexed-array."""
-                def visit_Constant(self, node, obs_list=leg_data):
-                    """Transform node if it's a string found in the legend data."""
-                    if isinstance(node.value, str):
-                        if node.value in obs_list:
-                            return ast.copy_location(
-                                ast.Subscript(
-                                    value=ast.Name(id='num_data', ctx=ast.Load()),
-                                    slice=ast.Tuple(elts=[ast.Slice(), ast.Constant(value=obs_list.index(node.value))],
-                                                    ctx=ast.Load()),
-                                    ctx=ast.Load()), node)
+        vars_to_plot = []
+        # plot by index
+        if vars_indexes:
+            for var in vars_indexes:
+                if var not in range(1, len(leg_data) + 1):
+                    raise ValueError('Variable #' + str(var) + ' not in observables present, valid range is 1-' + str(len(leg_data)))
+                else:
+                    vars_to_plot.append(var)
+        # plot by variable name
+        if vars_names:
+            for var_name in vars_names:
+                try:
+                    var: int = leg_data.index(var_name)
+                except ValueError as e:
+                    raise ValueError('Label <{}> not found among observable labels; valid names are:\n'.format(var_name) + ', '.join(leg_data))
+                vars_to_plot.append(var + 1)
+        # plot by algebraic expression
+        if vars_exprs:
+            for alg_expression in vars_exprs:
+                # to render an algebraic expression, we create an abstract syntax tree,
+                #  then replace the tokens that are strings found in the legend with
+                #  the name of the data array, with proper indexing; finally
+                #  the new tree can be executed (with fixed linenos & indents).
+                # TokenTransformer is declared here so it can include in its scope
+                #  the legend_data values; this avoids more extensive subclassing
+                class TokenTransformer(ast.NodeTransformer):
+                    """Swap column names for the indexed-array."""
+                    def visit_Constant(self, node, obs_list=leg_data):
+                        """Transform node if it's a string found in the legend data."""
+                        if isinstance(node.value, str):
+                            if node.value in obs_list:
+                                return ast.copy_location(
+                                    ast.Subscript(
+                                        value=ast.Name(id='num_data', ctx=ast.Load()),
+                                        slice=ast.Tuple(elts=[ast.Slice(), ast.Constant(value=obs_list.index(node.value))],
+                                                        ctx=ast.Load()),
+                                        ctx=ast.Load()), node)
+                            else:
+                                raise ValueError('Error: <{}> not found in observables: {}'.format(node.value, obs_list))
                         else:
-                            raise ValueError('Error: <{}> not found in observables: {}'.format(node.value, obs_list))
-                    else:
-                        return node
-            my_ast = ast.parse(alg_expression, mode='eval')
-            TokenTransformer().visit(my_ast)
-            data_to_plot.append(eval(compile(ast.fix_missing_locations(my_ast), '<string>', 'eval')))
-            legend_to_plot.append(alg_expression)
+                            return node
+                my_ast = ast.parse(alg_expression, mode='eval')
+                TokenTransformer().visit(my_ast)
+                data_to_plot.append(eval(compile(ast.fix_missing_locations(my_ast), '<string>', 'eval')))
+                legend_to_plot.append(alg_expression)
+    for variable in vars_to_plot:
+        data_to_plot.append(num_data[:, variable - 1])
+        legend_to_plot.append(leg_data[variable - 1])
     # determine the type of plot
     x_data = num_data[:, 0]
     if diff_toggle:

@@ -67,15 +67,12 @@ def main():
     # parse data
     this_data = observable_file_reader(args.input_file_name)
     fig, ax = plt.subplots(figsize=args.fig_size, dpi=args.dots_per_inch)
-    if args.variable_expressions:
-        if args.variable_indexes:
-            warnings.warn('Option "-vi" supplied along with "-ve"; ignoring "-vi".')
-        elif args.variable_names:
-            warnings.warn('Option "-vn" supplied along with "-ve"; ignoring "-vn".')
     observable_list_axis_annotator(obs_axis=ax, data=this_data,
-                                   vars_indexes=args.variable_indexes, vars_names=args.variable_names,
+                                   vars_indexes=args.variable_indexes,
+                                   vars_names=args.variable_names,
                                    vars_exprs=args.variable_expressions,
-                                   diff_toggle=args.differential, axis_x_log=args.log_x, axis_y_log=args.log_y)
+                                   axis_x_log=args.log_x, axis_y_log=args.log_y,
+                                   diff_toggle=args.differential)
 
     # print out observables
     if args.print_observables_to_file:
