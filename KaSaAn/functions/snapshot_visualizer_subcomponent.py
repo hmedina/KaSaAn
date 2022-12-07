@@ -87,7 +87,7 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
             patch_label = '{}: {}'.format(ka_agent, ag_abun)
             patch_color = color_scheme[ka_agent] if ka_agent in color_scheme else '#00000000'
             legend_entries.append(mpatches.Patch(label=patch_label, color=patch_color))
-        ax.legend(handles=legend_entries, title=('{} copies'.format(abund) if abund > 1 else '1 copy'))
+        ax.legend(handles=legend_entries, title=(r'{} {}, size$={}$'.format(abund, 'copies' if abund > 1 else 'copy', c_kappa.get_size_of_complex())))
     fig_list.append(fig_all)
     # construct the patter-specific figures
     if highlight_patterns:
@@ -114,6 +114,6 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
                 patch_label = '{}: {}'.format(str(kappa_query), c_kappa.get_number_of_embeddings_of_agent(kappa_query))
                 patch_color = color_scheme[KappaAgent(kappa_query.get_agent_name())]
                 legend_entry = mpatches.Patch(label=patch_label, color=patch_color)
-                ax.legend(handles=[legend_entry], title=('{} copies'.format(abund) if abund > 1 else '1 copy'))
+                ax.legend(handles=[legend_entry], title=(r'{} {}, size$={}$'.format(abund, 'copies' if abund > 1 else 'copy', c_kappa.get_size_of_complex())))
             fig_list.append(fig_patt)
     return fig_list
