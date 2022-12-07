@@ -36,7 +36,7 @@ Fine grained control is exposed through the various methods of the `KappaContact
 
 
 ## Installation
-To install from a freshly downloaded copy, where `[dir]` contains the `setup.py` file:
+To install from a freshly downloaded copy, where `[dir]` contains the `pyproject.toml` file:
 ```
 pip install [dir]
 ```
@@ -54,7 +54,7 @@ pip uninstall KaSaAn
 
 ## Requirements
 General:
-* Python 3.7 or above
+* Python 3.6 or above
 
 For visualization scripts:
 * Python packages:
@@ -73,5 +73,3 @@ For executing models, producing snapshots, producing traces, etc.
 
 * Trace Query Language engine [TQL](https://github.com/jonathan-laurent/Kappa-TQL).
 For querying a trace to, for example, obtain periodic snapshots.
-
-

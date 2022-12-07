@@ -1,0 +1,51 @@
+[build-system]
+    requires = ["setuptools>=61.0"]
+    build-backend = "setuptools.build_meta"
+
+[project]
+name = "KaSaAn"
+version = "0.4"
+description = "API and some convenience scripts for analyzing Kappa expressions."
+readme = "README.md"
+requires-python = ">=3.6"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Hector Medina"},
+    {email = "hector.f.medina.a@gmail.com"}
+]
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"License :: OSI Approved :: MIT License",
+	"Operating System :: OS Independent",
+	"Environment :: Plugins",
+	"Intended Audience :: Science/Research"
+]
+dependencies = [
+    "matplotlib >= 3.5.1",
+	"numpy >= 1.16",
+	"squarify >= 0.3.0",
+	"networkx >= 2.4"
+]
+
+[project.urls]
+    repository = "https://github.com/hmedina/KaSaAn"
+    documentation = "https://hmedina.github.io/KaSaAn/KaSaAn/index.html"
+
+[project.scripts]
+    kappa_catalytic_potential = "KaSaAn.scripts.kappa_catalytic_potential:main"
+    kappa_observable_plotter = "KaSaAn.scripts.kappa_observable_plotter:main"
+    kappa_observable_coplotter = "KaSaAn.scripts.kappa_observable_coplotter:main"
+    kappa_snapshot_largest_complex_time = "KaSaAn.scripts.kappa_snapshot_largest_complex_time:main"
+    kappa_snapshot_visualizer_patchwork = "KaSaAn.scripts.kappa_snapshot_visualizer_patchwork:main"
+    kappa_snapshot_visualizer_network = "KaSaAn.scripts.kappa_snapshot_visualizer_network:main"
+    kappa_snapshot_visualizer_subcomponent = "KaSaAn.scripts.kappa_snapshot_visualizer_subcomponent:main"
+    kappa_trace_movie_maker = "KaSaAn.scripts.kappa_trace_movie_maker:main"
+
+
+[tool.flake8]
+    max-line-length = 120
+
+[tool.setuptools]
+    packages = ["KaSaAn.core", "KaSaAn.functions", "KaSaAn.scripts"]
+
+
