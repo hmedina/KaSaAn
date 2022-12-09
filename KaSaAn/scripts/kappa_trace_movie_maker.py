@@ -26,6 +26,7 @@ import argparse
 import sys
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+import matplotlib.widgets as mpw
 
 from KaSaAn.functions import movie_from_snapshots
 
@@ -39,6 +40,9 @@ def main(args=None):
                         help='Directory where the snapshots are located. These should be named "snapshot.#.ka", i.e.'
                              ' the default naming scheme used by the Kappa Trace Query Language Engine. Default uses'
                              ' current directory.')
+    parser.add_argument('-p', '--pattern', type=str, default='snapshot.*.ka',
+                        help='Pattern that should be used to get the snapshot names; default is as produced by the TQL,'
+                        ' `snapshot.*.ka`')
     parser.add_argument('-m', '--vis_mode', type=str, default='mass', choices=['mass', 'count', 'size'],
                         help='Specify the type of visualization to render. Default uses mass.')
     parser.add_argument('-o', '--output_file', type=str, default='',
@@ -64,7 +68,7 @@ def main(args=None):
                         help='Display information about number of snapshots found.')
     args = parser.parse_args()
     # make the animation
-    my_animation = movie_from_snapshots(directory=args.directory,
+    my_animation = movie_from_snapshots(directory=args.directory, pattern=args.pattern,
                                         vis_mode=args.vis_mode,
                                         fig_width=args.fig_width,
                                         xy_ratio=args.XY_ratio,
@@ -83,6 +87,26 @@ def main(args=None):
             print('Now saving animation to file <<' + args.output_file + '>>')
         my_animation.save(filename=args.output_file, writer=my_writer)
     else:
+        # adjust axis to add space for plot controls; add axes
+        fig = plt.gcf()
+        fig.subplots_adjust(bottom=0.2)
+        ax_b_play = fig.add_axes([0/9, 0.05, 0.1, 0.075])
+        ax_b_paus = fig.add_axes([1/9, 0.05, 0.1, 0.075])
+        # define buttons, their labels, their functions
+        b_play = mpw.Button(ax_b_play, label="\u25B6")
+        b_paus = mpw.Button(ax_b_paus, label="\u23F8")
+        b_play.label.set_fontfamily('monospace')
+        b_paus.label.set_fontfamily('monospace')
+
+        def ani_paus(event):
+            my_animation.pause()
+
+        def ani_play(event):
+            my_animation.resume()
+
+        b_play.on_clicked(ani_play)
+        b_paus.on_clicked(ani_paus)
+
         plt.show()
 
 

@@ -23,21 +23,21 @@ def _define_agent_list_and_max_mass(snap_list: List[KappaSnapshot]) -> Tuple[Set
     return agent_set, max_mass
 
 
-def movie_from_snapshots(directory: str, vis_mode: str, fig_width: int, xy_ratio: float, dont_scale_mass: bool,
-                         legend_cols: int, frame_int: int, verbose: bool):
+def movie_from_snapshots(directory: str, pattern: str, vis_mode: str, fig_width: int, xy_ratio: float,
+                         dont_scale_mass: bool, legend_cols: int, frame_int: int, verbose: bool):
     """Make a movie out of snapshots. See file under `KaSaAn.scripts` for usage."""
     # Find the snapshots in the directory; determine agent set; colorize it
     snapshots = []
-    snapshot_names = find_snapshot_names(target_directory=directory, name_pattern='snapshot.*.ka')
+    snapshot_names = find_snapshot_names(target_directory=directory, name_pattern=pattern)
     if verbose:
-        print('Found ' + str(len(snapshots)) + ' snapshots in directory ' + directory)
+        print('Found {} snapshots in directory {}'.format(len(snapshots), directory))
     for snapshot_index, snapshot_name in enumerate(snapshot_names):
         if verbose:
-            print('Processing {}, {} of {}'.format(snapshot_name, snapshot_index + 1, len(snapshot_names)))
+            print('Reading {}, {} of {}'.format(snapshot_name, snapshot_index + 1, len(snapshot_names)))
         snapshots.append(KappaSnapshot(snapshot_name))
     my_agent_list, my_max_mass = _define_agent_list_and_max_mass(snapshots)
     if verbose:
-        print('Trace contains ' + str(len(my_agent_list)) + ' agents in total.')
+        print('Snapshot series contains {} agents in total.'.format(len(my_agent_list)))
     color_scheme = colorize_observables(my_agent_list)
 
     # Define figure & sizes
@@ -57,10 +57,10 @@ def movie_from_snapshots(directory: str, vis_mode: str, fig_width: int, xy_ratio
         ars = []
         snap_scale = snap.get_total_mass() / my_max_mass if not dont_scale_mass else 1
         if verbose:
-            print('Now processing snapshot ' + snap.get_snapshot_file_name())
+            print('Normalizing snapshot ' + snap.get_snapshot_file_name())
         data = process_snapshot(snap)
-        rectangles, maxi = snapshot_composition_simple(data=data, color_scheme=color_scheme, vis_mode=vis_mode,
-                                                       x_res=x_res * snap_scale, y_res=y_res * snap_scale)
+        rectangles, _ = snapshot_composition_simple(data=data, color_scheme=color_scheme, vis_mode=vis_mode,
+                                                    x_res=x_res * snap_scale, y_res=y_res * snap_scale)
         for r in rectangles:
             ar = data_ax.add_patch(r)
             ars.append(ar)
@@ -84,7 +84,7 @@ def movie_from_snapshots(directory: str, vis_mode: str, fig_width: int, xy_ratio
 
     # Make movie out of list
     if verbose:
-        print('Now collecting rectangles into an animation.')
+        print('Collecting rectangles into an animation...')
     ani = animation.ArtistAnimation(fig=fig, artists=artist_list, interval=frame_int, repeat_delay=2000)
 
     return ani
