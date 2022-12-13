@@ -30,7 +30,7 @@ def movie_from_snapshots(directory: str, pattern: str, vis_mode: str, fig_width:
     snapshots = []
     snapshot_names = find_snapshot_names(target_directory=directory, name_pattern=pattern)
     if verbose:
-        print('Found {} snapshots in directory {}'.format(len(snapshots), directory))
+        print('Found {} snapshots in directory {}'.format(len(snapshot_names), directory))
     for snapshot_index, snapshot_name in enumerate(snapshot_names):
         if verbose:
             print('Reading {}, {} of {}'.format(snapshot_name, snapshot_index + 1, len(snapshot_names)))
