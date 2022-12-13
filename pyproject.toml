@@ -7,7 +7,7 @@ name = "KaSaAn"
 version = "0.4"
 description = "API and some convenience scripts for analyzing Kappa expressions."
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 license = {file = "LICENSE"}
 authors = [
     {name = "Hector Medina"},
