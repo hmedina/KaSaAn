@@ -4,9 +4,8 @@ function."""
 
 import re
 import networkx as nx
-import numpy as np
 from collections import deque
-from typing import Deque, Dict, List, FrozenSet, Set, Tuple, Union
+from typing import Deque, Dict, List, Set, Tuple
 
 from .KappaMultiAgentGraph import KappaMultiAgentGraph
 from .KappaAgent import KappaAgent
@@ -39,7 +38,7 @@ class KappaComplex(KappaMultiAgentGraph):
         if len(matches) == 0:
             raise ComplexParseError('Complex <' + self._raw_expression + '> appears to have zero agents.')
         try:
-            agent_list = []
+            agent_list: List[KappaAgent] = []
             agent_idents = []
             agent_types = set()
             composition = {}
@@ -168,13 +167,12 @@ class KappaComplex(KappaMultiAgentGraph):
                         second_terminus = agent.get_terminii_of_bond(bond)[1]
                     else:
                         second_terminus = agent.get_terminii_of_bond(bond)[0]
+                    this_bond_type = KappaBond(agent_one=dangle_bond_dict[bond]['agent name'],
+                                               site_one=dangle_bond_dict[bond]['site name'],
+                                               agent_two=agent.get_agent_name(),
+                                               site_two=second_terminus)
                     paired_bond_list.append((dangle_bond_dict[bond]['agent id'], agent_global_id,
-                                             {'bond id': bond, 'bond type':
-                                             KappaBond(agent_one=dangle_bond_dict[bond]['agent name'],
-                                                       site_one=dangle_bond_dict[bond]['site name'],
-                                                       agent_two=agent.get_agent_name(),
-                                                       site_two=second_terminus
-                                                       )}))
+                                             {'bond id': bond, 'bond type': this_bond_type}))
                     del dangle_bond_dict[bond]
                 else:
                     dangle_bond_dict[bond] = {'agent id': agent_global_id,
@@ -201,11 +199,36 @@ class KappaComplex(KappaMultiAgentGraph):
         return cx_data
 
 
-def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> \
-        Tuple[List[List[Tuple[int, int]]], List[List[Tuple[int, int]]]]:
+class NetMap():
+    """Class for representing network maps, used for automorphism checking."""
+
+    node_map: Set[Tuple[int, int]]
+    """List of tuples, holding the node index of one network that matches the node index in the other."""
+    edge_map: Set[Tuple[int, int]]
+    """List of tuples, holding the edge index of one network that matches the edge index in the other."""
+
+    def __init__(self):
+        self.node_map = set()
+        self.edge_map = set()
+
+    def __str__(self) -> str:
+        nodes: str = ', '.join(['{} -> {}'.format(a, b) for a, b in self.node_map])
+        edges: str = ', '.join(['{} -> {}'.format(a, b) for a, b in self.edge_map])
+        return 'Nodes: {}\nEdges: {}'.format(nodes, edges)
+
+    def __eq__(self, other) -> bool:
+        return True if self.__hash__() == other.__hash__() else False
+
+    def __hash__(self) -> int:
+        origin_n, image_n = zip(*self.node_map)
+        origin_e, image_e = zip(*self.edge_map)
+        return hash((tuple(sorted(origin_n)), tuple(sorted(image_n)), tuple(sorted(origin_e)), tuple(sorted(image_e))))
+
+
+def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> Tuple[List[NetMap], Set[NetMap]]:
     """
-    Calculates all the embeddings of `ka_query` into `ka_target`, returning both the map of all embeddings, as well as
-    the map of embeddings corrected for the number of preserved automorphisms. For a rotational symmetry:
+    Calculates all the embeddings of `ka_query` into `ka_target`. First element is the list of all mappings,
+    while second is the set of automorphism-corrected mappings. For a rotational symmetry:
     >>> from KaSaAn.core.KappaComplex import embed_and_map, KappaComplex
     >>> my_comp = KappaComplex('Bob(h[10], t[11]), Bob(h[11], t[12]), Bob(h[12], t[10])')
     >>> maps_all, maps_unique = embed_and_map(my_comp, my_comp)
@@ -235,7 +258,7 @@ def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> \
             return ([], [])
     # start from the least abundant type, get their node indexes in query network and target network;
     # from the <<query is improper subset of target>> check above, all of query's are in target by type, so query's
-    # minimum must be a type in common; moreover all query's type abundances are equal or greater in target, so if 
+    # minimum must be a type in common; moreover all query's type abundances are equal or greater in target, so if
     # a type is the minimum in query, its abundance will also be either *the*, or just *a*, minimum in target
     common_min: KappaAgent = next(iter(query_comp))
     query_network = ka_query.to_networkx()
@@ -244,81 +267,68 @@ def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> \
         raise ValueError('Error: query is not a connected graph.')
     if not nx.is_connected(target_network):
         raise ValueError('Error: target is not a connected graph.')
-    common_min_q = []
+    common_min_q: List[int] = []
     for node_id in query_network.nodes:
         if common_min in query_network.nodes[node_id]['kappa']:
             common_min_q.append(node_id)
-    common_min_t = []
+    common_min_t: List[int] = []
     for node_id in target_network.nodes:
         if common_min in target_network.nodes[node_id]['kappa']:
             common_min_t.append(node_id)
     # embark on systematic traversal
     query_start_node = common_min_q[0]
-    maps_all: List[List[Tuple[int, int]]] = []
-    maps_distinct:  List[List[Tuple[int, int]]] = []
-    map_set: Set[FrozenSet[int]] = set()
+    maps_all: List[NetMap] = []
+    maps_distinct:  Set[NetMap] = set()
     for target_start_node in common_min_t:
         map_found = _traverse_from(query_network, target_network, query_start_node, target_start_node)
         if map_found:
             maps_all.append(map_found)
-            _, t_nodes = zip(*map_found)
-            t_nodes = frozenset(t_nodes)
-            if t_nodes not in map_set:
-                map_set.update([t_nodes])
-                maps_distinct.append(map_found)
+            maps_distinct.add(map_found)
     return maps_all, maps_distinct
 
 
-def _traverse_from(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_start: int, target_start: int) -> \
-        List[Tuple[int, int]]:
+def _traverse_from(query_net: nx.MultiGraph, target_net: nx.MultiGraph, q_start: int, t_start: int) -> NetMap:
     """Attempt a traversal of `target_net`, starting at `target_start`, matched to `query_start`, following
-    `query_net`'s topology. If successful, returns the network mapping: a list of `(q,t)`, the indexes in the query and
-    target networks respectively."""
-    # stack of node identifiers, integers from the networkx representation
-    node_stack: Deque[Tuple[int, Union[int, None], int]] = deque()
-    node_stack.append((query_start, None, target_start))
+    `query_net`'s topology."""
+    HopData = tuple[int, int]
+    node_stack: Deque[HopData] = deque()
+    node_stack.append(HopData([q_start, t_start]))
+    # stack of: query-current, query-previous, transforming-bond, target-current, target-previous
+    #  used to traverse the target network, mapping the query-current to the target-current,
+    #  and checking if the bond that led from query-previous to query-current would work for
+    #  the target network
     nodes_visited: Set[int] = set()
-    network_map = []
+    edges_followed: Set[int] = set()
+    network_map = NetMap()
     while node_stack:
-        q_node, q_prev, t_node = node_stack.pop()
-        if q_node not in nodes_visited:
-            # update t_node according to what got us from q_prev to q_node
-            if q_prev is not None:
-                # uniqueness of site name per agent, plus orientation of bond types,
-                # guarantee a bond type can appear at most once in an agent's
-                # bond set when read with the right orientation; this yields "rigidity" to the matcher
-                transforming_bond_type: KappaBond = query_net.get_edge_data(q_prev, q_node)[0]['bond type']
-                transform_index_source = np.where([node == q_prev for node in query_net.nodes])[0][0]
-                transform_index_destin = np.where([node == q_node for node in query_net.nodes])[0][0]
-                if transform_index_destin < transform_index_source:
-                    transforming_bond_type = transforming_bond_type.reverse()
-                target_bonds: List[KappaBond] = []
-                # get oriented bond list, incident on target node
-                for a, b in nx.edges(target_net, t_node):
-                    bond_type: KappaBond = target_net.get_edge_data(a, b)[0]['bond type']
-                    if a == t_node:
-                        source_index = np.where([node == a for node in target_net.nodes])[0][0]
-                        destin_index = np.where([node == b for node in target_net.nodes])[0][0]
-                    else:
-                        source_index = np.where([node == b for node in target_net.nodes])[0][0]
-                        destin_index = np.where([node == a for node in target_net.nodes])[0][0]
-                    if source_index < destin_index:
-                        target_bonds.append(bond_type)
-                    else:
-                        target_bonds.append(bond_type.reverse())
-                target_transforming_bond_index: int = \
-                    np.where([transforming_bond_type == item for item in target_bonds])[0][0]
-                t_node = list(nx.edges(target_net, t_node))[target_transforming_bond_index][1]
-            # now at parity, match by node & edge data
-            node_matched = _node_match(query_net, target_net, q_node, t_node)
-            edge_matched = _edge_match(query_net, target_net, q_node, t_node)
-            if node_matched and edge_matched:
-                network_map.append((q_node, t_node))
-                nodes_visited.add(q_node)
-                for q_neighbor in nx.neighbors(query_net, q_node):
-                    node_stack.append((q_neighbor, q_node, t_node))
-            else:
-                return []
+        q_node, t_node = node_stack.pop()
+        if q_node in nodes_visited:
+            node_matched = True             # if we visited this node already, and it got added to the queue,
+            edge_matched = True             # it must have passed both of these checks
+        else:
+            node_matched: bool = _node_match(query_net, target_net, q_node, t_node)
+            edge_matched: bool = _edge_match(query_net, target_net, q_node, t_node)
+        if node_matched and edge_matched:
+            # prepare for next iteration:
+            #  add nodes of query, mapped to their images in target, to the node map;
+            #  add neighbors of query, mapped to their images in target;
+            #  add their respective bonds, mapped to their images in target, to the edge map
+            network_map.node_map.add((q_node, t_node))
+            nodes_visited.add(q_node)
+            for _, q_neighbor, q_data in query_net.edges(q_node, data=True):
+                q_type: KappaBond = q_data['bond type'] if q_node < q_neighbor else q_data['bond type'].reverse()
+                q_id = int(q_data['bond id'])
+                for _, t_neighbor, t_data in target_net.edges(t_node, data=True):
+                    t_type: KappaBond = t_data['bond type'] if t_node < t_neighbor else t_data['bond type'].reverse()
+                    t_id = int(t_data['bond id'])
+                    if q_type == t_type:
+                        if q_id not in edges_followed:     # cycle prevention
+                            edges_followed.add(q_id)
+                            network_map.edge_map.add((q_id, t_id))
+                            valid_hop = HopData([q_neighbor, t_neighbor])
+                            node_stack.append(valid_hop)
+        else:
+            return []
     return network_map
 
 
@@ -342,8 +352,7 @@ def _node_match(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_node:
 def _edge_match(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_node: int, target_node: int) -> bool:
     """
 Special purpose matcher that only compares bond types. Returns a tuple, where the first value is a boolean
-holding whether the whole thing matched, and the second the list of neighbors in target for which there was a
-bond-type match.
+holding whether the whole thing matched.
 
 Rigidity in bonds in addition to site ordering!
 Since there is at maximum one of any bond type per node in the network, finding it means finding the only path
@@ -353,38 +362,21 @@ at the identifier level to know if the bond's string was written in that same di
 compare the order of node introduction, which tracks the order of edge / node declaration.
     """
     match: bool = False
-    query_edges = nx.edges(query_net, query_node)
-    query_bond_types: List[KappaBond] = []
     # orient bonds so as to be read outgoing
-    for a, b in query_edges:
-        this_bond: KappaBond = query_net.get_edge_data(a, b)[0]['bond type']
-        # NetworkX appears to return the edges in incident format (a,b), where the 'a' identifier
-        # is the same as the requested node, so for all, a==target_node (just to be safe, I have
-        # a manual check...)
-        if a == query_node:
-            source_index = np.where([node == a for node in query_net.nodes])[0][0]
-            destin_index = np.where([node == b for node in query_net.nodes])[0][0]
+    query_edges: List[Tuple[int, int, Dict]] = query_net.edges(query_node, data=True)
+    query_bond_types: List[KappaBond] = []
+    for here, dest, bond in query_edges:
+        if here < dest:
+            query_bond_types.append(bond['bond type'])
         else:
-            source_index = np.where([node == b for node in query_net.nodes])[0][0]
-            destin_index = np.where([node == a for node in query_net.nodes])[0][0]
-        if source_index < destin_index:
-            query_bond_types.append(this_bond)
-        else:
-            query_bond_types.append(this_bond.reverse())
-    target_edges = nx.edges(target_net, target_node)
+            query_bond_types.append(bond['bond type'].reverse())
+    target_edges: List[Tuple[int, int, Dict]] = target_net.edges(target_node, data=True)
     target_bond_types: List[KappaBond] = []
-    for a, b in target_edges:
-        this_bond: KappaBond = target_net.get_edge_data(a, b)[0]['bond type']
-        if a == target_node:
-            source_index = np.where([node == a for node in target_net.nodes])[0][0]
-            destin_index = np.where([node == b for node in target_net.nodes])[0][0]
+    for here, dest, bond in target_edges:
+        if here < dest:
+            target_bond_types.append(bond['bond type'])
         else:
-            source_index = np.where([node == b for node in target_net.nodes])[0][0]
-            destin_index = np.where([node == a for node in target_net.nodes])[0][0]
-        if source_index < destin_index:
-            target_bond_types.append(this_bond)
-        else:
-            target_bond_types.append(this_bond.reverse())
+            target_bond_types.append(bond['bond type'].reverse())
     # check now-oriented bonds
     for query_bond_type in query_bond_types:
         if not any([query_bond_type == target_bond_type for target_bond_type in target_bond_types]):

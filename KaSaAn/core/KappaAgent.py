@@ -23,7 +23,7 @@ class KappaAgent(KappaEntity):
     def __init__(self, expression: str):
         # instance type "declarations"
         self._raw_expression: str
-        self._agent_identifier: int
+        self._agent_identifier: Union[int, None]
         self._agent_name: str
         self._agent_signature: List[Union[KappaPort, KappaCounter]]
         self._agent_ports: List[KappaPort]
@@ -120,6 +120,20 @@ class KappaAgent(KappaEntity):
                 if counter == len(item._agent_signature):
                     return True
 
+    def __lt__(self, other) -> bool:
+        """Overwriting the base clase's method to properly compare identifiers. Relying on the kappa expression as a
+        simple string resulted in incorrect behavior: `x10:A()` was sorted before `x9:A()`, yielding incorrect bond
+        orientations."""
+        if not type(other) is KappaAgent:
+            other = KappaAgent(other)
+        if (self.get_agent_identifier() is not None) & (other.get_agent_identifier() is not None):
+            if self.get_agent_identifier() == other.get_agent_identifier():
+                return (self._kappa_expression < other._kappa_expression)
+            else:
+                return (self.get_agent_identifier() < other.get_agent_identifier())
+        else:
+            return (self._kappa_expression < other._kappa_expression)
+
     def get_agent_name(self) -> str:
         """Return a string with the agent's name."""
         return self._agent_name
@@ -151,7 +165,7 @@ class KappaAgent(KappaEntity):
         """Return the operation being performed on this agent: `creation`, `deletion`, or an empty string."""
         return self._abundance_change
 
-    def get_agent_identifier(self) -> int:
+    def get_agent_identifier(self) -> Union[int, None]:
         """Returns the agent's unique numeric identifier, if any. These are generated in snapshots in the form
          `x[int]:[agent name][agent signature]`"""
         return self._agent_identifier

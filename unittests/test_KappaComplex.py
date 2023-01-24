@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import unittest
-from KaSaAn.core import KappaComplex, KappaAgent
+from KaSaAn.core import KappaAgent
+from KaSaAn.core.KappaComplex import KappaComplex, NetMap, _edge_match, _node_match, _traverse_from
 
 
 class TestKappaComplex(unittest.TestCase):
@@ -88,8 +89,6 @@ class TestKappaComplex(unittest.TestCase):
         self.assertEqual(2, t7.get_number_of_embeddings_of_complex(KappaComplex('A(b[9]), B(a[9])')))
         self.assertEqual(2, t7.get_number_of_embeddings_of_complex(KappaComplex('A(b[9]), B(a[9])'), False))
 
-
-
     def test_get_number_of_embeddings(self):
         t0 = KappaComplex(
             'A(b[1]), B(a[1], b[2]{b}, c[4]), B(a[6], b[2]{a}, ba[3], bb[3], c[5]), C(b1[4]{s1}, b2[5]), A(b[6])')
@@ -97,8 +96,10 @@ class TestKappaComplex(unittest.TestCase):
         s1 = 'A(b[1]), B(a[1])'
         a2 = KappaAgent('B(b[_])')
         s2 = 'B(b[_])'
+        sim = KappaComplex('Dvl(DEP[.]{#} DIX-head[1]{#} DIX-tail[2]{#} PDZ[.]{#} S407[.]{un} Y17[.]{un}), Dvl(DEP[.]{#} DIX-head[2]{#} DIX-tail[1]{#} PDZ[.]{#} S407[.]{un} Y17[.]{un})')
         self.assertEqual(t0.get_number_of_embeddings(c1), t0.get_number_of_embeddings(s1))
         self.assertEqual(t0.get_number_of_embeddings(a2), t0.get_number_of_embeddings(s2))
+        self.assertEqual(sim.get_number_of_embeddings('Dvl(DIX-head[1]), Dvl(DIX-tail[1])'), 2)
 
     def test_get_agent_identifiers(self):
         self.assertTrue(33 in KappaComplex('x22:A(s[2]), x33:A(s[1])').get_agent_identifiers())
@@ -116,10 +117,11 @@ class TestKappaComplex(unittest.TestCase):
         self.assertEqual(list(unlabeled_snap.to_networkx().edges()), [(0, 1), (1, 2)])
         labeled_snap = KappaComplex('x0:A(b[1]), x8:B(a[1] c[2]), x36:C(b[2])')
         labeled_snap_ref_nodes = [(0, {'kappa': KappaAgent("x0:A(b[1]{#})")}),
-                                  (36, {'kappa': KappaAgent("x36:C(b[2]{#})")}),
-                                  (8, {'kappa': KappaAgent("x8:B(a[1]{#} c[2]{#})")})]
+                                  (8, {'kappa': KappaAgent("x8:B(a[1]{#} c[2]{#})")}),
+                                  (36, {'kappa': KappaAgent("x36:C(b[2]{#})")})
+                                  ]
         self.assertEqual(list(labeled_snap.to_networkx().nodes().items()), labeled_snap_ref_nodes)
-        self.assertEqual(list(labeled_snap.to_networkx().edges()), [(0, 8), (36, 8)])
+        self.assertEqual(list(labeled_snap.to_networkx().edges()), [(0, 8), (8, 36)])
 
     def test_to_cytoscape_cx(self):
         ref_structure = [{'metaData': [{'name': 'nodes', 'version': '1.0'},
@@ -190,3 +192,44 @@ class TestKappaComplex(unittest.TestCase):
                          {'status': [{'error': '', 'success': True}]}]
         test_complex = KappaComplex("A(a[1]{ub} b[2]{#} c[.]{#}), A(a[2]{ph} b[3]{#} c[.]{#}), A(a[3]{ph} b[4]{#} c[5]{#}), A(a[4]{ph} b[1]{#} c[.]{#}), B(b[6]{#} c[5]{ub}), B(b[6]{#} c[7]{ph}), C(b[7]{#})")
         self.assertEqual(test_complex.to_cytoscape_cx(), ref_structure)
+
+    def test_edge_match(self):
+        kc_a = KappaComplex('x6:B(a[.] c[1]), x17:C(b[1])')
+        kc_b = KappaComplex('x60:B(a[.] c[1]), x17:C(b[1])')
+        kq = KappaComplex('B(a[.] c[1]), C(b[1])')
+        self.assertTrue(_edge_match(kq.to_networkx(), kc_a.to_networkx(), 0, 6))
+        self.assertTrue(_edge_match(kq.to_networkx(), kc_a.to_networkx(), 1, 17))
+        self.assertTrue(_edge_match(kq.to_networkx(), kc_b.to_networkx(), 0, 60))
+        self.assertTrue(_edge_match(kq.to_networkx(), kc_b.to_networkx(), 1, 17))
+        self.assertFalse(_edge_match(kq.to_networkx(), kc_a.to_networkx(), 0, 17))
+        self.assertFalse(_edge_match(kq.to_networkx(), kc_a.to_networkx(), 1, 6))
+        self.assertFalse(_edge_match(kq.to_networkx(), kc_b.to_networkx(), 0, 17))
+        self.assertFalse(_edge_match(kq.to_networkx(), kc_b.to_networkx(), 1, 60))
+
+    def test_node_match(self):
+        kc_a = KappaComplex('x6:B(a[.] c[1]), x17:C(b[1])')
+        kc_b = KappaComplex('x60:B(a[.] c[1]), x17:C(b[1])')
+        kq = KappaComplex('B(a[.] c[1]), C(b[1])')
+        self.assertTrue(_node_match(kq.to_networkx(), kc_a.to_networkx(), 0, 6))
+        self.assertTrue(_node_match(kq.to_networkx(), kc_a.to_networkx(), 1, 17))
+        self.assertTrue(_node_match(kq.to_networkx(), kc_b.to_networkx(), 0, 60))
+        self.assertTrue(_node_match(kq.to_networkx(), kc_b.to_networkx(), 1, 17))
+        self.assertFalse(_node_match(kq.to_networkx(), kc_a.to_networkx(), 0, 17))
+        self.assertFalse(_node_match(kq.to_networkx(), kc_a.to_networkx(), 1, 6))
+        self.assertFalse(_node_match(kq.to_networkx(), kc_b.to_networkx(), 0, 17))
+        self.assertFalse(_node_match(kq.to_networkx(), kc_b.to_networkx(), 1, 60))
+
+    def test_traverse_from(self):
+        kc_a = KappaComplex('x6:B(a[.] c[1]), x17:C(b[1])')
+        kc_b = KappaComplex('x60:B(a[.] c[1]), x17:C(b[1])')
+        kq = KappaComplex('B(a[.] c[1]), C(b[1])')
+        nm_1 = NetMap()
+        nm_1.edge_map.add((1, 1))
+        nm_1.node_map.add((0, 6))
+        nm_1.node_map.add((1, 17))
+        self.assertEqual(nm_1, _traverse_from(kq.to_networkx(), kc_a.to_networkx(), 0, 6))
+        nm_2 = NetMap()
+        nm_2.edge_map.add((1, 1))
+        nm_2.node_map.add((0, 60))
+        nm_2.node_map.add((1, 17))
+        self.assertEqual(nm_2, _traverse_from(kq.to_networkx(), kc_b.to_networkx(), 0, 60))
