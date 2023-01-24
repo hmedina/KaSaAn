@@ -290,7 +290,7 @@ def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> Tuple[List
 def _traverse_from(query_net: nx.MultiGraph, target_net: nx.MultiGraph, q_start: int, t_start: int) -> NetMap:
     """Attempt a traversal of `target_net`, starting at `target_start`, matched to `query_start`, following
     `query_net`'s topology."""
-    HopData = Tuple[int, int]
+    HopData = tuple[int, int]
     node_stack: Deque[HopData] = deque()
     node_stack.append(HopData([q_start, t_start]))
     # stack of: query-current, query-previous, transforming-bond, target-current, target-previous
