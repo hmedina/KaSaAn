@@ -21,9 +21,10 @@ def main():
     parser.add_argument('-i', '--input_file_name', type=str, default='inputs.ka',
                         help='Name of the file containing the contact map, written in kappa by the Kappa Static'
                         ' Analyzer (KaSA). By default, will search for `inputs.ka`, aka the "witness file".')
-    #parser.add_argument('-cs', '--coloring_scheme', type=str, default='',
-    #                    help='Name of the file containing a coloring scheme for drawing the faces of the wedges that'
-    #                    ' represent the agents.')
+    # ToDo
+    # parser.add_argument('-cs', '--coloring_scheme', type=str, default='',
+    #                     help='Name of the file containing a coloring scheme for drawing the faces of the wedges that'
+    #                     ' represent the agents.')
     parser.add_argument('-fs', '--fig_size', type=float, default=mpl.rcParams['figure.figsize'], nargs=2,
                         help='Size of the resulting figure, in inches, specified as two elements, width and height'
                         ' (text size is specified in points, so this affects the size of text relative to other'
@@ -55,7 +56,7 @@ def main():
     if args.output_file_name:
         fig.savefig(args.output_file_name)
     else:
-        # add widgets for manual control
+        # ToDo add widgets for manual control
         plt.show()
 
 

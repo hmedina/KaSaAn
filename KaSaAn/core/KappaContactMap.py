@@ -442,7 +442,7 @@ class KappaContactMap:
             net.add_edge(p1, p2, weight=1)
         return net
 
-    def layout_from_graph(self, algorithm_name: str, debug_render = False):
+    def layout_from_graph(self, algorithm_name: str, debug_render=False):
         """Attempt a graph-based layout. Valid algorithm names are found in
          the module `networkx.drawing.layout`."""
 
@@ -636,7 +636,7 @@ class KappaContactMap:
         # rotate agent to match orientation
         #  If agent has a flagpole, use that as the anchor, as wedges were sorted against that.
         #  Otherwise, if agent has one wedge, it's pointing to [-1, 0] by default, so 180 degrees.
-        #  Otherotherwise, get outgoing sites (computed previously) and average their orientations to define the 
+        #  Otherotherwise, get outgoing sites (computed previously) and average their orientations to define the
         #  current agent's heading.
         for n_id, n_type in net_rep.nodes.data('ka_type'):
             if n_type == 'agent':
