@@ -83,12 +83,6 @@ pip uninstall KaSaAn
 
 -> See `pyproject.toml`
 
-General:
-
-* Python 3.9 or above
-
-For visualization scripts:
-
 * Python packages:
   * `numpy`
   * `matplotlib`
@@ -97,12 +91,22 @@ For visualization scripts:
 * System packages:
   * `ffmpeg` for writing mp4 movies of traces
   * `imagemagick` for writing gifs of traces
-  * `graphviz` for network layout
+  * `graphviz` for large network (snapshot) layout
   * an X server, like VcXsrv under Windows / Windows Subsystem for Linux
-
-On the Kappa Side:
-
-* Kappa Simulator [KaSim](https://github.com/Kappa-Dev/KaSim) v4 or above.
-For executing models, producing snapshots, producing traces, etc.
-* Trace Query Language engine [TQL](https://github.com/jonathan-laurent/Kappa-TQL).
-For querying a trace to, for example, obtain periodic snapshots.
+ 
+ 
+ ## Related projects
+ 
+ ### [Kappa Tools](https://github.com/Kappa-Dev/KappaTools)
+ 
+ Repository for various tools to work with the Kappa language. It includes:
+ 
+  * the simulator, KaSim
+  * the static analyzer, KaSA
+  * a story engine, KaStor
+  * a local server to use with the browser-based IDE, WebSim
+ 
+ 
+ ### Kappa [Trace Query Language engine](https://github.com/jonathan-laurent/Kappa-TQL)
+ 
+ An engine to query Kappa traces, using the language described in [A Trace Query Language for Rule-Based Models](https://doi.org/10.1007/978-3-319-99429-1_13), and documented [here](https://www.cs.cmu.edu/~jlaurent/software/katql-documentation.html).
