@@ -23,8 +23,9 @@ classifiers = [
 dependencies = [
     "matplotlib >= 3.5.1",
 	"numpy >= 1.16",
+    "scipi >= 1.10",
 	"squarify >= 0.3.0",
-	"networkx >= 2.4"
+	"networkx >= 3.0"
 ]
 
 [project.urls]
@@ -32,6 +33,7 @@ dependencies = [
     documentation = "https://hmedina.github.io/KaSaAn/KaSaAn/index.html"
 
 [project.scripts]
+    kappa_contact_map = "KaSaAn.scripts.kappa_contact_map:main"
     kappa_catalytic_potential = "KaSaAn.scripts.kappa_catalytic_potential:main"
     kappa_observable_plotter = "KaSaAn.scripts.kappa_observable_plotter:main"
     kappa_observable_coplotter = "KaSaAn.scripts.kappa_observable_coplotter:main"

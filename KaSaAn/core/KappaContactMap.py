@@ -9,8 +9,24 @@ import matplotlib.patches
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
+import networkx as nx
+import networkx.drawing.layout as nxl
 import numpy as np
 from typing import List, Dict, Tuple
+
+
+valid_graph_layouts = {
+    'random': nxl.random_layout,
+    'spring': nxl.spring_layout,
+    'spectral': nxl.spectral_layout,
+    'kamada-kawai': nxl.kamada_kawai_layout,
+    'planar': nxl.planar_layout,
+    'circular': nxl.circular_layout,
+    'shell': nxl.shell_layout,
+    'spiral': nxl.spiral_layout,
+    'bipartite': nxl.bipartite_layout,
+    # 'multipartite': nxl.multipartite_layout   # unclear what a good subset_key indication would be
+}
 
 
 def _default_site_colors(number_of_sites) -> list:
@@ -405,3 +421,239 @@ class KappaContactMap:
         target_axis.autoscale()
         target_axis.set_aspect('equal')
 
+    def _derive_multigraph(self) -> nx.classes.multigraph:
+        """Derive a multigraph representation of this contact map, with sites as nodes bound to their parent agent."""
+        net = nx.MultiGraph()
+        # each agent becomes a connected graph
+        for this_agent, agent_data in self._parsed_kappa.items():
+            local_weight: int = 10 + np.power(len(self._agent_graphics[this_agent]['bnd_sites'].keys()), 2)
+            for site_name, site_data in agent_data.items():
+                if any(site_data['bnd_states']):
+                    net.add_node(this_agent, ka_type='agent')
+                    net.add_node(site_name + '@' + this_agent, ka_type='site')
+                    net.add_edge(this_agent, site_name + '@' + this_agent, weight=local_weight)
+            if any(self._agent_graphics[this_agent]['flagpole_sites']):
+                net.add_node('flag@' + this_agent, ka_type='site')
+                net.add_edge(this_agent, 'flag@' + this_agent, weight=local_weight)
+        # connect agent graphs via bond types
+        for bond_data in self._bond_types.values():
+            p1 = bond_data['st_1'] + '@' + bond_data['ag_1']
+            p2 = bond_data['st_2'] + '@' + bond_data['ag_2']
+            net.add_edge(p1, p2, weight=1)
+        return net
+
+    def layout_from_graph(self, algorithm_name: str, debug_render = False):
+        """Attempt a graph-based layout. Valid algorithm names are found in
+         the module `networkx.drawing.layout`."""
+
+        def _relative_theta(parent, site) -> float:
+            """Helper function to get the relative angle of an agent's site from the graph."""
+            site_rel_x = pos[site][0] - pos[parent][0]
+            site_rel_y = pos[site][1] - pos[parent][1]
+            ang: float = np.angle(complex(site_rel_x, 0) + complex(0, site_rel_y))
+            if ang >= 0:
+                return ang
+            else:
+                return np.pi + (np.pi + ang)    # deal with wrap-around: Pi - (-difference); ang is negative
+
+        def _auto_layout(layout_name: str) -> Dict[str, Tuple[float, float]]:
+            """Helper function to set common parameters and report a specific exeption type for planar graphs. The
+             layout function is selected by the calling script, and is a member of `networkx.drawing.layout`"""
+            pos: Dict[str, Tuple[float, float]]
+
+            kywds = dict(G=net_rep, center=(0, 0), scale=3*np.sqrt(len(net_rep.nodes())))
+
+            match layout_name:
+                case 'random':
+                    s = kywds.pop('scale')
+                    pos = valid_graph_layouts[layout_name](**kywds)
+                    pos = nxl.rescale_layout_dict(pos, scale=s)
+                case 'spring':
+                    pos = valid_graph_layouts[layout_name](**kywds)
+                case 'spectral':
+                    pos = valid_graph_layouts[layout_name](**kywds)
+                case 'kamada-kawai':
+                    pos = valid_graph_layouts[layout_name](**kywds)
+                case 'planar':
+                    try:
+                        pos = valid_graph_layouts[layout_name](**kywds)
+                    except nx.exception.NetworkXException as e:
+                        raise ValueError("Plain graph was not planar, so planar layout is invalid.") from e
+                case 'circular':
+                    pos = valid_graph_layouts[layout_name](**kywds)
+                case 'shell':
+                    # layout agents in shells by decreasing connectivity
+                    agents_degrees: Dict[str, int] = {}
+                    for a_bond in self._bond_types.values():
+                        if a_bond['ag_1'] != a_bond['ag_2']:
+                            if a_bond['ag_1'] in agents_degrees:
+                                agents_degrees[a_bond['ag_1']] += 1
+                            else:
+                                agents_degrees[a_bond['ag_1']] = 1
+                            if a_bond['ag_2'] in agents_degrees:
+                                agents_degrees[a_bond['ag_2']] += 1
+                            else:
+                                agents_degrees[a_bond['ag_2']] = 0
+                    agents_by_connectivity = sorted(agents_degrees.items(), key=lambda item: item[1])
+                    agents_by_shell: List[List[str]] = []
+                    stop_ix = 3
+                    while agents_by_connectivity:
+                        stop_ix = min(stop_ix, len(agents_by_connectivity))
+                        this_shell: List[str] = []
+                        for _ in range(0, stop_ix):
+                            this_shell.append(agents_by_connectivity.pop()[0])
+                        agents_by_shell.append(this_shell)
+                        stop_ix *= 2
+                    pos_ag = valid_graph_layouts[layout_name](nlist=agents_by_shell, **kywds)
+                    # layout sites using spring layout, given fixed positions for agents
+                    for n_id, n_type in net_rep.nodes.data('ka_type'):
+                        if n_type == 'site':
+                            parent = n_id.split('@')[1]
+                            pos_ag[n_id] = pos_ag[parent]
+                    pos = valid_graph_layouts['spring'](pos=pos_ag, fixed=list(self._agent_graphics), **kywds)
+                case 'spiral':
+                    pos = valid_graph_layouts[layout_name](equidistant=True, **kywds)
+                case 'bipartite':
+                    ag_data: List[Tuple[str, int]] = []
+                    for this_agent, agent_data in self._agent_graphics.items():
+                        num_sites: int = len(agent_data['bnd_sites'].keys())
+                        ag_data.append((this_agent, num_sites))
+                    ag_data.sort(key=lambda item: item[1], reverse=True)
+                    n = int(np.floor(np.sqrt(len(ag_data))))
+                    top_n = [item[0] for item in ag_data[0:n]]
+                    pos = valid_graph_layouts[layout_name](nodes=top_n, **kywds)
+                case _:
+                    raise ValueError('Invalid layout {} requested. Options are: {}'.format(layout_name,
+                                                                                           valid_graph_layouts.keys()))
+            return pos
+
+        net_rep: nx.multigraph = self._derive_multigraph()
+        pos = _auto_layout(algorithm_name)
+
+        # debug image
+        if debug_render:
+            import matplotlib.pyplot as plt
+            _, ax = plt.subplots()
+            # intra-agent edges
+            nx.draw_networkx_edges(G=net_rep, pos=pos, ax=ax, edge_color='tab:gray', label='intra-agent', width=5,
+                                   edgelist=[(u, v, w) for (u, v, w) in net_rep.edges.data("weight") if w != 1])
+            # inter-agent edges
+            nx.draw_networkx_edges(G=net_rep, pos=pos, ax=ax, edge_color='tab:brown', label='inter-agent', width=1,
+                                   edgelist=[(u, v, w) for (u, v, w) in net_rep.edges.data("weight") if w == 1])
+            # sites
+            nx.draw_networkx_nodes(G=net_rep, pos=pos, ax=ax, node_color='tab:orange', label='site',
+                                   nodelist=[n for n in net_rep.nodes() if net_rep.nodes[n]['ka_type'] == 'site'])
+            # agent centers
+            nx.draw_networkx_nodes(G=net_rep, pos=pos, ax=ax, node_color='tab:blue', label='agent',
+                                   nodelist=[n for n in net_rep.nodes() if net_rep.nodes[n]['ka_type'] == 'agent'])
+            # annotate nodes
+            nx.draw_networkx_labels(G=net_rep, pos=pos, ax=ax, labels={item: item.split('@')[0] for item in pos})
+            ax.legend()
+            ax.autoscale()
+            ax.set_aspect('equal')
+            ax.set_title('Debug plain graph view')
+
+        # layout agents, define wedge order, figure out flagpole, sort sites
+        agent_wedge_order: Dict[str: List[Tuple[str, float]]] = {}
+        for n_id, n_type in net_rep.nodes.data('ka_type'):
+            if n_type == 'agent':
+                # layout agents
+                self.move_agent_to(agent_name=n_id, new_x=pos[n_id][0], new_y=pos[n_id][1])
+                # define desired wedge order
+                ag_sites: List[str] = list(nx.classes.function.neighbors(net_rep, n_id))
+                if len(ag_sites) >= 2:
+                    site_thetas: List[Tuple[str, float]] = []
+                    for this_site in ag_sites:
+                        site_thetas.append((this_site, _relative_theta(n_id, this_site)))
+                    agent_wedge_order[n_id] = sorted(site_thetas, key=lambda item: item[1])
+        # to define rotation & flagpole position, average inter-agent (outgoing) vectors
+        agent_outs: Dict[str: Dict[str: float]] = {}
+        for node_1, node_2, edge_data in net_rep.edges.data():
+            if edge_data['weight'] == 1:
+                site_1_name, site_1_parent = node_1.split('@')
+                site_2_name, site_2_parent = node_2.split('@')
+                if site_1_parent != site_2_parent:
+                    t1 = _relative_theta(site_1_parent, node_1)
+                    t2 = _relative_theta(site_2_parent, node_2)
+                    if site_1_parent not in agent_outs:
+                        agent_outs[site_1_parent] = {site_1_name: t1}
+                    else:
+                        agent_outs[site_1_parent][site_1_name] = t1
+                    if site_2_parent not in agent_outs:
+                        agent_outs[site_2_parent] = {site_2_name: t2}
+                    else:
+                        agent_outs[site_2_parent][site_2_name] = t2
+        ag_headings: Dict[str: float] = {}
+        for agent_name, site_outs in agent_outs.items():
+            ag_headings[agent_name] = np.mean(list(site_outs.values()))
+        # define stop of rotation, and correct warp-arounds
+        #  if there is a flagpole, that's the final wedge
+        #  otherwise, find the last wedge
+        for agent_name, wedge_order in agent_wedge_order.items():
+            if ('flag@' + agent_name) in [item[0] for item in wedge_order]:
+                flagpole_ix = [item[0] for item in wedge_order].index('flag@' + agent_name)
+                if flagpole_ix != (len(wedge_order) - 1):
+                    for ix in range(len(wedge_order)):
+                        site_name, site_theta = wedge_order[ix]
+                        if site_theta > wedge_order[flagpole_ix][1]:
+                            wedge_order[ix] = (site_name, site_theta - 2 * np.pi)
+                agent_wedge_order[agent_name] = sorted(wedge_order, key=lambda item: item[1])
+            else:
+                _, final_wedge_theta = wedge_order[-1]
+                for ix in range(len(wedge_order)):
+                    site_name, site_theta = wedge_order[ix]
+                    if site_theta > final_wedge_theta:
+                        wedge_order[ix] = (site_name, site_theta - 2 * np.pi)
+                agent_wedge_order[agent_name] = sorted(wedge_order, key=lambda item: item[1])
+        # swap sites to match order
+        for this_agent, desired_order in agent_wedge_order.items():
+            desired_order: Dict[str: float] = dict(desired_order)
+            current_order: List[Tuple[str, float]] = [(k, v['theta1']) for k, v in
+                                                      self._agent_graphics[this_agent]['bnd_sites'].items()]
+            current_order.sort(key=lambda item: item[1])
+            # bubble sort
+            #  Since the graphic structure is quite divorced, I track manually indexes.
+            #  The final element of each iteration is as its correct position, so I move
+            #  the index that points to that position to terminate the loop earlier.
+            for final_wedge_ix in range(len(current_order) - 1, -1, -1):
+                for ix in range(0, final_wedge_ix):
+                    site_a, curr_a = current_order[ix]
+                    site_b, curr_b = current_order[ix + 1]
+                    obs_a: float = desired_order[site_a + '@' + this_agent]
+                    obs_b: float = desired_order[site_b + '@' + this_agent]
+                    if (obs_a < obs_b) & (not curr_a < curr_b):
+                        self.swap_sites_of(this_agent, site_a, site_b)
+                        current_order = [(k, v['theta1']) for k, v in
+                                         self._agent_graphics[this_agent]['bnd_sites'].items()]
+                        current_order.sort(key=lambda item: item[1])
+                    elif (obs_a > obs_b) & (not curr_a > curr_b):
+                        self.swap_sites_of(this_agent, site_a, site_b)
+                        current_order = [(k, v['theta1']) for k, v in
+                                         self._agent_graphics[this_agent]['bnd_sites'].items()]
+                        current_order.sort(key=lambda item: item[1])
+                    else:
+                        pass
+        # rotate agent to match orientation
+        #  If agent has a flagpole, use that as the anchor, as wedges were sorted against that.
+        #  Otherwise, if agent has one wedge, it's pointing to [-1, 0] by default, so 180 degrees.
+        #  Otherotherwise, get outgoing sites (computed previously) and average their orientations to define the 
+        #  current agent's heading.
+        for n_id, n_type in net_rep.nodes.data('ka_type'):
+            if n_type == 'agent':
+                has_flagpole: bool = bool(self._agent_graphics[n_id]['flagpole_sites'])
+                ag_wedges: int = len(self._agent_graphics[n_id]['bnd_sites'])
+                if has_flagpole:
+                    f_dict = self._agent_graphics[n_id]['flagpole_loc']
+                    curr_theta: float = (f_dict['theta1'] + f_dict['theta2']) / 2
+                    desi_theta: float = np.rad2deg(_relative_theta(n_id, 'flag@' + n_id))
+                else:
+                    desi_theta: float = np.rad2deg(ag_headings[n_id])
+                    if ag_wedges == 1:
+                        curr_theta = 180
+                    else:
+                        curr_thetas = []
+                        for site_name in agent_outs[n_id].keys():
+                            d = self._agent_graphics[n_id]['bnd_sites'][site_name]
+                            curr_thetas.append((d['theta1'] + d['theta2']) / 2)
+                        curr_theta = np.mean(curr_thetas)
+                self.rotate_all_sites_of(n_id, desi_theta - curr_theta)

@@ -22,7 +22,6 @@ usage: kappa_observable_plotter
 import argparse
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import warnings
 from KaSaAn.functions import observable_file_reader, observable_list_axis_annotator
 
 
