@@ -12,6 +12,10 @@ usage: kappa_observable_coplotter
 [-o OUT_FILE]               If given, save plot to file; else show.
 [-d]                        If passed, plot discrete differential over time.
 [-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
+[--limit_left X_MIN]        Override left limit of plot.
+[--limit_right X_MAX]       Override right limit of plot.
+[--limit_bottom Y_MIN]      Override bottom limit of plot.
+[--limit_top Y_MAX]         Override top limit of plot.
 [-lx]                       Plot the X axis in logarithmic scale.
 [-ly]                       Plot the Y axis in logarithmic scale.
 [-nl]                       Do not insert a legend with filenames.
@@ -49,6 +53,16 @@ def main():
                         help='Size of the resulting figure, in inches, specified as two elements, width and height'
                              ' (text size is specified in points, so this affects the size of text relative to other'
                              ' graph elements).')
+    parser.add_argument('--limit_left', type=float, default=None,
+                        help='Override the left limit of the plot. If the left limit is greater than the right limit,'
+                             ' X-axis values will decrease from left to right.')
+    parser.add_argument('--limit_right', type=float, default=None,
+                        help='Override the right limit of the plot.')
+    parser.add_argument('--limit_bottom', type=float, default=None,
+                        help='Override the bottom limit of the plot. If the bottom limit is greater than the top'
+                        ' limit, Y-axis values will decrease from bottom to top.')
+    parser.add_argument('--limit_top', type=float, default=None,
+                        help='Override the top limit of the plot.')
     parser.add_argument('-lx', '--log_x', action='store_true',
                         help='Plot the X axis in logarithmic scale.')
     parser.add_argument('-ly', '--log_y', action='store_true',
@@ -56,6 +70,7 @@ def main():
     parser.add_argument('-nl', '--no_legend', action='store_true',
                         help='Do not insert a legend with the filenames.')
     args = parser.parse_args()
+
     fig, ax = plt.subplots(figsize=args.figure_size)
     observable_coplot_axis_annotator(target_axis=ax,
                                      file_pattern=args.pattern,
@@ -66,6 +81,10 @@ def main():
                                      log_axis_x=args.log_x,
                                      log_axis_y=args.log_y,
                                      no_legend=args.no_legend)
+
+    ax.set_xlim(left=args.limit_left, right=args.limit_right)
+    ax.set_ylim(bottom=args.limit_bottom, top=args.limit_top)
+
     if args.out_file:
         plt.tight_layout()
         fig.savefig(args.out_file)
