@@ -2,6 +2,7 @@
 
 import ast
 import networkx as nx
+import matplotlib.figure as mpf
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 from networkx.drawing.nx_agraph import graphviz_layout
@@ -12,7 +13,7 @@ from .agent_color_assignment import colorize_observables, sanity_check_agent_col
 
 def render_snapshot_as_plain_graph(snapshot_file_name: str, highlight_patterns: List[str],
                                    color_scheme_file_name: str, node_size: int, edge_width: float,
-                                   fig_size: Tuple[float, float]) -> List[plt.figure]:
+                                   fig_size: Tuple[float, float]) -> List[mpf.Figure]:
     """Take a KappaSnapshot and render it as a plain graph, optionally highlighting certain patterns.
     See file under `KaSaAn.scripts` for usage."""
     snapshot = KappaSnapshot(snapshot_file_name)

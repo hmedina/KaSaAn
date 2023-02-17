@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import matplotlib.animation as animation
+import matplotlib.animation as mpa
 import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
 from typing import List, Tuple, Set
@@ -24,10 +24,10 @@ def _define_agent_list_and_max_mass(snap_list: List[KappaSnapshot]) -> Tuple[Set
 
 
 def movie_from_snapshots(directory: str, pattern: str, vis_mode: str, fig_width: int, xy_ratio: float,
-                         dont_scale_mass: bool, legend_cols: int, frame_int: int, verbose: bool):
+                         dont_scale_mass: bool, legend_cols: int, frame_int: int, verbose: bool) -> mpa.ArtistAnimation:
     """Make a movie out of snapshots. See file under `KaSaAn.scripts` for usage."""
     # Find the snapshots in the directory; determine agent set; colorize it
-    snapshots = []
+    snapshots: List[KappaSnapshot] = []
     snapshot_names = find_snapshot_names(target_directory=directory, name_pattern=pattern)
     if verbose:
         print('Found {} snapshots in directory {}'.format(len(snapshot_names), directory))
@@ -85,6 +85,6 @@ def movie_from_snapshots(directory: str, pattern: str, vis_mode: str, fig_width:
     # Make movie out of list
     if verbose:
         print('Collecting rectangles into an animation...')
-    ani = animation.ArtistAnimation(fig=fig, artists=artist_list, interval=frame_int, repeat_delay=2000)
+    ani = mpa.ArtistAnimation(fig=fig, artists=artist_list, interval=frame_int, repeat_delay=2000)
 
     return ani

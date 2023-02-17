@@ -2,6 +2,7 @@
 
 import concurrent.futures as cofu
 import matplotlib as mpl
+import matplotlib.figure as mpf
 import matplotlib.pyplot as plt
 import numpy
 import warnings
@@ -16,7 +17,7 @@ def _make_figure(s_times, p_matrix, observable_set: Set[KappaComplex],
                  fig_size=mpl.rcParams['figure.figsize'],
                  x_scale='linear', y_scale='linear',
                  un_stacked: bool = False,
-                 supplied_scheme: Dict = None) -> plt.figure:
+                 supplied_scheme: Dict = None) -> mpf.Figure:
     fig, ax = plt.subplots(figsize=fig_size)
     # colors for the labels
     color_list = []

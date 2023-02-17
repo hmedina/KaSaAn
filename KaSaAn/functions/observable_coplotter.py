@@ -3,6 +3,7 @@
 import ast
 import glob
 import warnings
+import matplotlib.axes as mpa
 import numpy as np
 from typing import List, Tuple
 from .observable_plotter import observable_file_reader
@@ -18,10 +19,10 @@ def _find_data_files(pattern: str) -> List[str]:
     return sorted_file_list
 
 
-def _multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tuple[List[str], np.array, str]],
+def _multi_data_axis_annotator(co_plot_axis: mpa.Axes, file_data_list: List[Tuple[List[str], np.array, str]],
                                coplot_index: int, coplot_name: str, coplot_expression: str,
                                diff_toggle: bool = False, log_x: bool = False, log_y: bool = False,
-                               omit_legend: bool = False):
+                               omit_legend: bool = False) -> mpa.Axes:
     """Annotate the provided axis."""
     legend_entries = []
     for file_data in file_data_list:
@@ -105,10 +106,11 @@ def _multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tuple[List[str
     return co_plot_axis
 
 
-def observable_coplot_axis_annotator(target_axis, file_pattern: str,
+def observable_coplot_axis_annotator(target_axis: mpa.Axes, file_pattern: str,
                                      variable_index: int, variable_name: str, variable_expr: str,
                                      differential_toggle: bool = False,
-                                     log_axis_x: bool = False, log_axis_y: bool = False, no_legend: bool = False):
+                                     log_axis_x: bool = False, log_axis_y: bool = False,
+                                     no_legend: bool = False) -> mpa.Axes:
     """See file under `KaSaAn.scripts` for usage."""
     file_names = _find_data_files(file_pattern)
     file_data_list = []

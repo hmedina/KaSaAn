@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 import matplotlib as mpl
+import matplotlib.figure as mpf
 import matplotlib.pyplot as plt
-import matplotlib.patches
+import matplotlib.patches as mpp
 import matplotlib.text
 import squarify
 import warnings
@@ -28,7 +29,7 @@ def process_snapshot(snapshot: KappaSnapshot) -> List[dict]:
 
 
 def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent, Any], vis_mode: str,
-                                x_res: float, y_res: float) -> Tuple[List[matplotlib.patches.Rectangle], int]:
+                                x_res: float, y_res: float) -> Tuple[List[mpp.Rectangle], int]:
     """Assemble a list of rectangles for MatPlotLib to plot, plus the size of the largest of these (for mass
      normalization in trace movie making)."""
     if vis_mode != 'size' and vis_mode != 'count' and vis_mode != 'mass':
@@ -60,11 +61,11 @@ def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent,
     for species in range(species_num):
         # Define the box that represents this species as a whole
         species_canvas = species_canvases[species]
-        s = matplotlib.patches.Rectangle(xy=(species_canvas['x'], species_canvas['y']),
-                                         width=species_canvas['dx'],
-                                         height=species_canvas['dy'],
-                                         facecolor='#00000000',
-                                         edgecolor='#000000ff')
+        s = mpp.Rectangle(xy=(species_canvas['x'], species_canvas['y']),
+                          width=species_canvas['dx'],
+                          height=species_canvas['dy'],
+                          facecolor='#00000000',
+                          edgecolor='#000000ff')
         species_patches.append(s)
         # Determine the agent composition of this species
         composition = compositions[species]
@@ -82,10 +83,10 @@ def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent,
         # Draw the rectangles using the appropriate color (determined by the agent type)
         for a in range(len(agent_type)):
             agent_rectangle = agent_rectangles[a]
-            r = matplotlib.patches.Rectangle(xy=(agent_rectangle['x'], agent_rectangle['y']),
-                                             width=agent_rectangle['dx'],
-                                             height=agent_rectangle['dy'],
-                                             facecolor=color_scheme[agent_type[a]])
+            r = mpp.Rectangle(xy=(agent_rectangle['x'], agent_rectangle['y']),
+                              width=agent_rectangle['dx'],
+                              height=agent_rectangle['dy'],
+                              facecolor=color_scheme[agent_type[a]])
             agent_patches.append(r)
 
     # Add the rectangles to the figure
@@ -95,7 +96,7 @@ def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent,
 
 
 def snapshot_legend_simple(color_scheme: Dict[KappaAgent, Any], col_num: int) ->\
-        Tuple[List[mpl.patches.Rectangle], List[matplotlib.text.Text]]:
+        Tuple[List[mpp.Rectangle], List[matplotlib.text.Text]]:
     """Create legend components; their entries with appropriate colors (as composition key);
      companion to snapshot_composition_simple."""
     position = 0    # var to track indexing
@@ -105,7 +106,7 @@ def snapshot_legend_simple(color_scheme: Dict[KappaAgent, Any], col_num: int) ->
     text_list = []
     for agent, color in sorted(color_scheme.items(), key=itemgetter(0), reverse=False):
         y_pos, x_pos = divmod(position, col_num)
-        legend_entry_rect = matplotlib.patches.Rectangle(
+        legend_entry_rect = mpp.Rectangle(
             xy=(x_pos, -y_pos), width=x_dim, height=y_dim, edgecolor='#000000', fc=color)
         legend_entry_text = matplotlib.text.Text(
             x=x_pos + x_dim, y=-y_pos, text=agent.get_agent_name(), verticalalignment='baseline')
@@ -137,7 +138,7 @@ def _snapshot_legend_maximum(max_data: int, vis_mode: str) -> matplotlib.text.Te
 
 def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = None, vis_mode: str = 'all',
                                  fig_size: Tuple[float, float] = mpl.rcParams['figure.figsize'],
-                                 fig_res: float = mpl.rcParams['figure.dpi']) -> plt.figure:
+                                 fig_res: float = mpl.rcParams['figure.dpi']) -> mpf.Figure:
     """Render a snapshot as a patchwork / tree-map diagram, using any of four supported modes:
 
     * `count`: a complex' area is proportional to how many times it appears
@@ -158,8 +159,9 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
     else:
         agent_set = my_snapshot.get_agent_types_present()
         if len(agent_set) > 20:
-            print('Over 20 agents found: palette might be ugly. '
-                  'Try googling <<iwanthue>> for a tool to generate distinct colors, then provide a custom palette to this tool.')
+            print('Over 20 agents found: palette might be ugly.\n'
+                  'Try googling <<iwanthue>> for a tool to generate distinct colors,\n'
+                  'then provide a custom palette to this tool.')
         my_color_scheme = colorize_observables(agent_set)
 
     # Define figure definition & resolution

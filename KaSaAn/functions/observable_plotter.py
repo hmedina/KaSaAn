@@ -23,7 +23,7 @@ def observable_file_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarra
 def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndarray],
                                    vars_indexes: List[int], vars_names: List[str], vars_exprs: List[str],
                                    axis_x_log: bool = False, axis_y_log: bool = False,
-                                   diff_toggle: bool = False):
+                                   diff_toggle: bool = False) -> mpa.Axes:
     """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object. See file
      under `KaSaAn.scripts` for further usage."""
     leg_data, num_data = data
@@ -39,17 +39,15 @@ def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndar
         if vars_indexes:
             for var in vars_indexes:
                 if var not in range(1, len(leg_data) + 1):
-                    raise ValueError('Variable #' + str(var) + ' not in observables present, valid range is 1-' + str(len(leg_data)))
-                else:
-                    vars_to_plot.append(var)
+                    raise ValueError('Variable {} not in observables; valid range is [1;{}]'.format(var, len(leg_data)))
+                vars_to_plot.append(var)
         # plot by variable name
         if vars_names:
             for var_name in vars_names:
-                try:
-                    var: int = leg_data.index(var_name)
-                except ValueError as e:
-                    raise ValueError('Label <{}> not found among observable labels; valid names are:\n'.format(var_name) + ', '.join(leg_data))
-                vars_to_plot.append(var + 1)
+                if var_name not in leg_data:
+                    raise ValueError('{} not found in observables; entries are:\n{}'.format(var_name,
+                                                                                            ', '.join(leg_data)))
+                vars_to_plot.append(leg_data.index(var_name) + 1)
         # plot by algebraic expression
         if vars_exprs:
             for alg_expression in vars_exprs:
@@ -68,11 +66,13 @@ def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndar
                                 return ast.copy_location(
                                     ast.Subscript(
                                         value=ast.Name(id='num_data', ctx=ast.Load()),
-                                        slice=ast.Tuple(elts=[ast.Slice(), ast.Constant(value=obs_list.index(node.value))],
+                                        slice=ast.Tuple(elts=[
+                                                              ast.Slice(),
+                                                              ast.Constant(value=obs_list.index(node.value))],
                                                         ctx=ast.Load()),
                                         ctx=ast.Load()), node)
                             else:
-                                raise ValueError('Error: <{}> not found in observables: {}'.format(node.value, obs_list))
+                                raise ValueError('<{}> not found in observables: {}'.format(node.value, obs_list))
                         else:
                             return node
                 my_ast = ast.parse(alg_expression, mode='eval')
