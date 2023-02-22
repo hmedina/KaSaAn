@@ -21,7 +21,7 @@ classifiers = [
 	"Intended Audience :: Science/Research"
 ]
 dependencies = [
-    "matplotlib >= 3.5.1",
+    "matplotlib >= 3.7",
 	"numpy >= 1.16",
     "scipi >= 1.10",
 	"squarify >= 0.3.0",

@@ -4,9 +4,10 @@
 import colorsys
 import random
 import re
-import matplotlib.path
-import matplotlib.patches
 import matplotlib as mpl
+import matplotlib.path
+import matplotlib.patches as mpp
+import matplotlib.axes as mpa
 import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
 import networkx as nx
@@ -206,7 +207,7 @@ def _define_bond_spline_points(bond_type_dict, init_graphic_struct) -> dict:
     return graphic_bond_points
 
 
-def _create_spline(point_dict: dict, bond_width=3):
+def _create_spline(point_dict: dict, bond_width=3) -> mpp.PathPatch:
     """Create a spline object."""
     path_data = [
         (matplotlib.path.Path.MOVETO, (point_dict['a_x'], point_dict['a_y'])),
@@ -217,33 +218,33 @@ def _create_spline(point_dict: dict, bond_width=3):
     # ax.plot([Ax,Bx,Cx,Dx],[Ay,By,Cy,Dy],'ro') #draw the spline's control points
     spline_codes, spline_vertices = zip(*path_data)
     path = matplotlib.path.Path(vertices=spline_vertices, codes=spline_codes)
-    spline = matplotlib.patches.PathPatch(path, edgecolor='k', facecolor='none', linewidth=bond_width)
+    spline = mpp.PathPatch(path, edgecolor='k', facecolor='none', linewidth=bond_width)
     return spline
 
 
-def _list_binding_wedges(agent_graphic_struct: dict) -> List[matplotlib.patches.Wedge]:
+def _list_binding_wedges(agent_graphic_struct: dict) -> List[mpp.Wedge]:
     """Create a list of wedges from the binding data in the structure."""
     wedge_list = []
     for agent_name in agent_graphic_struct.keys():
         for site_name in agent_graphic_struct[agent_name]['bnd_sites'].keys():
             wedge_parms = agent_graphic_struct[agent_name]['bnd_sites'][site_name]
-            this_wedge = matplotlib.patches.Wedge(**wedge_parms, label=site_name)
+            this_wedge = mpp.Wedge(**wedge_parms, label=site_name)
             wedge_list.append(this_wedge)
     return wedge_list
 
 
-def _list_flagpole_wedges(agent_graphic_struct: dict) -> List[matplotlib.patches.Wedge]:
+def _list_flagpole_wedges(agent_graphic_struct: dict) -> List[mpp.Wedge]:
     """Create a list of wedges for the flagpoles in the structure."""
     wedge_list = []
     for agent_name in agent_graphic_struct.keys():
         if agent_graphic_struct[agent_name]['flagpole_sites']:
             wedge_parms = agent_graphic_struct[agent_name]['flagpole_loc']
-            this_wedge = matplotlib.patches.Wedge(**wedge_parms)
+            this_wedge = mpp.Wedge(**wedge_parms)
             wedge_list.append(this_wedge)
     return wedge_list
 
 
-def _annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
+def _annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis: mpa.Axes):
     """Annotate an axis with data from the binding sites"""
     agent_txt_kwrds = {'fontfamily': 'monospace', 'fontsize': 'medium',
                        'horizontalalignment': 'center', 'verticalalignment': 'center',
@@ -271,7 +272,7 @@ def _annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis):
         figure_axis.text(s=agent_name, x=ag_x, y=ag_y, **agent_txt_kwrds)
 
 
-def _draw_flagpole(agent_graphic_struct: dict, figure_axis, detailed_toggle: bool):
+def _draw_flagpole(agent_graphic_struct: dict, figure_axis: mpa.Axes, detailed_toggle: bool):
     """Draw the flagpole, line, site names, and state list"""
     for agent_name in agent_graphic_struct.keys():
         if agent_graphic_struct[agent_name]['flagpole_sites']:
@@ -353,12 +354,27 @@ class KappaContactMap:
         self._bond_types = _get_bond_types(self._parsed_kappa)
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
+    def _update_center_of(self, agent_name: str):
+        wedge_center = (self._agent_graphics[agent_name]['loc_x'], self._agent_graphics[agent_name]['loc_y'])
+        for this_site in self.get_binding_site_names_of(agent_name):
+            self._agent_graphics[agent_name]['bnd_sites'][this_site]['center'] = wedge_center
+        if self._agent_graphics[agent_name]['flagpole_sites']:
+            self._agent_graphics[agent_name]['flagpole_loc']['center'] = wedge_center
+
+    def get_agent_names(self) -> list[str]:
+        """Returns the list of agent names in this contact map."""
+        return list(self._parsed_kappa.keys())
+
+    def get_binding_site_names_of(self, agent_name: str) -> list[str]:
+        """Returns the list of names for the binding sites belonging to an agent."""
+        return list(self._agent_graphics[agent_name]['bnd_sites'].keys())
+
     def move_agent_to(self, agent_name: str, new_x: float, new_y: float):
         """Change the location of an agent's center by specifying new coordinates, in MatPlotLib "data units"."""
         self._agent_graphics[agent_name]['loc_x'] = new_x
         self._agent_graphics[agent_name]['loc_y'] = new_y
         # update
-        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+        self._update_center_of(agent_name)
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def move_agent_by(self, agent_name: str, delta_x: float, delta_y: float):
@@ -366,7 +382,7 @@ class KappaContactMap:
         self._agent_graphics[agent_name]['loc_x'] += delta_x
         self._agent_graphics[agent_name]['loc_y'] += delta_y
         # update
-        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+        self._update_center_of(agent_name)
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def rotate_all_sites_of(self, agent_name: str, degrees: float):
@@ -400,7 +416,7 @@ class KappaContactMap:
         `#0f0f0f` (hex RGB[A]), `(0.5, 0.5, 0.5)` (decimal RGB[A]), `xkcd:puke green` (XKCD color survey names)."""
         self._agent_graphics[agent_name]['bnd_sites'][site_name]['facecolor'] = new_color
 
-    def draw(self, target_axis: mpl.axes.Axes, draw_state_flagpole: bool = True):
+    def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True):
         """Draw the contact map onto the supplied axis. If `draw_state_flagpole` is `True`, the flagpole will display
         all internal state data. If `False`, it will only display a summary with the number of sites omitted. By
         default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents
