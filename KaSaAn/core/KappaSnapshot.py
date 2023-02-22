@@ -7,7 +7,8 @@ import os
 import warnings
 import networkx as nx
 import numpy as np
-from typing import List, Set, ItemsView, Dict, Tuple
+import pathlib
+from typing import List, Set, ItemsView, Dict, Tuple, Union
 
 from .KappaMultiAgentGraph import KappaMultiAgentGraph
 from .KappaComplex import KappaComplex, embed_and_map
@@ -35,11 +36,11 @@ class KappaSnapshot(KappaMultiAgentGraph):
     _line_token_pat = r'^' + _token_value_pat + r'\s' + _token_name_pat + r'$'
     _line_token_re = re.compile(_line_token_pat)
 
-    def __init__(self, snapshot_file_name: str):
+    def __init__(self, snapshot_file: Union[pathlib.Path, str]):
         # type declarations
         self._file_name: str
         self._complexes: Dict[KappaComplex, int]
-        self._tokens: Dict[str: KappaToken]
+        self._tokens: Dict[str, KappaToken]
         self._known_sizes: List[int]
         self._identifier_complex_map: Dict[int, KappaComplex]
         self._raw_expression: str
@@ -48,13 +49,20 @@ class KappaSnapshot(KappaMultiAgentGraph):
         self._snapshot_uuid: str
         self._snapshot_time: float
         # initialization of structures
-        self._file_name = os.path.split(snapshot_file_name)[1]
+        if type(snapshot_file) == str:
+            self._file_name = os.path.split(snapshot_file)[1]
+        elif type(snapshot_file) == pathlib.PosixPath or type(snapshot_file) == pathlib.WindowsPath:
+            self._file_name = str(snapshot_file)
+        else:
+            raise ValueError(
+                'Snapshot initializer expected either a file name or a path-like object, got {}'.format(
+                    type(snapshot_file)))
         self._complexes = dict()
         self._tokens = dict()
         self._known_sizes = []
         self._identifier_complex_map = {}
         # read file into a single string
-        with open(snapshot_file_name, 'r') as kf:
+        with open(snapshot_file, 'r') as kf:
             self._raw_expression = kf.read()
         # remove newlines, split by "%init:" keyword
         digest: List[str] = self._raw_expression.replace('\n', '').split('%init: ')
@@ -71,7 +79,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
                 self._snapshot_uuid = ''
                 self._snapshot_time = float(g.group(2))
             if not g:
-                raise SnapshotParseError('Header <' + digest[0] + '> not be parsed in <' + snapshot_file_name + '>')
+                raise SnapshotParseError('File {} contains unparseable header:\n{}'.format(self._file_name, digest[0]))
 
         # parse the complexes into instances of KappaComplexes, get their abundance, cross-check their size
         for entry in digest[1:]:
@@ -81,14 +89,15 @@ class KappaSnapshot(KappaMultiAgentGraph):
                     g = self._line_complex_re.match(entry)
                     if not g:
                         raise SnapshotAgentParseError(
-                            'Abundance, length, & complex not found in <' + entry + '> in <' + snapshot_file_name + '>')
+                            'Abundance, length, & complex not found in file {}, line said:\n{}'.format(
+                                self._file_name, entry))
                     abundance = int(g.group(1))
                     size = int(g.group(2))
                     species = KappaComplex(g.group(3))
                     if not size == species.get_size_of_complex():
                         raise ValueError(
-                            'Size mismatch: snapshot declares <' + str(size) + '>, I counted <' +
-                            str(species.get_size_of_complex()) + '> in <' + snapshot_file_name + '>')
+                            'Size mismatch: snapshot {} declares {}, I counted {} for species {}'.format(
+                                self._file_name, size, species.get_size_of_complex(), species))
                     # assign the complex as a key to the dictionary
                     self._complexes[species] = abundance
                     self._known_sizes.append(size)
@@ -101,13 +110,15 @@ class KappaSnapshot(KappaMultiAgentGraph):
                     g = self._line_token_re.match(entry)
                     if not g:
                         raise SnapshotTokenParseError(
-                            'Abundance & token name not found in <' + entry + '> in <' + snapshot_file_name + '>')
+                            'Abundance & token name not found in file {}, line said:\n{}'.format(
+                                self._file_name, entry))
                     # assign the token as a key to the dictionary
                     tk = KappaToken(g.group(0))
                     self._tokens[tk.get_token_name()] = tk
             except SnapshotTokenParseError:
                 raise SnapshotParseError(
-                    'Complex and token parse failed for <' + entry + '> in <' + snapshot_file_name + '>')
+                    'Complex and token parse failed in file {}, line said:\n{}'.format(
+                        self._file_name, entry))
         # canonicalize the kappa expression: tokens
         self._kappa_expression = '\n'.join(['%init: ' + str(float(tk.get_token_operation())) + ' ' + tk.get_token_name()
                                             for tk in self._tokens.values()])
@@ -304,7 +315,7 @@ markedly slower performance with multi-threading than without. Case-specific, yo
             d[item.get_token_name()] = float(item.get_token_operation())
         return d
 
-    def get_value_of_token(self, query) -> float:
+    def get_value_of_token(self, query) -> Union[None, float]:
         """Returns the value of a token."""
         # make it a KappaToken, if it's not one already
         if not type(query) is KappaToken:
