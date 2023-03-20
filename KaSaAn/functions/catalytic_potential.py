@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
-import glob
 import warnings
-from typing import List
-
+from typing import List, Tuple
 from ..core import KappaSnapshot, KappaAgent
-from .numerical_sort import numerical_sort
+from .find_snapshot_names import find_snapshot_names
 
 
 def _get_potential_of_snapshot(snapshot, enzyme, substrate) -> int:
@@ -36,23 +34,23 @@ def _get_potential_of_snapshot(snapshot, enzyme, substrate) -> int:
 
 
 def get_potential_of_folder(base_directory: str, enzyme: KappaAgent, substrate: KappaAgent,
-                            verbosity: bool, snap_name_prefix: str) -> List[int]:
+                            verbosity: bool, snap_name_pattern: str) -> List[Tuple[int, float]]:
     """See file under `KaSaAn.scripts` for usage."""
-    if base_directory[-1] != '/':
-        base_directory += '/'
     # Get the file names of snapshots in specified directory
-    snap_names = sorted(glob.glob(base_directory + snap_name_prefix + '*.ka'), key=numerical_sort)
+    snap_names = find_snapshot_names(base_directory, name_pattern=snap_name_pattern)
     snap_num = len(snap_names)
     if verbosity:
-        print('Found ' + str(snap_num) + ' snapshots in directory ' + base_directory)
+        print('Found {} snapshots in {}'.format(snap_num, base_directory))
     if snap_num < 2:
         warnings.warn('Found less than two snapshots.')
     # Iterate over the files and calculate each's catalytic potential
     cat_pot_dist = []
-    snap_num = len(snap_names)
     for snap_index, snap_name in enumerate(snap_names):
         if verbosity:
             print('Now parsing file <{}>, {} of {}, {:.2%}'.format(
                 snap_name, snap_index, snap_num, snap_index/snap_num))
-        cat_pot_dist.append(_get_potential_of_snapshot(KappaSnapshot(snap_name), enzyme, substrate))
+            snap = KappaSnapshot(snap_name)
+            q = _get_potential_of_snapshot(snap, enzyme, substrate)
+            t = snap.get_snapshot_time()
+        cat_pot_dist.append([q, t])
     return cat_pot_dist
