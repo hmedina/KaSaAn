@@ -124,74 +124,108 @@ class TestKappaComplex(unittest.TestCase):
         self.assertEqual(list(labeled_snap.to_networkx().edges()), [(0, 8), (8, 36)])
 
     def test_to_cytoscape_cx(self):
-        ref_structure = [{'metaData': [{'name': 'nodes', 'version': '1.0'},
-                                       {'name': 'nodeAttributes', 'version': '1.0'},
-                                       {'name': 'edges', 'version': '1.0'},
-                                       {'name': 'edgeAttributes', 'version': '1.0'},
-                                       {'name': 'cyTablecolumn', 'version': '1.0'},
-                                       {'name': 'networkAttributes', 'version': '1.0'}]}, {
-                             'cyTableColumn': [{'applies_to': 'node_table', 'n': 'name'},
-                                               {'applies_to': 'node_table', 'n': 'raw_expression'},
-                                               {'applies_to': 'edge_table', 'n': 'name'},
-                                               {'applies_to': 'edge_table', 'n': 's_agent_type'},
-                                               {'applies_to': 'edge_table', 'n': 't_agent_type'},
-                                               {'applies_to': 'edge_table', 'n': 's_port_name'},
-                                               {'applies_to': 'edge_table', 'n': 't_port_name'},
-                                               {'applies_to': 'edge_table', 'n': 'ident_in_snap'},
-                                               {'applies_to': 'network_table', 'n': 'name'}]},
-                         {'networkAttributes': [{'n': 'name', 'v': 'network'}]}, {
-                             'nodes': [{'@id': 0, 'n': 'A'}, {'@id': 1, 'n': 'A'}, {'@id': 2, 'n': 'A'},
-                                       {'@id': 3, 'n': 'A'}, {'@id': 4, 'n': 'B'}, {'@id': 5, 'n': 'B'},
-                                       {'@id': 6, 'n': 'C'}]}, {
-                             'edges': [{'s': 0, 't': 1, '@id': 7}, {'s': 0, 't': 3, '@id': 8},
-                                       {'s': 1, 't': 2, '@id': 9}, {'s': 2, 't': 3, '@id': 10},
-                                       {'s': 2, 't': 4, '@id': 11}, {'s': 4, 't': 5, '@id': 12},
-                                       {'s': 5, 't': 6, '@id': 13}]}, {
-                             'nodeAttributes': [{'po': 0, 'n': 'raw_expression', 'v': 'A(a[1]{ub} b[2]{#} c[.]{#})'},
-                                                {'po': 1, 'n': 'raw_expression', 'v': 'A(a[2]{ph} b[3]{#} c[.]{#})'},
-                                                {'po': 2, 'n': 'raw_expression', 'v': 'A(a[3]{ph} b[4]{#} c[5]{#})'},
-                                                {'po': 3, 'n': 'raw_expression', 'v': 'A(a[4]{ph} b[1]{#} c[.]{#})'},
-                                                {'po': 4, 'n': 'raw_expression', 'v': 'B(b[6]{#} c[5]{ub})'},
-                                                {'po': 5, 'n': 'raw_expression', 'v': 'B(b[6]{#} c[7]{ph})'},
-                                                {'po': 6, 'n': 'raw_expression', 'v': 'C(b[7]{#})'}]}, {
-                             'edgeAttributes': [{'po': 7, 'n': 's_agent_type', 'v': 'A'},
-                                                {'po': 7, 'n': 't_agent_type', 'v': 'A'},
-                                                {'po': 7, 'n': 's_port_name', 'v': 'b'},
-                                                {'po': 7, 'n': 't_port_name', 'v': 'a'},
-                                                {'po': 7, 'n': 'ident_in_snap', 'v': '2'},
-                                                {'po': 8, 'n': 's_agent_type', 'v': 'A'},
-                                                {'po': 8, 'n': 't_agent_type', 'v': 'A'},
-                                                {'po': 8, 'n': 's_port_name', 'v': 'a'},
-                                                {'po': 8, 'n': 't_port_name', 'v': 'b'},
-                                                {'po': 8, 'n': 'ident_in_snap', 'v': '1'},
-                                                {'po': 9, 'n': 's_agent_type', 'v': 'A'},
-                                                {'po': 9, 'n': 't_agent_type', 'v': 'A'},
-                                                {'po': 9, 'n': 's_port_name', 'v': 'b'},
-                                                {'po': 9, 'n': 't_port_name', 'v': 'a'},
-                                                {'po': 9, 'n': 'ident_in_snap', 'v': '3'},
-                                                {'po': 10, 'n': 's_agent_type', 'v': 'A'},
-                                                {'po': 10, 'n': 't_agent_type', 'v': 'A'},
-                                                {'po': 10, 'n': 's_port_name', 'v': 'b'},
-                                                {'po': 10, 'n': 't_port_name', 'v': 'a'},
-                                                {'po': 10, 'n': 'ident_in_snap', 'v': '4'},
-                                                {'po': 11, 'n': 's_agent_type', 'v': 'A'},
-                                                {'po': 11, 'n': 't_agent_type', 'v': 'B'},
-                                                {'po': 11, 'n': 's_port_name', 'v': 'c'},
-                                                {'po': 11, 'n': 't_port_name', 'v': 'c'},
-                                                {'po': 11, 'n': 'ident_in_snap', 'v': '5'},
-                                                {'po': 12, 'n': 's_agent_type', 'v': 'B'},
-                                                {'po': 12, 'n': 't_agent_type', 'v': 'B'},
-                                                {'po': 12, 'n': 's_port_name', 'v': 'b'},
-                                                {'po': 12, 'n': 't_port_name', 'v': 'b'},
-                                                {'po': 12, 'n': 'ident_in_snap', 'v': '6'},
-                                                {'po': 13, 'n': 's_agent_type', 'v': 'B'},
-                                                {'po': 13, 'n': 't_agent_type', 'v': 'C'},
-                                                {'po': 13, 'n': 's_port_name', 'v': 'c'},
-                                                {'po': 13, 'n': 't_port_name', 'v': 'b'},
-                                                {'po': 13, 'n': 'ident_in_snap', 'v': '7'}]},
-                         {'status': [{'error': '', 'success': True}]}]
         test_complex = KappaComplex("A(a[1]{ub} b[2]{#} c[.]{#}), A(a[2]{ph} b[3]{#} c[.]{#}), A(a[3]{ph} b[4]{#} c[5]{#}), A(a[4]{ph} b[1]{#} c[.]{#}), B(b[6]{#} c[5]{ub}), B(b[6]{#} c[7]{ph}), C(b[7]{#})")
-        self.assertEqual(test_complex.to_cytoscape_cx(), ref_structure)
+        ref_metaData = [
+            {'name': 'nodes', 'version': '1.0'},
+            {'name': 'nodeAttributes', 'version': '1.0'},
+            {'name': 'edges', 'version': '1.0'},
+            {'name': 'edgeAttributes', 'version': '1.0'},
+            {'name': 'cyTablecolumn', 'version': '1.0'},
+            {'name': 'networkAttributes', 'version': '1.0'}]
+        ref_cyTableColumn = [
+            {'applies_to': 'node_table', 'n': 'name'},
+            {'applies_to': 'node_table', 'n': 'raw_expression'},
+            {'applies_to': 'edge_table', 'n': 'name'},
+            {'applies_to': 'edge_table', 'n': 'bond_type'},
+            {'applies_to': 'edge_table', 'n': 's_agent_type'},
+            {'applies_to': 'edge_table', 'n': 't_agent_type'},
+            {'applies_to': 'edge_table', 'n': 's_port_name'},
+            {'applies_to': 'edge_table', 'n': 't_port_name'},
+            {'applies_to': 'edge_table', 'n': 'ident_in_snap'},
+            {'applies_to': 'network_table', 'n': 'name'}]
+        ref_networkAttributes = [
+            {'n': 'name', 'v': 'network'}]
+        ref_nodes = [
+            {'@id': 0, 'n': 'A'}, {'@id': 1, 'n': 'A'}, {'@id': 2, 'n': 'A'}, {'@id': 3, 'n': 'A'},
+            {'@id': 4, 'n': 'B'}, {'@id': 5, 'n': 'B'}, {'@id': 6, 'n': 'C'}]
+        ref_edges = [
+            {'s': 0, 't': 1, '@id': 7}, {'s': 0, 't': 3, '@id': 8},
+            {'s': 1, 't': 2, '@id': 9}, {'s': 2, 't': 3, '@id': 10},
+            {'s': 2, 't': 4, '@id': 11}, {'s': 4, 't': 5, '@id': 12},
+            {'s': 5, 't': 6, '@id': 13}]
+        ref_nodeAttributes = [
+            {'po': 0, 'n': 'raw_expression', 'v': 'A(a[1]{ub} b[2]{#} c[.]{#})'},
+            {'po': 1, 'n': 'raw_expression', 'v': 'A(a[2]{ph} b[3]{#} c[.]{#})'},
+            {'po': 2, 'n': 'raw_expression', 'v': 'A(a[3]{ph} b[4]{#} c[5]{#})'},
+            {'po': 3, 'n': 'raw_expression', 'v': 'A(a[4]{ph} b[1]{#} c[.]{#})'},
+            {'po': 4, 'n': 'raw_expression', 'v': 'B(b[6]{#} c[5]{ub})'},
+            {'po': 5, 'n': 'raw_expression', 'v': 'B(b[6]{#} c[7]{ph})'},
+            {'po': 6, 'n': 'raw_expression', 'v': 'C(b[7]{#})'}]
+        ref_edgeAttributes = [
+            {'po': 7, 'n': 'bond_type', 'v': 'A.b..a.A'},
+            {'po': 7, 'n': 's_agent_type', 'v': 'A'},
+            {'po': 7, 'n': 't_agent_type', 'v': 'A'},
+            {'po': 7, 'n': 's_port_name', 'v': 'b'},
+            {'po': 7, 'n': 't_port_name', 'v': 'a'},
+            {'po': 7, 'n': 'ident_in_snap', 'v': '2'},
+            {'po': 8, 'n': 'bond_type', 'v': 'A.a..b.A'},
+            {'po': 8, 'n': 's_agent_type', 'v': 'A'},
+            {'po': 8, 'n': 't_agent_type', 'v': 'A'},
+            {'po': 8, 'n': 's_port_name', 'v': 'a'},
+            {'po': 8, 'n': 't_port_name', 'v': 'b'},
+            {'po': 8, 'n': 'ident_in_snap', 'v': '1'},
+            {'po': 9, 'n': 'bond_type', 'v': 'A.b..a.A'},
+            {'po': 9, 'n': 's_agent_type', 'v': 'A'},
+            {'po': 9, 'n': 't_agent_type', 'v': 'A'},
+            {'po': 9, 'n': 's_port_name', 'v': 'b'},
+            {'po': 9, 'n': 't_port_name', 'v': 'a'},
+            {'po': 9, 'n': 'ident_in_snap', 'v': '3'},
+            {'po': 10, 'n': 'bond_type', 'v': 'A.b..a.A'},
+            {'po': 10, 'n': 's_agent_type', 'v': 'A'},
+            {'po': 10, 'n': 't_agent_type', 'v': 'A'},
+            {'po': 10, 'n': 's_port_name', 'v': 'b'},
+            {'po': 10, 'n': 't_port_name', 'v': 'a'},
+            {'po': 10, 'n': 'ident_in_snap', 'v': '4'},
+            {'po': 11, 'n': 'bond_type', 'v': 'A.c..c.B'},
+            {'po': 11, 'n': 's_agent_type', 'v': 'A'},
+            {'po': 11, 'n': 't_agent_type', 'v': 'B'},
+            {'po': 11, 'n': 's_port_name', 'v': 'c'},
+            {'po': 11, 'n': 't_port_name', 'v': 'c'},
+            {'po': 11, 'n': 'ident_in_snap', 'v': '5'},
+            {'po': 12, 'n': 'bond_type', 'v': 'B.b..b.B'},
+            {'po': 12, 'n': 's_agent_type', 'v': 'B'},
+            {'po': 12, 'n': 't_agent_type', 'v': 'B'},
+            {'po': 12, 'n': 's_port_name', 'v': 'b'},
+            {'po': 12, 'n': 't_port_name', 'v': 'b'},
+            {'po': 12, 'n': 'ident_in_snap', 'v': '6'},
+            {'po': 13, 'n': 'bond_type', 'v': 'B.c..b.C'},
+            {'po': 13, 'n': 's_agent_type', 'v': 'B'},
+            {'po': 13, 'n': 't_agent_type', 'v': 'C'},
+            {'po': 13, 'n': 's_port_name', 'v': 'c'},
+            {'po': 13, 'n': 't_port_name', 'v': 'b'},
+            {'po': 13, 'n': 'ident_in_snap', 'v': '7'}]
+        ref_status = [
+            {'error': '', 'success': True}]
+        comp_cx = test_complex.to_cytoscape_cx()
+        self.assertEqual(comp_cx[0]['metaData'], ref_metaData)
+        self.assertEqual(comp_cx[1]['cyTableColumn'], ref_cyTableColumn)
+        self.assertEqual(comp_cx[2]['networkAttributes'], ref_networkAttributes)
+        self.assertEqual(comp_cx[3]['nodes'], ref_nodes)
+        self.assertEqual(comp_cx[4]['edges'], ref_edges)
+        self.assertEqual(comp_cx[5]['nodeAttributes'], ref_nodeAttributes)
+        self.assertEqual(comp_cx[6]['edgeAttributes'], ref_edgeAttributes)
+        self.assertEqual(comp_cx[7]['status'], ref_status)
+
+        ref_structure = [
+            {'metaData': ref_metaData},
+            {'cyTableColumn': ref_cyTableColumn},
+            {'networkAttributes': ref_networkAttributes},
+            {'nodes': ref_nodes},
+            {'edges': ref_edges},
+            {'nodeAttributes': ref_nodeAttributes},
+            {'edgeAttributes': ref_edgeAttributes},
+            {'status': ref_status}]
+        self.assertEqual(comp_cx, ref_structure)
 
     def test_edge_match(self):
         kc_a = KappaComplex('x6:B(a[.] c[1]), x17:C(b[1])')

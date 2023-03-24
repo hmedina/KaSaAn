@@ -4,6 +4,7 @@
 from abc import abstractmethod
 from typing import List, Dict
 
+from .KappaBond import KappaBond
 from .KappaEntity import KappaEntity
 
 
@@ -46,6 +47,7 @@ class KappaMultiAgentGraph(KappaEntity):
             port_names = []
             e_source_kappa = kappa_net.nodes.data()[e_source]['kappa']
             e_target_kappa = kappa_net.nodes.data()[e_target]['kappa']
+            bond_type: KappaBond = e_data['bond type']
             for this_agent in [e_source_kappa, e_target_kappa]:
                 for this_site in this_agent.get_agent_signature():
                     # is this site a port, or a counter?
@@ -57,6 +59,9 @@ class KappaMultiAgentGraph(KappaEntity):
                        't': e_target,
                        '@id': edge_ident}
             cx_edge_attribute = [{'po': edge_ident,
+                                  'n': 'bond_type',
+                                  'v': str(bond_type)},
+                                 {'po': edge_ident,
                                   'n': 's_agent_type',
                                   'v': e_source_kappa.get_agent_name()},
                                  {'po': edge_ident,
@@ -78,6 +83,7 @@ class KappaMultiAgentGraph(KappaEntity):
         cx_table_columns = [{'applies_to': 'node_table', 'n': 'name'},
                             {'applies_to': 'node_table', 'n': 'raw_expression'},
                             {'applies_to': 'edge_table', 'n': 'name'},
+                            {'applies_to': 'edge_table', 'n': 'bond_type'},
                             {'applies_to': 'edge_table', 'n': 's_agent_type'},
                             {'applies_to': 'edge_table', 'n': 't_agent_type'},
                             {'applies_to': 'edge_table', 'n': 's_port_name'},
