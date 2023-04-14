@@ -10,10 +10,10 @@ def find_snapshot_names(target_directory: Union[str, Path] = '.', name_pattern: 
     """Given a target directory (default `./`), and a snapshot naming scheme (default `snap*.ka`), return a list of
      snapshot names sorted ascending by a numerical specifier. By default, KaSim inserts the event number into a
      snapshot's name."""
-    if type(target_directory) == str:
+    if isinstance(target_directory, Path):
+        target_path = target_directory
+    elif isinstance(target_directory, str):
         target_path = Path(target_directory)
-    elif type(target_directory) == Path:
-        pass
     else:
         raise ValueError(
             'Expected a string or a Pathlib.Path object for parameter "target_directory", got {}'.format(
