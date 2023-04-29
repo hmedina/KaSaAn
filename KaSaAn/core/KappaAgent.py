@@ -2,7 +2,7 @@
 """Contains `KappaAgent` and `KappaToken`; classes for representing the atomic components of a reaction mixture."""
 
 import re
-from typing import List, Union
+from typing import Dict, List, Union
 
 from .KappaEntity import KappaEntity
 from .KappaSite import KappaPort, KappaCounter
@@ -169,6 +169,24 @@ class KappaAgent(KappaEntity):
         """Returns the agent's unique numeric identifier, if any. These are generated in snapshots in the form
          `x[int]:[agent name][agent signature]`"""
         return self._agent_identifier
+
+    def get_port(self, q_name: str) -> Union[KappaPort, None]:
+        """Returns the KappaPort associated with the provided name."""
+        port_map: Dict[str, KappaPort] = {port.get_port_name(): port for port in self._agent_ports}
+        if q_name in port_map:
+            return port_map[q_name]
+        else:
+            Warning('Returning None; Port {} is not present in agent {}'.format(q_name, self))
+            return None
+
+    def get_counter(self, q_name: str) -> Union[KappaCounter, None]:
+        """Returns the KappaCounter associated with the provided name."""
+        counter_map: Dict[str, KappaCounter] = {counter.get_counter_name(): counter for counter in self._agent_counters}
+        if q_name in counter_map:
+            return counter_map[q_name]
+        else:
+            Warning('Returning None; Counter {} is not present in agent {}'.format(q_name, self))
+            return None
 
 
 class KappaToken(KappaEntity):

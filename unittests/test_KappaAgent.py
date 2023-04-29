@@ -48,20 +48,19 @@ class TestKappaAgent(unittest.TestCase):
         self.assertEqual('site[.]{un}', str(KappaAgent('x56:Pavo(site[.]{un})').get_agent_signature()[0]))
 
     def test_get_agent_ports(self):
-        self.assertTrue(any(['b' in item for item in KappaAgent('B(b[2], ba[3], bb[3], c[5])').get_agent_ports()]))
-        self.assertTrue(
-            all(
-                [
-                    any(['b' in item for item in KappaAgent('B(b[2], ba[3], bb[3], c[5])').get_agent_ports()]),
-                    any(['ba' in item for item in KappaAgent('B(b[2], ba[3], bb[3], c[5])').get_agent_ports()]),
-                    any(['bb' in item for item in KappaAgent('B(b[2], ba[3], bb[3], c[5])').get_agent_ports()]),
-                    any(['c' in item for item in KappaAgent('B(b[2], ba[3], bb[3], c[5])').get_agent_ports()])
-                ]
-            )
-        )
-        self.assertTrue(any(['d' in item for item in KappaAgent('B(b[2], ba[3], bb[3], d{s})').get_agent_ports()]))
-        self.assertFalse(any(['z' in item for item in KappaAgent('B(b[2], ba[3], bb[3], c[5])').get_agent_ports()]))
-        self.assertFalse(any(['z' in item for item in KappaAgent('B(b[2], c[5], z{=5})').get_agent_ports()]))
+        self.assertCountEqual(
+            [KappaPort('b[2]'), KappaPort('ba[3]'), KappaPort('bb[3]'), KappaPort('c[5]'), KappaPort('d{s}')],
+            KappaAgent('B(b[2], ba[3], bb[3], c[5], d{s})').get_agent_ports())
+        self.assertFalse(KappaPort('z') in KappaAgent('B(b[2], ba[3], bb[3], c[5])').get_agent_ports())
+        self.assertFalse(KappaPort('z') in KappaAgent('B(b[2], ba[3], bb[3], c[5], z{=5})').get_agent_ports())
+
+    def test_get_port(self):
+        self.assertEqual(KappaPort('s[1]{s}'), KappaAgent('U(s[1]{s}, c{k}, z[2])').get_port('s'))
+        self.assertIsNone(KappaAgent('Q(a[1]{s}, b{x}, c[2], d)').get_port('z'))
+
+    def test_get_counter(self):
+        self.assertEqual(KappaCounter('s{=5}'), KappaAgent('U(s{=5}, c{k}, z[2])').get_counter('s'))
+        self.assertIsNone(KappaAgent('Q(a[1]{s}, b{x}, c[2], d)').get_counter('z'))
 
     def test_get_terminii_of_bond(self):
         my_comp = KappaAgent('B(a[2], b[.], c[#], d[3], e[./5], f[6/7], g[8], h[8], ij[9])')
