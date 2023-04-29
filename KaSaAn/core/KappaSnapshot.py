@@ -13,7 +13,9 @@ from typing import List, Set, ItemsView, Dict, Tuple, Union
 from .KappaMultiAgentGraph import KappaMultiAgentGraph
 from .KappaComplex import KappaComplex, embed_and_map
 from .KappaAgent import KappaAgent, KappaToken
-from .KappaError import SnapshotAgentParseError, SnapshotTokenParseError, SnapshotParseError, AgentParseError, ComplexParseError
+from .KappaError import (
+    SnapshotAgentParseError, SnapshotTokenParseError, SnapshotParseError, AgentParseError,
+    ComplexParseError)
 
 
 class KappaSnapshot(KappaMultiAgentGraph):
@@ -102,9 +104,8 @@ class KappaSnapshot(KappaMultiAgentGraph):
                     self._complexes[species] = abundance
                     self._known_sizes.append(size)
                     # define identifier -> complex map
-                    if species.get_agent_identifiers():
-                        for identifier in species.get_agent_identifiers():
-                            self._identifier_complex_map[identifier] = species
+                    for identifier in species.get_agent_identifiers():
+                        self._identifier_complex_map[identifier] = species
                 except SnapshotAgentParseError:
                     # try to parse as a token line instead
                     g = self._line_token_re.match(entry)
@@ -338,19 +339,25 @@ markedly slower performance with multi-threading than without. Case-specific, yo
         """Returns a list with all the agent identifiers held in the snapshot."""
         return list(self._identifier_complex_map.keys())
 
-    def get_complex_of_agent(self, query_identifier: int) -> KappaComplex:
+    def get_complex_of_agent(self, query_identifier: int) -> Union[KappaComplex, None]:
         """Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
         should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
         be identical, and identifiers are unique and stable throughout the simulation."""
-        if self._identifier_complex_map:
-            try:
-                return self._identifier_complex_map[query_identifier]
-            except KeyError as e:
-                raise ValueError('Identifier <{}> not present in snapshot <{}>.'.format(
-                    query_identifier, self.get_snapshot_file_name())) from e
+        if query_identifier in self._identifier_complex_map:
+            return self._identifier_complex_map[query_identifier]
         else:
-            raise ValueError('Snapshot <{}> was not found to contain agent identifiers (i.e. raw formatted).'.format(
-                self.get_snapshot_file_name()))
+            Warning('Returnin None; identifier {} not present in snapshot {}'.format(
+                query_identifier, self.get_snapshot_file_name()))
+            return None
+
+    def get_agent_from_identifier(self, ident: int) -> Union[KappaAgent, None]:
+        """Returns the KappaAgent associated with the given identifier, if any."""
+        if ident in self._identifier_complex_map:
+            return self.get_complex_of_agent(ident).get_agent_from_identifier(ident)
+        else:
+            Warning('Returnin None; identifier {} not present in snapshot {}'.format(
+                ident, self.get_snapshot_file_name()))
+            return None
 
     def to_networkx(self) -> nx.MultiGraph:
         """Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent

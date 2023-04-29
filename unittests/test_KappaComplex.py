@@ -106,7 +106,12 @@ class TestKappaComplex(unittest.TestCase):
         self.assertTrue(22 in KappaComplex('x22:A(s[2]), x33:A(s[1])').get_agent_identifiers())
         self.assertCountEqual([22, 33], KappaComplex('x22:A(s[2]), x33:A(s[1])').get_agent_identifiers())
         self.assertFalse(5 in KappaComplex('x22:A(s[2]), x33:A(s[1])').get_agent_identifiers())
-        self.assertEqual([], KappaComplex('A(s[2]), A(s[1])').get_agent_identifiers())
+        self.assertCountEqual([], KappaComplex('A(s[2]), A(s[1])').get_agent_identifiers())
+
+    def test_get_agent_from_identifier(self):
+        self.assertEqual(KappaComplex('x1:A(s[2]), x2:B(s[2])').get_agent_from_identifier(1), KappaAgent('x1:A(s[2])'))
+        self.assertEqual(KappaComplex('x3:A(s[3]), x2:B(s[3])').get_agent_from_identifier(2), KappaAgent('x2:B(s[3])'))
+        self.assertIsNone(KappaComplex('x50:A(s[3]), x51:B(s[3])').get_agent_from_identifier(3))
 
     def test_to_networkx(self):
         unlabeled_snap = KappaComplex('A(b[1]), B(a[1] c[2]), C(b[2])')

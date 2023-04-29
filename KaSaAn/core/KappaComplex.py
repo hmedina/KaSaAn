@@ -5,7 +5,7 @@ function."""
 import re
 import networkx as nx
 from collections import deque
-from typing import Deque, Dict, List, Set, Tuple
+from typing import Deque, Dict, List, Set, Tuple, Union
 
 from .KappaMultiAgentGraph import KappaMultiAgentGraph
 from .KappaAgent import KappaAgent
@@ -27,10 +27,12 @@ class KappaComplex(KappaMultiAgentGraph):
     def __init__(self, expression: str):
         self._raw_expression: str
         self._agents: List[KappaAgent]
-        self._agent_identifiers: List[int]
+        self._agent_by_idents: Dict[int, KappaAgent]
+        """Maps an identifier to an Agent; empty if no identifiers present"""
         self._agent_types: Set[KappaAgent]
         self._kappa_expression: str
         self._composition: Dict[KappaAgent, int]
+        """Maps an agent type to an abundance"""
 
         self._raw_expression = expression
         # get the set of agents making up this complex
@@ -57,9 +59,16 @@ class KappaComplex(KappaMultiAgentGraph):
         except AgentParseError as a:
             raise ComplexParseError('Could not parse agents in complex <' + expression + '>.') from a
         self._agents = sorted(agent_list)
-        self._agent_identifiers = agent_idents
         self._agent_types = agent_types
         self._composition = dict(sorted(composition.items(), key=lambda item: item[1]))
+        # deal with agent identifier map; 0 is a valid identifier
+        if all([isinstance(ag.get_agent_identifier(), int) for ag in agent_list]):
+            self._agent_by_idents = {agent.get_agent_identifier(): agent for agent in agent_list}
+        elif any([isinstance(ag.get_agent_identifier(), int) for ag in agent_list]):
+            Warning('Expression contains identifier for only a subset of agents!\n{}'.format(self._raw_expression))
+            self._agent_by_idents = {}
+        else:
+            self._agent_by_idents = {}
         # canonicalize the kappa expression
         self._kappa_expression = ', '.join([str(agent) for agent in self._agents])
 
@@ -136,7 +145,15 @@ class KappaComplex(KappaMultiAgentGraph):
 
     def get_agent_identifiers(self) -> List[int]:
         """Returns a list with the numeric agent identifiers, if any."""
-        return self._agent_identifiers
+        return self._agent_by_idents.keys()
+
+    def get_agent_from_identifier(self, ident: int) -> Union[KappaAgent, None]:
+        """Returns the KappaAgent associated to provided identifier, if any."""
+        if ident not in self._agent_by_idents:
+            Warning('Returnin None; identifier {} not present in complex\n{}'.format(ident, self._kappa_expression))
+            return None
+        else:
+            return self._agent_by_idents[ident]
 
     def to_networkx(self, identifier_offset: int = 0) -> nx.MultiGraph:
         """Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
