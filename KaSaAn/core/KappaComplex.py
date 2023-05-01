@@ -79,6 +79,20 @@ class KappaComplex(KappaMultiAgentGraph):
             bonds.update(agent.get_bond_identifiers())
         return len(bonds)
 
+    def get_agents_of_bond(self, bond_id: Union[int, str]) -> Union[Tuple[KappaAgent, KappaAgent], None]:
+        """Returns a tuple with both KappaAgents on either side of the requested bond identifier, or None if the bond
+        is unkown to this complex."""
+        if isinstance(bond_id, int):
+            bond_id = str(bond_id)
+        terminii = []
+        for this_agent in self._agents:
+            if bond_id in this_agent.get_bond_identifiers():
+                terminii.append(this_agent)
+        if len(terminii) == 2:
+            return terminii
+        else:
+            return None
+
     def get_size_of_complex(self) -> int:
         """Returns the size, in agents, of this complex."""
         return len(self._agents)

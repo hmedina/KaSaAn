@@ -14,6 +14,18 @@ class TestKappaComplex(unittest.TestCase):
     def test_get_number_of_bonds(self):
         self.assertEqual(KappaComplex('_a(s1[1]{#}), bob(~b[2]{#}), ~b(bob[2]{#} ~a[1]{#})').get_number_of_bonds(), 2)
 
+    def test_get_agents_of_bond(self):
+        self.assertCountEqual(
+            KappaComplex('x0:A(a[0], b[1]), x1:A(a[1], b[2]), x2:A(a[2], b[0])').get_agents_of_bond(0),
+            [KappaAgent('x0:A(a[0], b[1])'), KappaAgent('x2:A(a[2], b[0])')])
+        self.assertCountEqual(
+            KappaComplex('x0:A(a[0], b[1]), x1:A(a[1], b[2]), x2:A(a[2], b[0])').get_agents_of_bond(1),
+            [KappaAgent('x0:A(a[0], b[1])'), KappaAgent('x1:A(a[1], b[2])')])
+        self.assertCountEqual(
+            KappaComplex('x0:A(a[0], b[1]), x1:A(a[1], b[2]), x2:A(a[2], b[0])').get_agents_of_bond(2),
+            [KappaAgent('x2:A(a[2], b[0])'), KappaAgent('x1:A(a[1], b[2])')])
+        self.assertIsNone(KappaComplex('x0:A(a[0], b[1]), x1:A(a[1], b[2]), x2:A(a[2], b[0])').get_agents_of_bond(3))
+
     def test_get_size_of_complex(self):
         self.assertEqual(KappaComplex('_a(s1[1]{#}), bob(~b[3]{#}), ~b(bob[2]{#} ~a[1]{#})').get_size_of_complex(), 3)
         self.assertEqual(KappaComplex(
