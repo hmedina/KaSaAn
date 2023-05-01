@@ -28,19 +28,26 @@
 </summary>
 <pre><code class="python">#! /usr/bin/env python3
 
-import pathlib
-import warnings
-from typing import List
+from pathlib import Path
+from typing import List, Union
 from .numerical_sort import numerical_sort
+import warnings
 
 
-def find_snapshot_names(target_directory: str = &#39;.&#39;, name_pattern: str = &#39;snap*.ka&#39;) -&gt; List[str]:
+def find_snapshot_names(target_directory: Union[str, Path] = &#39;.&#39;, name_pattern: str = &#39;snap*.ka&#39;) -&gt; List[str]:
     &#34;&#34;&#34;Given a target directory (default `./`), and a snapshot naming scheme (default `snap*.ka`), return a list of
      snapshot names sorted ascending by a numerical specifier. By default, KaSim inserts the event number into a
      snapshot&#39;s name.&#34;&#34;&#34;
-    target_path = pathlib.Path(target_directory)
+    if isinstance(target_directory, Path):
+        target_path = target_directory
+    elif isinstance(target_directory, str):
+        target_path = Path(target_directory)
+    else:
+        raise ValueError(
+            &#39;Expected a string or a Pathlib.Path object for parameter &#34;target_directory&#34;, got {}&#39;.format(
+                type(target_directory)))
     if not target_path.exists():
-        raise ValueError(&#39;Directory &lt;&#39; + target_directory + &#39;&gt; not found.&#39;)
+        raise ValueError(&#39;Directory {} not found&#39;.format(target_directory))
     snap_names = [str(file_path) for file_path in target_path.glob(name_pattern)]
     if len(snap_names) &lt; 2:
         warnings.warn(&#39;Found &lt;{}&gt; snapshots in directory &lt;{}&gt; using file naming pattern &lt;{}&gt;.&#39;.format(
@@ -57,7 +64,7 @@ def find_snapshot_names(target_directory: str = &#39;.&#39;, name_pattern: str =
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="KaSaAn.functions.find_snapshot_names.find_snapshot_names"><code class="name flex">
-<span>def <span class="ident">find_snapshot_names</span></span>(<span>target_directory: str = '.', name_pattern: str = 'snap*.ka') ‑> List[str]</span>
+<span>def <span class="ident">find_snapshot_names</span></span>(<span>target_directory: Union[pathlib.Path, str] = '.', name_pattern: str = 'snap*.ka') ‑> List[str]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Given a target directory (default <code>./</code>), and a snapshot naming scheme (default <code>snap*.ka</code>), return a list of
@@ -67,13 +74,20 @@ snapshot's name.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def find_snapshot_names(target_directory: str = &#39;.&#39;, name_pattern: str = &#39;snap*.ka&#39;) -&gt; List[str]:
+<pre><code class="python">def find_snapshot_names(target_directory: Union[str, Path] = &#39;.&#39;, name_pattern: str = &#39;snap*.ka&#39;) -&gt; List[str]:
     &#34;&#34;&#34;Given a target directory (default `./`), and a snapshot naming scheme (default `snap*.ka`), return a list of
      snapshot names sorted ascending by a numerical specifier. By default, KaSim inserts the event number into a
      snapshot&#39;s name.&#34;&#34;&#34;
-    target_path = pathlib.Path(target_directory)
+    if isinstance(target_directory, Path):
+        target_path = target_directory
+    elif isinstance(target_directory, str):
+        target_path = Path(target_directory)
+    else:
+        raise ValueError(
+            &#39;Expected a string or a Pathlib.Path object for parameter &#34;target_directory&#34;, got {}&#39;.format(
+                type(target_directory)))
     if not target_path.exists():
-        raise ValueError(&#39;Directory &lt;&#39; + target_directory + &#39;&gt; not found.&#39;)
+        raise ValueError(&#39;Directory {} not found&#39;.format(target_directory))
     snap_names = [str(file_path) for file_path in target_path.glob(name_pattern)]
     if len(snap_names) &lt; 2:
         warnings.warn(&#39;Found &lt;{}&gt; snapshots in directory &lt;{}&gt; using file naming pattern &lt;{}&gt;.&#39;.format(

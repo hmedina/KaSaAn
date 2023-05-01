@@ -53,6 +53,8 @@ usage: kappa_catalytic_potential
 &#34;&#34;&#34;
 
 import argparse
+import csv
+import matplotlib.pyplot as plt
 import sys
 
 from KaSaAn.functions import get_potential_of_folder
@@ -66,7 +68,7 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
     parser = argparse.ArgumentParser(description=main.__doc__)
-    parser.add_argument(&#39;-d&#39;, &#39;--directory&#39;, type=str, default=&#39;./&#39;,
+    parser.add_argument(&#39;-d&#39;, &#39;--directory&#39;, type=str, default=&#39;.&#39;,
                         help=&#39;The directory containing the snapshots to be analyzed.&#39;)
     parser.add_argument(&#39;-e&#39;, &#39;--enzyme_name&#39;, type=str, required=True,
                         help=&#39;The name of the agent acting as an enzyme; e.g. &lt;GSK(ARM, FTZ, ser3{ph})&gt; would be simply&#39;
@@ -76,24 +78,30 @@ def main(args=None):
     parser.add_argument(&#39;-v&#39;, &#39;--verbose&#39;, action=&#39;store_true&#39;,
                         help=&#39;If set, print additional information, like number of snapshots found, and current&#39;
                              &#39; snapshot being parsed.&#39;)
-    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=str,
+    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=str, default=None,
                         help=&#39;The name of the file where the list of catalytic potentials should be saved; one value&#39;
-                             &#39; per line, in the same order as the snapshots. If not specified, the list will be printed&#39;
-                             &#39; to the console.&#39;)
-    parser.add_argument(&#39;-p&#39;, &#39;--snapshot_prefix&#39;, type=str, required=True,
-                        help=&#39;The prefix by which the snapshots are named; e.g. &lt;snap_4.ka&gt; would have &lt;snap_&gt;.&#39;)
+                             &#39; per line, in the same order as the snapshots. If not specified, the list will be plotted&#39;
+                             &#39; as a function of time.&#39;)
+    parser.add_argument(&#39;-p&#39;, &#39;--snapshot_pattern&#39;, type=str, default=&#39;snap_*.ka&#39;,
+                        help=&#39;Pattern by which the snapshots are named; e.g. &lt;snap_4.ka&gt; would have &lt;snap_*.ka&gt;.&#39;)
 
     args = parser.parse_args()
 
-    q = get_potential_of_folder(args.directory, args.enzyme_name, args.substrate_name,
-                                args.verbose, args.snapshot_prefix)
+    data = get_potential_of_folder(args.directory, args.enzyme_name, args.substrate_name,
+                                   args.verbose, args.snapshot_pattern)
 
     if args.output_file:
         with open(args.output_file, &#39;w&#39;) as out_file:
-            for item in q:
-                out_file.write(&#39;%s\n&#39; % item)
+            q_writter = csv.writer(out_file)
+            q_writter.writerow([&#39;q&#39;, &#39;t&#39;])
+            q_writter.writerows(data)
     else:
-        print(q)
+        _, ax = plt.subplots()
+        q, t = zip(*data)
+        ax.plot(t, q)
+        ax.set_xlabel(&#39;Time&#39;)
+        ax.set_ylabel(&#39;q&#39;)
+        plt.show()
 
 
 if __name__ == &#39;__main__&#39;:
@@ -127,7 +135,7 @@ is the sum of the catalytic potentials over all the constituent species.</p></di
     if args is None:
         args = sys.argv[1:]
     parser = argparse.ArgumentParser(description=main.__doc__)
-    parser.add_argument(&#39;-d&#39;, &#39;--directory&#39;, type=str, default=&#39;./&#39;,
+    parser.add_argument(&#39;-d&#39;, &#39;--directory&#39;, type=str, default=&#39;.&#39;,
                         help=&#39;The directory containing the snapshots to be analyzed.&#39;)
     parser.add_argument(&#39;-e&#39;, &#39;--enzyme_name&#39;, type=str, required=True,
                         help=&#39;The name of the agent acting as an enzyme; e.g. &lt;GSK(ARM, FTZ, ser3{ph})&gt; would be simply&#39;
@@ -137,24 +145,30 @@ is the sum of the catalytic potentials over all the constituent species.</p></di
     parser.add_argument(&#39;-v&#39;, &#39;--verbose&#39;, action=&#39;store_true&#39;,
                         help=&#39;If set, print additional information, like number of snapshots found, and current&#39;
                              &#39; snapshot being parsed.&#39;)
-    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=str,
+    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=str, default=None,
                         help=&#39;The name of the file where the list of catalytic potentials should be saved; one value&#39;
-                             &#39; per line, in the same order as the snapshots. If not specified, the list will be printed&#39;
-                             &#39; to the console.&#39;)
-    parser.add_argument(&#39;-p&#39;, &#39;--snapshot_prefix&#39;, type=str, required=True,
-                        help=&#39;The prefix by which the snapshots are named; e.g. &lt;snap_4.ka&gt; would have &lt;snap_&gt;.&#39;)
+                             &#39; per line, in the same order as the snapshots. If not specified, the list will be plotted&#39;
+                             &#39; as a function of time.&#39;)
+    parser.add_argument(&#39;-p&#39;, &#39;--snapshot_pattern&#39;, type=str, default=&#39;snap_*.ka&#39;,
+                        help=&#39;Pattern by which the snapshots are named; e.g. &lt;snap_4.ka&gt; would have &lt;snap_*.ka&gt;.&#39;)
 
     args = parser.parse_args()
 
-    q = get_potential_of_folder(args.directory, args.enzyme_name, args.substrate_name,
-                                args.verbose, args.snapshot_prefix)
+    data = get_potential_of_folder(args.directory, args.enzyme_name, args.substrate_name,
+                                   args.verbose, args.snapshot_pattern)
 
     if args.output_file:
         with open(args.output_file, &#39;w&#39;) as out_file:
-            for item in q:
-                out_file.write(&#39;%s\n&#39; % item)
+            q_writter = csv.writer(out_file)
+            q_writter.writerow([&#39;q&#39;, &#39;t&#39;])
+            q_writter.writerows(data)
     else:
-        print(q)</code></pre>
+        _, ax = plt.subplots()
+        q, t = zip(*data)
+        ax.plot(t, q)
+        ax.set_xlabel(&#39;Time&#39;)
+        ax.set_ylabel(&#39;q&#39;)
+        plt.show()</code></pre>
 </details>
 </dd>
 </dl>

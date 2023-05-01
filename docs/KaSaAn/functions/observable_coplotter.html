@@ -31,6 +31,7 @@
 import ast
 import glob
 import warnings
+import matplotlib.axes as mpa
 import numpy as np
 from typing import List, Tuple
 from .observable_plotter import observable_file_reader
@@ -46,10 +47,10 @@ def _find_data_files(pattern: str) -&gt; List[str]:
     return sorted_file_list
 
 
-def _multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tuple[List[str], np.array, str]],
+def _multi_data_axis_annotator(co_plot_axis: mpa.Axes, file_data_list: List[Tuple[List[str], np.array, str]],
                                coplot_index: int, coplot_name: str, coplot_expression: str,
                                diff_toggle: bool = False, log_x: bool = False, log_y: bool = False,
-                               omit_legend: bool = False):
+                               omit_legend: bool = False) -&gt; mpa.Axes:
     &#34;&#34;&#34;Annotate the provided axis.&#34;&#34;&#34;
     legend_entries = []
     for file_data in file_data_list:
@@ -133,10 +134,11 @@ def _multi_data_axis_annotator(co_plot_axis, file_data_list: List[Tuple[List[str
     return co_plot_axis
 
 
-def observable_coplot_axis_annotator(target_axis, file_pattern: str,
+def observable_coplot_axis_annotator(target_axis: mpa.Axes, file_pattern: str,
                                      variable_index: int, variable_name: str, variable_expr: str,
                                      differential_toggle: bool = False,
-                                     log_axis_x: bool = False, log_axis_y: bool = False, no_legend: bool = False):
+                                     log_axis_x: bool = False, log_axis_y: bool = False,
+                                     no_legend: bool = False) -&gt; mpa.Axes:
     &#34;&#34;&#34;See file under `KaSaAn.scripts` for usage.&#34;&#34;&#34;
     file_names = _find_data_files(file_pattern)
     file_data_list = []
@@ -163,7 +165,7 @@ def observable_coplot_axis_annotator(target_axis, file_pattern: str,
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="KaSaAn.functions.observable_coplotter.observable_coplot_axis_annotator"><code class="name flex">
-<span>def <span class="ident">observable_coplot_axis_annotator</span></span>(<span>target_axis, file_pattern: str, variable_index: int, variable_name: str, variable_expr: str, differential_toggle: bool = False, log_axis_x: bool = False, log_axis_y: bool = False, no_legend: bool = False)</span>
+<span>def <span class="ident">observable_coplot_axis_annotator</span></span>(<span>target_axis: matplotlib.axes._axes.Axes, file_pattern: str, variable_index: int, variable_name: str, variable_expr: str, differential_toggle: bool = False, log_axis_x: bool = False, log_axis_y: bool = False, no_legend: bool = False) ‑> matplotlib.axes._axes.Axes</span>
 </code></dt>
 <dd>
 <div class="desc"><p>See file under <code><a title="KaSaAn.scripts" href="../scripts/index.html">KaSaAn.scripts</a></code> for usage.</p></div>
@@ -171,10 +173,11 @@ def observable_coplot_axis_annotator(target_axis, file_pattern: str,
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def observable_coplot_axis_annotator(target_axis, file_pattern: str,
+<pre><code class="python">def observable_coplot_axis_annotator(target_axis: mpa.Axes, file_pattern: str,
                                      variable_index: int, variable_name: str, variable_expr: str,
                                      differential_toggle: bool = False,
-                                     log_axis_x: bool = False, log_axis_y: bool = False, no_legend: bool = False):
+                                     log_axis_x: bool = False, log_axis_y: bool = False,
+                                     no_legend: bool = False) -&gt; mpa.Axes:
     &#34;&#34;&#34;See file under `KaSaAn.scripts` for usage.&#34;&#34;&#34;
     file_names = _find_data_files(file_pattern)
     file_data_list = []

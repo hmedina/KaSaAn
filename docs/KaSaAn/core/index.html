@@ -101,7 +101,7 @@ __all__ = [&#39;KappaSnapshot&#39;, &#39;KappaComplex&#39;,
     def __init__(self, expression: str):
         # instance type &#34;declarations&#34;
         self._raw_expression: str
-        self._agent_identifier: int
+        self._agent_identifier: Union[int, None]
         self._agent_name: str
         self._agent_signature: List[Union[KappaPort, KappaCounter]]
         self._agent_ports: List[KappaPort]
@@ -198,6 +198,20 @@ __all__ = [&#39;KappaSnapshot&#39;, &#39;KappaComplex&#39;,
                 if counter == len(item._agent_signature):
                     return True
 
+    def __lt__(self, other) -&gt; bool:
+        &#34;&#34;&#34;Overwriting the base clase&#39;s method to properly compare identifiers. Relying on the kappa expression as a
+        simple string resulted in incorrect behavior: `x10:A()` was sorted before `x9:A()`, yielding incorrect bond
+        orientations.&#34;&#34;&#34;
+        if not type(other) is KappaAgent:
+            other = KappaAgent(other)
+        if (self.get_agent_identifier() is not None) &amp; (other.get_agent_identifier() is not None):
+            if self.get_agent_identifier() == other.get_agent_identifier():
+                return (self._kappa_expression &lt; other._kappa_expression)
+            else:
+                return (self.get_agent_identifier() &lt; other.get_agent_identifier())
+        else:
+            return (self._kappa_expression &lt; other._kappa_expression)
+
     def get_agent_name(self) -&gt; str:
         &#34;&#34;&#34;Return a string with the agent&#39;s name.&#34;&#34;&#34;
         return self._agent_name
@@ -229,10 +243,28 @@ __all__ = [&#39;KappaSnapshot&#39;, &#39;KappaComplex&#39;,
         &#34;&#34;&#34;Return the operation being performed on this agent: `creation`, `deletion`, or an empty string.&#34;&#34;&#34;
         return self._abundance_change
 
-    def get_agent_identifier(self) -&gt; int:
+    def get_agent_identifier(self) -&gt; Union[int, None]:
         &#34;&#34;&#34;Returns the agent&#39;s unique numeric identifier, if any. These are generated in snapshots in the form
          `x[int]:[agent name][agent signature]`&#34;&#34;&#34;
-        return self._agent_identifier</code></pre>
+        return self._agent_identifier
+
+    def get_port(self, q_name: str) -&gt; Union[KappaPort, None]:
+        &#34;&#34;&#34;Returns the KappaPort associated with the provided name.&#34;&#34;&#34;
+        port_map: Dict[str, KappaPort] = {port.get_port_name(): port for port in self._agent_ports}
+        if q_name in port_map:
+            return port_map[q_name]
+        else:
+            Warning(&#39;Returning None; Port {} is not present in agent {}&#39;.format(q_name, self))
+            return None
+
+    def get_counter(self, q_name: str) -&gt; Union[KappaCounter, None]:
+        &#34;&#34;&#34;Returns the KappaCounter associated with the provided name.&#34;&#34;&#34;
+        counter_map: Dict[str, KappaCounter] = {counter.get_counter_name(): counter for counter in self._agent_counters}
+        if q_name in counter_map:
+            return counter_map[q_name]
+        else:
+            Warning(&#39;Returning None; Counter {} is not present in agent {}&#39;.format(q_name, self))
+            return None</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -256,7 +288,7 @@ __all__ = [&#39;KappaSnapshot&#39;, &#39;KappaComplex&#39;,
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaAgent.get_agent_identifier"><code class="name flex">
-<span>def <span class="ident">get_agent_identifier</span></span>(<span>self) ‑> int</span>
+<span>def <span class="ident">get_agent_identifier</span></span>(<span>self) ‑> Optional[int]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the agent's unique numeric identifier, if any. These are generated in snapshots in the form
@@ -265,7 +297,7 @@ __all__ = [&#39;KappaSnapshot&#39;, &#39;KappaComplex&#39;,
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_agent_identifier(self) -&gt; int:
+<pre><code class="python">def get_agent_identifier(self) -&gt; Union[int, None]:
     &#34;&#34;&#34;Returns the agent&#39;s unique numeric identifier, if any. These are generated in snapshots in the form
      `x[int]:[agent name][agent signature]`&#34;&#34;&#34;
     return self._agent_identifier</code></pre>
@@ -327,6 +359,44 @@ be <code>['1','2']</code>.</p></div>
     &#34;&#34;&#34;Return the list of bonds ending/starting at this agent, e.g. for `A(a[.] b[1] c[2] d{a}[.])` these would
      be `[&#39;1&#39;,&#39;2&#39;]`.&#34;&#34;&#34;
     return self._bond_identifiers</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaAgent.get_counter"><code class="name flex">
+<span>def <span class="ident">get_counter</span></span>(<span>self, q_name: str) ‑> Optional[<a title="KaSaAn.core.KappaSite.KappaCounter" href="KappaSite.html#KaSaAn.core.KappaSite.KappaCounter">KappaCounter</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the KappaCounter associated with the provided name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_counter(self, q_name: str) -&gt; Union[KappaCounter, None]:
+    &#34;&#34;&#34;Returns the KappaCounter associated with the provided name.&#34;&#34;&#34;
+    counter_map: Dict[str, KappaCounter] = {counter.get_counter_name(): counter for counter in self._agent_counters}
+    if q_name in counter_map:
+        return counter_map[q_name]
+    else:
+        Warning(&#39;Returning None; Counter {} is not present in agent {}&#39;.format(q_name, self))
+        return None</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaAgent.get_port"><code class="name flex">
+<span>def <span class="ident">get_port</span></span>(<span>self, q_name: str) ‑> Optional[<a title="KaSaAn.core.KappaSite.KappaPort" href="KappaSite.html#KaSaAn.core.KappaSite.KappaPort">KappaPort</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the KappaPort associated with the provided name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_port(self, q_name: str) -&gt; Union[KappaPort, None]:
+    &#34;&#34;&#34;Returns the KappaPort associated with the provided name.&#34;&#34;&#34;
+    port_map: Dict[str, KappaPort] = {port.get_port_name(): port for port in self._agent_ports}
+    if q_name in port_map:
+        return port_map[q_name]
+    else:
+        Warning(&#39;Returning None; Port {} is not present in agent {}&#39;.format(q_name, self))
+        return None</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaAgent.get_terminii_of_bond"><code class="name flex">
@@ -469,10 +539,12 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
     def __init__(self, expression: str):
         self._raw_expression: str
         self._agents: List[KappaAgent]
-        self._agent_identifiers: List[int]
+        self._agent_by_idents: Dict[int, KappaAgent]
+        &#34;&#34;&#34;Maps an identifier to an Agent; empty if no identifiers present&#34;&#34;&#34;
         self._agent_types: Set[KappaAgent]
         self._kappa_expression: str
         self._composition: Dict[KappaAgent, int]
+        &#34;&#34;&#34;Maps an agent type to an abundance&#34;&#34;&#34;
 
         self._raw_expression = expression
         # get the set of agents making up this complex
@@ -480,7 +552,7 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
         if len(matches) == 0:
             raise ComplexParseError(&#39;Complex &lt;&#39; + self._raw_expression + &#39;&gt; appears to have zero agents.&#39;)
         try:
-            agent_list = []
+            agent_list: List[KappaAgent] = []
             agent_idents = []
             agent_types = set()
             composition = {}
@@ -499,9 +571,16 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
         except AgentParseError as a:
             raise ComplexParseError(&#39;Could not parse agents in complex &lt;&#39; + expression + &#39;&gt;.&#39;) from a
         self._agents = sorted(agent_list)
-        self._agent_identifiers = agent_idents
         self._agent_types = agent_types
         self._composition = dict(sorted(composition.items(), key=lambda item: item[1]))
+        # deal with agent identifier map; 0 is a valid identifier
+        if all([isinstance(ag.get_agent_identifier(), int) for ag in agent_list]):
+            self._agent_by_idents = {agent.get_agent_identifier(): agent for agent in agent_list}
+        elif any([isinstance(ag.get_agent_identifier(), int) for ag in agent_list]):
+            Warning(&#39;Expression contains identifier for only a subset of agents!\n{}&#39;.format(self._raw_expression))
+            self._agent_by_idents = {}
+        else:
+            self._agent_by_idents = {}
         # canonicalize the kappa expression
         self._kappa_expression = &#39;, &#39;.join([str(agent) for agent in self._agents])
 
@@ -511,6 +590,20 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
         for agent in self._agents:
             bonds.update(agent.get_bond_identifiers())
         return len(bonds)
+
+    def get_agents_of_bond(self, bond_id: Union[int, str]) -&gt; Union[Tuple[KappaAgent, KappaAgent], None]:
+        &#34;&#34;&#34;Returns a tuple with both KappaAgents on either side of the requested bond identifier, or None if the bond
+        is unkown to this complex.&#34;&#34;&#34;
+        if isinstance(bond_id, int):
+            bond_id = str(bond_id)
+        terminii = []
+        for this_agent in self._agents:
+            if bond_id in this_agent.get_bond_identifiers():
+                terminii.append(this_agent)
+        if len(terminii) == 2:
+            return terminii
+        else:
+            return None
 
     def get_size_of_complex(self) -&gt; int:
         &#34;&#34;&#34;Returns the size, in agents, of this complex.&#34;&#34;&#34;
@@ -578,7 +671,15 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
 
     def get_agent_identifiers(self) -&gt; List[int]:
         &#34;&#34;&#34;Returns a list with the numeric agent identifiers, if any.&#34;&#34;&#34;
-        return self._agent_identifiers
+        return self._agent_by_idents.keys()
+
+    def get_agent_from_identifier(self, ident: int) -&gt; Union[KappaAgent, None]:
+        &#34;&#34;&#34;Returns the KappaAgent associated to provided identifier, if any.&#34;&#34;&#34;
+        if ident not in self._agent_by_idents:
+            Warning(&#39;Returnin None; identifier {} not present in complex\n{}&#39;.format(ident, self._kappa_expression))
+            return None
+        else:
+            return self._agent_by_idents[ident]
 
     def to_networkx(self, identifier_offset: int = 0) -&gt; nx.MultiGraph:
         &#34;&#34;&#34;Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
@@ -609,13 +710,12 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
                         second_terminus = agent.get_terminii_of_bond(bond)[1]
                     else:
                         second_terminus = agent.get_terminii_of_bond(bond)[0]
+                    this_bond_type = KappaBond(agent_one=dangle_bond_dict[bond][&#39;agent name&#39;],
+                                               site_one=dangle_bond_dict[bond][&#39;site name&#39;],
+                                               agent_two=agent.get_agent_name(),
+                                               site_two=second_terminus)
                     paired_bond_list.append((dangle_bond_dict[bond][&#39;agent id&#39;], agent_global_id,
-                                             {&#39;bond id&#39;: bond, &#39;bond type&#39;:
-                                             KappaBond(agent_one=dangle_bond_dict[bond][&#39;agent name&#39;],
-                                                       site_one=dangle_bond_dict[bond][&#39;site name&#39;],
-                                                       agent_two=agent.get_agent_name(),
-                                                       site_two=second_terminus
-                                                       )}))
+                                             {&#39;bond id&#39;: bond, &#39;bond type&#39;: this_bond_type}))
                     del dangle_bond_dict[bond]
                 else:
                     dangle_bond_dict[bond] = {&#39;agent id&#39;: agent_global_id,
@@ -649,6 +749,24 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="KaSaAn.core.KappaComplex.get_agent_from_identifier"><code class="name flex">
+<span>def <span class="ident">get_agent_from_identifier</span></span>(<span>self, ident: int) ‑> Optional[KaSaAn.core.KappaAgent.KappaAgent]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the KappaAgent associated to provided identifier, if any.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_agent_from_identifier(self, ident: int) -&gt; Union[KappaAgent, None]:
+    &#34;&#34;&#34;Returns the KappaAgent associated to provided identifier, if any.&#34;&#34;&#34;
+    if ident not in self._agent_by_idents:
+        Warning(&#39;Returnin None; identifier {} not present in complex\n{}&#39;.format(ident, self._kappa_expression))
+        return None
+    else:
+        return self._agent_by_idents[ident]</code></pre>
+</details>
+</dd>
 <dt id="KaSaAn.core.KappaComplex.get_agent_identifiers"><code class="name flex">
 <span>def <span class="ident">get_agent_identifiers</span></span>(<span>self) ‑> List[int]</span>
 </code></dt>
@@ -660,7 +778,7 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
 </summary>
 <pre><code class="python">def get_agent_identifiers(self) -&gt; List[int]:
     &#34;&#34;&#34;Returns a list with the numeric agent identifiers, if any.&#34;&#34;&#34;
-    return self._agent_identifiers</code></pre>
+    return self._agent_by_idents.keys()</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.get_agent_types"><code class="name flex">
@@ -675,6 +793,31 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
 <pre><code class="python">def get_agent_types(self) -&gt; Set[KappaAgent]:
     &#34;&#34;&#34;Returns the set of agent names (or agent types) that make up the complex.&#34;&#34;&#34;
     return self._agent_types</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaComplex.get_agents_of_bond"><code class="name flex">
+<span>def <span class="ident">get_agents_of_bond</span></span>(<span>self, bond_id: Union[int, str]) ‑> Optional[Tuple[KaSaAn.core.KappaAgent.KappaAgent, KaSaAn.core.KappaAgent.KappaAgent]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a tuple with both KappaAgents on either side of the requested bond identifier, or None if the bond
+is unkown to this complex.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_agents_of_bond(self, bond_id: Union[int, str]) -&gt; Union[Tuple[KappaAgent, KappaAgent], None]:
+    &#34;&#34;&#34;Returns a tuple with both KappaAgents on either side of the requested bond identifier, or None if the bond
+    is unkown to this complex.&#34;&#34;&#34;
+    if isinstance(bond_id, int):
+        bond_id = str(bond_id)
+    terminii = []
+    for this_agent in self._agents:
+        if bond_id in this_agent.get_bond_identifiers():
+            terminii.append(this_agent)
+    if len(terminii) == 2:
+        return terminii
+    else:
+        return None</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.get_all_agents"><code class="name flex">
@@ -891,13 +1034,12 @@ snapshots, or when combining graphs.</p></div>
                     second_terminus = agent.get_terminii_of_bond(bond)[1]
                 else:
                     second_terminus = agent.get_terminii_of_bond(bond)[0]
+                this_bond_type = KappaBond(agent_one=dangle_bond_dict[bond][&#39;agent name&#39;],
+                                           site_one=dangle_bond_dict[bond][&#39;site name&#39;],
+                                           agent_two=agent.get_agent_name(),
+                                           site_two=second_terminus)
                 paired_bond_list.append((dangle_bond_dict[bond][&#39;agent id&#39;], agent_global_id,
-                                         {&#39;bond id&#39;: bond, &#39;bond type&#39;:
-                                         KappaBond(agent_one=dangle_bond_dict[bond][&#39;agent name&#39;],
-                                                   site_one=dangle_bond_dict[bond][&#39;site name&#39;],
-                                                   agent_two=agent.get_agent_name(),
-                                                   site_two=second_terminus
-                                                   )}))
+                                         {&#39;bond id&#39;: bond, &#39;bond type&#39;: this_bond_type}))
                 del dangle_bond_dict[bond]
             else:
                 dangle_bond_dict[bond] = {&#39;agent id&#39;: agent_global_id,
@@ -994,12 +1136,27 @@ and is designed to read in from said files. Example usage:</p>
         self._bond_types = _get_bond_types(self._parsed_kappa)
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
+    def _update_center_of(self, agent_name: str):
+        wedge_center = (self._agent_graphics[agent_name][&#39;loc_x&#39;], self._agent_graphics[agent_name][&#39;loc_y&#39;])
+        for this_site in self.get_binding_site_names_of(agent_name):
+            self._agent_graphics[agent_name][&#39;bnd_sites&#39;][this_site][&#39;center&#39;] = wedge_center
+        if self._agent_graphics[agent_name][&#39;flagpole_sites&#39;]:
+            self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;center&#39;] = wedge_center
+
+    def get_agent_names(self) -&gt; list[str]:
+        &#34;&#34;&#34;Returns the list of agent names in this contact map.&#34;&#34;&#34;
+        return list(self._parsed_kappa.keys())
+
+    def get_binding_site_names_of(self, agent_name: str) -&gt; list[str]:
+        &#34;&#34;&#34;Returns the list of names for the binding sites belonging to an agent.&#34;&#34;&#34;
+        return list(self._agent_graphics[agent_name][&#39;bnd_sites&#39;].keys())
+
     def move_agent_to(self, agent_name: str, new_x: float, new_y: float):
         &#34;&#34;&#34;Change the location of an agent&#39;s center by specifying new coordinates, in MatPlotLib &#34;data units&#34;.&#34;&#34;&#34;
         self._agent_graphics[agent_name][&#39;loc_x&#39;] = new_x
         self._agent_graphics[agent_name][&#39;loc_y&#39;] = new_y
         # update
-        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+        self._update_center_of(agent_name)
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def move_agent_by(self, agent_name: str, delta_x: float, delta_y: float):
@@ -1007,7 +1164,7 @@ and is designed to read in from said files. Example usage:</p>
         self._agent_graphics[agent_name][&#39;loc_x&#39;] += delta_x
         self._agent_graphics[agent_name][&#39;loc_y&#39;] += delta_y
         # update
-        self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+        self._update_center_of(agent_name)
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
     def rotate_all_sites_of(self, agent_name: str, degrees: float):
@@ -1041,7 +1198,7 @@ and is designed to read in from said files. Example usage:</p>
         `#0f0f0f` (hex RGB[A]), `(0.5, 0.5, 0.5)` (decimal RGB[A]), `xkcd:puke green` (XKCD color survey names).&#34;&#34;&#34;
         self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;facecolor&#39;] = new_color
 
-    def draw(self, target_axis: mpl.axes.Axes, draw_state_flagpole: bool = True):
+    def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True):
         &#34;&#34;&#34;Draw the contact map onto the supplied axis. If `draw_state_flagpole` is `True`, the flagpole will display
         all internal state data. If `False`, it will only display a summary with the number of sites omitted. By
         default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents
@@ -1060,7 +1217,244 @@ and is designed to read in from said files. Example usage:</p>
         _draw_flagpole(self._agent_graphics, target_axis, draw_state_flagpole)
         # update limits, set aspect ratio
         target_axis.autoscale()
-        target_axis.set_aspect(&#39;equal&#39;)</code></pre>
+        target_axis.set_aspect(&#39;equal&#39;)
+
+    def _derive_multigraph(self) -&gt; nx.classes.multigraph:
+        &#34;&#34;&#34;Derive a multigraph representation of this contact map, with sites as nodes bound to their parent agent.&#34;&#34;&#34;
+        net = nx.MultiGraph()
+        # each agent becomes a connected graph
+        for this_agent, agent_data in self._parsed_kappa.items():
+            local_weight: int = 10 + np.power(len(self._agent_graphics[this_agent][&#39;bnd_sites&#39;].keys()), 2)
+            for site_name, site_data in agent_data.items():
+                if any(site_data[&#39;bnd_states&#39;]):
+                    net.add_node(this_agent, ka_type=&#39;agent&#39;)
+                    net.add_node(site_name + &#39;@&#39; + this_agent, ka_type=&#39;site&#39;)
+                    net.add_edge(this_agent, site_name + &#39;@&#39; + this_agent, weight=local_weight)
+            if any(self._agent_graphics[this_agent][&#39;flagpole_sites&#39;]):
+                net.add_node(&#39;flag@&#39; + this_agent, ka_type=&#39;site&#39;)
+                net.add_edge(this_agent, &#39;flag@&#39; + this_agent, weight=local_weight)
+        # connect agent graphs via bond types
+        for bond_data in self._bond_types.values():
+            p1 = bond_data[&#39;st_1&#39;] + &#39;@&#39; + bond_data[&#39;ag_1&#39;]
+            p2 = bond_data[&#39;st_2&#39;] + &#39;@&#39; + bond_data[&#39;ag_2&#39;]
+            net.add_edge(p1, p2, weight=1)
+        return net
+
+    def layout_from_graph(self, algorithm_name: str, debug_render=False):
+        &#34;&#34;&#34;Attempt a graph-based layout. Valid algorithm names are found in
+         the module `networkx.drawing.layout`.&#34;&#34;&#34;
+
+        def _relative_theta(parent, site) -&gt; float:
+            &#34;&#34;&#34;Helper function to get the relative angle of an agent&#39;s site from the graph.&#34;&#34;&#34;
+            site_rel_x = pos[site][0] - pos[parent][0]
+            site_rel_y = pos[site][1] - pos[parent][1]
+            ang: float = np.angle(complex(site_rel_x, 0) + complex(0, site_rel_y))
+            if ang &gt;= 0:
+                return ang
+            else:
+                return np.pi + (np.pi + ang)    # deal with wrap-around: Pi - (-difference); ang is negative
+
+        def _auto_layout(layout_name: str) -&gt; Dict[str, Tuple[float, float]]:
+            &#34;&#34;&#34;Helper function to set common parameters and report a specific exeption type for planar graphs. The
+             layout function is selected by the calling script, and is a member of `networkx.drawing.layout`&#34;&#34;&#34;
+            pos: Dict[str, Tuple[float, float]]
+
+            kywds = dict(G=net_rep, center=(0, 0), scale=3*np.sqrt(len(net_rep.nodes())))
+
+            match layout_name:
+                case &#39;random&#39;:
+                    s = kywds.pop(&#39;scale&#39;)
+                    pos = valid_graph_layouts[layout_name](**kywds)
+                    pos = nxl.rescale_layout_dict(pos, scale=s)
+                case &#39;spring&#39;:
+                    pos = valid_graph_layouts[layout_name](**kywds)
+                case &#39;spectral&#39;:
+                    pos = valid_graph_layouts[layout_name](**kywds)
+                case &#39;kamada-kawai&#39;:
+                    pos = valid_graph_layouts[layout_name](**kywds)
+                case &#39;planar&#39;:
+                    try:
+                        pos = valid_graph_layouts[layout_name](**kywds)
+                    except nx.exception.NetworkXException as e:
+                        raise ValueError(&#34;Plain graph was not planar, so planar layout is invalid.&#34;) from e
+                case &#39;circular&#39;:
+                    pos = valid_graph_layouts[layout_name](**kywds)
+                case &#39;shell&#39;:
+                    # layout agents in shells by decreasing connectivity
+                    agents_degrees: Dict[str, int] = {}
+                    for a_bond in self._bond_types.values():
+                        if a_bond[&#39;ag_1&#39;] != a_bond[&#39;ag_2&#39;]:
+                            if a_bond[&#39;ag_1&#39;] in agents_degrees:
+                                agents_degrees[a_bond[&#39;ag_1&#39;]] += 1
+                            else:
+                                agents_degrees[a_bond[&#39;ag_1&#39;]] = 1
+                            if a_bond[&#39;ag_2&#39;] in agents_degrees:
+                                agents_degrees[a_bond[&#39;ag_2&#39;]] += 1
+                            else:
+                                agents_degrees[a_bond[&#39;ag_2&#39;]] = 0
+                    agents_by_connectivity = sorted(agents_degrees.items(), key=lambda item: item[1])
+                    agents_by_shell: List[List[str]] = []
+                    stop_ix = 3
+                    while agents_by_connectivity:
+                        stop_ix = min(stop_ix, len(agents_by_connectivity))
+                        this_shell: List[str] = []
+                        for _ in range(0, stop_ix):
+                            this_shell.append(agents_by_connectivity.pop()[0])
+                        agents_by_shell.append(this_shell)
+                        stop_ix *= 2
+                    pos_ag = valid_graph_layouts[layout_name](nlist=agents_by_shell, **kywds)
+                    # layout sites using spring layout, given fixed positions for agents
+                    for n_id, n_type in net_rep.nodes.data(&#39;ka_type&#39;):
+                        if n_type == &#39;site&#39;:
+                            parent = n_id.split(&#39;@&#39;)[1]
+                            pos_ag[n_id] = pos_ag[parent]
+                    pos = valid_graph_layouts[&#39;spring&#39;](pos=pos_ag, fixed=list(self._agent_graphics), **kywds)
+                case &#39;spiral&#39;:
+                    pos = valid_graph_layouts[layout_name](equidistant=True, **kywds)
+                case &#39;bipartite&#39;:
+                    ag_data: List[Tuple[str, int]] = []
+                    for this_agent, agent_data in self._agent_graphics.items():
+                        num_sites: int = len(agent_data[&#39;bnd_sites&#39;].keys())
+                        ag_data.append((this_agent, num_sites))
+                    ag_data.sort(key=lambda item: item[1], reverse=True)
+                    n = int(np.floor(np.sqrt(len(ag_data))))
+                    top_n = [item[0] for item in ag_data[0:n]]
+                    pos = valid_graph_layouts[layout_name](nodes=top_n, **kywds)
+                case _:
+                    raise ValueError(&#39;Invalid layout {} requested. Options are: {}&#39;.format(layout_name,
+                                                                                           valid_graph_layouts.keys()))
+            return pos
+
+        net_rep: nx.multigraph = self._derive_multigraph()
+        pos = _auto_layout(algorithm_name)
+
+        # debug image
+        if debug_render:
+            import matplotlib.pyplot as plt
+            _, ax = plt.subplots()
+            # intra-agent edges
+            nx.draw_networkx_edges(G=net_rep, pos=pos, ax=ax, edge_color=&#39;tab:gray&#39;, label=&#39;intra-agent&#39;, width=5,
+                                   edgelist=[(u, v, w) for (u, v, w) in net_rep.edges.data(&#34;weight&#34;) if w != 1])
+            # inter-agent edges
+            nx.draw_networkx_edges(G=net_rep, pos=pos, ax=ax, edge_color=&#39;tab:brown&#39;, label=&#39;inter-agent&#39;, width=1,
+                                   edgelist=[(u, v, w) for (u, v, w) in net_rep.edges.data(&#34;weight&#34;) if w == 1])
+            # sites
+            nx.draw_networkx_nodes(G=net_rep, pos=pos, ax=ax, node_color=&#39;tab:orange&#39;, label=&#39;site&#39;,
+                                   nodelist=[n for n in net_rep.nodes() if net_rep.nodes[n][&#39;ka_type&#39;] == &#39;site&#39;])
+            # agent centers
+            nx.draw_networkx_nodes(G=net_rep, pos=pos, ax=ax, node_color=&#39;tab:blue&#39;, label=&#39;agent&#39;,
+                                   nodelist=[n for n in net_rep.nodes() if net_rep.nodes[n][&#39;ka_type&#39;] == &#39;agent&#39;])
+            # annotate nodes
+            nx.draw_networkx_labels(G=net_rep, pos=pos, ax=ax, labels={item: item.split(&#39;@&#39;)[0] for item in pos})
+            ax.legend()
+            ax.autoscale()
+            ax.set_aspect(&#39;equal&#39;)
+            ax.set_title(&#39;Debug plain graph view&#39;)
+
+        # layout agents, define wedge order, figure out flagpole, sort sites
+        agent_wedge_order: Dict[str: List[Tuple[str, float]]] = {}
+        for n_id, n_type in net_rep.nodes.data(&#39;ka_type&#39;):
+            if n_type == &#39;agent&#39;:
+                # layout agents
+                self.move_agent_to(agent_name=n_id, new_x=pos[n_id][0], new_y=pos[n_id][1])
+                # define desired wedge order
+                ag_sites: List[str] = list(nx.classes.function.neighbors(net_rep, n_id))
+                if len(ag_sites) &gt;= 2:
+                    site_thetas: List[Tuple[str, float]] = []
+                    for this_site in ag_sites:
+                        site_thetas.append((this_site, _relative_theta(n_id, this_site)))
+                    agent_wedge_order[n_id] = sorted(site_thetas, key=lambda item: item[1])
+        # to define rotation &amp; flagpole position, average inter-agent (outgoing) vectors
+        agent_outs: Dict[str: Dict[str: float]] = {}
+        for node_1, node_2, edge_data in net_rep.edges.data():
+            if edge_data[&#39;weight&#39;] == 1:
+                site_1_name, site_1_parent = node_1.split(&#39;@&#39;)
+                site_2_name, site_2_parent = node_2.split(&#39;@&#39;)
+                if site_1_parent != site_2_parent:
+                    t1 = _relative_theta(site_1_parent, node_1)
+                    t2 = _relative_theta(site_2_parent, node_2)
+                    if site_1_parent not in agent_outs:
+                        agent_outs[site_1_parent] = {site_1_name: t1}
+                    else:
+                        agent_outs[site_1_parent][site_1_name] = t1
+                    if site_2_parent not in agent_outs:
+                        agent_outs[site_2_parent] = {site_2_name: t2}
+                    else:
+                        agent_outs[site_2_parent][site_2_name] = t2
+        ag_headings: Dict[str: float] = {}
+        for agent_name, site_outs in agent_outs.items():
+            ag_headings[agent_name] = np.mean(list(site_outs.values()))
+        # define stop of rotation, and correct warp-arounds
+        #  if there is a flagpole, that&#39;s the final wedge
+        #  otherwise, find the last wedge
+        for agent_name, wedge_order in agent_wedge_order.items():
+            if (&#39;flag@&#39; + agent_name) in [item[0] for item in wedge_order]:
+                flagpole_ix = [item[0] for item in wedge_order].index(&#39;flag@&#39; + agent_name)
+                if flagpole_ix != (len(wedge_order) - 1):
+                    for ix in range(len(wedge_order)):
+                        site_name, site_theta = wedge_order[ix]
+                        if site_theta &gt; wedge_order[flagpole_ix][1]:
+                            wedge_order[ix] = (site_name, site_theta - 2 * np.pi)
+                agent_wedge_order[agent_name] = sorted(wedge_order, key=lambda item: item[1])
+            else:
+                _, final_wedge_theta = wedge_order[-1]
+                for ix in range(len(wedge_order)):
+                    site_name, site_theta = wedge_order[ix]
+                    if site_theta &gt; final_wedge_theta:
+                        wedge_order[ix] = (site_name, site_theta - 2 * np.pi)
+                agent_wedge_order[agent_name] = sorted(wedge_order, key=lambda item: item[1])
+        # swap sites to match order
+        for this_agent, desired_order in agent_wedge_order.items():
+            desired_order: Dict[str: float] = dict(desired_order)
+            current_order: List[Tuple[str, float]] = [(k, v[&#39;theta1&#39;]) for k, v in
+                                                      self._agent_graphics[this_agent][&#39;bnd_sites&#39;].items()]
+            current_order.sort(key=lambda item: item[1])
+            # bubble sort
+            #  Since the graphic structure is quite divorced, I track manually indexes.
+            #  The final element of each iteration is as its correct position, so I move
+            #  the index that points to that position to terminate the loop earlier.
+            for final_wedge_ix in range(len(current_order) - 1, -1, -1):
+                for ix in range(0, final_wedge_ix):
+                    site_a, curr_a = current_order[ix]
+                    site_b, curr_b = current_order[ix + 1]
+                    obs_a: float = desired_order[site_a + &#39;@&#39; + this_agent]
+                    obs_b: float = desired_order[site_b + &#39;@&#39; + this_agent]
+                    if (obs_a &lt; obs_b) &amp; (not curr_a &lt; curr_b):
+                        self.swap_sites_of(this_agent, site_a, site_b)
+                        current_order = [(k, v[&#39;theta1&#39;]) for k, v in
+                                         self._agent_graphics[this_agent][&#39;bnd_sites&#39;].items()]
+                        current_order.sort(key=lambda item: item[1])
+                    elif (obs_a &gt; obs_b) &amp; (not curr_a &gt; curr_b):
+                        self.swap_sites_of(this_agent, site_a, site_b)
+                        current_order = [(k, v[&#39;theta1&#39;]) for k, v in
+                                         self._agent_graphics[this_agent][&#39;bnd_sites&#39;].items()]
+                        current_order.sort(key=lambda item: item[1])
+                    else:
+                        pass
+        # rotate agent to match orientation
+        #  If agent has a flagpole, use that as the anchor, as wedges were sorted against that.
+        #  Otherwise, if agent has one wedge, it&#39;s pointing to [-1, 0] by default, so 180 degrees.
+        #  Otherotherwise, get outgoing sites (computed previously) and average their orientations to define the
+        #  current agent&#39;s heading.
+        for n_id, n_type in net_rep.nodes.data(&#39;ka_type&#39;):
+            if n_type == &#39;agent&#39;:
+                has_flagpole: bool = bool(self._agent_graphics[n_id][&#39;flagpole_sites&#39;])
+                ag_wedges: int = len(self._agent_graphics[n_id][&#39;bnd_sites&#39;])
+                if has_flagpole:
+                    f_dict = self._agent_graphics[n_id][&#39;flagpole_loc&#39;]
+                    curr_theta: float = (f_dict[&#39;theta1&#39;] + f_dict[&#39;theta2&#39;]) / 2
+                    desi_theta: float = np.rad2deg(_relative_theta(n_id, &#39;flag@&#39; + n_id))
+                else:
+                    desi_theta: float = np.rad2deg(ag_headings[n_id])
+                    if ag_wedges == 1:
+                        curr_theta = 180
+                    else:
+                        curr_thetas = []
+                        for site_name in agent_outs[n_id].keys():
+                            d = self._agent_graphics[n_id][&#39;bnd_sites&#39;][site_name]
+                            curr_thetas.append((d[&#39;theta1&#39;] + d[&#39;theta2&#39;]) / 2)
+                        curr_theta = np.mean(curr_thetas)
+                self.rotate_all_sites_of(n_id, desi_theta - curr_theta)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -1076,7 +1470,7 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def draw(self, target_axis: mpl.axes.Axes, draw_state_flagpole: bool = True):
+<pre><code class="python">def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True):
     &#34;&#34;&#34;Draw the contact map onto the supplied axis. If `draw_state_flagpole` is `True`, the flagpole will display
     all internal state data. If `False`, it will only display a summary with the number of sites omitted. By
     default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents
@@ -1098,6 +1492,261 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
     target_axis.set_aspect(&#39;equal&#39;)</code></pre>
 </details>
 </dd>
+<dt id="KaSaAn.core.KappaContactMap.get_agent_names"><code class="name flex">
+<span>def <span class="ident">get_agent_names</span></span>(<span>self) ‑> list[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the list of agent names in this contact map.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_agent_names(self) -&gt; list[str]:
+    &#34;&#34;&#34;Returns the list of agent names in this contact map.&#34;&#34;&#34;
+    return list(self._parsed_kappa.keys())</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaContactMap.get_binding_site_names_of"><code class="name flex">
+<span>def <span class="ident">get_binding_site_names_of</span></span>(<span>self, agent_name: str) ‑> list[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the list of names for the binding sites belonging to an agent.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_binding_site_names_of(self, agent_name: str) -&gt; list[str]:
+    &#34;&#34;&#34;Returns the list of names for the binding sites belonging to an agent.&#34;&#34;&#34;
+    return list(self._agent_graphics[agent_name][&#39;bnd_sites&#39;].keys())</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaContactMap.layout_from_graph"><code class="name flex">
+<span>def <span class="ident">layout_from_graph</span></span>(<span>self, algorithm_name: str, debug_render=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Attempt a graph-based layout. Valid algorithm names are found in
+the module <code>networkx.drawing.layout</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def layout_from_graph(self, algorithm_name: str, debug_render=False):
+    &#34;&#34;&#34;Attempt a graph-based layout. Valid algorithm names are found in
+     the module `networkx.drawing.layout`.&#34;&#34;&#34;
+
+    def _relative_theta(parent, site) -&gt; float:
+        &#34;&#34;&#34;Helper function to get the relative angle of an agent&#39;s site from the graph.&#34;&#34;&#34;
+        site_rel_x = pos[site][0] - pos[parent][0]
+        site_rel_y = pos[site][1] - pos[parent][1]
+        ang: float = np.angle(complex(site_rel_x, 0) + complex(0, site_rel_y))
+        if ang &gt;= 0:
+            return ang
+        else:
+            return np.pi + (np.pi + ang)    # deal with wrap-around: Pi - (-difference); ang is negative
+
+    def _auto_layout(layout_name: str) -&gt; Dict[str, Tuple[float, float]]:
+        &#34;&#34;&#34;Helper function to set common parameters and report a specific exeption type for planar graphs. The
+         layout function is selected by the calling script, and is a member of `networkx.drawing.layout`&#34;&#34;&#34;
+        pos: Dict[str, Tuple[float, float]]
+
+        kywds = dict(G=net_rep, center=(0, 0), scale=3*np.sqrt(len(net_rep.nodes())))
+
+        match layout_name:
+            case &#39;random&#39;:
+                s = kywds.pop(&#39;scale&#39;)
+                pos = valid_graph_layouts[layout_name](**kywds)
+                pos = nxl.rescale_layout_dict(pos, scale=s)
+            case &#39;spring&#39;:
+                pos = valid_graph_layouts[layout_name](**kywds)
+            case &#39;spectral&#39;:
+                pos = valid_graph_layouts[layout_name](**kywds)
+            case &#39;kamada-kawai&#39;:
+                pos = valid_graph_layouts[layout_name](**kywds)
+            case &#39;planar&#39;:
+                try:
+                    pos = valid_graph_layouts[layout_name](**kywds)
+                except nx.exception.NetworkXException as e:
+                    raise ValueError(&#34;Plain graph was not planar, so planar layout is invalid.&#34;) from e
+            case &#39;circular&#39;:
+                pos = valid_graph_layouts[layout_name](**kywds)
+            case &#39;shell&#39;:
+                # layout agents in shells by decreasing connectivity
+                agents_degrees: Dict[str, int] = {}
+                for a_bond in self._bond_types.values():
+                    if a_bond[&#39;ag_1&#39;] != a_bond[&#39;ag_2&#39;]:
+                        if a_bond[&#39;ag_1&#39;] in agents_degrees:
+                            agents_degrees[a_bond[&#39;ag_1&#39;]] += 1
+                        else:
+                            agents_degrees[a_bond[&#39;ag_1&#39;]] = 1
+                        if a_bond[&#39;ag_2&#39;] in agents_degrees:
+                            agents_degrees[a_bond[&#39;ag_2&#39;]] += 1
+                        else:
+                            agents_degrees[a_bond[&#39;ag_2&#39;]] = 0
+                agents_by_connectivity = sorted(agents_degrees.items(), key=lambda item: item[1])
+                agents_by_shell: List[List[str]] = []
+                stop_ix = 3
+                while agents_by_connectivity:
+                    stop_ix = min(stop_ix, len(agents_by_connectivity))
+                    this_shell: List[str] = []
+                    for _ in range(0, stop_ix):
+                        this_shell.append(agents_by_connectivity.pop()[0])
+                    agents_by_shell.append(this_shell)
+                    stop_ix *= 2
+                pos_ag = valid_graph_layouts[layout_name](nlist=agents_by_shell, **kywds)
+                # layout sites using spring layout, given fixed positions for agents
+                for n_id, n_type in net_rep.nodes.data(&#39;ka_type&#39;):
+                    if n_type == &#39;site&#39;:
+                        parent = n_id.split(&#39;@&#39;)[1]
+                        pos_ag[n_id] = pos_ag[parent]
+                pos = valid_graph_layouts[&#39;spring&#39;](pos=pos_ag, fixed=list(self._agent_graphics), **kywds)
+            case &#39;spiral&#39;:
+                pos = valid_graph_layouts[layout_name](equidistant=True, **kywds)
+            case &#39;bipartite&#39;:
+                ag_data: List[Tuple[str, int]] = []
+                for this_agent, agent_data in self._agent_graphics.items():
+                    num_sites: int = len(agent_data[&#39;bnd_sites&#39;].keys())
+                    ag_data.append((this_agent, num_sites))
+                ag_data.sort(key=lambda item: item[1], reverse=True)
+                n = int(np.floor(np.sqrt(len(ag_data))))
+                top_n = [item[0] for item in ag_data[0:n]]
+                pos = valid_graph_layouts[layout_name](nodes=top_n, **kywds)
+            case _:
+                raise ValueError(&#39;Invalid layout {} requested. Options are: {}&#39;.format(layout_name,
+                                                                                       valid_graph_layouts.keys()))
+        return pos
+
+    net_rep: nx.multigraph = self._derive_multigraph()
+    pos = _auto_layout(algorithm_name)
+
+    # debug image
+    if debug_render:
+        import matplotlib.pyplot as plt
+        _, ax = plt.subplots()
+        # intra-agent edges
+        nx.draw_networkx_edges(G=net_rep, pos=pos, ax=ax, edge_color=&#39;tab:gray&#39;, label=&#39;intra-agent&#39;, width=5,
+                               edgelist=[(u, v, w) for (u, v, w) in net_rep.edges.data(&#34;weight&#34;) if w != 1])
+        # inter-agent edges
+        nx.draw_networkx_edges(G=net_rep, pos=pos, ax=ax, edge_color=&#39;tab:brown&#39;, label=&#39;inter-agent&#39;, width=1,
+                               edgelist=[(u, v, w) for (u, v, w) in net_rep.edges.data(&#34;weight&#34;) if w == 1])
+        # sites
+        nx.draw_networkx_nodes(G=net_rep, pos=pos, ax=ax, node_color=&#39;tab:orange&#39;, label=&#39;site&#39;,
+                               nodelist=[n for n in net_rep.nodes() if net_rep.nodes[n][&#39;ka_type&#39;] == &#39;site&#39;])
+        # agent centers
+        nx.draw_networkx_nodes(G=net_rep, pos=pos, ax=ax, node_color=&#39;tab:blue&#39;, label=&#39;agent&#39;,
+                               nodelist=[n for n in net_rep.nodes() if net_rep.nodes[n][&#39;ka_type&#39;] == &#39;agent&#39;])
+        # annotate nodes
+        nx.draw_networkx_labels(G=net_rep, pos=pos, ax=ax, labels={item: item.split(&#39;@&#39;)[0] for item in pos})
+        ax.legend()
+        ax.autoscale()
+        ax.set_aspect(&#39;equal&#39;)
+        ax.set_title(&#39;Debug plain graph view&#39;)
+
+    # layout agents, define wedge order, figure out flagpole, sort sites
+    agent_wedge_order: Dict[str: List[Tuple[str, float]]] = {}
+    for n_id, n_type in net_rep.nodes.data(&#39;ka_type&#39;):
+        if n_type == &#39;agent&#39;:
+            # layout agents
+            self.move_agent_to(agent_name=n_id, new_x=pos[n_id][0], new_y=pos[n_id][1])
+            # define desired wedge order
+            ag_sites: List[str] = list(nx.classes.function.neighbors(net_rep, n_id))
+            if len(ag_sites) &gt;= 2:
+                site_thetas: List[Tuple[str, float]] = []
+                for this_site in ag_sites:
+                    site_thetas.append((this_site, _relative_theta(n_id, this_site)))
+                agent_wedge_order[n_id] = sorted(site_thetas, key=lambda item: item[1])
+    # to define rotation &amp; flagpole position, average inter-agent (outgoing) vectors
+    agent_outs: Dict[str: Dict[str: float]] = {}
+    for node_1, node_2, edge_data in net_rep.edges.data():
+        if edge_data[&#39;weight&#39;] == 1:
+            site_1_name, site_1_parent = node_1.split(&#39;@&#39;)
+            site_2_name, site_2_parent = node_2.split(&#39;@&#39;)
+            if site_1_parent != site_2_parent:
+                t1 = _relative_theta(site_1_parent, node_1)
+                t2 = _relative_theta(site_2_parent, node_2)
+                if site_1_parent not in agent_outs:
+                    agent_outs[site_1_parent] = {site_1_name: t1}
+                else:
+                    agent_outs[site_1_parent][site_1_name] = t1
+                if site_2_parent not in agent_outs:
+                    agent_outs[site_2_parent] = {site_2_name: t2}
+                else:
+                    agent_outs[site_2_parent][site_2_name] = t2
+    ag_headings: Dict[str: float] = {}
+    for agent_name, site_outs in agent_outs.items():
+        ag_headings[agent_name] = np.mean(list(site_outs.values()))
+    # define stop of rotation, and correct warp-arounds
+    #  if there is a flagpole, that&#39;s the final wedge
+    #  otherwise, find the last wedge
+    for agent_name, wedge_order in agent_wedge_order.items():
+        if (&#39;flag@&#39; + agent_name) in [item[0] for item in wedge_order]:
+            flagpole_ix = [item[0] for item in wedge_order].index(&#39;flag@&#39; + agent_name)
+            if flagpole_ix != (len(wedge_order) - 1):
+                for ix in range(len(wedge_order)):
+                    site_name, site_theta = wedge_order[ix]
+                    if site_theta &gt; wedge_order[flagpole_ix][1]:
+                        wedge_order[ix] = (site_name, site_theta - 2 * np.pi)
+            agent_wedge_order[agent_name] = sorted(wedge_order, key=lambda item: item[1])
+        else:
+            _, final_wedge_theta = wedge_order[-1]
+            for ix in range(len(wedge_order)):
+                site_name, site_theta = wedge_order[ix]
+                if site_theta &gt; final_wedge_theta:
+                    wedge_order[ix] = (site_name, site_theta - 2 * np.pi)
+            agent_wedge_order[agent_name] = sorted(wedge_order, key=lambda item: item[1])
+    # swap sites to match order
+    for this_agent, desired_order in agent_wedge_order.items():
+        desired_order: Dict[str: float] = dict(desired_order)
+        current_order: List[Tuple[str, float]] = [(k, v[&#39;theta1&#39;]) for k, v in
+                                                  self._agent_graphics[this_agent][&#39;bnd_sites&#39;].items()]
+        current_order.sort(key=lambda item: item[1])
+        # bubble sort
+        #  Since the graphic structure is quite divorced, I track manually indexes.
+        #  The final element of each iteration is as its correct position, so I move
+        #  the index that points to that position to terminate the loop earlier.
+        for final_wedge_ix in range(len(current_order) - 1, -1, -1):
+            for ix in range(0, final_wedge_ix):
+                site_a, curr_a = current_order[ix]
+                site_b, curr_b = current_order[ix + 1]
+                obs_a: float = desired_order[site_a + &#39;@&#39; + this_agent]
+                obs_b: float = desired_order[site_b + &#39;@&#39; + this_agent]
+                if (obs_a &lt; obs_b) &amp; (not curr_a &lt; curr_b):
+                    self.swap_sites_of(this_agent, site_a, site_b)
+                    current_order = [(k, v[&#39;theta1&#39;]) for k, v in
+                                     self._agent_graphics[this_agent][&#39;bnd_sites&#39;].items()]
+                    current_order.sort(key=lambda item: item[1])
+                elif (obs_a &gt; obs_b) &amp; (not curr_a &gt; curr_b):
+                    self.swap_sites_of(this_agent, site_a, site_b)
+                    current_order = [(k, v[&#39;theta1&#39;]) for k, v in
+                                     self._agent_graphics[this_agent][&#39;bnd_sites&#39;].items()]
+                    current_order.sort(key=lambda item: item[1])
+                else:
+                    pass
+    # rotate agent to match orientation
+    #  If agent has a flagpole, use that as the anchor, as wedges were sorted against that.
+    #  Otherwise, if agent has one wedge, it&#39;s pointing to [-1, 0] by default, so 180 degrees.
+    #  Otherotherwise, get outgoing sites (computed previously) and average their orientations to define the
+    #  current agent&#39;s heading.
+    for n_id, n_type in net_rep.nodes.data(&#39;ka_type&#39;):
+        if n_type == &#39;agent&#39;:
+            has_flagpole: bool = bool(self._agent_graphics[n_id][&#39;flagpole_sites&#39;])
+            ag_wedges: int = len(self._agent_graphics[n_id][&#39;bnd_sites&#39;])
+            if has_flagpole:
+                f_dict = self._agent_graphics[n_id][&#39;flagpole_loc&#39;]
+                curr_theta: float = (f_dict[&#39;theta1&#39;] + f_dict[&#39;theta2&#39;]) / 2
+                desi_theta: float = np.rad2deg(_relative_theta(n_id, &#39;flag@&#39; + n_id))
+            else:
+                desi_theta: float = np.rad2deg(ag_headings[n_id])
+                if ag_wedges == 1:
+                    curr_theta = 180
+                else:
+                    curr_thetas = []
+                    for site_name in agent_outs[n_id].keys():
+                        d = self._agent_graphics[n_id][&#39;bnd_sites&#39;][site_name]
+                        curr_thetas.append((d[&#39;theta1&#39;] + d[&#39;theta2&#39;]) / 2)
+                    curr_theta = np.mean(curr_thetas)
+            self.rotate_all_sites_of(n_id, desi_theta - curr_theta)</code></pre>
+</details>
+</dd>
 <dt id="KaSaAn.core.KappaContactMap.move_agent_by"><code class="name flex">
 <span>def <span class="ident">move_agent_by</span></span>(<span>self, agent_name: str, delta_x: float, delta_y: float)</span>
 </code></dt>
@@ -1112,7 +1761,7 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
     self._agent_graphics[agent_name][&#39;loc_x&#39;] += delta_x
     self._agent_graphics[agent_name][&#39;loc_y&#39;] += delta_y
     # update
-    self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+    self._update_center_of(agent_name)
     self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
 </details>
 </dd>
@@ -1130,7 +1779,7 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
     self._agent_graphics[agent_name][&#39;loc_x&#39;] = new_x
     self._agent_graphics[agent_name][&#39;loc_y&#39;] = new_y
     # update
-    self._agent_graphics = _initialize_sites_graphic_structure(self._agent_graphics)
+    self._update_center_of(agent_name)
     self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
 </details>
 </dd>
@@ -1787,7 +2436,7 @@ matching is the embedding, see <code><a title="KaSaAn.core.KappaPort.embeds_in" 
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot"><code class="flex name class">
 <span>class <span class="ident">KappaSnapshot</span></span>
-<span>(</span><span>snapshot_file_name: str)</span>
+<span>(</span><span>snapshot_file: Union[pathlib.Path, str])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class for representing Kappa snapshots. A snapshot contains a dictionary, where the kappa expression
@@ -1817,11 +2466,11 @@ of the <code>Dict()</code> class', but with more informative names for Kappa ent
     _line_token_pat = r&#39;^&#39; + _token_value_pat + r&#39;\s&#39; + _token_name_pat + r&#39;$&#39;
     _line_token_re = re.compile(_line_token_pat)
 
-    def __init__(self, snapshot_file_name: str):
+    def __init__(self, snapshot_file: Union[pathlib.Path, str]):
         # type declarations
         self._file_name: str
         self._complexes: Dict[KappaComplex, int]
-        self._tokens: Dict[str: KappaToken]
+        self._tokens: Dict[str, KappaToken]
         self._known_sizes: List[int]
         self._identifier_complex_map: Dict[int, KappaComplex]
         self._raw_expression: str
@@ -1830,13 +2479,20 @@ of the <code>Dict()</code> class', but with more informative names for Kappa ent
         self._snapshot_uuid: str
         self._snapshot_time: float
         # initialization of structures
-        self._file_name = os.path.split(snapshot_file_name)[1]
+        if type(snapshot_file) == str:
+            self._file_name = os.path.split(snapshot_file)[1]
+        elif type(snapshot_file) == pathlib.PosixPath or type(snapshot_file) == pathlib.WindowsPath:
+            self._file_name = str(snapshot_file)
+        else:
+            raise ValueError(
+                &#39;Snapshot initializer expected either a file name or a path-like object, got {}&#39;.format(
+                    type(snapshot_file)))
         self._complexes = dict()
         self._tokens = dict()
         self._known_sizes = []
         self._identifier_complex_map = {}
         # read file into a single string
-        with open(snapshot_file_name, &#39;r&#39;) as kf:
+        with open(snapshot_file, &#39;r&#39;) as kf:
             self._raw_expression = kf.read()
         # remove newlines, split by &#34;%init:&#34; keyword
         digest: List[str] = self._raw_expression.replace(&#39;\n&#39;, &#39;&#39;).split(&#39;%init: &#39;)
@@ -1853,7 +2509,7 @@ of the <code>Dict()</code> class', but with more informative names for Kappa ent
                 self._snapshot_uuid = &#39;&#39;
                 self._snapshot_time = float(g.group(2))
             if not g:
-                raise SnapshotParseError(&#39;Header &lt;&#39; + digest[0] + &#39;&gt; not be parsed in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+                raise SnapshotParseError(&#39;File {} contains unparseable header:\n{}&#39;.format(self._file_name, digest[0]))
 
         # parse the complexes into instances of KappaComplexes, get their abundance, cross-check their size
         for entry in digest[1:]:
@@ -1863,33 +2519,35 @@ of the <code>Dict()</code> class', but with more informative names for Kappa ent
                     g = self._line_complex_re.match(entry)
                     if not g:
                         raise SnapshotAgentParseError(
-                            &#39;Abundance, length, &amp; complex not found in &lt;&#39; + entry + &#39;&gt; in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+                            &#39;Abundance, length, &amp; complex not found in file {}, line said:\n{}&#39;.format(
+                                self._file_name, entry))
                     abundance = int(g.group(1))
                     size = int(g.group(2))
                     species = KappaComplex(g.group(3))
                     if not size == species.get_size_of_complex():
                         raise ValueError(
-                            &#39;Size mismatch: snapshot declares &lt;&#39; + str(size) + &#39;&gt;, I counted &lt;&#39; +
-                            str(species.get_size_of_complex()) + &#39;&gt; in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+                            &#39;Size mismatch: snapshot {} declares {}, I counted {} for species {}&#39;.format(
+                                self._file_name, size, species.get_size_of_complex(), species))
                     # assign the complex as a key to the dictionary
                     self._complexes[species] = abundance
                     self._known_sizes.append(size)
                     # define identifier -&gt; complex map
-                    if species.get_agent_identifiers():
-                        for identifier in species.get_agent_identifiers():
-                            self._identifier_complex_map[identifier] = species
+                    for identifier in species.get_agent_identifiers():
+                        self._identifier_complex_map[identifier] = species
                 except SnapshotAgentParseError:
                     # try to parse as a token line instead
                     g = self._line_token_re.match(entry)
                     if not g:
                         raise SnapshotTokenParseError(
-                            &#39;Abundance &amp; token name not found in &lt;&#39; + entry + &#39;&gt; in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+                            &#39;Abundance &amp; token name not found in file {}, line said:\n{}&#39;.format(
+                                self._file_name, entry))
                     # assign the token as a key to the dictionary
                     tk = KappaToken(g.group(0))
                     self._tokens[tk.get_token_name()] = tk
             except SnapshotTokenParseError:
                 raise SnapshotParseError(
-                    &#39;Complex and token parse failed for &lt;&#39; + entry + &#39;&gt; in &lt;&#39; + snapshot_file_name + &#39;&gt;&#39;)
+                    &#39;Complex and token parse failed in file {}, line said:\n{}&#39;.format(
+                        self._file_name, entry))
         # canonicalize the kappa expression: tokens
         self._kappa_expression = &#39;\n&#39;.join([&#39;%init: &#39; + str(float(tk.get_token_operation())) + &#39; &#39; + tk.get_token_name()
                                             for tk in self._tokens.values()])
@@ -2086,7 +2744,7 @@ markedly slower performance with multi-threading than without. Case-specific, yo
             d[item.get_token_name()] = float(item.get_token_operation())
         return d
 
-    def get_value_of_token(self, query) -&gt; float:
+    def get_value_of_token(self, query) -&gt; Union[None, float]:
         &#34;&#34;&#34;Returns the value of a token.&#34;&#34;&#34;
         # make it a KappaToken, if it&#39;s not one already
         if not type(query) is KappaToken:
@@ -2109,19 +2767,25 @@ markedly slower performance with multi-threading than without. Case-specific, yo
         &#34;&#34;&#34;Returns a list with all the agent identifiers held in the snapshot.&#34;&#34;&#34;
         return list(self._identifier_complex_map.keys())
 
-    def get_complex_of_agent(self, query_identifier: int) -&gt; KappaComplex:
+    def get_complex_of_agent(self, query_identifier: int) -&gt; Union[KappaComplex, None]:
         &#34;&#34;&#34;Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
         should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
         be identical, and identifiers are unique and stable throughout the simulation.&#34;&#34;&#34;
-        if self._identifier_complex_map:
-            try:
-                return self._identifier_complex_map[query_identifier]
-            except KeyError as e:
-                raise ValueError(&#39;Identifier &lt;{}&gt; not present in snapshot &lt;{}&gt;.&#39;.format(
-                    query_identifier, self.get_snapshot_file_name())) from e
+        if query_identifier in self._identifier_complex_map:
+            return self._identifier_complex_map[query_identifier]
         else:
-            raise ValueError(&#39;Snapshot &lt;{}&gt; was not found to contain agent identifiers (i.e. raw formatted).&#39;.format(
-                self.get_snapshot_file_name()))
+            Warning(&#39;Returnin None; identifier {} not present in snapshot {}&#39;.format(
+                query_identifier, self.get_snapshot_file_name()))
+            return None
+
+    def get_agent_from_identifier(self, ident: int) -&gt; Union[KappaAgent, None]:
+        &#34;&#34;&#34;Returns the KappaAgent associated with the given identifier, if any.&#34;&#34;&#34;
+        if ident in self._identifier_complex_map:
+            return self.get_complex_of_agent(ident).get_agent_from_identifier(ident)
+        else:
+            Warning(&#39;Returnin None; identifier {} not present in snapshot {}&#39;.format(
+                ident, self.get_snapshot_file_name()))
+            return None
 
     def to_networkx(self) -&gt; nx.MultiGraph:
         &#34;&#34;&#34;Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent
@@ -2264,6 +2928,25 @@ markedly slower performance with multi-threading than without. Case-specific, yo
             raise ValueError(&#39;Expected string, KappaAgent, or KappaComplex, got {}&#39;.format(type(query_pattern)))</code></pre>
 </details>
 </dd>
+<dt id="KaSaAn.core.KappaSnapshot.get_agent_from_identifier"><code class="name flex">
+<span>def <span class="ident">get_agent_from_identifier</span></span>(<span>self, ident: int) ‑> Optional[KaSaAn.core.KappaAgent.KappaAgent]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the KappaAgent associated with the given identifier, if any.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_agent_from_identifier(self, ident: int) -&gt; Union[KappaAgent, None]:
+    &#34;&#34;&#34;Returns the KappaAgent associated with the given identifier, if any.&#34;&#34;&#34;
+    if ident in self._identifier_complex_map:
+        return self.get_complex_of_agent(ident).get_agent_from_identifier(ident)
+    else:
+        Warning(&#39;Returnin None; identifier {} not present in snapshot {}&#39;.format(
+            ident, self.get_snapshot_file_name()))
+        return None</code></pre>
+</details>
+</dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_agent_identifiers"><code class="name flex">
 <span>def <span class="ident">get_agent_identifiers</span></span>(<span>self) ‑> List[int]</span>
 </code></dt>
@@ -2374,7 +3057,7 @@ contain repeat numbers if they correspond to different complexes).</p></div>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_complex_of_agent"><code class="name flex">
-<span>def <span class="ident">get_complex_of_agent</span></span>(<span>self, query_identifier: int) ‑> KaSaAn.core.KappaComplex.KappaComplex</span>
+<span>def <span class="ident">get_complex_of_agent</span></span>(<span>self, query_identifier: int) ‑> Optional[KaSaAn.core.KappaComplex.KappaComplex]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
@@ -2384,19 +3067,16 @@ be identical, and identifiers are unique and stable throughout the simulation.</
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_complex_of_agent(self, query_identifier: int) -&gt; KappaComplex:
+<pre><code class="python">def get_complex_of_agent(self, query_identifier: int) -&gt; Union[KappaComplex, None]:
     &#34;&#34;&#34;Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
     should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
     be identical, and identifiers are unique and stable throughout the simulation.&#34;&#34;&#34;
-    if self._identifier_complex_map:
-        try:
-            return self._identifier_complex_map[query_identifier]
-        except KeyError as e:
-            raise ValueError(&#39;Identifier &lt;{}&gt; not present in snapshot &lt;{}&gt;.&#39;.format(
-                query_identifier, self.get_snapshot_file_name())) from e
+    if query_identifier in self._identifier_complex_map:
+        return self._identifier_complex_map[query_identifier]
     else:
-        raise ValueError(&#39;Snapshot &lt;{}&gt; was not found to contain agent identifiers (i.e. raw formatted).&#39;.format(
-            self.get_snapshot_file_name()))</code></pre>
+        Warning(&#39;Returnin None; identifier {} not present in snapshot {}&#39;.format(
+            query_identifier, self.get_snapshot_file_name()))
+        return None</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_complexes_of_size"><code class="name flex">
@@ -2642,7 +3322,7 @@ along with their abundance in the snapshot.</p></div>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_value_of_token"><code class="name flex">
-<span>def <span class="ident">get_value_of_token</span></span>(<span>self, query) ‑> float</span>
+<span>def <span class="ident">get_value_of_token</span></span>(<span>self, query) ‑> Optional[None]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the value of a token.</p></div>
@@ -2650,7 +3330,7 @@ along with their abundance in the snapshot.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_value_of_token(self, query) -&gt; float:
+<pre><code class="python">def get_value_of_token(self, query) -&gt; Union[None, float]:
     &#34;&#34;&#34;Returns the value of a token.&#34;&#34;&#34;
     # make it a KappaToken, if it&#39;s not one already
     if not type(query) is KappaToken:
@@ -2853,6 +3533,8 @@ identifiers as well as the kappa identifiers.</p></div>
 <li><code><a title="KaSaAn.core.KappaAgent.get_agent_ports" href="#KaSaAn.core.KappaAgent.get_agent_ports">get_agent_ports</a></code></li>
 <li><code><a title="KaSaAn.core.KappaAgent.get_agent_signature" href="#KaSaAn.core.KappaAgent.get_agent_signature">get_agent_signature</a></code></li>
 <li><code><a title="KaSaAn.core.KappaAgent.get_bond_identifiers" href="#KaSaAn.core.KappaAgent.get_bond_identifiers">get_bond_identifiers</a></code></li>
+<li><code><a title="KaSaAn.core.KappaAgent.get_counter" href="#KaSaAn.core.KappaAgent.get_counter">get_counter</a></code></li>
+<li><code><a title="KaSaAn.core.KappaAgent.get_port" href="#KaSaAn.core.KappaAgent.get_port">get_port</a></code></li>
 <li><code><a title="KaSaAn.core.KappaAgent.get_terminii_of_bond" href="#KaSaAn.core.KappaAgent.get_terminii_of_bond">get_terminii_of_bond</a></code></li>
 </ul>
 </li>
@@ -2865,8 +3547,10 @@ identifiers as well as the kappa identifiers.</p></div>
 <li>
 <h4><code><a title="KaSaAn.core.KappaComplex" href="#KaSaAn.core.KappaComplex">KappaComplex</a></code></h4>
 <ul class="">
+<li><code><a title="KaSaAn.core.KappaComplex.get_agent_from_identifier" href="#KaSaAn.core.KappaComplex.get_agent_from_identifier">get_agent_from_identifier</a></code></li>
 <li><code><a title="KaSaAn.core.KappaComplex.get_agent_identifiers" href="#KaSaAn.core.KappaComplex.get_agent_identifiers">get_agent_identifiers</a></code></li>
 <li><code><a title="KaSaAn.core.KappaComplex.get_agent_types" href="#KaSaAn.core.KappaComplex.get_agent_types">get_agent_types</a></code></li>
+<li><code><a title="KaSaAn.core.KappaComplex.get_agents_of_bond" href="#KaSaAn.core.KappaComplex.get_agents_of_bond">get_agents_of_bond</a></code></li>
 <li><code><a title="KaSaAn.core.KappaComplex.get_all_agents" href="#KaSaAn.core.KappaComplex.get_all_agents">get_all_agents</a></code></li>
 <li><code><a title="KaSaAn.core.KappaComplex.get_complex_composition" href="#KaSaAn.core.KappaComplex.get_complex_composition">get_complex_composition</a></code></li>
 <li><code><a title="KaSaAn.core.KappaComplex.get_number_of_bonds" href="#KaSaAn.core.KappaComplex.get_number_of_bonds">get_number_of_bonds</a></code></li>
@@ -2880,8 +3564,11 @@ identifiers as well as the kappa identifiers.</p></div>
 </li>
 <li>
 <h4><code><a title="KaSaAn.core.KappaContactMap" href="#KaSaAn.core.KappaContactMap">KappaContactMap</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="KaSaAn.core.KappaContactMap.draw" href="#KaSaAn.core.KappaContactMap.draw">draw</a></code></li>
+<li><code><a title="KaSaAn.core.KappaContactMap.get_agent_names" href="#KaSaAn.core.KappaContactMap.get_agent_names">get_agent_names</a></code></li>
+<li><code><a title="KaSaAn.core.KappaContactMap.get_binding_site_names_of" href="#KaSaAn.core.KappaContactMap.get_binding_site_names_of">get_binding_site_names_of</a></code></li>
+<li><code><a title="KaSaAn.core.KappaContactMap.layout_from_graph" href="#KaSaAn.core.KappaContactMap.layout_from_graph">layout_from_graph</a></code></li>
 <li><code><a title="KaSaAn.core.KappaContactMap.move_agent_by" href="#KaSaAn.core.KappaContactMap.move_agent_by">move_agent_by</a></code></li>
 <li><code><a title="KaSaAn.core.KappaContactMap.move_agent_to" href="#KaSaAn.core.KappaContactMap.move_agent_to">move_agent_to</a></code></li>
 <li><code><a title="KaSaAn.core.KappaContactMap.rotate_all_sites_of" href="#KaSaAn.core.KappaContactMap.rotate_all_sites_of">rotate_all_sites_of</a></code></li>
@@ -2921,6 +3608,7 @@ identifiers as well as the kappa identifiers.</p></div>
 <ul class="">
 <li><code><a title="KaSaAn.core.KappaSnapshot.get_abundance_of_agent" href="#KaSaAn.core.KappaSnapshot.get_abundance_of_agent">get_abundance_of_agent</a></code></li>
 <li><code><a title="KaSaAn.core.KappaSnapshot.get_abundance_of_pattern" href="#KaSaAn.core.KappaSnapshot.get_abundance_of_pattern">get_abundance_of_pattern</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.get_agent_from_identifier" href="#KaSaAn.core.KappaSnapshot.get_agent_from_identifier">get_agent_from_identifier</a></code></li>
 <li><code><a title="KaSaAn.core.KappaSnapshot.get_agent_identifiers" href="#KaSaAn.core.KappaSnapshot.get_agent_identifiers">get_agent_identifiers</a></code></li>
 <li><code><a title="KaSaAn.core.KappaSnapshot.get_agent_types_present" href="#KaSaAn.core.KappaSnapshot.get_agent_types_present">get_agent_types_present</a></code></li>
 <li><code><a title="KaSaAn.core.KappaSnapshot.get_all_abundances" href="#KaSaAn.core.KappaSnapshot.get_all_abundances">get_all_abundances</a></code></li>

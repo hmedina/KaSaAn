@@ -29,8 +29,9 @@
 <pre><code class="python">#!/usr/bin/env python3
 
 import matplotlib as mpl
+import matplotlib.figure as mpf
 import matplotlib.pyplot as plt
-import matplotlib.patches
+import matplotlib.patches as mpp
 import matplotlib.text
 import squarify
 import warnings
@@ -56,7 +57,7 @@ def process_snapshot(snapshot: KappaSnapshot) -&gt; List[dict]:
 
 
 def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent, Any], vis_mode: str,
-                                x_res: float, y_res: float) -&gt; Tuple[List[matplotlib.patches.Rectangle], int]:
+                                x_res: float, y_res: float) -&gt; Tuple[List[mpp.Rectangle], int]:
     &#34;&#34;&#34;Assemble a list of rectangles for MatPlotLib to plot, plus the size of the largest of these (for mass
      normalization in trace movie making).&#34;&#34;&#34;
     if vis_mode != &#39;size&#39; and vis_mode != &#39;count&#39; and vis_mode != &#39;mass&#39;:
@@ -88,11 +89,11 @@ def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent,
     for species in range(species_num):
         # Define the box that represents this species as a whole
         species_canvas = species_canvases[species]
-        s = matplotlib.patches.Rectangle(xy=(species_canvas[&#39;x&#39;], species_canvas[&#39;y&#39;]),
-                                         width=species_canvas[&#39;dx&#39;],
-                                         height=species_canvas[&#39;dy&#39;],
-                                         facecolor=&#39;#00000000&#39;,
-                                         edgecolor=&#39;#000000ff&#39;)
+        s = mpp.Rectangle(xy=(species_canvas[&#39;x&#39;], species_canvas[&#39;y&#39;]),
+                          width=species_canvas[&#39;dx&#39;],
+                          height=species_canvas[&#39;dy&#39;],
+                          facecolor=&#39;#00000000&#39;,
+                          edgecolor=&#39;#000000ff&#39;)
         species_patches.append(s)
         # Determine the agent composition of this species
         composition = compositions[species]
@@ -110,10 +111,10 @@ def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent,
         # Draw the rectangles using the appropriate color (determined by the agent type)
         for a in range(len(agent_type)):
             agent_rectangle = agent_rectangles[a]
-            r = matplotlib.patches.Rectangle(xy=(agent_rectangle[&#39;x&#39;], agent_rectangle[&#39;y&#39;]),
-                                             width=agent_rectangle[&#39;dx&#39;],
-                                             height=agent_rectangle[&#39;dy&#39;],
-                                             facecolor=color_scheme[agent_type[a]])
+            r = mpp.Rectangle(xy=(agent_rectangle[&#39;x&#39;], agent_rectangle[&#39;y&#39;]),
+                              width=agent_rectangle[&#39;dx&#39;],
+                              height=agent_rectangle[&#39;dy&#39;],
+                              facecolor=color_scheme[agent_type[a]])
             agent_patches.append(r)
 
     # Add the rectangles to the figure
@@ -123,7 +124,7 @@ def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent,
 
 
 def snapshot_legend_simple(color_scheme: Dict[KappaAgent, Any], col_num: int) -&gt;\
-        Tuple[List[mpl.patches.Rectangle], List[matplotlib.text.Text]]:
+        Tuple[List[mpp.Rectangle], List[matplotlib.text.Text]]:
     &#34;&#34;&#34;Create legend components; their entries with appropriate colors (as composition key);
      companion to snapshot_composition_simple.&#34;&#34;&#34;
     position = 0    # var to track indexing
@@ -133,7 +134,7 @@ def snapshot_legend_simple(color_scheme: Dict[KappaAgent, Any], col_num: int) -&
     text_list = []
     for agent, color in sorted(color_scheme.items(), key=itemgetter(0), reverse=False):
         y_pos, x_pos = divmod(position, col_num)
-        legend_entry_rect = matplotlib.patches.Rectangle(
+        legend_entry_rect = mpp.Rectangle(
             xy=(x_pos, -y_pos), width=x_dim, height=y_dim, edgecolor=&#39;#000000&#39;, fc=color)
         legend_entry_text = matplotlib.text.Text(
             x=x_pos + x_dim, y=-y_pos, text=agent.get_agent_name(), verticalalignment=&#39;baseline&#39;)
@@ -165,7 +166,7 @@ def _snapshot_legend_maximum(max_data: int, vis_mode: str) -&gt; matplotlib.text
 
 def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = None, vis_mode: str = &#39;all&#39;,
                                  fig_size: Tuple[float, float] = mpl.rcParams[&#39;figure.figsize&#39;],
-                                 fig_res: float = mpl.rcParams[&#39;figure.dpi&#39;]) -&gt; plt.figure:
+                                 fig_res: float = mpl.rcParams[&#39;figure.dpi&#39;]) -&gt; mpf.Figure:
     &#34;&#34;&#34;Render a snapshot as a patchwork / tree-map diagram, using any of four supported modes:
 
     * `count`: a complex&#39; area is proportional to how many times it appears
@@ -186,8 +187,9 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
     else:
         agent_set = my_snapshot.get_agent_types_present()
         if len(agent_set) &gt; 20:
-            print(&#39;Over 20 agents found: palette might be ugly. &#39;
-                  &#39;Try googling &lt;&lt;iwanthue&gt;&gt; for a tool to generate distinct colors, then provide a custom palette to this tool.&#39;)
+            print(&#39;Over 20 agents found: palette might be ugly.\n&#39;
+                  &#39;Try googling &lt;&lt;iwanthue&gt;&gt; for a tool to generate distinct colors,\n&#39;
+                  &#39;then provide a custom palette to this tool.&#39;)
         my_color_scheme = colorize_observables(agent_set)
 
     # Define figure definition &amp; resolution
@@ -288,7 +290,7 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
 </details>
 </dd>
 <dt id="KaSaAn.functions.snapshot_visualizer_patchwork.render_snapshot_as_patchwork"><code class="name flex">
-<span>def <span class="ident">render_snapshot_as_patchwork</span></span>(<span>snapshot_file: str, color_scheme: Dict[KaSaAn.core.KappaAgent.KappaAgent, Any] = None, vis_mode: str = 'all', fig_size: Tuple[float, float] = [6.4, 4.8], fig_res: float = 100.0) ‑> <function figure at 0x7fa4059b84c0></span>
+<span>def <span class="ident">render_snapshot_as_patchwork</span></span>(<span>snapshot_file: str, color_scheme: Dict[KaSaAn.core.KappaAgent.KappaAgent, Any] = None, vis_mode: str = 'all', fig_size: Tuple[float, float] = [6.4, 4.8], fig_res: float = 100.0) ‑> matplotlib.figure.Figure</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Render a snapshot as a patchwork / tree-map diagram, using any of four supported modes:</p>
@@ -305,7 +307,7 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
 </summary>
 <pre><code class="python">def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAgent, Any] = None, vis_mode: str = &#39;all&#39;,
                                  fig_size: Tuple[float, float] = mpl.rcParams[&#39;figure.figsize&#39;],
-                                 fig_res: float = mpl.rcParams[&#39;figure.dpi&#39;]) -&gt; plt.figure:
+                                 fig_res: float = mpl.rcParams[&#39;figure.dpi&#39;]) -&gt; mpf.Figure:
     &#34;&#34;&#34;Render a snapshot as a patchwork / tree-map diagram, using any of four supported modes:
 
     * `count`: a complex&#39; area is proportional to how many times it appears
@@ -326,8 +328,9 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
     else:
         agent_set = my_snapshot.get_agent_types_present()
         if len(agent_set) &gt; 20:
-            print(&#39;Over 20 agents found: palette might be ugly. &#39;
-                  &#39;Try googling &lt;&lt;iwanthue&gt;&gt; for a tool to generate distinct colors, then provide a custom palette to this tool.&#39;)
+            print(&#39;Over 20 agents found: palette might be ugly.\n&#39;
+                  &#39;Try googling &lt;&lt;iwanthue&gt;&gt; for a tool to generate distinct colors,\n&#39;
+                  &#39;then provide a custom palette to this tool.&#39;)
         my_color_scheme = colorize_observables(agent_set)
 
     # Define figure definition &amp; resolution
@@ -410,7 +413,7 @@ normalization in trace movie making).</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def snapshot_composition_simple(data: List[dict], color_scheme: Dict[KappaAgent, Any], vis_mode: str,
-                                x_res: float, y_res: float) -&gt; Tuple[List[matplotlib.patches.Rectangle], int]:
+                                x_res: float, y_res: float) -&gt; Tuple[List[mpp.Rectangle], int]:
     &#34;&#34;&#34;Assemble a list of rectangles for MatPlotLib to plot, plus the size of the largest of these (for mass
      normalization in trace movie making).&#34;&#34;&#34;
     if vis_mode != &#39;size&#39; and vis_mode != &#39;count&#39; and vis_mode != &#39;mass&#39;:
@@ -442,11 +445,11 @@ normalization in trace movie making).</p></div>
     for species in range(species_num):
         # Define the box that represents this species as a whole
         species_canvas = species_canvases[species]
-        s = matplotlib.patches.Rectangle(xy=(species_canvas[&#39;x&#39;], species_canvas[&#39;y&#39;]),
-                                         width=species_canvas[&#39;dx&#39;],
-                                         height=species_canvas[&#39;dy&#39;],
-                                         facecolor=&#39;#00000000&#39;,
-                                         edgecolor=&#39;#000000ff&#39;)
+        s = mpp.Rectangle(xy=(species_canvas[&#39;x&#39;], species_canvas[&#39;y&#39;]),
+                          width=species_canvas[&#39;dx&#39;],
+                          height=species_canvas[&#39;dy&#39;],
+                          facecolor=&#39;#00000000&#39;,
+                          edgecolor=&#39;#000000ff&#39;)
         species_patches.append(s)
         # Determine the agent composition of this species
         composition = compositions[species]
@@ -464,10 +467,10 @@ normalization in trace movie making).</p></div>
         # Draw the rectangles using the appropriate color (determined by the agent type)
         for a in range(len(agent_type)):
             agent_rectangle = agent_rectangles[a]
-            r = matplotlib.patches.Rectangle(xy=(agent_rectangle[&#39;x&#39;], agent_rectangle[&#39;y&#39;]),
-                                             width=agent_rectangle[&#39;dx&#39;],
-                                             height=agent_rectangle[&#39;dy&#39;],
-                                             facecolor=color_scheme[agent_type[a]])
+            r = mpp.Rectangle(xy=(agent_rectangle[&#39;x&#39;], agent_rectangle[&#39;y&#39;]),
+                              width=agent_rectangle[&#39;dx&#39;],
+                              height=agent_rectangle[&#39;dy&#39;],
+                              facecolor=color_scheme[agent_type[a]])
             agent_patches.append(r)
 
     # Add the rectangles to the figure
@@ -487,7 +490,7 @@ companion to snapshot_composition_simple.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def snapshot_legend_simple(color_scheme: Dict[KappaAgent, Any], col_num: int) -&gt;\
-        Tuple[List[mpl.patches.Rectangle], List[matplotlib.text.Text]]:
+        Tuple[List[mpp.Rectangle], List[matplotlib.text.Text]]:
     &#34;&#34;&#34;Create legend components; their entries with appropriate colors (as composition key);
      companion to snapshot_composition_simple.&#34;&#34;&#34;
     position = 0    # var to track indexing
@@ -497,7 +500,7 @@ companion to snapshot_composition_simple.</p></div>
     text_list = []
     for agent, color in sorted(color_scheme.items(), key=itemgetter(0), reverse=False):
         y_pos, x_pos = divmod(position, col_num)
-        legend_entry_rect = matplotlib.patches.Rectangle(
+        legend_entry_rect = mpp.Rectangle(
             xy=(x_pos, -y_pos), width=x_dim, height=y_dim, edgecolor=&#39;#000000&#39;, fc=color)
         legend_entry_text = matplotlib.text.Text(
             x=x_pos + x_dim, y=-y_pos, text=agent.get_agent_name(), verticalalignment=&#39;baseline&#39;)

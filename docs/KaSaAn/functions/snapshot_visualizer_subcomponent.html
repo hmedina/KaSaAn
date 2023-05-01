@@ -32,18 +32,18 @@ import ast
 import squarify
 import warnings
 import networkx as nx
-import matplotlib as mpl
+import matplotlib.figure as mpf
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 from networkx.drawing.nx_agraph import graphviz_layout
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 from ..core import KappaSnapshot, KappaComplex, KappaAgent
 from .agent_color_assignment import colorize_observables
 
 
 def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: List[int], highlight_patterns: List[str],
                                     color_scheme_file_name: str, node_size: int, edge_width: float,
-                                    fig_size: Tuple[float, float], print_distro: bool) -&gt; List[plt.figure]:
+                                    fig_size: Tuple[float, float], print_distro: bool) -&gt; List[mpf.Figure]:
     &#34;&#34;&#34;Take a KappaSnapshot, get complexes of a given size, render them as plain graphs, optionally highlighting
      certain patterns. See file under `KaSaAn.scripts` for usage.&#34;&#34;&#34;
     snapshot = KappaSnapshot(snapshot_file_name)
@@ -75,13 +75,13 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
     # read or define color scheme
     # for user-defined coloring schemes, read the dictionary from a file, convert keys to KappaAgent
     if color_scheme_file_name:
-        color_scheme = {}
+        color_scheme: Dict[KappaAgent, str] = {}
         with open(color_scheme_file_name, &#39;r&#39;) as cs_file:
-            coloring_scheme_raw = ast.literal_eval(cs_file.read())
+            coloring_scheme_raw: Dict[str, str] = ast.literal_eval(cs_file.read())
             for key, value in coloring_scheme_raw.items():
                 color_scheme[KappaAgent(key)] = value
     else:
-        color_scheme = colorize_observables(snapshot_agents)
+        color_scheme = colorize_observables(sorted(snapshot_agents))
     # using squarify to define axis locations based on complex sizes
     fig_width = 1
     fig_height = 1
@@ -92,44 +92,46 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
     # for each complex, get the networkx graph and define node positions
     compl_graphs = [compl.to_networkx() for compl in compl_list]
     node_positions = [graphviz_layout(compl_graph, prog=&#39;sfdp&#39;) for compl_graph in compl_graphs]
-    plotting_data = list(zip(compl_graphs, abund_list, axis_rects, node_positions))
+    plotting_data = list(zip(compl_graphs, compl_list, abund_list, axis_rects, node_positions))
     # figure list construction
     fig_list: List[plt.figure] = []
     # construct the all-agent figure
     fig_all = plt.figure(figsize=fig_size)
-    for comp, abund, rect, npos in plotting_data:
+    for c_graph, c_kappa, abund, rect, npos in plotting_data:
         ax = fig_all.add_axes([rect[&#39;x&#39;], rect[&#39;y&#39;], rect[&#39;dx&#39;], rect[&#39;dy&#39;]])
-        ax.set_title(label=&#39;#: &#39; + str(abund), pad=-2*mpl.rcParams[&#39;axes.titlepad&#39;])
         # try to assign color to nodes based on color scheme
         axis_color_list = []
-        for node in comp.nodes.data():
-            agent_name = node[1][&#39;kappa&#39;].get_agent_name()
+        for node in c_graph.nodes.data():
+            node_agent: KappaAgent = node[1][&#39;kappa&#39;]
+            agent_name = node_agent.get_agent_name()
             try:
                 axis_color_list.append(color_scheme[KappaAgent(agent_name)])
             except KeyError as k_e:
                 raise ValueError(&#39;Complex contains agent &lt;&#39; + agent_name + &#39;&gt; not found in coloring palette.&#39;) from k_e
-        nx.draw(comp, pos=npos, ax=ax, node_color=axis_color_list, with_labels=False,
+        nx.draw(c_graph, pos=npos, ax=ax, node_color=axis_color_list, with_labels=False,
                 node_size=node_size, width=edge_width)
-    # construct the all-agent legend
-    legend_entries = []
-    for agent in snapshot_agents:
-        patch_label = agent.get_agent_name()
-        patch_color = color_scheme[agent] if agent in color_scheme else &#39;#00000000&#39;
-        legend_entries.append(mpatches.Patch(label=patch_label, color=patch_color))
-    fig_all.legend(handles=legend_entries)
+        # define the axis legend
+        legend_entries = []
+        for ka_agent, ag_abun in c_kappa.get_complex_composition().items():
+            patch_label = &#39;{}: {}&#39;.format(ka_agent, ag_abun)
+            patch_color = color_scheme[ka_agent] if ka_agent in color_scheme else &#39;#00000000&#39;
+            legend_entries.append(mpatches.Patch(label=patch_label, color=patch_color))
+        ax.legend(handles=legend_entries,
+                  title=(r&#39;{} {}, size$={}$&#39;.format(abund,
+                                                    &#39;copies&#39; if abund &gt; 1 else &#39;copy&#39;,
+                                                    c_kappa.get_size_of_complex())))
     fig_list.append(fig_all)
     # construct the patter-specific figures
     if highlight_patterns:
         for string_pattern in highlight_patterns:
             kappa_query = KappaAgent(string_pattern)
             fig_patt = plt.figure(figsize=fig_size)
-            for comp, abund, rect, npos in plotting_data:
+            for c_graph, c_kappa, abund, rect, npos in plotting_data:
                 ax = fig_patt.add_axes([rect[&#39;x&#39;], rect[&#39;y&#39;], rect[&#39;dx&#39;], rect[&#39;dy&#39;]])
-                ax.set_title(label=&#39;#: &#39; + str(abund), pad=-2 * mpl.rcParams[&#39;axes.titlepad&#39;])
                 # try to assign color to nodes based on color scheme and user-supplied pattern
                 axis_color_list = []
-                for node in comp.nodes.data():
-                    node_agent = node[1][&#39;kappa&#39;]
+                for node in c_graph.nodes.data():
+                    node_agent: KappaAgent = node[1][&#39;kappa&#39;]
                     try:
                         if kappa_query in node_agent:
                             axis_color_list.append(color_scheme[KappaAgent(kappa_query.get_agent_name())])
@@ -138,12 +140,16 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
                     except KeyError as k_e:
                         raise ValueError(&#39;Complex contains agent &lt;&#39; + node_agent.get_agent_name() +
                                          &#39;&gt; not found in supplied palette.&#39;) from k_e
-                nx.draw(comp, pos=npos, ax=ax, node_color=axis_color_list, with_labels=False,
+                nx.draw(c_graph, pos=npos, ax=ax, node_color=axis_color_list, with_labels=False,
                         node_size=node_size, width=edge_width)
-            patch_label = str(kappa_query)
-            patch_color = color_scheme[KappaAgent(kappa_query.get_agent_name())]
-            legend_entry = mpatches.Patch(label=patch_label, color=patch_color)
-            fig_patt.legend(handles=[legend_entry])
+                # define the axis legend
+                patch_label = &#39;{}: {}&#39;.format(str(kappa_query), c_kappa.get_number_of_embeddings_of_agent(kappa_query))
+                patch_color = color_scheme[KappaAgent(kappa_query.get_agent_name())]
+                legend_entry = mpatches.Patch(label=patch_label, color=patch_color)
+                ax.legend(handles=[legend_entry],
+                          title=(r&#39;{} {}, size$={}$&#39;.format(abund,
+                                                            &#39;copies&#39; if abund &gt; 1 else &#39;copy&#39;,
+                                                            c_kappa.get_size_of_complex())))
             fig_list.append(fig_patt)
     return fig_list</code></pre>
 </details>
@@ -156,7 +162,7 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="KaSaAn.functions.snapshot_visualizer_subcomponent.render_complexes_as_plain_graph"><code class="name flex">
-<span>def <span class="ident">render_complexes_as_plain_graph</span></span>(<span>snapshot_file_name: str, sizes_requested: List[int], highlight_patterns: List[str], color_scheme_file_name: str, node_size: int, edge_width: float, fig_size: Tuple[float, float], print_distro: bool) ‑> List[figure]</span>
+<span>def <span class="ident">render_complexes_as_plain_graph</span></span>(<span>snapshot_file_name: str, sizes_requested: List[int], highlight_patterns: List[str], color_scheme_file_name: str, node_size: int, edge_width: float, fig_size: Tuple[float, float], print_distro: bool) ‑> List[matplotlib.figure.Figure]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Take a KappaSnapshot, get complexes of a given size, render them as plain graphs, optionally highlighting
@@ -167,7 +173,7 @@ certain patterns. See file under <code><a title="KaSaAn.scripts" href="../script
 </summary>
 <pre><code class="python">def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: List[int], highlight_patterns: List[str],
                                     color_scheme_file_name: str, node_size: int, edge_width: float,
-                                    fig_size: Tuple[float, float], print_distro: bool) -&gt; List[plt.figure]:
+                                    fig_size: Tuple[float, float], print_distro: bool) -&gt; List[mpf.Figure]:
     &#34;&#34;&#34;Take a KappaSnapshot, get complexes of a given size, render them as plain graphs, optionally highlighting
      certain patterns. See file under `KaSaAn.scripts` for usage.&#34;&#34;&#34;
     snapshot = KappaSnapshot(snapshot_file_name)
@@ -199,13 +205,13 @@ certain patterns. See file under <code><a title="KaSaAn.scripts" href="../script
     # read or define color scheme
     # for user-defined coloring schemes, read the dictionary from a file, convert keys to KappaAgent
     if color_scheme_file_name:
-        color_scheme = {}
+        color_scheme: Dict[KappaAgent, str] = {}
         with open(color_scheme_file_name, &#39;r&#39;) as cs_file:
-            coloring_scheme_raw = ast.literal_eval(cs_file.read())
+            coloring_scheme_raw: Dict[str, str] = ast.literal_eval(cs_file.read())
             for key, value in coloring_scheme_raw.items():
                 color_scheme[KappaAgent(key)] = value
     else:
-        color_scheme = colorize_observables(snapshot_agents)
+        color_scheme = colorize_observables(sorted(snapshot_agents))
     # using squarify to define axis locations based on complex sizes
     fig_width = 1
     fig_height = 1
@@ -216,44 +222,46 @@ certain patterns. See file under <code><a title="KaSaAn.scripts" href="../script
     # for each complex, get the networkx graph and define node positions
     compl_graphs = [compl.to_networkx() for compl in compl_list]
     node_positions = [graphviz_layout(compl_graph, prog=&#39;sfdp&#39;) for compl_graph in compl_graphs]
-    plotting_data = list(zip(compl_graphs, abund_list, axis_rects, node_positions))
+    plotting_data = list(zip(compl_graphs, compl_list, abund_list, axis_rects, node_positions))
     # figure list construction
     fig_list: List[plt.figure] = []
     # construct the all-agent figure
     fig_all = plt.figure(figsize=fig_size)
-    for comp, abund, rect, npos in plotting_data:
+    for c_graph, c_kappa, abund, rect, npos in plotting_data:
         ax = fig_all.add_axes([rect[&#39;x&#39;], rect[&#39;y&#39;], rect[&#39;dx&#39;], rect[&#39;dy&#39;]])
-        ax.set_title(label=&#39;#: &#39; + str(abund), pad=-2*mpl.rcParams[&#39;axes.titlepad&#39;])
         # try to assign color to nodes based on color scheme
         axis_color_list = []
-        for node in comp.nodes.data():
-            agent_name = node[1][&#39;kappa&#39;].get_agent_name()
+        for node in c_graph.nodes.data():
+            node_agent: KappaAgent = node[1][&#39;kappa&#39;]
+            agent_name = node_agent.get_agent_name()
             try:
                 axis_color_list.append(color_scheme[KappaAgent(agent_name)])
             except KeyError as k_e:
                 raise ValueError(&#39;Complex contains agent &lt;&#39; + agent_name + &#39;&gt; not found in coloring palette.&#39;) from k_e
-        nx.draw(comp, pos=npos, ax=ax, node_color=axis_color_list, with_labels=False,
+        nx.draw(c_graph, pos=npos, ax=ax, node_color=axis_color_list, with_labels=False,
                 node_size=node_size, width=edge_width)
-    # construct the all-agent legend
-    legend_entries = []
-    for agent in snapshot_agents:
-        patch_label = agent.get_agent_name()
-        patch_color = color_scheme[agent] if agent in color_scheme else &#39;#00000000&#39;
-        legend_entries.append(mpatches.Patch(label=patch_label, color=patch_color))
-    fig_all.legend(handles=legend_entries)
+        # define the axis legend
+        legend_entries = []
+        for ka_agent, ag_abun in c_kappa.get_complex_composition().items():
+            patch_label = &#39;{}: {}&#39;.format(ka_agent, ag_abun)
+            patch_color = color_scheme[ka_agent] if ka_agent in color_scheme else &#39;#00000000&#39;
+            legend_entries.append(mpatches.Patch(label=patch_label, color=patch_color))
+        ax.legend(handles=legend_entries,
+                  title=(r&#39;{} {}, size$={}$&#39;.format(abund,
+                                                    &#39;copies&#39; if abund &gt; 1 else &#39;copy&#39;,
+                                                    c_kappa.get_size_of_complex())))
     fig_list.append(fig_all)
     # construct the patter-specific figures
     if highlight_patterns:
         for string_pattern in highlight_patterns:
             kappa_query = KappaAgent(string_pattern)
             fig_patt = plt.figure(figsize=fig_size)
-            for comp, abund, rect, npos in plotting_data:
+            for c_graph, c_kappa, abund, rect, npos in plotting_data:
                 ax = fig_patt.add_axes([rect[&#39;x&#39;], rect[&#39;y&#39;], rect[&#39;dx&#39;], rect[&#39;dy&#39;]])
-                ax.set_title(label=&#39;#: &#39; + str(abund), pad=-2 * mpl.rcParams[&#39;axes.titlepad&#39;])
                 # try to assign color to nodes based on color scheme and user-supplied pattern
                 axis_color_list = []
-                for node in comp.nodes.data():
-                    node_agent = node[1][&#39;kappa&#39;]
+                for node in c_graph.nodes.data():
+                    node_agent: KappaAgent = node[1][&#39;kappa&#39;]
                     try:
                         if kappa_query in node_agent:
                             axis_color_list.append(color_scheme[KappaAgent(kappa_query.get_agent_name())])
@@ -262,12 +270,16 @@ certain patterns. See file under <code><a title="KaSaAn.scripts" href="../script
                     except KeyError as k_e:
                         raise ValueError(&#39;Complex contains agent &lt;&#39; + node_agent.get_agent_name() +
                                          &#39;&gt; not found in supplied palette.&#39;) from k_e
-                nx.draw(comp, pos=npos, ax=ax, node_color=axis_color_list, with_labels=False,
+                nx.draw(c_graph, pos=npos, ax=ax, node_color=axis_color_list, with_labels=False,
                         node_size=node_size, width=edge_width)
-            patch_label = str(kappa_query)
-            patch_color = color_scheme[KappaAgent(kappa_query.get_agent_name())]
-            legend_entry = mpatches.Patch(label=patch_label, color=patch_color)
-            fig_patt.legend(handles=[legend_entry])
+                # define the axis legend
+                patch_label = &#39;{}: {}&#39;.format(str(kappa_query), c_kappa.get_number_of_embeddings_of_agent(kappa_query))
+                patch_color = color_scheme[KappaAgent(kappa_query.get_agent_name())]
+                legend_entry = mpatches.Patch(label=patch_label, color=patch_color)
+                ax.legend(handles=[legend_entry],
+                          title=(r&#39;{} {}, size$={}$&#39;.format(abund,
+                                                            &#39;copies&#39; if abund &gt; 1 else &#39;copy&#39;,
+                                                            c_kappa.get_size_of_complex())))
             fig_list.append(fig_patt)
     return fig_list</code></pre>
 </details>
