@@ -252,8 +252,12 @@ class NetMap():
 
     def __hash__(self) -> int:
         origin_n, image_n = zip(*self.node_map)
-        origin_e, image_e = zip(*self.edge_map)
-        return hash((tuple(sorted(origin_n)), tuple(sorted(image_n)), tuple(sorted(origin_e)), tuple(sorted(image_e))))
+        if len(self.edge_map) > 0:
+            origin_e, image_e = zip(*self.edge_map)
+            own_hash = hash((tuple(sorted(origin_n)), tuple(sorted(image_n)), tuple(sorted(origin_e)), tuple(sorted(image_e))))
+        else:
+            own_hash = hash((tuple(sorted(origin_n)), tuple(sorted(image_n)), None, None))
+        return own_hash
 
 
 def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> Tuple[List[NetMap], Set[NetMap]]:

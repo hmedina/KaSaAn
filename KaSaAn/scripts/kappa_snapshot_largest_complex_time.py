@@ -27,7 +27,8 @@ import ast
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from pathlib import Path
-from KaSaAn.core.KappaError import ComplexParseError
+from KaSaAn.core.KappaError import ComplexParseError, AgentParseError
+from KaSaAn.core.KappaAgent import KappaAgent
 from KaSaAn.core.KappaComplex import KappaComplex
 from KaSaAn.functions import find_snapshot_names
 from KaSaAn.functions.graph_largest_complex_composition import snapshot_list_to_plot_matrix, _make_figure
@@ -83,9 +84,12 @@ def main():
             coloring_scheme_raw = ast.literal_eval(cs_file.read())
             for key, value in coloring_scheme_raw.items():
                 try:
-                    coloring_scheme[KappaComplex(key)] = value
-                except ComplexParseError:
-                    raise ValueError('Could not parse <' + key + '> as a KappaComplex.')
+                    coloring_scheme[KappaAgent(key)] = value
+                except AgentParseError:
+                    try:
+                        coloring_scheme[KappaComplex(key)] = value
+                    except ComplexParseError:
+                        raise ValueError('Could not parse {} as a KappaComplex nor a KappaAgent'.format(key))
     else:
         coloring_scheme = None
 
