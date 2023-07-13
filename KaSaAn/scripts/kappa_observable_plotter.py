@@ -72,11 +72,16 @@ def main():
                         help='Plot the X axis in logarithmic scale.')
     parser.add_argument('-ly', '--log_y', action='store_true',
                         help='Plot the Y axis in logarithmic scale.')
+    parser.add_argument('-ts', '--text_size', type=int,
+                        help="If given, set point size for all text elements, overriding MatPlotLib's default.")
     args = parser.parse_args()
+
+    if args.text_size:
+        mpl.rcParams['font.size'] = args.text_size
 
     this_data = observable_file_reader(args.input_file_name)
 
-    fig, ax = plt.subplots(figsize=args.fig_size)
+    fig, ax = plt.subplots(figsize=args.fig_size, layout='constrained')
     observable_list_axis_annotator(obs_axis=ax, data=this_data,
                                    vars_indexes=args.variable_indexes,
                                    vars_names=args.variable_names,
@@ -95,7 +100,6 @@ def main():
 
     # save or display the figure
     if args.output_file_name:
-        plt.tight_layout()
         fig.savefig(fname=args.output_file_name)
     else:
         plt.show()

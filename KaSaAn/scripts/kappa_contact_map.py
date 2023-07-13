@@ -43,10 +43,15 @@ def main():
     parser.add_argument('--keep_axes_ticks', action='store_true',
                         help='If given, will keep the X & Y axes ticks; use this to estimate coordinates and offsets'
                         ' for manual agent placement.')
+    parser.add_argument('-ts', '--text_size', type=int,
+                        help="If given, set point size for all text elements, overriding MatPlotLib's default.")
     args = parser.parse_args()
 
+    if args.text_size:
+        mpl.rcParams['font.size'] = args.text_size
+
     this_cm = KappaContactMap(args.input_file_name)
-    fig, ax = plt.subplots(figsize=args.fig_size)
+    fig, ax = plt.subplots(figsize=args.fig_size, layout='constrained')
 
     if args.method != '':
         this_cm.layout_from_graph(args.method)
@@ -54,8 +59,6 @@ def main():
 
     if not args.keep_axes_ticks:
         ax.axis('off')
-
-    plt.tight_layout()
 
     if args.output_file_name:
         fig.savefig(args.output_file_name)

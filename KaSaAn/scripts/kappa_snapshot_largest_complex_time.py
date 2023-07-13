@@ -72,8 +72,13 @@ def main():
     parser.add_argument('-mt', '--multi_thread', type=int, default=1,
                         help='Number of threads for the concurrent pool of workers to read-in snapshots. Default uses'
                         ' 1, so a single-threaded for-loop.')
+    parser.add_argument('-ts', '--text_size', type=int,
+                        help="If given, set point size for all text elements, overriding MatPlotLib's default.")
 
     args = parser.parse_args()
+
+    if args.text_size:
+        mpl.rcParams['font.size'] = args.text_size
 
     # for user-defined coloring schemes, read the dictionary from a file, convert keys
     # Since single-agents can be interpreted as KappaComplexes, and that preserves sorting & comparisons, we cast

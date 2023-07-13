@@ -24,7 +24,6 @@ import ast
 import sys
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
 from KaSaAn.core import KappaAgent
 from KaSaAn.functions import render_snapshot_as_patchwork
 
@@ -60,7 +59,13 @@ def main(args=None):
                              ' graph elements).')
     parser.add_argument('-dpi', '--dots_per_inch', type=float, default=mpl.rcParams['figure.dpi'],
                         help='Resolution of the figure, specified as dots per inch.')
+    parser.add_argument('-ts', '--text_size', type=int,
+                        help="If given, set point size for all text elements, overriding MatPlotLib's default.")
+
     args = parser.parse_args()
+
+    if args.text_size:
+        mpl.rcParams['font.size'] = args.text_size
 
     # for user-defined coloring schemes, read the dictionary from a file, convert keys to KappaAgent
     if args.coloring_scheme:

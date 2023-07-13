@@ -69,9 +69,14 @@ def main():
                         help='Plot the Y axis in logarithmic scale.')
     parser.add_argument('-nl', '--no_legend', action='store_true',
                         help='Do not insert a legend with the filenames.')
+    parser.add_argument('-ts', '--text_size', type=int,
+                        help="If given, set point size for all text elements, overriding MatPlotLib's default.")
     args = parser.parse_args()
 
-    fig, ax = plt.subplots(figsize=args.figure_size)
+    if args.text_size:
+        mpl.rcParams['font.size'] = args.text_size
+
+    fig, ax = plt.subplots(figsize=args.figure_size, layout='constrained')
     observable_coplot_axis_annotator(target_axis=ax,
                                      file_pattern=args.pattern,
                                      variable_index=args.variable_by_index,
@@ -84,9 +89,7 @@ def main():
 
     ax.set_xlim(left=args.limit_left, right=args.limit_right)
     ax.set_ylim(bottom=args.limit_bottom, top=args.limit_top)
-
     if args.out_file:
-        plt.tight_layout()
         fig.savefig(args.out_file)
     else:
         plt.show()

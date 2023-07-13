@@ -63,7 +63,13 @@ def main():
                         help='Size of nodes; default of 300 as used by NetworkX.')
     parser.add_argument('-ew', '--edge_width', type=float, default=1.0,
                         help='Width of edges; default of 1.0 as used by NetworkX.')
+    parser.add_argument('-ts', '--text_size', type=int,
+                        help="If given, set point size for all text elements, overriding MatPlotLib's default.")
+
     args = parser.parse_args()
+
+    if args.text_size:
+        mpl.rcParams['font.size'] = args.text_size
 
     # render graph
     figure_list = render_snapshot_as_plain_graph(snapshot_file_name=args.snapshot_file_name,

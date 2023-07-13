@@ -11,14 +11,15 @@ usage: kappa_catalytic_potential
 [-v]                If set, print additional information to standard output.
 [-o OUTPUT_FILE]    If specified, save to file; else print to standard output.
 -p SNAPSHOT_PREFIX  The prefix by which the snapshots are named.
+-fs FONT_SIZE       Size of font for all text elements.
 ```
 """
 
 import argparse
 import csv
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
-
 from KaSaAn.functions import get_potential_of_folder
 
 
@@ -46,8 +47,12 @@ def main(args=None):
                              ' as a function of time.')
     parser.add_argument('-p', '--snapshot_pattern', type=str, default='snap_*.ka',
                         help='Pattern by which the snapshots are named; e.g. <snap_4.ka> would have <snap_*.ka>.')
+    parser.add_argument('-ts', '--text_size', type=int,
+                        help="If given, set point size for all text elements, overriding MatPlotLib's default.")
 
     args = parser.parse_args()
+    if args.text_size:
+        mpl.rcParams['font.size'] = args.text_size
 
     data = get_potential_of_folder(args.directory, args.enzyme_name, args.substrate_name,
                                    args.verbose, args.snapshot_pattern)
@@ -58,7 +63,7 @@ def main(args=None):
             q_writter.writerow(['q', 't'])
             q_writter.writerows(data)
     else:
-        _, ax = plt.subplots()
+        _, ax = plt.subplots(layout='constrained')
         q, t = zip(*data)
         ax.plot(t, q)
         ax.set_xlabel('Time')

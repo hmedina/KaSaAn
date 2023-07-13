@@ -24,6 +24,7 @@ For example:
 
 import argparse
 import sys
+import matplotlib as mpl
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import matplotlib.widgets as mpw
@@ -66,7 +67,14 @@ def main(args=None):
                         help='Number of mili-seconds between frames in the animation.')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Display information about number of snapshots found.')
+    parser.add_argument('-ts', '--text_size', type=int,
+                        help="If given, set point size for all text elements, overriding MatPlotLib's default.")
+
     args = parser.parse_args()
+
+    if args.text_size:
+        mpl.rcParams['font.size'] = args.text_size
+
     # make the animation
     my_animation = movie_from_snapshots(directory=args.directory, pattern=args.pattern,
                                         vis_mode=args.vis_mode,
