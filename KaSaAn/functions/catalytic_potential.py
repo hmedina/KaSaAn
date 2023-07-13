@@ -49,8 +49,8 @@ def get_potential_of_folder(base_directory: str, enzyme: KappaAgent, substrate: 
         if verbosity:
             print('Now parsing file <{}>, {} of {}, {:.2%}'.format(
                 snap_name, snap_index, snap_num, snap_index/snap_num))
-            snap = KappaSnapshot(snap_name)
-            q = _get_potential_of_snapshot(snap, enzyme, substrate)
-            t = snap.get_snapshot_time()
+        snap = KappaSnapshot(snap_name)
+        q = _get_potential_of_snapshot(snap, enzyme, substrate)
+        t = snap.get_snapshot_time()
         cat_pot_dist.append([q, t])
     return cat_pot_dist
