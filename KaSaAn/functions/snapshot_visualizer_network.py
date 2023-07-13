@@ -41,7 +41,7 @@ def render_snapshot_as_plain_graph(snapshot_file_name: str, highlight_patterns: 
             color_list_all.append(color_scheme[KappaAgent(agent_name)])
         except KeyError as k_e:
             raise ValueError('Complex contains agent <' + agent_name + '> not found in coloring palette.') from k_e
-    fig_all, ax_all = plt.subplots(figsize=fig_size)
+    fig_all, ax_all = plt.subplots(figsize=fig_size, layout='constrained')
     nx.draw(snapshot_graph, pos=node_positions, ax=ax_all, node_color=color_list_all, with_labels=False,
             node_size=node_size, width=edge_width)
     plt.axis('off')
@@ -71,7 +71,7 @@ def render_snapshot_as_plain_graph(snapshot_file_name: str, highlight_patterns: 
                 except KeyError as k_e:
                     raise ValueError('Complex contains agent <' + node_agent.get_agent_name() +
                                      '> not found in supplied palette.') from k_e
-            fig_patt, ax_patt = plt.subplots(figsize=fig_size)
+            fig_patt, ax_patt = plt.subplots(figsize=fig_size, layout='constrained')
             nx.draw(snapshot_graph, pos=node_positions, ax=ax_patt, node_color=color_list_patt, with_labels=False,
                     node_size=node_size, width=edge_width)
             plt.axis('off')

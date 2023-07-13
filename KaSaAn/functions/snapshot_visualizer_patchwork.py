@@ -167,7 +167,7 @@ def render_snapshot_as_patchwork(snapshot_file: str, color_scheme: Dict[KappaAge
     # Define figure definition & resolution
     res_w = fig_res * fig_size[0]
     res_h = fig_res * fig_size[1]
-    figure = plt.figure(figsize=fig_size)
+    figure = plt.figure(figsize=fig_size, layout='constrained')
 
     # If visualizing all, then we need three subplots (for mass, size, count), plus the area for the legend
     if vis_mode == 'all':

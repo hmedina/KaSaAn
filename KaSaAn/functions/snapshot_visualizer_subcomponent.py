@@ -68,7 +68,7 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
     # figure list construction
     fig_list: List[plt.figure] = []
     # construct the all-agent figure
-    fig_all = plt.figure(figsize=fig_size)
+    fig_all = plt.figure(figsize=fig_size, layout='constrained')
     for c_graph, c_kappa, abund, rect, npos in plotting_data:
         ax = fig_all.add_axes([rect['x'], rect['y'], rect['dx'], rect['dy']])
         # try to assign color to nodes based on color scheme
@@ -93,11 +93,11 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
                                                     'copies' if abund > 1 else 'copy',
                                                     c_kappa.get_size_of_complex())))
     fig_list.append(fig_all)
-    # construct the patter-specific figures
+    # construct the pattern-specific figures
     if highlight_patterns:
         for string_pattern in highlight_patterns:
             kappa_query = KappaAgent(string_pattern)
-            fig_patt = plt.figure(figsize=fig_size)
+            fig_patt = plt.figure(figsize=fig_size, layout='constrained')
             for c_graph, c_kappa, abund, rect, npos in plotting_data:
                 ax = fig_patt.add_axes([rect['x'], rect['y'], rect['dx'], rect['dy']])
                 # try to assign color to nodes based on color scheme and user-supplied pattern

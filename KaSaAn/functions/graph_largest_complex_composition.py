@@ -18,7 +18,7 @@ def _make_figure(s_times, p_matrix, observable_set: Set[KappaComplex],
                  x_scale='linear', y_scale='linear',
                  un_stacked: bool = False,
                  supplied_scheme: Dict = None) -> mpf.Figure:
-    fig, ax = plt.subplots(figsize=fig_size)
+    fig, ax = plt.subplots(figsize=fig_size, layout='constrained')
     # colors for the labels
     color_list = []
     if not supplied_scheme:
@@ -39,7 +39,6 @@ def _make_figure(s_times, p_matrix, observable_set: Set[KappaComplex],
         fig.legend(title='Patterns')
     ax.set_xscale(x_scale)
     ax.set_yscale(y_scale)
-    plt.tight_layout()
     return fig
 
 
