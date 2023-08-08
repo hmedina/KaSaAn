@@ -416,6 +416,17 @@ class KappaContactMap:
         `#0f0f0f` (hex RGB[A]), `(0.5, 0.5, 0.5)` (decimal RGB[A]), `xkcd:puke green` (XKCD color survey names)."""
         self._agent_graphics[agent_name]['bnd_sites'][site_name]['facecolor'] = new_color
 
+    def resize_wedges_of(self, agent_name: str, new_size: float):
+        """Resize the wedges of an agent; default size is sqrt of agent's number of wedges, in coordinate-space units."""
+        for some_site in self.get_binding_site_names_of(agent_name):
+            old_ratio = self._agent_graphics[agent_name]['bnd_sites'][some_site]['r'] / self._agent_graphics[agent_name]['bnd_sites'][some_site]['width']
+            self._agent_graphics[agent_name]['bnd_sites'][some_site]['r'] = new_size
+            self._agent_graphics[agent_name]['bnd_sites'][some_site]['width'] = new_size / old_ratio
+        if self._agent_graphics[agent_name]['flagpole_sites']:
+            self._agent_graphics[agent_name]['flagpole_loc']['r'] = new_size
+            self._agent_graphics[agent_name]['flagpole_loc']['width'] = new_size / old_ratio
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
+
     def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True):
         """Draw the contact map onto the supplied axis. If `draw_state_flagpole` is `True`, the flagpole will display
         all internal state data. If `False`, it will only display a summary with the number of sites omitted. By
