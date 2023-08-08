@@ -3,12 +3,13 @@
 Render a contact map.
 """
 
-import argparse
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.text as mpt
 import matplotlib.widgets as mpw
 import warnings
+from argparse import ArgumentParser, RawTextHelpFormatter
+from pathlib import Path
 from typing import Tuple
 from KaSaAn.core import KappaContactMap
 from KaSaAn.core.KappaContactMap import valid_graph_layouts
@@ -21,7 +22,7 @@ def main():
     layout_expl: str = '\n'.join(['{:<{width}}\t{}'.format(n, v.__doc__.split('\n')[0], width=w)
                                   for n, v in valid_graph_layouts.items()])
 
-    parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawTextHelpFormatter)
+    parser = ArgumentParser(description=main.__doc__, formatter_class=RawTextHelpFormatter)
     parser.add_argument('-i', '--input_file_name', type=str, default='inputs.ka',
                         help='Name of the file containing the contact map, written in kappa by the Kappa Static'
                         ' Analyzer (KaSA). By default, will search for `inputs.ka`, aka the "witness file".')
@@ -33,7 +34,7 @@ def main():
                         help='Size of the resulting figure, in inches, specified as two elements, width and height'
                         ' (text size is specified in points, so this affects the size of text relative to other'
                         ' graph elements).')
-    parser.add_argument('-o', '--output_file_name', type=str, default=None,
+    parser.add_argument('-o', '--output_file_name', type=Path, default=None,
                         help='Name of the file to where the figure should be saved; displayed if not specified.')
     parser.add_argument('-m', '--method', type=str, choices=list(valid_graph_layouts.keys()), default='',
                         help='Interpret contact map as a plain graph and layout using one of these:\n' + layout_expl)
@@ -61,6 +62,8 @@ def main():
         ax.axis('off')
 
     if args.output_file_name:
+        if not args.output_file_name.parent.exists():
+            args.output_file_name.parent.mkdir(parents=True)
         fig.savefig(args.output_file_name)
     else:
         def re_coord(child_space, parent_space) -> Tuple[int, int, int, int]:
@@ -114,6 +117,7 @@ def main():
         class AgentNameCycler:
             def next(self, event):
                 nonlocal site_list
+                nonlocal swapping_enabled
                 ix = agent_names.index(t_agent_text.get_text())
                 if ix == len(agent_names) - 1:
                     i_next = 0
@@ -129,6 +133,7 @@ def main():
 
             def prev(self, event):
                 nonlocal site_list
+                nonlocal swapping_enabled
                 ix = agent_names.index(t_agent_text.get_text())
                 if ix == 0:
                     i_prev = len(agent_names) - 1

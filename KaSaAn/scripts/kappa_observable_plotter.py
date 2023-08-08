@@ -22,19 +22,20 @@ usage: kappa_observable_plotter
 ```
 """
 
-import argparse
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from argparse import ArgumentParser
+from pathlib import Path
 from KaSaAn.functions import observable_file_reader, observable_list_axis_annotator
 
 
 def main():
     """Plot a trace file produced by KaSim."""
-    parser = argparse.ArgumentParser(description=main.__doc__)
+    parser = ArgumentParser(description=main.__doc__)
     parser.add_argument('-i', '--input_file_name', type=str, default='data.csv',
                         help='Name of the file with the time series traces to be plotted. By default it will look for'
                              ' <data.csv>')
-    parser.add_argument('-o', '--output_file_name', type=str, default=None,
+    parser.add_argument('-o', '--output_file_name', type=Path, default=None,
                         help='Name of the file to where the figure should be saved; displayed if not specified.')
     parser.add_argument('-p', '--print_observables_to_file', type=str, default='',
                         help="If specified, dump the list of observables to a file, one per line, so that the line"
@@ -100,6 +101,8 @@ def main():
 
     # save or display the figure
     if args.output_file_name:
+        if not args.output_file_name.parent.exists():
+            args.output_file_name.parent.mkdir(parents=True)
         fig.savefig(fname=args.output_file_name)
     else:
         plt.show()

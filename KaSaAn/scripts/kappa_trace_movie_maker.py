@@ -28,7 +28,7 @@ import matplotlib as mpl
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import matplotlib.widgets as mpw
-
+from pathlib import Path
 from KaSaAn.functions import movie_from_snapshots
 
 
@@ -46,7 +46,7 @@ def main(args=None):
                         ' `snapshot.*.ka`')
     parser.add_argument('-m', '--vis_mode', type=str, default='mass', choices=['mass', 'count', 'size'],
                         help='Specify the type of visualization to render. Default uses mass.')
-    parser.add_argument('-o', '--output_file', type=str, default='',
+    parser.add_argument('-o', '--output_file', type=Path, default=None,
                         help='Optional name of file for saving the movie. If unset, the movie will be shown instead,'
                              ' using a TK window.')
     parser.add_argument('-w', '--fig_width', type=int, default=16,
@@ -86,6 +86,8 @@ def main(args=None):
                                         verbose=args.verbose)
     # Save to file, or show the figure
     if args.output_file:
+        if not args.output_file.parent.exists():
+            args.output_file.parent.mkdir(parents=True)
         # Use the ImageMagick writer if a gif was requested; else use the default mpeg writer
         if args.output_file[-4:] == '.gif':
             my_writer = animation.ImageMagickFileWriter()

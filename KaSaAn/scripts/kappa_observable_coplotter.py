@@ -22,15 +22,16 @@ usage: kappa_observable_coplotter
 ```
 """
 
-import argparse
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from argparse import ArgumentParser
+from pathlib import Path
 from KaSaAn.functions import observable_coplot_axis_annotator
 
 
 def main():
     """Co-plot the same variable from multiple files, save as file or display the figure."""
-    parser = argparse.ArgumentParser(description=main.__doc__)
+    parser = ArgumentParser(description=main.__doc__)
     parser.add_argument('-p', '--pattern', type=str, required=True,
                         help='Pattern, passed to glob.glob that would match the desired files to co-plot, should'
                              ' probably be quoted.')
@@ -43,7 +44,7 @@ def main():
     parser.add_argument('-ve', '--variable_expression', type=str, default='',
                         help='A string with one algebraic expression using variable names held in the file'
                              ' (e.g. -ve "1 - (\'Axn.Axn\' + \'Axn_mono\' ) / \'Axn\'")')
-    parser.add_argument('-o', '--out_file', type=str, default='',
+    parser.add_argument('-o', '--out_file', type=Path, default=None,
                         help='Name of the file where the figure should be saved. If left blank or omitted, the figure'
                              ' will be shown instead.')
     parser.add_argument('-d', '--differential', action='store_true',
@@ -90,7 +91,9 @@ def main():
     ax.set_xlim(left=args.limit_left, right=args.limit_right)
     ax.set_ylim(bottom=args.limit_bottom, top=args.limit_top)
     if args.out_file:
-        fig.savefig(args.out_file)
+        if not args.out_file.parent.exists():
+            args.out_file.parent.mkdir(parents=True)
+        fig.savefig(fname=args.out_file)
     else:
         plt.show()
 

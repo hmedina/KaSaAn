@@ -24,6 +24,7 @@ import ast
 import sys
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from pathlib import Path
 from KaSaAn.core import KappaAgent
 from KaSaAn.functions import render_snapshot_as_patchwork
 
@@ -49,7 +50,7 @@ def main(args=None):
                              ' count displays most abundant species largest; mass is the'
                              ' product of size times abundance, indicative of "where is the'
                              ' bulk of my system".')
-    parser.add_argument('-of', '--output_file', type=str,
+    parser.add_argument('-of', '--output_file', type=Path, default=None,
                         help='Optional name of file to save the view to instead of displaying it on screen. Extension'
                              ' dictates the format. Valid choices include PNG, PDF, SVG (anything supported by'
                              ' MatPlotLib).')
@@ -84,6 +85,8 @@ def main(args=None):
                                        fig_res=args.dots_per_inch)
     # Either save figure to file, or plot it
     if args.output_file:
+        if not args.output_file.parent.exists():
+            args.output_file.parent.mkdir(parents=True)
         fig.savefig(args.output_file, bbox_inches='tight')
     else:
         plt.show()

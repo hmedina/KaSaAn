@@ -20,6 +20,7 @@ import csv
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
+from pathlib import Path
 from KaSaAn.functions import get_potential_of_folder
 
 
@@ -41,7 +42,7 @@ def main(args=None):
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='If set, print additional information, like number of snapshots found, and current'
                              ' snapshot being parsed.')
-    parser.add_argument('-o', '--output_file', type=str, default=None,
+    parser.add_argument('-o', '--output_file', type=Path, default=None,
                         help='The name of the file where the list of catalytic potentials should be saved; one value'
                              ' per line, in the same order as the snapshots. If not specified, the list will be plotted'
                              ' as a function of time.')
@@ -58,6 +59,8 @@ def main(args=None):
                                    args.verbose, args.snapshot_pattern)
 
     if args.output_file:
+        if not args.output_file.parent.exists():
+            args.output_file.parent.mkdir(parents=True)
         with open(args.output_file, 'w') as out_file:
             q_writter = csv.writer(out_file)
             q_writter.writerow(['q', 't'])

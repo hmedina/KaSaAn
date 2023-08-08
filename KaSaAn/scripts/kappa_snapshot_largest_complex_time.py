@@ -50,7 +50,7 @@ def main():
                              ' Supports KappaAgents, with or without agent signature, as well as KappaComplexes.'
                              ' If not provided, the sum formula will be displayed (arbitrary colors per agent,'
                              ' discarding agent signature).')
-    parser.add_argument('-o', '--output_name', type=str,
+    parser.add_argument('-o', '--output_name', type=Path, default=None,
                         help='If specified, the name of the file where the figure should be saved. If not given,'
                              ' figure will be shown instead. If alternate scale options are given, a "_log_lin" or'
                              ' similar will be inserted between the file-name and the extension requested to'
@@ -103,23 +103,32 @@ def main():
                                                                    patterns_requested=coloring_scheme,
                                                                    thread_number=args.multi_thread)
     # scale plot
-    fig_lin_lin = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'linear', 'linear', args.un_stacked, coloring_scheme)
+    fig_lin_lin = _make_figure(s_times, p_matrix, pattern_list, args.figure_size,
+                               'linear', 'linear', args.un_stacked, coloring_scheme)
     if args.lin_log:
-        fig_lin_log = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'linear', 'log', args.un_stacked, coloring_scheme)
+        fig_lin_log = _make_figure(s_times, p_matrix, pattern_list, args.figure_size,
+                                   'linear', 'log', args.un_stacked, coloring_scheme)
     if args.log_lin:
-        fig_log_lin = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'log', 'linear', args.un_stacked, coloring_scheme)
+        fig_log_lin = _make_figure(s_times, p_matrix, pattern_list, args.figure_size,
+                                   'log', 'linear', args.un_stacked, coloring_scheme)
     if args.log_log:
-        fig_log_log = _make_figure(s_times, p_matrix, pattern_list, args.figure_size, 'log', 'log', args.un_stacked, coloring_scheme)
+        fig_log_log = _make_figure(s_times, p_matrix, pattern_list, args.figure_size,
+                                   'log', 'log', args.un_stacked, coloring_scheme)
     # save or display?
     if args.output_name:
-        save_path = Path(args.output_name)
-        fig_lin_lin.savefig(save_path)
+        save_path: Path = args.output_name.parent
+        if not save_path.exists():
+            save_path.mkdir(parents=True)
+        fig_lin_lin.savefig(args.output_name)
         if args.lin_log:
-            fig_lin_log.savefig(save_path.parents[0] / Path(save_path.stem + '_lin_log' + save_path.suffix))
+            fig_lin_log.savefig(
+                save_path / Path(args.output_name.stem + '_lin_log' + args.output_name.suffix))
         if args.log_lin:
-            fig_log_lin.savefig(save_path.parents[0] / Path(save_path.stem + '_log_lin' + save_path.suffix))
+            fig_log_lin.savefig(
+                save_path / Path(args.output_name.stem + '_log_lin' + args.output_name.suffix))
         if args.log_log:
-            fig_log_log.savefig(save_path.parents[0] / Path(save_path.stem + '_log_log' + save_path.suffix))
+            fig_log_log.savefig(
+                save_path / Path(args.output_name.stem + '_log_log' + args.output_name.suffix))
     else:
         plt.show()
 

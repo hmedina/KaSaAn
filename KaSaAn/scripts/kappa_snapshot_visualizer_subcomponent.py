@@ -47,7 +47,7 @@ def main():
                              ' positions, allowing visual comparison for pattern location in overall mixture. If saved,'
                              ' filenames will have "_n" after the filename, where "n" is the order of the pattern used'
                              ' for that highlighting. E.g. "A(site{ph})", these patterns should probably be quoted.')
-    parser.add_argument('-of', '--output_file', type=str,
+    parser.add_argument('-of', '--output_file', type=Path, default=None,
                         help='Optional name of file to save the view to instead of displaying it on screen. Extension'
                              ' dictates the format. Valid choices include PNG, PDF, SVG (anything supported by'
                              ' MatPlotLib).')
@@ -80,6 +80,8 @@ def main():
 
     # save or display the figure(s)
     if args.output_file:
+        if not args.output_file.parent.exists():
+            args.output_file.parent.mkdir(parents=True)
         figure_list[0].savefig(fname=args.output_file)
         if args.highlight_patterns:
             out_path = Path(args.output_file)
