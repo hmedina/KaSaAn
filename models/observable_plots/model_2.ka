@@ -1,0 +1,6 @@
+%agent: tiks()  %init: 10 tiks()
+%agent: toks()
+tiks() , . <-> . , toks() @ 1, 1
+
+%obs: 'tiks()' |tiks()|
+%obs: 'toks()' |toks()|

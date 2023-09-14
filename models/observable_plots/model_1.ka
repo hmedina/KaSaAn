@@ -1,0 +1,6 @@
+%agent: timer(s{tik, tok})  %init: 10 timer()
+timer(s{tik/tok}) @ 1
+timer(s{tok/tik}) @ 1
+
+%obs: 'timer(s{tiks})' |timer(s{tik})|
+%obs: 'timer(s{toks})' |timer(s{tok})|

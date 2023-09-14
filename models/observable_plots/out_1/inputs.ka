@@ -1,0 +1,24 @@
+// "uuid" : "320339153"
+%def: "seed" "311993618"
+%def: "dumpIfDeadlocked" "true"
+%def: "maxConsecutiveClash" "3"
+%def: "progressBarSize" "70"
+%def: "progressBarSymbol" "#"
+%def: "plotPeriod" "1" "t.u."
+%def: "outputFileName" "data.csv"
+
+%agent: timer(s{tik tok})
+
+%var:/*0*/ 'timer(s{tiks})' |timer(s{tik})|
+%var:/*1*/ 'timer(s{toks})' |timer(s{tok})|
+%plot: [T]
+%plot: 'timer(s{tiks})'
+%plot: 'timer(s{toks})'
+
+timer(s{tik/tok}[#]) @ 1
+timer(s{tok/tik}[#]) @ 1
+
+
+%init: 10 timer(s{tik}[.])
+
+%mod: [E] = 98 do $STOP;

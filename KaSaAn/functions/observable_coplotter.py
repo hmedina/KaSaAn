@@ -24,14 +24,14 @@ def _multi_data_axis_annotator(co_plot_axis: mpa.Axes, file_data_list: List[Tupl
                                diff_toggle: bool = False, log_x: bool = False, log_y: bool = False,
                                omit_legend: bool = False) -> mpa.Axes:
     """Annotate the provided axis."""
-    legend_entries = []
+    artist_list = []
+    # Define things to plot
     for file_data in file_data_list:
         legend_data, numeric_data, file_name = file_data
-        # find indexes to plot:
         if coplot_index:
             var_index = coplot_index - 1
             data_y = numeric_data[:, var_index]
-            legend_entry = legend_data[var_index]
+            legend_label = legend_data[var_index]
         elif coplot_name:
             try:
                 var_index = legend_data.index(coplot_name)
@@ -39,7 +39,7 @@ def _multi_data_axis_annotator(co_plot_axis: mpa.Axes, file_data_list: List[Tupl
                 raise ValueError('Requested variable name not found in variable list; available options are:\n' +
                                  ' | '.join(legend_data)) from ve
             data_y = numeric_data[:, var_index]
-            legend_entry = legend_data[var_index]
+            legend_label = file_name
         elif coplot_expression:
             # to render an algebraic expression, we create an abstract syntax tree,
             #  then replace the tokens that are strings found in the legend with
@@ -66,9 +66,10 @@ def _multi_data_axis_annotator(co_plot_axis: mpa.Axes, file_data_list: List[Tupl
             my_ast = ast.parse(coplot_expression, mode='eval')
             TokenTransformer().visit(my_ast)
             data_y = eval(compile(ast.fix_missing_locations(my_ast), '<string>', 'eval'))
-            legend_entry = coplot_expression
+            legend_label = file_name
         else:
             raise ValueError('Function requires a variable index, a variable name, or an expression of variables.')
+        # an entry was defined; now to process it if differential was requested
         data_x = numeric_data[:, 0]
         if diff_toggle:
             d_t = np.diff(data_x)
@@ -77,27 +78,33 @@ def _multi_data_axis_annotator(co_plot_axis: mpa.Axes, file_data_list: List[Tupl
                 raise ValueError('Time difference of zero found in file ' + file_name)
             data_y = d_v / d_t
             data_x = data_x[1:]
-        legend_entries.append(legend_entry)
-        if len(data_x) < 1000:
-            plot_draw_style = 'steps-post'
-        else:
-            plot_draw_style = 'default'
-        co_plot_axis.plot(data_x, data_y, label=legend_entry, drawstyle=plot_draw_style)
+        # finally, plot the entry
+        plot_draw_style = 'steps-post' if len(data_x) < 1000 else 'default'
+        artist_list.extend(co_plot_axis.plot(data_x, data_y, label=legend_label, drawstyle=plot_draw_style))
     co_plot_axis.set_xlabel('Time')
     # if plotting a time differential, adjust Y-axis label
     if diff_toggle:
         co_plot_axis.set_ylabel(r'$\frac{\Delta \mathrm{x}}{\Delta t}$', rotation='horizontal')
     else:
         co_plot_axis.set_ylabel('Value')
-    # if requested index yielded one observable name (all tracks of same observable), the file-names;
-    # else use the variable names that resulted from the requested index
-    if len(set(legend_entries)) == 1:
-        co_plot_axis.set_title(legend_entries[0])
-        if not omit_legend:
-            co_plot_axis.legend([item[2] for item in file_data_list])
-    else:
-        if not omit_legend:
-            co_plot_axis.legend()
+    # if requested index yielded one observable name (all tracks of same observable),
+    # use the file-names for annotating the legend, and the observable name as a plot title;
+    # else use the variable names that resulted from the requested index plus their file-name
+    if coplot_index:
+        legend_strings: List[str] = [artist.get_label() for artist in artist_list]
+        if len(set(legend_strings)) == 1:
+            co_plot_axis.set_title(legend_strings[0])
+            for ix, artist in enumerate(artist_list):
+                artist.set_label(file_data_list[ix][2])
+        else:
+            for ix, artist in enumerate(artist_list):
+                artist.set_label('{} in {}'.format(artist.get_label(), file_data_list[ix][2]))
+    elif coplot_name:
+        co_plot_axis.set_title(coplot_name)
+    elif coplot_expression:
+        co_plot_axis.set_title(coplot_expression)
+    if not omit_legend:
+        co_plot_axis.legend()
     # adjust plot scales
     if log_x:
         co_plot_axis.set_xscale('log')

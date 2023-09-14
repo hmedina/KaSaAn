@@ -4,22 +4,29 @@ Plot a variable from several output files.
 
 ``` {.text}
 usage: kappa_observable_coplotter [-h] -p PATTERN [-vi VARIABLE_BY_INDEX] [-vn VARIABLE_BY_NAME] [-ve VARIABLE_EXPRESSION] [-o OUT_FILE] [-d] [-fs WIDTH HEIGHT] [--limit_left LIMIT_LEFT] [--limit_right LIMIT_RIGHT] [--limit_bottom LIMIT_BOTTOM] [--limit_top LIMIT_TOP] [-lx] [-ly] [-nl] [-ts TEXT_SIZE]
-[-h]                        Show detailed help.
--p PATTERN                  (quoted) Pattern matching desired files.
-[-vi VARIABLE_BY_INDEX]     Index of the variable to be co-plotted.
-[-vn VARIABLE_BY_NAME]      Name of the variable to be co-plotted.
-[-ve VARIABLE_EXPRESSION]   Algebraic expression of variable names.
-[-o OUT_FILE]               If given, save plot to file; else show.
-[-d]                        If passed, plot discrete differential over time.
-[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
-[--limit_left X_MIN]        Override left limit of plot.
-[--limit_right X_MAX]       Override right limit of plot.
-[--limit_bottom Y_MIN]      Override bottom limit of plot.
-[--limit_top Y_MAX]         Override top limit of plot.
-[-lx]                       Plot the X axis in logarithmic scale.
-[-ly]                       Plot the Y axis in logarithmic scale.
-[-nl]                       Do not insert a legend with filenames.
-[-ts TEXT_SIZE]             Override default size for text, in points.
+[-h]                            Show detailed help.
+-p PATTERN                      Pattern matching desired files.
+[-vi VARIABLE_BY_INDEX]         Index of the variable to be co-plotted.
+[-vn VARIABLE_BY_NAME]          Name of the variable to be co-plotted.
+[-ve VARIABLE_EXPRESSION]       Algebraic expression of variable names.
+[-o OUT_FILE]                   If given, save plot to file; else show.
+[-d]                            If passed, plot discrete differential over time.
+[-fs WIDTH HEIGHT]              Size of the resulting figure, in inches.
+[--limit_left X_MIN]            Override left limit of plot.
+[--limit_right X_MAX]           Override right limit of plot.
+[--limit_bottom Y_MIN]          Override bottom limit of plot.
+[--limit_top Y_MAX]             Override top limit of plot.
+[-lx]                           Plot the X axis in logarithmic scale.
+[-ly]                           Plot the Y axis in logarithmic scale.
+[-nl]                           Do not insert a legend with filenames.
+[-ts TEXT_SIZE]                 Override default size for text, in points.
+[--legend_loc {...} ]           Specify legend location; <outside> options plot outside axes. Options are:
+                                    upper left, upper center, upper right,
+                                    center left, center, center right,
+                                    lower left, lower center, lower right,
+                                    outside left upper, outside right upper,
+                                    outside left lower, outside right lower
+[--legend_ncol LEGEND_NCOL]     Number of columns for the legend.
 ```
 """
 
@@ -71,6 +78,14 @@ def main():
                         help='Plot the Y axis in logarithmic scale.')
     parser.add_argument('-nl', '--no_legend', action='store_true',
                         help='Do not insert a legend with the filenames.')
+    parser.add_argument('--legend_loc', type=str, choices=[
+        'upper left', 'upper center', 'upper right',
+        'center left', 'center', 'center right',
+        'lower left', 'lower center', 'lower right',
+        'outside right upper', 'outside right lower', 'outside left upper', 'outside left lower'],
+                        help='Override location of the legend. Options prefixed with <outside> plot outside the axes.')
+    parser.add_argument('--legend_ncol', type=int, default=1,
+                        help='Number of columns for the legend.')
     parser.add_argument('-ts', '--text_size', type=int,
                         help="If given, set point size for all text elements, overriding MatPlotLib's default.")
     args = parser.parse_args()
@@ -87,7 +102,13 @@ def main():
                                      differential_toggle=args.differential,
                                      log_axis_x=args.log_x,
                                      log_axis_y=args.log_y,
-                                     no_legend=args.no_legend)
+                                     no_legend=True)
+
+    if not args.no_legend:
+        if args.legend_loc is not None:
+            fig.legend(loc=args.legend_loc, ncol=args.legend_ncol)
+        else:
+            ax.legend(loc='best', ncol=args.legend_ncol)
 
     ax.set_xlim(left=args.limit_left, right=args.limit_right)
     ax.set_ylim(bottom=args.limit_bottom, top=args.limit_top)
