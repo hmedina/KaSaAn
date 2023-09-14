@@ -3,7 +3,7 @@
 Plot a trace file produced by KaSim.
 
 ``` {.text}
-usage: kappa_observable_plotter
+usage: kappa_observable_plotter [-h] [-i INPUT_FILE_NAME] [-o OUTPUT_FILE_NAME] [-p PRINT_OBSERVABLES_TO_FILE] [-vi [VARIABLE_INDEXES ...]] [-vn [VARIABLE_NAMES ...]] [-ve [VARIABLE_EXPRESSIONS ...]] [-fs WIDTH HEIGHT] [--limit_left LIMIT_LEFT] [--limit_right LIMIT_RIGHT] [--limit_bottom LIMIT_BOTTOM] [--limit_top LIMIT_TOP] [-d] [-lx] [-ly] [-ts TEXT_SIZE]
 [-h]                    Show detailed help.
 [-i INPUT_FILE_NAME]    File to be plotted, <data.csv> if omitted.
 [-o OUTPUT_FILE_NAME]   If given, save plot to file; else show.
@@ -19,6 +19,7 @@ usage: kappa_observable_plotter
 [-d]                    If passed, plot discrete differential over time.
 [-lx]                   Plot the X axis in logarithmic scale.
 [-ly]                   Plot the Y axis in logarithmic scale.
+[-ts TEXT_SIZE]         Override default size for text, in points.
 ```
 """
 

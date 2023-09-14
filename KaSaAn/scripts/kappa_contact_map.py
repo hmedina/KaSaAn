@@ -1,6 +1,18 @@
 #! /usr/bin/env python3
 """
 Render a contact map.
+
+```{.text}
+kappa_contact_map [-h] [-i INPUT_FILE_NAME] [-fs WIDTH HEIGHT] [-o OUTPUT_FILE_NAME] [-m {...}] [--summarize_flagpole] [--keep_axes_ticks] [-ts TEXT_SIZE]
+[-h]                        Show detailed help.
+[-i INPUT_FILE_NAME]        File with pre-computed contact map, default <inputs.ka>
+[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
+[-o OUTPUT_FILE]            The common file name for saving figures; shown if not given.
+[-m {...}]                  Interpret map as a plain graph and perform layout using this method; see --help for a run-time display of available options.
+[--summarize_flagpole]      Summarizes state-only sites as a numeric annotation.
+[--keep_axes_ticks]         Show the X & Y axes ticks.
+[-ts TEXT_SIZE]             Override default size for text, in points.
+```
 """
 
 import matplotlib as mpl

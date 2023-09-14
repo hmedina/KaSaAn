@@ -3,7 +3,7 @@
 Visualize a set of complexes from a kappa snapshot as plain graphs.
 
 ``` {.text}
-usage: kappa_snapshot_visualizer_subcomponent
+usage: kappa_snapshot_visualizer_subcomponent [-h] -sf SNAPSHOT_FILE_NAME [-s [SIZES ...]] [-cs COLORING_SCHEME] [-p [HIGHLIGHT_PATTERNS ...]] [-of OUTPUT_FILE] [-fs WIDTH HEIGHT] [-ns NODE_SIZE] [-ew EDGE_WIDTH] [-d] [-ts TEXT_SIZE]
 [-h]                        Show detailed help.
 -sf SNAPSHOT_FILE_NAME      Name of snapshot to visualize.
 [-s [...]]                  Complex sizes to be viewed. Biggest if not given.
@@ -14,6 +14,7 @@ usage: kappa_snapshot_visualizer_subcomponent
 [-ns NODE_SIZE]             Size of nodes; default of 300 as used by NetworkX.
 [-ew EDGE_WIDTH]            Width of edges; default of 1.0 as used by NetworkX.
 [-d]                        Print to standard output the size distribution.
+[-ts TEXT_SIZE]             Override default size for text, in points.
 ```
 """
 

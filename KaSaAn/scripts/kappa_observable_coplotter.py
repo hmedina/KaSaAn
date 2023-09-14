@@ -3,7 +3,7 @@
 Plot a variable from several output files.
 
 ``` {.text}
-usage: kappa_observable_coplotter
+usage: kappa_observable_coplotter [-h] -p PATTERN [-vi VARIABLE_BY_INDEX] [-vn VARIABLE_BY_NAME] [-ve VARIABLE_EXPRESSION] [-o OUT_FILE] [-d] [-fs WIDTH HEIGHT] [--limit_left LIMIT_LEFT] [--limit_right LIMIT_RIGHT] [--limit_bottom LIMIT_BOTTOM] [--limit_top LIMIT_TOP] [-lx] [-ly] [-nl] [-ts TEXT_SIZE]
 [-h]                        Show detailed help.
 -p PATTERN                  (quoted) Pattern matching desired files.
 [-vi VARIABLE_BY_INDEX]     Index of the variable to be co-plotted.
@@ -19,6 +19,7 @@ usage: kappa_observable_coplotter
 [-lx]                       Plot the X axis in logarithmic scale.
 [-ly]                       Plot the Y axis in logarithmic scale.
 [-nl]                       Do not insert a legend with filenames.
+[-ts TEXT_SIZE]             Override default size for text, in points.
 ```
 """
 

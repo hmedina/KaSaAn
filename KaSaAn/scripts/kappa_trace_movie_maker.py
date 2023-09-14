@@ -3,7 +3,7 @@
 Make a movie out of a set of snapshot files, and save it to disk.
 
 ``` {.text}
-usage: kappa_trace_movie_maker
+usage: kappa_trace_movie_maker [-h] [-d DIRECTORY] [-p PATTERN] [-m {mass,count,size}] [-o OUTPUT_FILE] [-w FIG_WIDTH] [-r XY_RATIO] [-s] [-l LEGEND_COLUMNS] [-f FRAME_INTERVAL] [-v] [-ts TEXT_SIZE]
 [-h]                    Show detailed help.
 [-d DIRECTORY]          Directory where snapshots are located, default <.>
 [-m {mass,count,size}]  What dictates area; default is mass.
@@ -14,6 +14,7 @@ usage: kappa_trace_movie_maker
 [-l LEGEND_COLUMNS]     Number of columns in the legend. Default value is 2.
 [-f FRAME_INTERVAL]     Number of mili-seconds between frames in the animation.
 [-v]                    Display information about number of snapshots found.
+[-ts TEXT_SIZE]         Override default size for text, in points.
 ```
 
 For example:

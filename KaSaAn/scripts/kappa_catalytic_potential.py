@@ -3,7 +3,7 @@
 Get the catalytic potential per snapshot for a series.
 
 ``` {.text}
-usage: kappa_catalytic_potential
+usage: kappa_catalytic_potential [-h] [-d DIRECTORY] -e ENZYME_NAME -s SUBSTRATE_NAME [-v] [-o OUTPUT_FILE] [-p SNAPSHOT_PATTERN] [-ts TEXT_SIZE]
 [-h]                Show detailed help.
 [-d DIRECTORY]      Directory containing the snapshots.
 -e ENZYME_NAME      Name of the first agent.
@@ -11,7 +11,7 @@ usage: kappa_catalytic_potential
 [-v]                If set, print additional information to standard output.
 [-o OUTPUT_FILE]    If specified, save to file; else print to standard output.
 -p SNAPSHOT_PREFIX  The prefix by which the snapshots are named.
--fs FONT_SIZE       Size of font for all text elements.
+[-ts TEXT_SIZE]     Override default size for text, in points.
 ```
 """
 

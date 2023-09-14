@@ -3,7 +3,7 @@
 Plot the compostion of the giant component in time from a set of snapshots located in a directory.
 
 ``` {.text}
-usage: kappa_snapshot_largest_complex_time
+usage: kappa_snapshot_largest_complex_time [-h] [-d DIRECTORY] [-p PATTERN] [-cs COLORING_SCHEME] [-o OUTPUT_NAME] [-fs WIDTH HEIGHT] [--lin_log] [--log_lin] [--log_log] [--un_stacked] [-mt MULTI_THREAD] [-ts TEXT_SIZE]
 [-h]                    Show detailed help.
 [-d DIRECTORY]          Directory where snapshots are stored, default is <.>
 [-p PATTERN]            Pattern that groups desired snapshots names; default 'snap*.ka'.
@@ -19,6 +19,7 @@ usage: kappa_snapshot_largest_complex_time
 [--log_log]             If specified, produce an additional plot with logarithmic X-axis and logarithmic Y-axis.
 [--un_stacked]          If given, produce regular non-stacked plot.
 [--mt THREADS]          Launch multiple threads for reading snapshots. Safe, but always less performant: WIP.
+[-ts TEXT_SIZE]         Override default size for text, in points.
 ```
 """
 

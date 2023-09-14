@@ -3,7 +3,7 @@
 Visualize a kappa snapshot using a plain graph.
 
 ``` {.text}
-usage: kappa_snapshot_visualizer_network
+usage: kappa_snapshot_visualizer_network [-h] -sf SNAPSHOT_FILE_NAME [-cs COLORING_SCHEME] [-p [HIGHLIGHT_PATTERNS ...]] [-of OUTPUT_FILE] [-fs WIDTH HEIGHT] [-ns NODE_SIZE] [-ew EDGE_WIDTH] [-ts TEXT_SIZE]
 [-h]                        Show detailed help.
 -sf SNAPSHOT_FILE_NAME      Name of the snapshot file to be viewed.
 [-cs FILE_NAME]             Optional file containing an agent coloring scheme.
@@ -12,6 +12,7 @@ usage: kappa_snapshot_visualizer_network
 [-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
 [-ns NODE_SIZE]             Size of nodes; default of 300 as used by NetworkX.
 [-ew EDGE_WIDTH]            Width of edges; default of 1.0 as used by NetworkX.
+[-ts TEXT_SIZE]             Override default size for text, in points.
 ```
 
 The following are two views of the same snapshot, one showing all nodes, the other

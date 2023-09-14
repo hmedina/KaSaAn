@@ -3,7 +3,7 @@
 Visualize a kappa snapshot using a plain graph.
 
 ``` {.text}
-usage: kappa_snapshot_visualizer_network
+usage: kappa_snapshot_visualizer_patchwork [-h] -sf SNAPSHOT_FILE [-cs COLORING_SCHEME] [-vm {all,mass,count,size}] [-of OUTPUT_FILE] [-fs WIDTH HEIGHT] [-dpi DOTS_PER_INCH] [-ts TEXT_SIZE]
 [-h]                        Show detailed help.
 -sf SNAPSHOT_FILE_NAME      Name of snapshot to visualize.
 [-cs FILE_NAME]             File specifying a coloring scheme.
@@ -11,6 +11,7 @@ usage: kappa_snapshot_visualizer_network
 [-of OUTPUT_FILE]           The common file name for saving figures; shown if not given.
 [-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
 [-dpi DOTS_PER_INCH]        Resolution of the figure.
+[-ts TEXT_SIZE]             Override default size for text, in points.
 ```
 
 For example:
