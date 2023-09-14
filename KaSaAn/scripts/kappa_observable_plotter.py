@@ -3,23 +3,30 @@
 Plot a trace file produced by KaSim.
 
 ``` {.text}
-usage: kappa_observable_plotter [-h] [-i INPUT_FILE_NAME] [-o OUTPUT_FILE_NAME] [-p PRINT_OBSERVABLES_TO_FILE] [-vi [VARIABLE_INDEXES ...]] [-vn [VARIABLE_NAMES ...]] [-ve [VARIABLE_EXPRESSIONS ...]] [-fs WIDTH HEIGHT] [--limit_left LIMIT_LEFT] [--limit_right LIMIT_RIGHT] [--limit_bottom LIMIT_BOTTOM] [--limit_top LIMIT_TOP] [-d] [-lx] [-ly] [-ts TEXT_SIZE]
-[-h]                    Show detailed help.
-[-i INPUT_FILE_NAME]    File to be plotted, <data.csv> if omitted.
-[-o OUTPUT_FILE_NAME]   If given, save plot to file; else show.
-[-p FILE_NAME]          Dump ordered observables to file, one per line, for indexing.
-[-vi [...]]             The list of observable indexes to be plotted; all if omitted.
-[-vn [...]]             The name of observables to be plotted; all if omitted.
-[-ve [...]]]            Algebraic expressions of variable names.
-[-fs WIDTH HEIGHT]      Size of the resulting figure, in inches.
-[--limit_left X_MIN]    Override left limit of plot.
-[--limit_right X_MAX]   Override right limit of plot.
-[--limit_bottom Y_MIN]  Override bottom limit of plot.
-[--limit_top Y_MAX]     Override top limit of plot.
-[-d]                    If passed, plot discrete differential over time.
-[-lx]                   Plot the X axis in logarithmic scale.
-[-ly]                   Plot the Y axis in logarithmic scale.
-[-ts TEXT_SIZE]         Override default size for text, in points.
+usage: kappa_observable_plotter [-h] [-i INPUT_FILE_NAME] [-o OUTPUT_FILE_NAME] [-p PRINT_OBSERVABLES_TO_FILE] [-vi [VARIABLE_INDEXES ...]] [-vn [VARIABLE_NAMES ...]] [-ve [VARIABLE_EXPRESSIONS ...]] [-fs WIDTH HEIGHT] [--limit_left LIMIT_LEFT] [--limit_right LIMIT_RIGHT] [--limit_bottom LIMIT_BOTTOM] [--limit_top LIMIT_TOP] [-d] [-lx] [-ly] [-ts TEXT_SIZE] [--legend_loc {upper left,upper center,upper right,center left,center,center right,lower left,lower center,lower right,outside right upper,outside right lower,outside left upper,outside left lower}] [--legend_ncol LEGEND_NCOL]
+[-h]                            Show detailed help.
+[-i INPUT_FILE_NAME]            File to be plotted, <data.csv> if omitted.
+[-o OUTPUT_FILE_NAME]           If given, save plot to file; else show.
+[-p FILE_NAME]                  Dump ordered observables to file, one per line, for indexing.
+[-vi [...]]                     The list of observable indexes to be plotted; all if omitted.
+[-vn [...]]                     The name of observables to be plotted; all if omitted.
+[-ve [...]]]                    Algebraic expressions of variable names.
+[-fs WIDTH HEIGHT]              Size of the resulting figure, in inches.
+[--limit_left X_MIN]            Override left limit of plot.
+[--limit_right X_MAX]           Override right limit of plot.
+[--limit_bottom Y_MIN]          Override bottom limit of plot.
+[--limit_top Y_MAX]             Override top limit of plot.
+[-d]                            If passed, plot discrete differential over time.
+[-lx]                           Plot the X axis in logarithmic scale.
+[-ly]                           Plot the Y axis in logarithmic scale.
+[-ts TEXT_SIZE]                 Override default size for text, in points.
+[--legend_loc {...} ]           Specify legend location; <outside> options plot outside axes. Options are:
+                                    upper left, upper center, upper right,
+                                    center left, center, center right,
+                                    lower left, lower center, lower right,
+                                    outside left upper, outside right upper,
+                                    outside left lower, outside right lower
+[--legend_ncol LEGEND_NCOL]     Number of columns for the legend.
 ```
 """
 
@@ -76,6 +83,14 @@ def main():
                         help='Plot the Y axis in logarithmic scale.')
     parser.add_argument('-ts', '--text_size', type=int,
                         help="If given, set point size for all text elements, overriding MatPlotLib's default.")
+    parser.add_argument('--legend_loc', type=str, choices=[
+        'upper left', 'upper center', 'upper right',
+        'center left', 'center', 'center right',
+        'lower left', 'lower center', 'lower right',
+        'outside right upper', 'outside right lower', 'outside left upper', 'outside left lower'],
+                        help='Override location of the legend. Options prefixed with <outside> plot outside the axes.')
+    parser.add_argument('--legend_ncol', type=int, default=1,
+                        help='Number of columns for the legend.')
     args = parser.parse_args()
 
     if args.text_size:
@@ -89,8 +104,12 @@ def main():
                                    vars_names=args.variable_names,
                                    vars_exprs=args.variable_expressions,
                                    axis_x_log=args.log_x, axis_y_log=args.log_y,
-                                   diff_toggle=args.differential)
-
+                                   diff_toggle=args.differential,
+                                   add_legend=False)
+    if args.legend_loc is not None:
+        fig.legend(loc=args.legend_loc, ncol=args.legend_ncol)
+    else:
+        ax.legend(loc='best', ncol=args.legend_ncol)
     ax.set_xlim(left=args.limit_left, right=args.limit_right)
     ax.set_ylim(bottom=args.limit_bottom, top=args.limit_top)
 

@@ -23,7 +23,7 @@ def observable_file_reader(file_name: str = 'data.csv') -> Tuple[list, np.ndarra
 def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndarray],
                                    vars_indexes: List[int], vars_names: List[str], vars_exprs: List[str],
                                    axis_x_log: bool = False, axis_y_log: bool = False,
-                                   diff_toggle: bool = False) -> mpa.Axes:
+                                   diff_toggle: bool = False, add_legend: bool = True) -> mpa.Axes:
     """Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object. See file
      under `KaSaAn.scripts` for further usage."""
     leg_data, num_data = data
@@ -100,7 +100,9 @@ def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndar
         else:
             plot_drawstyle = 'default'
         obs_axis.plot(x_data, y_data, label=this_var, drawstyle=plot_drawstyle)
-    obs_axis.legend()
+    # add condition for case when external legend control is desired
+    if add_legend:
+        obs_axis.legend()
     obs_axis.set_xlabel('Time')
     # adjust label if plotting a differential
     if diff_toggle:
