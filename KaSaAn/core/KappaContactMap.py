@@ -82,7 +82,7 @@ def _raw_string_to_agent_sites_bond_types(raw_string: str) -> Tuple[str, dict]:
 
 
 def _parsed_kappa_to_default_graphics(parsed_kappa_struct: dict,
-                                      wedge_surf_dist=1, wedge_thick_ratio=0.5, grid_spacing=10) -> dict:
+                                      wedge_surf_dist=1.5, wedge_thick_ratio=0.5, grid_spacing=10) -> dict:
     """Initialize agents as a square grid, sites superposed (i.e. default values)."""
     agent_graphics = {}
     grid_base = np.ceil(np.sqrt(len(parsed_kappa_struct.keys())))
@@ -121,7 +121,7 @@ def _initialize_sites_graphic_structure(graphic_struct: dict, scale_wedges: bool
             wedge_number = bind_site_number + 2
         else:
             wedge_number = bind_site_number + 1
-        wedge_scaling_factor = np.sqrt(wedge_number) if scale_wedges else 1
+        wedge_scaling_factor = np.sqrt(2 * wedge_number) if scale_wedges else 1
         wedge_ends = np.rad2deg(np.linspace(0, 2*np.pi, wedge_number))
         # define default color palette based on number of wedges
         site_palette = _default_site_colors(bind_site_number)
@@ -199,10 +199,10 @@ def _define_bond_spline_points(bond_type_dict, init_graphic_struct) -> dict:
         point_dict['a_y'] = ag_1_center_y + np.sin(np.deg2rad(st_1_midline)) * ag_1_surface
         point_dict['d_x'] = ag_2_center_x + np.cos(np.deg2rad(st_2_midline)) * ag_2_surface
         point_dict['d_y'] = ag_2_center_y + np.sin(np.deg2rad(st_2_midline)) * ag_2_surface
-        point_dict['b_x'] = ag_1_center_x + np.cos(np.deg2rad(st_1_midline)) * 3 * ag_1_surface
-        point_dict['b_y'] = ag_1_center_y + np.sin(np.deg2rad(st_1_midline)) * 3 * ag_1_surface
-        point_dict['c_x'] = ag_2_center_x + np.cos(np.deg2rad(st_2_midline)) * 3 * ag_2_surface
-        point_dict['c_y'] = ag_2_center_y + np.sin(np.deg2rad(st_2_midline)) * 3 * ag_2_surface
+        point_dict['b_x'] = ag_1_center_x + np.cos(np.deg2rad(st_1_midline)) * 2 * ag_1_surface
+        point_dict['b_y'] = ag_1_center_y + np.sin(np.deg2rad(st_1_midline)) * 2 * ag_1_surface
+        point_dict['c_x'] = ag_2_center_x + np.cos(np.deg2rad(st_2_midline)) * 2 * ag_2_surface
+        point_dict['c_y'] = ag_2_center_y + np.sin(np.deg2rad(st_2_midline)) * 2 * ag_2_surface
         graphic_bond_points[bond_name] = point_dict
     return graphic_bond_points
 
@@ -233,6 +233,20 @@ def _list_binding_wedges(agent_graphic_struct: dict) -> List[mpp.Wedge]:
     return wedge_list
 
 
+def _list_agent_backgrounds(agent_graphic_struct: dict) -> list[mpp.Circle]:
+    """Create a list of circles to be backgrounds for the central space in an agent."""
+    circle_list = []
+    for agent_name in agent_graphic_struct.keys():
+        if agent_graphic_struct[agent_name]['bnd_sites']:
+            some_wedge_params = list(agent_graphic_struct[agent_name]['bnd_sites'].values())[0]
+            this_circle = mpp.Circle(
+                xy=some_wedge_params['center'],
+                radius=(some_wedge_params['r'] - some_wedge_params['width']),
+                facecolor='#bbb', edgecolor=None)
+            circle_list.append(this_circle)
+    return circle_list
+
+
 def _list_flagpole_wedges(agent_graphic_struct: dict) -> List[mpp.Wedge]:
     """Create a list of wedges for the flagpoles in the structure."""
     wedge_list = []
@@ -248,17 +262,18 @@ def _annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis: mpa.Axe
     """Annotate an axis with data from the binding sites"""
     agent_txt_kwrds = {'fontfamily': 'monospace', 'fontsize': 'medium',
                        'horizontalalignment': 'center', 'verticalalignment': 'center',
-                       'bbox': {'boxstyle': 'round', 'fc': '#ffffffaa'}}
-    wedge_txt_kwrds = {'backgroundcolor': '#ddddddaa', 'fontfamily': 'monospace', 'fontsize': 'x-small',
-                       'verticalalignment': 'center', 'rotation_mode': 'anchor'}
+                       'bbox': {'boxstyle': 'round', 'fc': '#ffffffdd'}}
+    wedge_txt_kwrds = {'fontfamily': 'monospace', 'fontsize': 'x-small',
+                       'verticalalignment': 'center', 'rotation_mode': 'anchor',
+                       'bbox': {'boxstyle': 'round', 'fc': '#e1e1e1dd'}}
     for agent_name in agent_graphic_struct.keys():
         ag_x = agent_graphic_struct[agent_name]['loc_x']
         ag_y = agent_graphic_struct[agent_name]['loc_y']
         for site_name in agent_graphic_struct[agent_name]['bnd_sites'].keys():
             site_data = agent_graphic_struct[agent_name]['bnd_sites'][site_name]
             st_midline = (site_data['theta1'] + site_data['theta2']) / 2
-            txt_x = ag_x + np.cos(np.deg2rad(st_midline)) * (site_data['r'] - site_data['width'])
-            txt_y = ag_y + np.sin(np.deg2rad(st_midline)) * (site_data['r'] - site_data['width'])
+            txt_x = ag_x + np.cos(np.deg2rad(st_midline)) * (site_data['r'] - (site_data['width'] * 2 / 3))
+            txt_y = ag_y + np.sin(np.deg2rad(st_midline)) * (site_data['r'] - (site_data['width'] * 2 / 3))
             if np.cos(np.deg2rad(st_midline)) > 0:
                 text_rotation = 0
                 horz_align = 'left'
@@ -283,27 +298,25 @@ def _draw_flagpole(agent_graphic_struct: dict, figure_axis: mpa.Axes, detailed_t
             fp_midline = (fp_loc['theta1'] + fp_loc['theta2']) / 2
             fp_x_base = ag_x + np.cos(np.deg2rad(fp_midline)) * fp_loc['r']
             fp_y_base = ag_y + np.sin(np.deg2rad(fp_midline)) * fp_loc['r']
-            fp_x_offs = ag_x + np.cos(np.deg2rad(fp_midline)) * (fp_loc['width'] + fp_loc['r'])
-            fp_y_offs = ag_y + np.sin(np.deg2rad(fp_midline)) * (fp_loc['width'] + fp_loc['r'])
+            fp_x_offs = ag_x + np.cos(np.deg2rad(fp_midline)) * (fp_loc['r'] + (fp_loc['width'] * 2/3))
+            fp_y_offs = ag_y + np.sin(np.deg2rad(fp_midline)) * (fp_loc['r'] + (fp_loc['width'] * 2/3))
             # define string
             fp_strings = []
             for site_name in agent_graphic_struct[agent_name]['flagpole_sites'].keys():
                 state_list = agent_graphic_struct[agent_name]['flagpole_sites'][site_name]
                 fp_strings.append(site_name + ': ' + ', '.join(state_list))
-            fp_string = '\n'.join(fp_strings)
+            fp_annot = '\n'.join(fp_strings)
             # define align keywords
             text_kwrds = {'ha': 'left' if np.cos(np.deg2rad(fp_midline)) > 0 else 'right',
                           'va': 'bottom' if np.sin(np.deg2rad(fp_midline)) > 0 else 'top',
                           'fontsize': 'xx-small', 'fontfamily': 'monospace',
-                          'backgroundcolor': '#bbbbbb99'}
+                          'backgroundcolor': '#e1e1e1dd'}
             # draw the actual flagpole?
             figure_axis.plot([fp_x_base, fp_x_offs], [fp_y_base, fp_y_offs], color='k')
-            if detailed_toggle:
-                final_string = fp_string
-            else:
-                fp_annot = ' internal states\nnot shown' if len(fp_strings) > 1 else ' internal state\nnot shown'
-                final_string = str(len(fp_strings)) + fp_annot
-            figure_axis.text(s=final_string, x=fp_x_offs, y=fp_y_offs, **text_kwrds)
+            if not detailed_toggle:
+                sing_plur = 's' if len(fp_strings) > 1 else ''
+                fp_annot = '{} site{}\nhidden'.format(len(fp_strings), sing_plur)
+            figure_axis.text(s=fp_annot, x=fp_x_offs, y=fp_y_offs, **text_kwrds)
 
 
 class KappaContactMap:
@@ -417,7 +430,8 @@ class KappaContactMap:
         self._agent_graphics[agent_name]['bnd_sites'][site_name]['facecolor'] = new_color
 
     def resize_wedges_of(self, agent_name: str, new_size: float):
-        """Resize the wedges of an agent; default size is sqrt of agent's number of wedges, in coordinate-space units."""
+        """Resize the wedges of an agent; default size grows with sqrt of agent's number of wedges, times two,
+        in coordinate-space units."""
         for some_site in self.get_binding_site_names_of(agent_name):
             old_ratio = self._agent_graphics[agent_name]['bnd_sites'][some_site]['r'] / self._agent_graphics[agent_name]['bnd_sites'][some_site]['width']
             self._agent_graphics[agent_name]['bnd_sites'][some_site]['r'] = new_size
@@ -436,8 +450,10 @@ class KappaContactMap:
         spline_list = [_create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
         target_axis.add_collection(PatchCollection(spline_list, match_original=True))
         # draw wedges: sites and flagpole
+        agent_backs = _list_agent_backgrounds(self._agent_graphics)
         site_wedges = _list_binding_wedges(self._agent_graphics)
         flag_wedges = _list_flagpole_wedges(self._agent_graphics)
+        target_axis.add_collection(PatchCollection(agent_backs, match_original=True))
         target_axis.add_collection(PatchCollection(site_wedges, match_original=True))
         target_axis.add_collection(PatchCollection(flag_wedges, match_original=True))
         # draw labels for agents and sites
