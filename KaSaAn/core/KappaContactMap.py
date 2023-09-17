@@ -380,6 +380,9 @@ class KappaContactMap:
 
     def get_binding_site_names_of(self, agent_name: str) -> list[str]:
         """Returns the list of names for the binding sites belonging to an agent."""
+        if agent_name not in self._agent_graphics.keys():
+            raise ValueError(
+                'Unknown agent <{}>, known agents are: '.format(agent_name) + ', '.join(self.get_agent_names()))
         return list(self._agent_graphics[agent_name]['bnd_sites'].keys())
 
     def move_agent_to(self, agent_name: str, new_x: float, new_y: float):
@@ -410,6 +413,37 @@ class KappaContactMap:
         # update
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
+    def _get_current_order(self, agent_name: str) -> List[str]:
+        """Get the current order of an agent's binding wedges."""
+        known_sites = self.get_binding_site_names_of(agent_name)
+        current_order: List[Tuple[str, float]] = []
+        for some_site in known_sites:
+            current_order.append((some_site, self._agent_graphics[agent_name]['bnd_sites'][some_site]['theta1']))
+        current_order.sort(key=lambda a: a[1])
+        return [pair[0] for pair in current_order]
+
+    def reorder_sites_as(self, agent_name: str, desired_order: List[str]):
+        """Reorder the sites of the given agent into the provided order."""
+        # sanity checks: all sites are accounted
+        known_sites = self.get_binding_site_names_of(agent_name)
+        if len(known_sites) != len(desired_order):
+            raise ValueError('Supplied order has mismatch on length vs. known order!')
+        if set(known_sites) != set(desired_order):
+            raise ValueError(''.join([
+                'Supplied order has mismatch on sites vs. known sites!',
+                '\n\tSupplied: {}'.format(desired_order),
+                '\n\tKnown: {}'.format(known_sites)]))
+        # un-optimized bubble sort; binding site number is much less than 100 usually
+        final_ix = len(desired_order)
+        while final_ix > 1:
+            for ix in range(1, final_ix):
+                c_order = self._get_current_order(agent_name)
+                wedge_a = desired_order[ix - 1]
+                wedge_b = desired_order[ix]
+                if c_order.index(wedge_a) > c_order.index(wedge_b):
+                    self.swap_sites_of(agent_name, wedge_a, wedge_b)
+            final_ix -= 1
+
     def swap_sites_of(self, agent_name: str, site_1: str, site_2: str):
         """Swap the positions of two specific sites on a given agent (flagpole not eligible as it's a meta-site; use
          `rotate_all_sites_of`)."""
@@ -433,7 +467,9 @@ class KappaContactMap:
         """Resize the wedges of an agent; default size grows with sqrt of agent's number of wedges, times two,
         in coordinate-space units."""
         for some_site in self.get_binding_site_names_of(agent_name):
-            old_ratio = self._agent_graphics[agent_name]['bnd_sites'][some_site]['r'] / self._agent_graphics[agent_name]['bnd_sites'][some_site]['width']
+            r = self._agent_graphics[agent_name]['bnd_sites'][some_site]['r']
+            w = self._agent_graphics[agent_name]['bnd_sites'][some_site]['width']
+            old_ratio = r / w
             self._agent_graphics[agent_name]['bnd_sites'][some_site]['r'] = new_size
             self._agent_graphics[agent_name]['bnd_sites'][some_site]['width'] = new_size / old_ratio
         if self._agent_graphics[agent_name]['flagpole_sites']:
