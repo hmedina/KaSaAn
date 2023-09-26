@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>KaSaAn.scripts.kappa_contact_map API documentation</title>
-<meta name="description" content="Render a contact map." />
+<meta name="description" content="Render a contact map …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -23,6 +23,16 @@
 </header>
 <section id="section-intro">
 <p>Render a contact map.</p>
+<pre><code class="language-text">kappa_contact_map [-h] [-i INPUT_FILE_NAME] [-fs WIDTH HEIGHT] [-o OUTPUT_FILE_NAME] [-m {...}] [--summarize_flagpole] [--keep_axes_ticks] [-ts TEXT_SIZE]
+[-h]                        Show detailed help.
+[-i INPUT_FILE_NAME]        File with pre-computed contact map, default &lt;inputs.ka&gt;
+[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
+[-o OUTPUT_FILE]            The common file name for saving figures; shown if not given.
+[-m {...}]                  Interpret map as a plain graph and perform layout using this method; see --help for a run-time display of available options.
+[--summarize_flagpole]      Summarizes state-only sites as a numeric annotation.
+[--keep_axes_ticks]         Show the X &amp; Y axes ticks.
+[-ts TEXT_SIZE]             Override default size for text, in points.
+</code></pre>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -30,14 +40,27 @@
 <pre><code class="python">#! /usr/bin/env python3
 &#34;&#34;&#34;
 Render a contact map.
+
+```{.text}
+kappa_contact_map [-h] [-i INPUT_FILE_NAME] [-fs WIDTH HEIGHT] [-o OUTPUT_FILE_NAME] [-m {...}] [--summarize_flagpole] [--keep_axes_ticks] [-ts TEXT_SIZE]
+[-h]                        Show detailed help.
+[-i INPUT_FILE_NAME]        File with pre-computed contact map, default &lt;inputs.ka&gt;
+[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
+[-o OUTPUT_FILE]            The common file name for saving figures; shown if not given.
+[-m {...}]                  Interpret map as a plain graph and perform layout using this method; see --help for a run-time display of available options.
+[--summarize_flagpole]      Summarizes state-only sites as a numeric annotation.
+[--keep_axes_ticks]         Show the X &amp; Y axes ticks.
+[-ts TEXT_SIZE]             Override default size for text, in points.
+```
 &#34;&#34;&#34;
 
-import argparse
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.text as mpt
 import matplotlib.widgets as mpw
 import warnings
+from argparse import ArgumentParser, RawTextHelpFormatter
+from pathlib import Path
 from typing import Tuple
 from KaSaAn.core import KappaContactMap
 from KaSaAn.core.KappaContactMap import valid_graph_layouts
@@ -50,7 +73,7 @@ def main():
     layout_expl: str = &#39;\n&#39;.join([&#39;{:&lt;{width}}\t{}&#39;.format(n, v.__doc__.split(&#39;\n&#39;)[0], width=w)
                                   for n, v in valid_graph_layouts.items()])
 
-    parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawTextHelpFormatter)
+    parser = ArgumentParser(description=main.__doc__, formatter_class=RawTextHelpFormatter)
     parser.add_argument(&#39;-i&#39;, &#39;--input_file_name&#39;, type=str, default=&#39;inputs.ka&#39;,
                         help=&#39;Name of the file containing the contact map, written in kappa by the Kappa Static&#39;
                         &#39; Analyzer (KaSA). By default, will search for `inputs.ka`, aka the &#34;witness file&#34;.&#39;)
@@ -62,7 +85,7 @@ def main():
                         help=&#39;Size of the resulting figure, in inches, specified as two elements, width and height&#39;
                         &#39; (text size is specified in points, so this affects the size of text relative to other&#39;
                         &#39; graph elements).&#39;)
-    parser.add_argument(&#39;-o&#39;, &#39;--output_file_name&#39;, type=str, default=None,
+    parser.add_argument(&#39;-o&#39;, &#39;--output_file_name&#39;, type=Path, default=None,
                         help=&#39;Name of the file to where the figure should be saved; displayed if not specified.&#39;)
     parser.add_argument(&#39;-m&#39;, &#39;--method&#39;, type=str, choices=list(valid_graph_layouts.keys()), default=&#39;&#39;,
                         help=&#39;Interpret contact map as a plain graph and layout using one of these:\n&#39; + layout_expl)
@@ -72,10 +95,15 @@ def main():
     parser.add_argument(&#39;--keep_axes_ticks&#39;, action=&#39;store_true&#39;,
                         help=&#39;If given, will keep the X &amp; Y axes ticks; use this to estimate coordinates and offsets&#39;
                         &#39; for manual agent placement.&#39;)
+    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
+                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
     args = parser.parse_args()
 
+    if args.text_size:
+        mpl.rcParams[&#39;font.size&#39;] = args.text_size
+
     this_cm = KappaContactMap(args.input_file_name)
-    fig, ax = plt.subplots(figsize=args.fig_size)
+    fig, ax = plt.subplots(figsize=args.fig_size, layout=&#39;constrained&#39;)
 
     if args.method != &#39;&#39;:
         this_cm.layout_from_graph(args.method)
@@ -84,9 +112,9 @@ def main():
     if not args.keep_axes_ticks:
         ax.axis(&#39;off&#39;)
 
-    plt.tight_layout()
-
     if args.output_file_name:
+        if not args.output_file_name.parent.exists():
+            args.output_file_name.parent.mkdir(parents=True)
         fig.savefig(args.output_file_name)
     else:
         def re_coord(child_space, parent_space) -&gt; Tuple[int, int, int, int]:
@@ -140,6 +168,7 @@ def main():
         class AgentNameCycler:
             def next(self, event):
                 nonlocal site_list
+                nonlocal swapping_enabled
                 ix = agent_names.index(t_agent_text.get_text())
                 if ix == len(agent_names) - 1:
                     i_next = 0
@@ -155,6 +184,7 @@ def main():
 
             def prev(self, event):
                 nonlocal site_list
+                nonlocal swapping_enabled
                 ix = agent_names.index(t_agent_text.get_text())
                 if ix == 0:
                     i_prev = len(agent_names) - 1
@@ -403,7 +433,7 @@ if __name__ == &#39;__main__&#39;:
     layout_expl: str = &#39;\n&#39;.join([&#39;{:&lt;{width}}\t{}&#39;.format(n, v.__doc__.split(&#39;\n&#39;)[0], width=w)
                                   for n, v in valid_graph_layouts.items()])
 
-    parser = argparse.ArgumentParser(description=main.__doc__, formatter_class=argparse.RawTextHelpFormatter)
+    parser = ArgumentParser(description=main.__doc__, formatter_class=RawTextHelpFormatter)
     parser.add_argument(&#39;-i&#39;, &#39;--input_file_name&#39;, type=str, default=&#39;inputs.ka&#39;,
                         help=&#39;Name of the file containing the contact map, written in kappa by the Kappa Static&#39;
                         &#39; Analyzer (KaSA). By default, will search for `inputs.ka`, aka the &#34;witness file&#34;.&#39;)
@@ -415,7 +445,7 @@ if __name__ == &#39;__main__&#39;:
                         help=&#39;Size of the resulting figure, in inches, specified as two elements, width and height&#39;
                         &#39; (text size is specified in points, so this affects the size of text relative to other&#39;
                         &#39; graph elements).&#39;)
-    parser.add_argument(&#39;-o&#39;, &#39;--output_file_name&#39;, type=str, default=None,
+    parser.add_argument(&#39;-o&#39;, &#39;--output_file_name&#39;, type=Path, default=None,
                         help=&#39;Name of the file to where the figure should be saved; displayed if not specified.&#39;)
     parser.add_argument(&#39;-m&#39;, &#39;--method&#39;, type=str, choices=list(valid_graph_layouts.keys()), default=&#39;&#39;,
                         help=&#39;Interpret contact map as a plain graph and layout using one of these:\n&#39; + layout_expl)
@@ -425,10 +455,15 @@ if __name__ == &#39;__main__&#39;:
     parser.add_argument(&#39;--keep_axes_ticks&#39;, action=&#39;store_true&#39;,
                         help=&#39;If given, will keep the X &amp; Y axes ticks; use this to estimate coordinates and offsets&#39;
                         &#39; for manual agent placement.&#39;)
+    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
+                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
     args = parser.parse_args()
 
+    if args.text_size:
+        mpl.rcParams[&#39;font.size&#39;] = args.text_size
+
     this_cm = KappaContactMap(args.input_file_name)
-    fig, ax = plt.subplots(figsize=args.fig_size)
+    fig, ax = plt.subplots(figsize=args.fig_size, layout=&#39;constrained&#39;)
 
     if args.method != &#39;&#39;:
         this_cm.layout_from_graph(args.method)
@@ -437,9 +472,9 @@ if __name__ == &#39;__main__&#39;:
     if not args.keep_axes_ticks:
         ax.axis(&#39;off&#39;)
 
-    plt.tight_layout()
-
     if args.output_file_name:
+        if not args.output_file_name.parent.exists():
+            args.output_file_name.parent.mkdir(parents=True)
         fig.savefig(args.output_file_name)
     else:
         def re_coord(child_space, parent_space) -&gt; Tuple[int, int, int, int]:
@@ -493,6 +528,7 @@ if __name__ == &#39;__main__&#39;:
         class AgentNameCycler:
             def next(self, event):
                 nonlocal site_list
+                nonlocal swapping_enabled
                 ix = agent_names.index(t_agent_text.get_text())
                 if ix == len(agent_names) - 1:
                     i_next = 0
@@ -508,6 +544,7 @@ if __name__ == &#39;__main__&#39;:
 
             def prev(self, event):
                 nonlocal site_list
+                nonlocal swapping_enabled
                 ix = agent_names.index(t_agent_text.get_text())
                 if ix == 0:
                     i_prev = len(agent_names) - 1

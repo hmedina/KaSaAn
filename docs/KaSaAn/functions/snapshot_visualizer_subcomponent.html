@@ -96,7 +96,7 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
     # figure list construction
     fig_list: List[plt.figure] = []
     # construct the all-agent figure
-    fig_all = plt.figure(figsize=fig_size)
+    fig_all = plt.figure(figsize=fig_size, layout=&#39;constrained&#39;)
     for c_graph, c_kappa, abund, rect, npos in plotting_data:
         ax = fig_all.add_axes([rect[&#39;x&#39;], rect[&#39;y&#39;], rect[&#39;dx&#39;], rect[&#39;dy&#39;]])
         # try to assign color to nodes based on color scheme
@@ -121,11 +121,11 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
                                                     &#39;copies&#39; if abund &gt; 1 else &#39;copy&#39;,
                                                     c_kappa.get_size_of_complex())))
     fig_list.append(fig_all)
-    # construct the patter-specific figures
+    # construct the pattern-specific figures
     if highlight_patterns:
         for string_pattern in highlight_patterns:
             kappa_query = KappaAgent(string_pattern)
-            fig_patt = plt.figure(figsize=fig_size)
+            fig_patt = plt.figure(figsize=fig_size, layout=&#39;constrained&#39;)
             for c_graph, c_kappa, abund, rect, npos in plotting_data:
                 ax = fig_patt.add_axes([rect[&#39;x&#39;], rect[&#39;y&#39;], rect[&#39;dx&#39;], rect[&#39;dy&#39;]])
                 # try to assign color to nodes based on color scheme and user-supplied pattern
@@ -226,7 +226,7 @@ certain patterns. See file under <code><a title="KaSaAn.scripts" href="../script
     # figure list construction
     fig_list: List[plt.figure] = []
     # construct the all-agent figure
-    fig_all = plt.figure(figsize=fig_size)
+    fig_all = plt.figure(figsize=fig_size, layout=&#39;constrained&#39;)
     for c_graph, c_kappa, abund, rect, npos in plotting_data:
         ax = fig_all.add_axes([rect[&#39;x&#39;], rect[&#39;y&#39;], rect[&#39;dx&#39;], rect[&#39;dy&#39;]])
         # try to assign color to nodes based on color scheme
@@ -251,11 +251,11 @@ certain patterns. See file under <code><a title="KaSaAn.scripts" href="../script
                                                     &#39;copies&#39; if abund &gt; 1 else &#39;copy&#39;,
                                                     c_kappa.get_size_of_complex())))
     fig_list.append(fig_all)
-    # construct the patter-specific figures
+    # construct the pattern-specific figures
     if highlight_patterns:
         for string_pattern in highlight_patterns:
             kappa_query = KappaAgent(string_pattern)
-            fig_patt = plt.figure(figsize=fig_size)
+            fig_patt = plt.figure(figsize=fig_size, layout=&#39;constrained&#39;)
             for c_graph, c_kappa, abund, rect, npos in plotting_data:
                 ax = fig_patt.add_axes([rect[&#39;x&#39;], rect[&#39;y&#39;], rect[&#39;dx&#39;], rect[&#39;dy&#39;]])
                 # try to assign color to nodes based on color scheme and user-supplied pattern

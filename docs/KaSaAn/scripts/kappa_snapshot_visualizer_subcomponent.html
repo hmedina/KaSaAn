@@ -23,7 +23,7 @@
 </header>
 <section id="section-intro">
 <p>Visualize a set of complexes from a kappa snapshot as plain graphs.</p>
-<pre><code class="language-text">usage: kappa_snapshot_visualizer_subcomponent
+<pre><code class="language-text">usage: kappa_snapshot_visualizer_subcomponent [-h] -sf SNAPSHOT_FILE_NAME [-s [SIZES ...]] [-cs COLORING_SCHEME] [-p [HIGHLIGHT_PATTERNS ...]] [-of OUTPUT_FILE] [-fs WIDTH HEIGHT] [-ns NODE_SIZE] [-ew EDGE_WIDTH] [-d] [-ts TEXT_SIZE]
 [-h]                        Show detailed help.
 -sf SNAPSHOT_FILE_NAME      Name of snapshot to visualize.
 [-s [...]]                  Complex sizes to be viewed. Biggest if not given.
@@ -34,6 +34,7 @@
 [-ns NODE_SIZE]             Size of nodes; default of 300 as used by NetworkX.
 [-ew EDGE_WIDTH]            Width of edges; default of 1.0 as used by NetworkX.
 [-d]                        Print to standard output the size distribution.
+[-ts TEXT_SIZE]             Override default size for text, in points.
 </code></pre>
 <details class="source">
 <summary>
@@ -44,7 +45,7 @@
 Visualize a set of complexes from a kappa snapshot as plain graphs.
 
 ``` {.text}
-usage: kappa_snapshot_visualizer_subcomponent
+usage: kappa_snapshot_visualizer_subcomponent [-h] -sf SNAPSHOT_FILE_NAME [-s [SIZES ...]] [-cs COLORING_SCHEME] [-p [HIGHLIGHT_PATTERNS ...]] [-of OUTPUT_FILE] [-fs WIDTH HEIGHT] [-ns NODE_SIZE] [-ew EDGE_WIDTH] [-d] [-ts TEXT_SIZE]
 [-h]                        Show detailed help.
 -sf SNAPSHOT_FILE_NAME      Name of snapshot to visualize.
 [-s [...]]                  Complex sizes to be viewed. Biggest if not given.
@@ -55,6 +56,7 @@ usage: kappa_snapshot_visualizer_subcomponent
 [-ns NODE_SIZE]             Size of nodes; default of 300 as used by NetworkX.
 [-ew EDGE_WIDTH]            Width of edges; default of 1.0 as used by NetworkX.
 [-d]                        Print to standard output the size distribution.
+[-ts TEXT_SIZE]             Override default size for text, in points.
 ```
 &#34;&#34;&#34;
 
@@ -88,7 +90,7 @@ def main():
                              &#39; positions, allowing visual comparison for pattern location in overall mixture. If saved,&#39;
                              &#39; filenames will have &#34;_n&#34; after the filename, where &#34;n&#34; is the order of the pattern used&#39;
                              &#39; for that highlighting. E.g. &#34;A(site{ph})&#34;, these patterns should probably be quoted.&#39;)
-    parser.add_argument(&#39;-of&#39;, &#39;--output_file&#39;, type=str,
+    parser.add_argument(&#39;-of&#39;, &#39;--output_file&#39;, type=Path, default=None,
                         help=&#39;Optional name of file to save the view to instead of displaying it on screen. Extension&#39;
                              &#39; dictates the format. Valid choices include PNG, PDF, SVG (anything supported by&#39;
                              &#39; MatPlotLib).&#39;)
@@ -102,7 +104,12 @@ def main():
                         help=&#39;Width of edges; default of 1.0 as used by NetworkX.&#39;)
     parser.add_argument(&#39;-d&#39;, &#39;--print_size_distribution&#39;, action=&#39;store_true&#39;, default=False,
                         help=&#39;If given, program will print to std-out the size distribution in the snapshot.&#39;)
+    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
+                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
     args = parser.parse_args()
+
+    if args.text_size:
+        mpl.rcParams[&#39;font.size&#39;] = args.text_size
 
     # render graph
     figure_list = render_complexes_as_plain_graph(snapshot_file_name=args.snapshot_file_name,
@@ -116,6 +123,8 @@ def main():
 
     # save or display the figure(s)
     if args.output_file:
+        if not args.output_file.parent.exists():
+            args.output_file.parent.mkdir(parents=True)
         figure_list[0].savefig(fname=args.output_file)
         if args.highlight_patterns:
             out_path = Path(args.output_file)
@@ -172,7 +181,7 @@ if __name__ == &#39;__main__&#39;:
                              &#39; positions, allowing visual comparison for pattern location in overall mixture. If saved,&#39;
                              &#39; filenames will have &#34;_n&#34; after the filename, where &#34;n&#34; is the order of the pattern used&#39;
                              &#39; for that highlighting. E.g. &#34;A(site{ph})&#34;, these patterns should probably be quoted.&#39;)
-    parser.add_argument(&#39;-of&#39;, &#39;--output_file&#39;, type=str,
+    parser.add_argument(&#39;-of&#39;, &#39;--output_file&#39;, type=Path, default=None,
                         help=&#39;Optional name of file to save the view to instead of displaying it on screen. Extension&#39;
                              &#39; dictates the format. Valid choices include PNG, PDF, SVG (anything supported by&#39;
                              &#39; MatPlotLib).&#39;)
@@ -186,7 +195,12 @@ if __name__ == &#39;__main__&#39;:
                         help=&#39;Width of edges; default of 1.0 as used by NetworkX.&#39;)
     parser.add_argument(&#39;-d&#39;, &#39;--print_size_distribution&#39;, action=&#39;store_true&#39;, default=False,
                         help=&#39;If given, program will print to std-out the size distribution in the snapshot.&#39;)
+    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
+                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
     args = parser.parse_args()
+
+    if args.text_size:
+        mpl.rcParams[&#39;font.size&#39;] = args.text_size
 
     # render graph
     figure_list = render_complexes_as_plain_graph(snapshot_file_name=args.snapshot_file_name,
@@ -200,6 +214,8 @@ if __name__ == &#39;__main__&#39;:
 
     # save or display the figure(s)
     if args.output_file:
+        if not args.output_file.parent.exists():
+            args.output_file.parent.mkdir(parents=True)
         figure_list[0].savefig(fname=args.output_file)
         if args.highlight_patterns:
             out_path = Path(args.output_file)

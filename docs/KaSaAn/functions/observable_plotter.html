@@ -51,7 +51,7 @@ def observable_file_reader(file_name: str = &#39;data.csv&#39;) -&gt; Tuple[list
 def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndarray],
                                    vars_indexes: List[int], vars_names: List[str], vars_exprs: List[str],
                                    axis_x_log: bool = False, axis_y_log: bool = False,
-                                   diff_toggle: bool = False) -&gt; mpa.Axes:
+                                   diff_toggle: bool = False, add_legend: bool = True) -&gt; mpa.Axes:
     &#34;&#34;&#34;Function plots a parsed kappa output file, e.g. &lt;data.csv&gt;, and returns a matplotlib figure object. See file
      under `KaSaAn.scripts` for further usage.&#34;&#34;&#34;
     leg_data, num_data = data
@@ -128,7 +128,9 @@ def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndar
         else:
             plot_drawstyle = &#39;default&#39;
         obs_axis.plot(x_data, y_data, label=this_var, drawstyle=plot_drawstyle)
-    obs_axis.legend()
+    # add condition for case when external legend control is desired
+    if add_legend:
+        obs_axis.legend()
     obs_axis.set_xlabel(&#39;Time&#39;)
     # adjust label if plotting a differential
     if diff_toggle:
@@ -173,7 +175,7 @@ def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndar
 </details>
 </dd>
 <dt id="KaSaAn.functions.observable_plotter.observable_list_axis_annotator"><code class="name flex">
-<span>def <span class="ident">observable_list_axis_annotator</span></span>(<span>obs_axis: matplotlib.axes._axes.Axes, data: Tuple[list, numpy.ndarray], vars_indexes: List[int], vars_names: List[str], vars_exprs: List[str], axis_x_log: bool = False, axis_y_log: bool = False, diff_toggle: bool = False) ‑> matplotlib.axes._axes.Axes</span>
+<span>def <span class="ident">observable_list_axis_annotator</span></span>(<span>obs_axis: matplotlib.axes._axes.Axes, data: Tuple[list, numpy.ndarray], vars_indexes: List[int], vars_names: List[str], vars_exprs: List[str], axis_x_log: bool = False, axis_y_log: bool = False, diff_toggle: bool = False, add_legend: bool = True) ‑> matplotlib.axes._axes.Axes</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object. See file
@@ -185,7 +187,7 @@ under <code><a title="KaSaAn.scripts" href="../scripts/index.html">KaSaAn.script
 <pre><code class="python">def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndarray],
                                    vars_indexes: List[int], vars_names: List[str], vars_exprs: List[str],
                                    axis_x_log: bool = False, axis_y_log: bool = False,
-                                   diff_toggle: bool = False) -&gt; mpa.Axes:
+                                   diff_toggle: bool = False, add_legend: bool = True) -&gt; mpa.Axes:
     &#34;&#34;&#34;Function plots a parsed kappa output file, e.g. &lt;data.csv&gt;, and returns a matplotlib figure object. See file
      under `KaSaAn.scripts` for further usage.&#34;&#34;&#34;
     leg_data, num_data = data
@@ -262,7 +264,9 @@ under <code><a title="KaSaAn.scripts" href="../scripts/index.html">KaSaAn.script
         else:
             plot_drawstyle = &#39;default&#39;
         obs_axis.plot(x_data, y_data, label=this_var, drawstyle=plot_drawstyle)
-    obs_axis.legend()
+    # add condition for case when external legend control is desired
+    if add_legend:
+        obs_axis.legend()
     obs_axis.set_xlabel(&#39;Time&#39;)
     # adjust label if plotting a differential
     if diff_toggle:

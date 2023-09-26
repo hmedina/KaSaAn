@@ -1149,6 +1149,9 @@ and is designed to read in from said files. Example usage:</p>
 
     def get_binding_site_names_of(self, agent_name: str) -&gt; list[str]:
         &#34;&#34;&#34;Returns the list of names for the binding sites belonging to an agent.&#34;&#34;&#34;
+        if agent_name not in self._agent_graphics.keys():
+            raise ValueError(
+                &#39;Unknown agent &lt;{}&gt;, known agents are: &#39;.format(agent_name) + &#39;, &#39;.join(self.get_agent_names()))
         return list(self._agent_graphics[agent_name][&#39;bnd_sites&#39;].keys())
 
     def move_agent_to(self, agent_name: str, new_x: float, new_y: float):
@@ -1179,6 +1182,37 @@ and is designed to read in from said files. Example usage:</p>
         # update
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
+    def _get_current_order(self, agent_name: str) -&gt; List[str]:
+        &#34;&#34;&#34;Get the current order of an agent&#39;s binding wedges.&#34;&#34;&#34;
+        known_sites = self.get_binding_site_names_of(agent_name)
+        current_order: List[Tuple[str, float]] = []
+        for some_site in known_sites:
+            current_order.append((some_site, self._agent_graphics[agent_name][&#39;bnd_sites&#39;][some_site][&#39;theta1&#39;]))
+        current_order.sort(key=lambda a: a[1])
+        return [pair[0] for pair in current_order]
+
+    def reorder_sites_as(self, agent_name: str, desired_order: List[str]):
+        &#34;&#34;&#34;Reorder the sites of the given agent into the provided order.&#34;&#34;&#34;
+        # sanity checks: all sites are accounted
+        known_sites = self.get_binding_site_names_of(agent_name)
+        if len(known_sites) != len(desired_order):
+            raise ValueError(&#39;Supplied order has mismatch on length vs. known order!&#39;)
+        if set(known_sites) != set(desired_order):
+            raise ValueError(&#39;&#39;.join([
+                &#39;Supplied order has mismatch on sites vs. known sites!&#39;,
+                &#39;\n\tSupplied: {}&#39;.format(desired_order),
+                &#39;\n\tKnown: {}&#39;.format(known_sites)]))
+        # un-optimized bubble sort; binding site number is much less than 100 usually
+        final_ix = len(desired_order)
+        while final_ix &gt; 1:
+            for ix in range(1, final_ix):
+                c_order = self._get_current_order(agent_name)
+                wedge_a = desired_order[ix - 1]
+                wedge_b = desired_order[ix]
+                if c_order.index(wedge_a) &gt; c_order.index(wedge_b):
+                    self.swap_sites_of(agent_name, wedge_a, wedge_b)
+            final_ix -= 1
+
     def swap_sites_of(self, agent_name: str, site_1: str, site_2: str):
         &#34;&#34;&#34;Swap the positions of two specific sites on a given agent (flagpole not eligible as it&#39;s a meta-site; use
          `rotate_all_sites_of`).&#34;&#34;&#34;
@@ -1198,6 +1232,20 @@ and is designed to read in from said files. Example usage:</p>
         `#0f0f0f` (hex RGB[A]), `(0.5, 0.5, 0.5)` (decimal RGB[A]), `xkcd:puke green` (XKCD color survey names).&#34;&#34;&#34;
         self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;facecolor&#39;] = new_color
 
+    def resize_wedges_of(self, agent_name: str, new_size: float):
+        &#34;&#34;&#34;Resize the wedges of an agent; default size grows with sqrt of agent&#39;s number of wedges, times two,
+        in coordinate-space units.&#34;&#34;&#34;
+        for some_site in self.get_binding_site_names_of(agent_name):
+            r = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][some_site][&#39;r&#39;]
+            w = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][some_site][&#39;width&#39;]
+            old_ratio = r / w
+            self._agent_graphics[agent_name][&#39;bnd_sites&#39;][some_site][&#39;r&#39;] = new_size
+            self._agent_graphics[agent_name][&#39;bnd_sites&#39;][some_site][&#39;width&#39;] = new_size / old_ratio
+        if self._agent_graphics[agent_name][&#39;flagpole_sites&#39;]:
+            self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;r&#39;] = new_size
+            self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;width&#39;] = new_size / old_ratio
+        self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
+
     def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True):
         &#34;&#34;&#34;Draw the contact map onto the supplied axis. If `draw_state_flagpole` is `True`, the flagpole will display
         all internal state data. If `False`, it will only display a summary with the number of sites omitted. By
@@ -1207,8 +1255,10 @@ and is designed to read in from said files. Example usage:</p>
         spline_list = [_create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
         target_axis.add_collection(PatchCollection(spline_list, match_original=True))
         # draw wedges: sites and flagpole
+        agent_backs = _list_agent_backgrounds(self._agent_graphics)
         site_wedges = _list_binding_wedges(self._agent_graphics)
         flag_wedges = _list_flagpole_wedges(self._agent_graphics)
+        target_axis.add_collection(PatchCollection(agent_backs, match_original=True))
         target_axis.add_collection(PatchCollection(site_wedges, match_original=True))
         target_axis.add_collection(PatchCollection(flag_wedges, match_original=True))
         # draw labels for agents and sites
@@ -1479,8 +1529,10 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
     spline_list = [_create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
     target_axis.add_collection(PatchCollection(spline_list, match_original=True))
     # draw wedges: sites and flagpole
+    agent_backs = _list_agent_backgrounds(self._agent_graphics)
     site_wedges = _list_binding_wedges(self._agent_graphics)
     flag_wedges = _list_flagpole_wedges(self._agent_graphics)
+    target_axis.add_collection(PatchCollection(agent_backs, match_original=True))
     target_axis.add_collection(PatchCollection(site_wedges, match_original=True))
     target_axis.add_collection(PatchCollection(flag_wedges, match_original=True))
     # draw labels for agents and sites
@@ -1517,6 +1569,9 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
 </summary>
 <pre><code class="python">def get_binding_site_names_of(self, agent_name: str) -&gt; list[str]:
     &#34;&#34;&#34;Returns the list of names for the binding sites belonging to an agent.&#34;&#34;&#34;
+    if agent_name not in self._agent_graphics.keys():
+        raise ValueError(
+            &#39;Unknown agent &lt;{}&gt;, known agents are: &#39;.format(agent_name) + &#39;, &#39;.join(self.get_agent_names()))
     return list(self._agent_graphics[agent_name][&#39;bnd_sites&#39;].keys())</code></pre>
 </details>
 </dd>
@@ -1780,6 +1835,63 @@ the module <code>networkx.drawing.layout</code>.</p></div>
     self._agent_graphics[agent_name][&#39;loc_y&#39;] = new_y
     # update
     self._update_center_of(agent_name)
+    self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaContactMap.reorder_sites_as"><code class="name flex">
+<span>def <span class="ident">reorder_sites_as</span></span>(<span>self, agent_name: str, desired_order: List[str])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reorder the sites of the given agent into the provided order.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reorder_sites_as(self, agent_name: str, desired_order: List[str]):
+    &#34;&#34;&#34;Reorder the sites of the given agent into the provided order.&#34;&#34;&#34;
+    # sanity checks: all sites are accounted
+    known_sites = self.get_binding_site_names_of(agent_name)
+    if len(known_sites) != len(desired_order):
+        raise ValueError(&#39;Supplied order has mismatch on length vs. known order!&#39;)
+    if set(known_sites) != set(desired_order):
+        raise ValueError(&#39;&#39;.join([
+            &#39;Supplied order has mismatch on sites vs. known sites!&#39;,
+            &#39;\n\tSupplied: {}&#39;.format(desired_order),
+            &#39;\n\tKnown: {}&#39;.format(known_sites)]))
+    # un-optimized bubble sort; binding site number is much less than 100 usually
+    final_ix = len(desired_order)
+    while final_ix &gt; 1:
+        for ix in range(1, final_ix):
+            c_order = self._get_current_order(agent_name)
+            wedge_a = desired_order[ix - 1]
+            wedge_b = desired_order[ix]
+            if c_order.index(wedge_a) &gt; c_order.index(wedge_b):
+                self.swap_sites_of(agent_name, wedge_a, wedge_b)
+        final_ix -= 1</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaContactMap.resize_wedges_of"><code class="name flex">
+<span>def <span class="ident">resize_wedges_of</span></span>(<span>self, agent_name: str, new_size: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Resize the wedges of an agent; default size grows with sqrt of agent's number of wedges, times two,
+in coordinate-space units.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def resize_wedges_of(self, agent_name: str, new_size: float):
+    &#34;&#34;&#34;Resize the wedges of an agent; default size grows with sqrt of agent&#39;s number of wedges, times two,
+    in coordinate-space units.&#34;&#34;&#34;
+    for some_site in self.get_binding_site_names_of(agent_name):
+        r = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][some_site][&#39;r&#39;]
+        w = self._agent_graphics[agent_name][&#39;bnd_sites&#39;][some_site][&#39;width&#39;]
+        old_ratio = r / w
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][some_site][&#39;r&#39;] = new_size
+        self._agent_graphics[agent_name][&#39;bnd_sites&#39;][some_site][&#39;width&#39;] = new_size / old_ratio
+    if self._agent_graphics[agent_name][&#39;flagpole_sites&#39;]:
+        self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;r&#39;] = new_size
+        self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;width&#39;] = new_size / old_ratio
     self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
 </details>
 </dd>
@@ -3571,6 +3683,8 @@ identifiers as well as the kappa identifiers.</p></div>
 <li><code><a title="KaSaAn.core.KappaContactMap.layout_from_graph" href="#KaSaAn.core.KappaContactMap.layout_from_graph">layout_from_graph</a></code></li>
 <li><code><a title="KaSaAn.core.KappaContactMap.move_agent_by" href="#KaSaAn.core.KappaContactMap.move_agent_by">move_agent_by</a></code></li>
 <li><code><a title="KaSaAn.core.KappaContactMap.move_agent_to" href="#KaSaAn.core.KappaContactMap.move_agent_to">move_agent_to</a></code></li>
+<li><code><a title="KaSaAn.core.KappaContactMap.reorder_sites_as" href="#KaSaAn.core.KappaContactMap.reorder_sites_as">reorder_sites_as</a></code></li>
+<li><code><a title="KaSaAn.core.KappaContactMap.resize_wedges_of" href="#KaSaAn.core.KappaContactMap.resize_wedges_of">resize_wedges_of</a></code></li>
 <li><code><a title="KaSaAn.core.KappaContactMap.rotate_all_sites_of" href="#KaSaAn.core.KappaContactMap.rotate_all_sites_of">rotate_all_sites_of</a></code></li>
 <li><code><a title="KaSaAn.core.KappaContactMap.set_site_color_of" href="#KaSaAn.core.KappaContactMap.set_site_color_of">set_site_color_of</a></code></li>
 <li><code><a title="KaSaAn.core.KappaContactMap.swap_sites_of" href="#KaSaAn.core.KappaContactMap.swap_sites_of">swap_sites_of</a></code></li>

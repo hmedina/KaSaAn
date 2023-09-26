@@ -23,7 +23,7 @@
 </header>
 <section id="section-intro">
 <p>Visualize a kappa snapshot using a plain graph.</p>
-<pre><code class="language-text">usage: kappa_snapshot_visualizer_network
+<pre><code class="language-text">usage: kappa_snapshot_visualizer_patchwork [-h] -sf SNAPSHOT_FILE [-cs COLORING_SCHEME] [-vm {all,mass,count,size}] [-of OUTPUT_FILE] [-fs WIDTH HEIGHT] [-dpi DOTS_PER_INCH] [-ts TEXT_SIZE]
 [-h]                        Show detailed help.
 -sf SNAPSHOT_FILE_NAME      Name of snapshot to visualize.
 [-cs FILE_NAME]             File specifying a coloring scheme.
@@ -31,6 +31,7 @@
 [-of OUTPUT_FILE]           The common file name for saving figures; shown if not given.
 [-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
 [-dpi DOTS_PER_INCH]        Resolution of the figure.
+[-ts TEXT_SIZE]             Override default size for text, in points.
 </code></pre>
 <p>For example:</p>
 <p><img alt="" src="../../img/kite_snap_patchwork.png"></p>
@@ -43,7 +44,7 @@
 Visualize a kappa snapshot using a plain graph.
 
 ``` {.text}
-usage: kappa_snapshot_visualizer_network
+usage: kappa_snapshot_visualizer_patchwork [-h] -sf SNAPSHOT_FILE [-cs COLORING_SCHEME] [-vm {all,mass,count,size}] [-of OUTPUT_FILE] [-fs WIDTH HEIGHT] [-dpi DOTS_PER_INCH] [-ts TEXT_SIZE]
 [-h]                        Show detailed help.
 -sf SNAPSHOT_FILE_NAME      Name of snapshot to visualize.
 [-cs FILE_NAME]             File specifying a coloring scheme.
@@ -51,6 +52,7 @@ usage: kappa_snapshot_visualizer_network
 [-of OUTPUT_FILE]           The common file name for saving figures; shown if not given.
 [-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
 [-dpi DOTS_PER_INCH]        Resolution of the figure.
+[-ts TEXT_SIZE]             Override default size for text, in points.
 ```
 
 For example:
@@ -64,7 +66,7 @@ import ast
 import sys
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
+from pathlib import Path
 from KaSaAn.core import KappaAgent
 from KaSaAn.functions import render_snapshot_as_patchwork
 
@@ -90,7 +92,7 @@ def main(args=None):
                              &#39; count displays most abundant species largest; mass is the&#39;
                              &#39; product of size times abundance, indicative of &#34;where is the&#39;
                              &#39; bulk of my system&#34;.&#39;)
-    parser.add_argument(&#39;-of&#39;, &#39;--output_file&#39;, type=str,
+    parser.add_argument(&#39;-of&#39;, &#39;--output_file&#39;, type=Path, default=None,
                         help=&#39;Optional name of file to save the view to instead of displaying it on screen. Extension&#39;
                              &#39; dictates the format. Valid choices include PNG, PDF, SVG (anything supported by&#39;
                              &#39; MatPlotLib).&#39;)
@@ -100,7 +102,13 @@ def main(args=None):
                              &#39; graph elements).&#39;)
     parser.add_argument(&#39;-dpi&#39;, &#39;--dots_per_inch&#39;, type=float, default=mpl.rcParams[&#39;figure.dpi&#39;],
                         help=&#39;Resolution of the figure, specified as dots per inch.&#39;)
+    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
+                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
+
     args = parser.parse_args()
+
+    if args.text_size:
+        mpl.rcParams[&#39;font.size&#39;] = args.text_size
 
     # for user-defined coloring schemes, read the dictionary from a file, convert keys to KappaAgent
     if args.coloring_scheme:
@@ -119,6 +127,8 @@ def main(args=None):
                                        fig_res=args.dots_per_inch)
     # Either save figure to file, or plot it
     if args.output_file:
+        if not args.output_file.parent.exists():
+            args.output_file.parent.mkdir(parents=True)
         fig.savefig(args.output_file, bbox_inches=&#39;tight&#39;)
     else:
         plt.show()
@@ -167,7 +177,7 @@ species is also displayed.</p></div>
                              &#39; count displays most abundant species largest; mass is the&#39;
                              &#39; product of size times abundance, indicative of &#34;where is the&#39;
                              &#39; bulk of my system&#34;.&#39;)
-    parser.add_argument(&#39;-of&#39;, &#39;--output_file&#39;, type=str,
+    parser.add_argument(&#39;-of&#39;, &#39;--output_file&#39;, type=Path, default=None,
                         help=&#39;Optional name of file to save the view to instead of displaying it on screen. Extension&#39;
                              &#39; dictates the format. Valid choices include PNG, PDF, SVG (anything supported by&#39;
                              &#39; MatPlotLib).&#39;)
@@ -177,7 +187,13 @@ species is also displayed.</p></div>
                              &#39; graph elements).&#39;)
     parser.add_argument(&#39;-dpi&#39;, &#39;--dots_per_inch&#39;, type=float, default=mpl.rcParams[&#39;figure.dpi&#39;],
                         help=&#39;Resolution of the figure, specified as dots per inch.&#39;)
+    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
+                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
+
     args = parser.parse_args()
+
+    if args.text_size:
+        mpl.rcParams[&#39;font.size&#39;] = args.text_size
 
     # for user-defined coloring schemes, read the dictionary from a file, convert keys to KappaAgent
     if args.coloring_scheme:
@@ -196,6 +212,8 @@ species is also displayed.</p></div>
                                        fig_res=args.dots_per_inch)
     # Either save figure to file, or plot it
     if args.output_file:
+        if not args.output_file.parent.exists():
+            args.output_file.parent.mkdir(parents=True)
         fig.savefig(args.output_file, bbox_inches=&#39;tight&#39;)
     else:
         plt.show()</code></pre>

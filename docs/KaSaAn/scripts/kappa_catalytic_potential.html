@@ -23,7 +23,7 @@
 </header>
 <section id="section-intro">
 <p>Get the catalytic potential per snapshot for a series.</p>
-<pre><code class="language-text">usage: kappa_catalytic_potential
+<pre><code class="language-text">usage: kappa_catalytic_potential [-h] [-d DIRECTORY] -e ENZYME_NAME -s SUBSTRATE_NAME [-v] [-o OUTPUT_FILE] [-p SNAPSHOT_PATTERN] [-ts TEXT_SIZE]
 [-h]                Show detailed help.
 [-d DIRECTORY]      Directory containing the snapshots.
 -e ENZYME_NAME      Name of the first agent.
@@ -31,6 +31,7 @@
 [-v]                If set, print additional information to standard output.
 [-o OUTPUT_FILE]    If specified, save to file; else print to standard output.
 -p SNAPSHOT_PREFIX  The prefix by which the snapshots are named.
+[-ts TEXT_SIZE]     Override default size for text, in points.
 </code></pre>
 <details class="source">
 <summary>
@@ -41,7 +42,7 @@
 Get the catalytic potential per snapshot for a series.
 
 ``` {.text}
-usage: kappa_catalytic_potential
+usage: kappa_catalytic_potential [-h] [-d DIRECTORY] -e ENZYME_NAME -s SUBSTRATE_NAME [-v] [-o OUTPUT_FILE] [-p SNAPSHOT_PATTERN] [-ts TEXT_SIZE]
 [-h]                Show detailed help.
 [-d DIRECTORY]      Directory containing the snapshots.
 -e ENZYME_NAME      Name of the first agent.
@@ -49,14 +50,16 @@ usage: kappa_catalytic_potential
 [-v]                If set, print additional information to standard output.
 [-o OUTPUT_FILE]    If specified, save to file; else print to standard output.
 -p SNAPSHOT_PREFIX  The prefix by which the snapshots are named.
+[-ts TEXT_SIZE]     Override default size for text, in points.
 ```
 &#34;&#34;&#34;
 
 import argparse
 import csv
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
-
+from pathlib import Path
 from KaSaAn.functions import get_potential_of_folder
 
 
@@ -78,25 +81,31 @@ def main(args=None):
     parser.add_argument(&#39;-v&#39;, &#39;--verbose&#39;, action=&#39;store_true&#39;,
                         help=&#39;If set, print additional information, like number of snapshots found, and current&#39;
                              &#39; snapshot being parsed.&#39;)
-    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=str, default=None,
+    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=Path, default=None,
                         help=&#39;The name of the file where the list of catalytic potentials should be saved; one value&#39;
                              &#39; per line, in the same order as the snapshots. If not specified, the list will be plotted&#39;
                              &#39; as a function of time.&#39;)
     parser.add_argument(&#39;-p&#39;, &#39;--snapshot_pattern&#39;, type=str, default=&#39;snap_*.ka&#39;,
                         help=&#39;Pattern by which the snapshots are named; e.g. &lt;snap_4.ka&gt; would have &lt;snap_*.ka&gt;.&#39;)
+    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
+                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
 
     args = parser.parse_args()
+    if args.text_size:
+        mpl.rcParams[&#39;font.size&#39;] = args.text_size
 
     data = get_potential_of_folder(args.directory, args.enzyme_name, args.substrate_name,
                                    args.verbose, args.snapshot_pattern)
 
     if args.output_file:
+        if not args.output_file.parent.exists():
+            args.output_file.parent.mkdir(parents=True)
         with open(args.output_file, &#39;w&#39;) as out_file:
             q_writter = csv.writer(out_file)
             q_writter.writerow([&#39;q&#39;, &#39;t&#39;])
             q_writter.writerows(data)
     else:
-        _, ax = plt.subplots()
+        _, ax = plt.subplots(layout=&#39;constrained&#39;)
         q, t = zip(*data)
         ax.plot(t, q)
         ax.set_xlabel(&#39;Time&#39;)
@@ -145,25 +154,31 @@ is the sum of the catalytic potentials over all the constituent species.</p></di
     parser.add_argument(&#39;-v&#39;, &#39;--verbose&#39;, action=&#39;store_true&#39;,
                         help=&#39;If set, print additional information, like number of snapshots found, and current&#39;
                              &#39; snapshot being parsed.&#39;)
-    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=str, default=None,
+    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=Path, default=None,
                         help=&#39;The name of the file where the list of catalytic potentials should be saved; one value&#39;
                              &#39; per line, in the same order as the snapshots. If not specified, the list will be plotted&#39;
                              &#39; as a function of time.&#39;)
     parser.add_argument(&#39;-p&#39;, &#39;--snapshot_pattern&#39;, type=str, default=&#39;snap_*.ka&#39;,
                         help=&#39;Pattern by which the snapshots are named; e.g. &lt;snap_4.ka&gt; would have &lt;snap_*.ka&gt;.&#39;)
+    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
+                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
 
     args = parser.parse_args()
+    if args.text_size:
+        mpl.rcParams[&#39;font.size&#39;] = args.text_size
 
     data = get_potential_of_folder(args.directory, args.enzyme_name, args.substrate_name,
                                    args.verbose, args.snapshot_pattern)
 
     if args.output_file:
+        if not args.output_file.parent.exists():
+            args.output_file.parent.mkdir(parents=True)
         with open(args.output_file, &#39;w&#39;) as out_file:
             q_writter = csv.writer(out_file)
             q_writter.writerow([&#39;q&#39;, &#39;t&#39;])
             q_writter.writerows(data)
     else:
-        _, ax = plt.subplots()
+        _, ax = plt.subplots(layout=&#39;constrained&#39;)
         q, t = zip(*data)
         ax.plot(t, q)
         ax.set_xlabel(&#39;Time&#39;)

@@ -23,7 +23,7 @@
 </header>
 <section id="section-intro">
 <p>Make a movie out of a set of snapshot files, and save it to disk.</p>
-<pre><code class="language-text">usage: kappa_trace_movie_maker
+<pre><code class="language-text">usage: kappa_trace_movie_maker [-h] [-d DIRECTORY] [-p PATTERN] [-m {mass,count,size}] [-o OUTPUT_FILE] [-w FIG_WIDTH] [-r XY_RATIO] [-s] [-l LEGEND_COLUMNS] [-f FRAME_INTERVAL] [-v] [-ts TEXT_SIZE]
 [-h]                    Show detailed help.
 [-d DIRECTORY]          Directory where snapshots are located, default &lt;.&gt;
 [-m {mass,count,size}]  What dictates area; default is mass.
@@ -34,6 +34,7 @@
 [-l LEGEND_COLUMNS]     Number of columns in the legend. Default value is 2.
 [-f FRAME_INTERVAL]     Number of mili-seconds between frames in the animation.
 [-v]                    Display information about number of snapshots found.
+[-ts TEXT_SIZE]         Override default size for text, in points.
 </code></pre>
 <p>For example:</p>
 <p><img alt="" src="../../img/trace_movie.gif"></p>
@@ -46,7 +47,7 @@
 Make a movie out of a set of snapshot files, and save it to disk.
 
 ``` {.text}
-usage: kappa_trace_movie_maker
+usage: kappa_trace_movie_maker [-h] [-d DIRECTORY] [-p PATTERN] [-m {mass,count,size}] [-o OUTPUT_FILE] [-w FIG_WIDTH] [-r XY_RATIO] [-s] [-l LEGEND_COLUMNS] [-f FRAME_INTERVAL] [-v] [-ts TEXT_SIZE]
 [-h]                    Show detailed help.
 [-d DIRECTORY]          Directory where snapshots are located, default &lt;.&gt;
 [-m {mass,count,size}]  What dictates area; default is mass.
@@ -57,6 +58,7 @@ usage: kappa_trace_movie_maker
 [-l LEGEND_COLUMNS]     Number of columns in the legend. Default value is 2.
 [-f FRAME_INTERVAL]     Number of mili-seconds between frames in the animation.
 [-v]                    Display information about number of snapshots found.
+[-ts TEXT_SIZE]         Override default size for text, in points.
 ```
 
 For example:
@@ -67,10 +69,11 @@ For example:
 
 import argparse
 import sys
+import matplotlib as mpl
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import matplotlib.widgets as mpw
-
+from pathlib import Path
 from KaSaAn.functions import movie_from_snapshots
 
 
@@ -88,7 +91,7 @@ def main(args=None):
                         &#39; `snapshot.*.ka`&#39;)
     parser.add_argument(&#39;-m&#39;, &#39;--vis_mode&#39;, type=str, default=&#39;mass&#39;, choices=[&#39;mass&#39;, &#39;count&#39;, &#39;size&#39;],
                         help=&#39;Specify the type of visualization to render. Default uses mass.&#39;)
-    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=str, default=&#39;&#39;,
+    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=Path, default=None,
                         help=&#39;Optional name of file for saving the movie. If unset, the movie will be shown instead,&#39;
                              &#39; using a TK window.&#39;)
     parser.add_argument(&#39;-w&#39;, &#39;--fig_width&#39;, type=int, default=16,
@@ -109,7 +112,14 @@ def main(args=None):
                         help=&#39;Number of mili-seconds between frames in the animation.&#39;)
     parser.add_argument(&#39;-v&#39;, &#39;--verbose&#39;, action=&#39;store_true&#39;,
                         help=&#39;Display information about number of snapshots found.&#39;)
+    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
+                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
+
     args = parser.parse_args()
+
+    if args.text_size:
+        mpl.rcParams[&#39;font.size&#39;] = args.text_size
+
     # make the animation
     my_animation = movie_from_snapshots(directory=args.directory, pattern=args.pattern,
                                         vis_mode=args.vis_mode,
@@ -121,6 +131,8 @@ def main(args=None):
                                         verbose=args.verbose)
     # Save to file, or show the figure
     if args.output_file:
+        if not args.output_file.parent.exists():
+            args.output_file.parent.mkdir(parents=True)
         # Use the ImageMagick writer if a gif was requested; else use the default mpeg writer
         if args.output_file[-4:] == &#39;.gif&#39;:
             my_writer = animation.ImageMagickFileWriter()
@@ -187,7 +199,7 @@ if __name__ == &#39;__main__&#39;:
                         &#39; `snapshot.*.ka`&#39;)
     parser.add_argument(&#39;-m&#39;, &#39;--vis_mode&#39;, type=str, default=&#39;mass&#39;, choices=[&#39;mass&#39;, &#39;count&#39;, &#39;size&#39;],
                         help=&#39;Specify the type of visualization to render. Default uses mass.&#39;)
-    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=str, default=&#39;&#39;,
+    parser.add_argument(&#39;-o&#39;, &#39;--output_file&#39;, type=Path, default=None,
                         help=&#39;Optional name of file for saving the movie. If unset, the movie will be shown instead,&#39;
                              &#39; using a TK window.&#39;)
     parser.add_argument(&#39;-w&#39;, &#39;--fig_width&#39;, type=int, default=16,
@@ -208,7 +220,14 @@ if __name__ == &#39;__main__&#39;:
                         help=&#39;Number of mili-seconds between frames in the animation.&#39;)
     parser.add_argument(&#39;-v&#39;, &#39;--verbose&#39;, action=&#39;store_true&#39;,
                         help=&#39;Display information about number of snapshots found.&#39;)
+    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
+                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
+
     args = parser.parse_args()
+
+    if args.text_size:
+        mpl.rcParams[&#39;font.size&#39;] = args.text_size
+
     # make the animation
     my_animation = movie_from_snapshots(directory=args.directory, pattern=args.pattern,
                                         vis_mode=args.vis_mode,
@@ -220,6 +239,8 @@ if __name__ == &#39;__main__&#39;:
                                         verbose=args.verbose)
     # Save to file, or show the figure
     if args.output_file:
+        if not args.output_file.parent.exists():
+            args.output_file.parent.mkdir(parents=True)
         # Use the ImageMagick writer if a gif was requested; else use the default mpeg writer
         if args.output_file[-4:] == &#39;.gif&#39;:
             my_writer = animation.ImageMagickFileWriter()

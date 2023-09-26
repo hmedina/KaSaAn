@@ -23,22 +23,30 @@
 </header>
 <section id="section-intro">
 <p>Plot a variable from several output files.</p>
-<pre><code class="language-text">usage: kappa_observable_coplotter
-[-h]                        Show detailed help.
--p PATTERN                  (quoted) Pattern matching desired files.
-[-vi VARIABLE_BY_INDEX]     Index of the variable to be co-plotted.
-[-vn VARIABLE_BY_NAME]      Name of the variable to be co-plotted.
-[-ve VARIABLE_EXPRESSION]   Algebraic expression of variable names.
-[-o OUT_FILE]               If given, save plot to file; else show.
-[-d]                        If passed, plot discrete differential over time.
-[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
-[--limit_left X_MIN]        Override left limit of plot.
-[--limit_right X_MAX]       Override right limit of plot.
-[--limit_bottom Y_MIN]      Override bottom limit of plot.
-[--limit_top Y_MAX]         Override top limit of plot.
-[-lx]                       Plot the X axis in logarithmic scale.
-[-ly]                       Plot the Y axis in logarithmic scale.
-[-nl]                       Do not insert a legend with filenames.
+<pre><code class="language-text">usage: kappa_observable_coplotter [-h] -p PATTERN [-vi VARIABLE_BY_INDEX] [-vn VARIABLE_BY_NAME] [-ve VARIABLE_EXPRESSION] [-o OUT_FILE] [-d] [-fs WIDTH HEIGHT] [--limit_left LIMIT_LEFT] [--limit_right LIMIT_RIGHT] [--limit_bottom LIMIT_BOTTOM] [--limit_top LIMIT_TOP] [-lx] [-ly] [-nl] [-ts TEXT_SIZE]
+[-h]                            Show detailed help.
+-p PATTERN                      Pattern matching desired files.
+[-vi VARIABLE_BY_INDEX]         Index of the variable to be co-plotted.
+[-vn VARIABLE_BY_NAME]          Name of the variable to be co-plotted.
+[-ve VARIABLE_EXPRESSION]       Algebraic expression of variable names.
+[-o OUT_FILE]                   If given, save plot to file; else show.
+[-d]                            If passed, plot discrete differential over time.
+[-fs WIDTH HEIGHT]              Size of the resulting figure, in inches.
+[--limit_left X_MIN]            Override left limit of plot.
+[--limit_right X_MAX]           Override right limit of plot.
+[--limit_bottom Y_MIN]          Override bottom limit of plot.
+[--limit_top Y_MAX]             Override top limit of plot.
+[-lx]                           Plot the X axis in logarithmic scale.
+[-ly]                           Plot the Y axis in logarithmic scale.
+[-nl]                           Do not insert a legend with filenames.
+[-ts TEXT_SIZE]                 Override default size for text, in points.
+[--legend_loc {...} ]           Specify legend location; &lt;outside&gt; options plot outside axes. Options are:
+                                    upper left, upper center, upper right,
+                                    center left, center, center right,
+                                    lower left, lower center, lower right,
+                                    outside left upper, outside right upper,
+                                    outside left lower, outside right lower
+[--legend_ncol LEGEND_NCOL]     Number of columns for the legend.
 </code></pre>
 <details class="source">
 <summary>
@@ -49,34 +57,43 @@
 Plot a variable from several output files.
 
 ``` {.text}
-usage: kappa_observable_coplotter
-[-h]                        Show detailed help.
--p PATTERN                  (quoted) Pattern matching desired files.
-[-vi VARIABLE_BY_INDEX]     Index of the variable to be co-plotted.
-[-vn VARIABLE_BY_NAME]      Name of the variable to be co-plotted.
-[-ve VARIABLE_EXPRESSION]   Algebraic expression of variable names.
-[-o OUT_FILE]               If given, save plot to file; else show.
-[-d]                        If passed, plot discrete differential over time.
-[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
-[--limit_left X_MIN]        Override left limit of plot.
-[--limit_right X_MAX]       Override right limit of plot.
-[--limit_bottom Y_MIN]      Override bottom limit of plot.
-[--limit_top Y_MAX]         Override top limit of plot.
-[-lx]                       Plot the X axis in logarithmic scale.
-[-ly]                       Plot the Y axis in logarithmic scale.
-[-nl]                       Do not insert a legend with filenames.
+usage: kappa_observable_coplotter [-h] -p PATTERN [-vi VARIABLE_BY_INDEX] [-vn VARIABLE_BY_NAME] [-ve VARIABLE_EXPRESSION] [-o OUT_FILE] [-d] [-fs WIDTH HEIGHT] [--limit_left LIMIT_LEFT] [--limit_right LIMIT_RIGHT] [--limit_bottom LIMIT_BOTTOM] [--limit_top LIMIT_TOP] [-lx] [-ly] [-nl] [-ts TEXT_SIZE]
+[-h]                            Show detailed help.
+-p PATTERN                      Pattern matching desired files.
+[-vi VARIABLE_BY_INDEX]         Index of the variable to be co-plotted.
+[-vn VARIABLE_BY_NAME]          Name of the variable to be co-plotted.
+[-ve VARIABLE_EXPRESSION]       Algebraic expression of variable names.
+[-o OUT_FILE]                   If given, save plot to file; else show.
+[-d]                            If passed, plot discrete differential over time.
+[-fs WIDTH HEIGHT]              Size of the resulting figure, in inches.
+[--limit_left X_MIN]            Override left limit of plot.
+[--limit_right X_MAX]           Override right limit of plot.
+[--limit_bottom Y_MIN]          Override bottom limit of plot.
+[--limit_top Y_MAX]             Override top limit of plot.
+[-lx]                           Plot the X axis in logarithmic scale.
+[-ly]                           Plot the Y axis in logarithmic scale.
+[-nl]                           Do not insert a legend with filenames.
+[-ts TEXT_SIZE]                 Override default size for text, in points.
+[--legend_loc {...} ]           Specify legend location; &lt;outside&gt; options plot outside axes. Options are:
+                                    upper left, upper center, upper right,
+                                    center left, center, center right,
+                                    lower left, lower center, lower right,
+                                    outside left upper, outside right upper,
+                                    outside left lower, outside right lower
+[--legend_ncol LEGEND_NCOL]     Number of columns for the legend.
 ```
 &#34;&#34;&#34;
 
-import argparse
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from argparse import ArgumentParser
+from pathlib import Path
 from KaSaAn.functions import observable_coplot_axis_annotator
 
 
 def main():
     &#34;&#34;&#34;Co-plot the same variable from multiple files, save as file or display the figure.&#34;&#34;&#34;
-    parser = argparse.ArgumentParser(description=main.__doc__)
+    parser = ArgumentParser(description=main.__doc__)
     parser.add_argument(&#39;-p&#39;, &#39;--pattern&#39;, type=str, required=True,
                         help=&#39;Pattern, passed to glob.glob that would match the desired files to co-plot, should&#39;
                              &#39; probably be quoted.&#39;)
@@ -89,7 +106,7 @@ def main():
     parser.add_argument(&#39;-ve&#39;, &#39;--variable_expression&#39;, type=str, default=&#39;&#39;,
                         help=&#39;A string with one algebraic expression using variable names held in the file&#39;
                              &#39; (e.g. -ve &#34;1 - (\&#39;Axn.Axn\&#39; + \&#39;Axn_mono\&#39; ) / \&#39;Axn\&#39;&#34;)&#39;)
-    parser.add_argument(&#39;-o&#39;, &#39;--out_file&#39;, type=str, default=&#39;&#39;,
+    parser.add_argument(&#39;-o&#39;, &#39;--out_file&#39;, type=Path, default=None,
                         help=&#39;Name of the file where the figure should be saved. If left blank or omitted, the figure&#39;
                              &#39; will be shown instead.&#39;)
     parser.add_argument(&#39;-d&#39;, &#39;--differential&#39;, action=&#39;store_true&#39;,
@@ -115,9 +132,22 @@ def main():
                         help=&#39;Plot the Y axis in logarithmic scale.&#39;)
     parser.add_argument(&#39;-nl&#39;, &#39;--no_legend&#39;, action=&#39;store_true&#39;,
                         help=&#39;Do not insert a legend with the filenames.&#39;)
+    parser.add_argument(&#39;--legend_loc&#39;, type=str, choices=[
+        &#39;upper left&#39;, &#39;upper center&#39;, &#39;upper right&#39;,
+        &#39;center left&#39;, &#39;center&#39;, &#39;center right&#39;,
+        &#39;lower left&#39;, &#39;lower center&#39;, &#39;lower right&#39;,
+        &#39;outside right upper&#39;, &#39;outside right lower&#39;, &#39;outside left upper&#39;, &#39;outside left lower&#39;],
+                        help=&#39;Override location of the legend. Options prefixed with &lt;outside&gt; plot outside the axes.&#39;)
+    parser.add_argument(&#39;--legend_ncol&#39;, type=int, default=1,
+                        help=&#39;Number of columns for the legend.&#39;)
+    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
+                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
     args = parser.parse_args()
 
-    fig, ax = plt.subplots(figsize=args.figure_size)
+    if args.text_size:
+        mpl.rcParams[&#39;font.size&#39;] = args.text_size
+
+    fig, ax = plt.subplots(figsize=args.figure_size, layout=&#39;constrained&#39;)
     observable_coplot_axis_annotator(target_axis=ax,
                                      file_pattern=args.pattern,
                                      variable_index=args.variable_by_index,
@@ -126,14 +156,20 @@ def main():
                                      differential_toggle=args.differential,
                                      log_axis_x=args.log_x,
                                      log_axis_y=args.log_y,
-                                     no_legend=args.no_legend)
+                                     no_legend=True)
+
+    if not args.no_legend:
+        if args.legend_loc is not None:
+            fig.legend(loc=args.legend_loc, ncol=args.legend_ncol)
+        else:
+            ax.legend(loc=&#39;best&#39;, ncol=args.legend_ncol)
 
     ax.set_xlim(left=args.limit_left, right=args.limit_right)
     ax.set_ylim(bottom=args.limit_bottom, top=args.limit_top)
-
     if args.out_file:
-        plt.tight_layout()
-        fig.savefig(args.out_file)
+        if not args.out_file.parent.exists():
+            args.out_file.parent.mkdir(parents=True)
+        fig.savefig(fname=args.out_file)
     else:
         plt.show()
 
@@ -160,7 +196,7 @@ if __name__ == &#39;__main__&#39;:
 </summary>
 <pre><code class="python">def main():
     &#34;&#34;&#34;Co-plot the same variable from multiple files, save as file or display the figure.&#34;&#34;&#34;
-    parser = argparse.ArgumentParser(description=main.__doc__)
+    parser = ArgumentParser(description=main.__doc__)
     parser.add_argument(&#39;-p&#39;, &#39;--pattern&#39;, type=str, required=True,
                         help=&#39;Pattern, passed to glob.glob that would match the desired files to co-plot, should&#39;
                              &#39; probably be quoted.&#39;)
@@ -173,7 +209,7 @@ if __name__ == &#39;__main__&#39;:
     parser.add_argument(&#39;-ve&#39;, &#39;--variable_expression&#39;, type=str, default=&#39;&#39;,
                         help=&#39;A string with one algebraic expression using variable names held in the file&#39;
                              &#39; (e.g. -ve &#34;1 - (\&#39;Axn.Axn\&#39; + \&#39;Axn_mono\&#39; ) / \&#39;Axn\&#39;&#34;)&#39;)
-    parser.add_argument(&#39;-o&#39;, &#39;--out_file&#39;, type=str, default=&#39;&#39;,
+    parser.add_argument(&#39;-o&#39;, &#39;--out_file&#39;, type=Path, default=None,
                         help=&#39;Name of the file where the figure should be saved. If left blank or omitted, the figure&#39;
                              &#39; will be shown instead.&#39;)
     parser.add_argument(&#39;-d&#39;, &#39;--differential&#39;, action=&#39;store_true&#39;,
@@ -199,9 +235,22 @@ if __name__ == &#39;__main__&#39;:
                         help=&#39;Plot the Y axis in logarithmic scale.&#39;)
     parser.add_argument(&#39;-nl&#39;, &#39;--no_legend&#39;, action=&#39;store_true&#39;,
                         help=&#39;Do not insert a legend with the filenames.&#39;)
+    parser.add_argument(&#39;--legend_loc&#39;, type=str, choices=[
+        &#39;upper left&#39;, &#39;upper center&#39;, &#39;upper right&#39;,
+        &#39;center left&#39;, &#39;center&#39;, &#39;center right&#39;,
+        &#39;lower left&#39;, &#39;lower center&#39;, &#39;lower right&#39;,
+        &#39;outside right upper&#39;, &#39;outside right lower&#39;, &#39;outside left upper&#39;, &#39;outside left lower&#39;],
+                        help=&#39;Override location of the legend. Options prefixed with &lt;outside&gt; plot outside the axes.&#39;)
+    parser.add_argument(&#39;--legend_ncol&#39;, type=int, default=1,
+                        help=&#39;Number of columns for the legend.&#39;)
+    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
+                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
     args = parser.parse_args()
 
-    fig, ax = plt.subplots(figsize=args.figure_size)
+    if args.text_size:
+        mpl.rcParams[&#39;font.size&#39;] = args.text_size
+
+    fig, ax = plt.subplots(figsize=args.figure_size, layout=&#39;constrained&#39;)
     observable_coplot_axis_annotator(target_axis=ax,
                                      file_pattern=args.pattern,
                                      variable_index=args.variable_by_index,
@@ -210,14 +259,20 @@ if __name__ == &#39;__main__&#39;:
                                      differential_toggle=args.differential,
                                      log_axis_x=args.log_x,
                                      log_axis_y=args.log_y,
-                                     no_legend=args.no_legend)
+                                     no_legend=True)
+
+    if not args.no_legend:
+        if args.legend_loc is not None:
+            fig.legend(loc=args.legend_loc, ncol=args.legend_ncol)
+        else:
+            ax.legend(loc=&#39;best&#39;, ncol=args.legend_ncol)
 
     ax.set_xlim(left=args.limit_left, right=args.limit_right)
     ax.set_ylim(bottom=args.limit_bottom, top=args.limit_top)
-
     if args.out_file:
-        plt.tight_layout()
-        fig.savefig(args.out_file)
+        if not args.out_file.parent.exists():
+            args.out_file.parent.mkdir(parents=True)
+        fig.savefig(fname=args.out_file)
     else:
         plt.show()</code></pre>
 </details>
