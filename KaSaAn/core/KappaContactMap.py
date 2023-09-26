@@ -260,7 +260,7 @@ def _list_flagpole_wedges(agent_graphic_struct: dict) -> List[mpp.Wedge]:
 
 def _annotate_wedges_and_agents(agent_graphic_struct: dict, figure_axis: mpa.Axes):
     """Annotate an axis with data from the binding sites"""
-    agent_txt_kwrds = {'fontfamily': 'monospace', 'fontsize': 'medium',
+    agent_txt_kwrds = {'fontfamily': 'monospace', 'fontsize': 'medium', 'fontweight': 'bold',
                        'horizontalalignment': 'center', 'verticalalignment': 'center',
                        'bbox': {'boxstyle': 'round', 'fc': '#ffffffdd'}}
     wedge_txt_kwrds = {'fontfamily': 'monospace', 'fontsize': 'x-small',
