@@ -20,6 +20,14 @@ usage: kappa_snapshot_largest_complex_time [-h] [-d DIRECTORY] [-p PATTERN] [-cs
 [--un_stacked]          If given, produce regular non-stacked plot.
 [--mt THREADS]          Launch multiple threads for reading snapshots. Safe, but always less performant: WIP.
 [-ts TEXT_SIZE]         Override default size for text, in points.
+[--stack_method] {...}  The order of elements in the stackplot. Choices are:
+                        first_in_first_out:     Patterns are plotted in the order in which they are encountered while reading snapshots.
+                        interleaved_initial:    Patterns are plotted alternating large and small abundances, as measured in the first snapshot.
+                        interleaved_final:      Patterns are plotted alternating large and small abundances, as measured in the final snapshot.
+                        ascending_initial:      Patterns are plotted in ascending abundances, as measured in the first snapshot.
+                        ascending_final:        Patterns are plotted in ascending abundances, as measured in the final snapshot.
+                        descending_initial:     Patterns are plotted in descending abundances, as measured in the first snapshot.
+                        descending_final:       Patterns are plotted in descending abundances, as measured in the final snapshot.
 ```
 """
 
@@ -32,13 +40,13 @@ from KaSaAn.core.KappaError import ComplexParseError, AgentParseError
 from KaSaAn.core.KappaAgent import KappaAgent
 from KaSaAn.core.KappaComplex import KappaComplex
 from KaSaAn.functions import find_snapshot_names
-from KaSaAn.functions.graph_largest_complex_composition import snapshot_list_to_plot_matrix, _make_figure
+from KaSaAn.functions.graph_largest_complex_composition import snapshot_list_to_plot_matrix, _make_figure, _stacked_plot_methods
 
 
 def main():
     """Plot the evolution of the giant component in time from a set of snapshots located in a directory, showing only
     the subset of patterns specified."""
-    parser = argparse.ArgumentParser(description=main.__doc__)
+    parser = argparse.ArgumentParser(description=main.__doc__,  formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('-d', '--directory', type=str, default='.',
                         help='Name of the directory where snapshots are stored; default is current directory.')
     parser.add_argument('-p', '--pattern', type=str, default='snap*.ka',
@@ -75,7 +83,8 @@ def main():
                         ' 1, so a single-threaded for-loop.')
     parser.add_argument('-ts', '--text_size', type=int,
                         help="If given, set point size for all text elements, overriding MatPlotLib's default.")
-
+    parser.add_argument('--stack_method', choices=_stacked_plot_methods.keys(), type=str,
+                        help='\n'.join(['{}:\t{}'.format(k, v) for k, v in _stacked_plot_methods.items()]))
     args = parser.parse_args()
 
     if args.text_size:
@@ -102,7 +111,8 @@ def main():
     snap_name_list = find_snapshot_names(target_directory=args.directory, name_pattern=args.pattern)
     s_times, p_matrix, pattern_list = snapshot_list_to_plot_matrix(snapshot_names=snap_name_list,
                                                                    patterns_requested=coloring_scheme,
-                                                                   thread_number=args.multi_thread)
+                                                                   thread_number=args.multi_thread,
+                                                                   stack_order=args.stack_method)
     # scale plot
     fig_lin_lin = _make_figure(s_times, p_matrix, pattern_list, args.figure_size,
                                'linear', 'linear', args.un_stacked, coloring_scheme)

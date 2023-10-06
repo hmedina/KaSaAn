@@ -3,6 +3,7 @@
 import concurrent.futures as cofu
 import matplotlib as mpl
 import matplotlib.figure as mpf
+import matplotlib.patches as mppa
 import matplotlib.pyplot as plt
 import numpy
 import warnings
@@ -11,6 +12,17 @@ from typing import Dict, List, Tuple, Set
 
 from ..functions.agent_color_assignment import colorize_observables
 from ..core import KappaComplex, KappaSnapshot
+
+
+_stacked_plot_methods = dict(
+    first_in_first_out='Patterns are plotted in the order in which they are encountered while reading snapshots.',
+    interleaved_initial='Patterns are plotted alternating large and small abundances, as measured in the first snapshot.',
+    interleaved_final='Patterns are plotted alternating large and small abundances, as measured in the final snapshot.',
+    ascending_initial='Patterns are plotted in ascending abundances, as measured in the first snapshot.',
+    ascending_final='Patterns are plotted in ascending abundances, as measured in the final snapshot.',
+    descending_initial='Patterns are plotted in descending abundances, as measured in the first snapshot.',
+    descending_final='Patterns are plotted in descending abundances, as measured in the final snapshot.'
+)
 
 
 def _make_figure(s_times, p_matrix, observable_set: Set[KappaComplex],
@@ -27,16 +39,23 @@ def _make_figure(s_times, p_matrix, observable_set: Set[KappaComplex],
         color_scheme = supplied_scheme
     color_list = [color_scheme[obs] for obs in observable_set]
     if un_stacked:
-        for x, y, n in zip((s_times for item in observable_set), p_matrix, observable_set):
+        for x, y, n in zip((s_times for _ in observable_set), p_matrix, observable_set):
             ax.plot(x, y, label=n)
     else:
         ax.stackplot(s_times, p_matrix, baseline='zero', labels=observable_set, colors=color_list)
     ax.set_xlabel('Snapshot time')
-    ax.set_ylabel('Abundance of pattern in largest complex')
+    ax.set_ylabel('Largest complex size')
+    # adjust legend's title and content, and order
     if not supplied_scheme:
-        fig.legend(title='Agents')
+        leg_h = [mppa.Patch(color=pair[1], label=pair[0].get_agent_name()) for pair in zip(
+            observable_set, color_list, strict=True)]
+        leg_h.reverse()
+        fig.legend(title='Agents', handles=leg_h)
     else:
-        fig.legend(title='Patterns')
+        leg_h = [mppa.Patch(color=pair[1], label=pair[0]) for pair in zip(
+            observable_set, color_list, strict=True)]
+        leg_h.reverse()
+        fig.legend(title='Patterns', handles=leg_h)
     ax.set_xscale(x_scale)
     ax.set_yscale(y_scale)
     return fig
@@ -64,9 +83,14 @@ def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[KappaCom
     return snap.get_snapshot_time(), lc_composition
 
 
-def snapshot_list_to_plot_matrix(snapshot_names, patterns_requested: Dict = None, thread_number: int = 1) -> \
-        Tuple[List[float], numpy.ndarray, List[KappaComplex]]:
+def snapshot_list_to_plot_matrix(
+        snapshot_names, patterns_requested: Dict = None, thread_number: int = 1,
+        stack_order: str = list(_stacked_plot_methods.keys())[0]) -> Tuple[List[float], numpy.ndarray, List[KappaComplex]]:
     """See file under `KaSaAn.scripts` for usage."""
+
+    if stack_order not in _stacked_plot_methods.keys():
+        UserWarning('Unrecognized order <{}> requested, defaulting to {}.'.format(stack_order, list(_stacked_plot_methods.keys())[0]))
+
     lc_compositions = []
     snap_times = []
     holding_struct = {}
@@ -113,4 +137,28 @@ def snapshot_list_to_plot_matrix(snapshot_names, patterns_requested: Dict = None
             abundance = compo[v_pattern] if v_pattern in compo else 0
             plot_matrix[i_pattern, i_compo] = abundance
 
-    return snap_times, plot_matrix, all_patterns
+    # re-order data
+    if stack_order == 'first_in_first_out':
+        return snap_times, plot_matrix, all_patterns
+    else:
+        alt_ix_order = []
+        sort_strategy, weight_source = stack_order.split('_')
+        if sort_strategy == 'interleaved':
+            if weight_source == 'initial':
+                lower_ix, upper_ix = numpy.array_split(numpy.argsort(plot_matrix[:, 0]), 2)
+            else:
+                lower_ix, upper_ix = numpy.array_split(numpy.argsort(plot_matrix[:, -1]), 2)
+            # the array_split may return arrays of different sizes, so upper_ix may be one element shorter
+            #  than lower_ix. If so, the joint-iteration just needs to add the final element from lower_ix
+            for ixs in range(len(upper_ix)):
+                alt_ix_order.extend([upper_ix[ixs], lower_ix[ixs]])
+            if len(lower_ix) != len(upper_ix):
+                alt_ix_order.append(lower_ix[-1])
+        elif sort_strategy == 'ascending' or sort_strategy == 'descending':
+            if weight_source == 'initial':
+                alt_ix_order = numpy.argsort(plot_matrix[:, 0])
+            else:
+                alt_ix_order = numpy.argsort(plot_matrix[:, -1])
+            if sort_strategy == 'descending':
+                alt_ix_order = numpy.flip(alt_ix_order)
+        return snap_times, plot_matrix[alt_ix_order, :], [all_patterns[ix] for ix in alt_ix_order]
