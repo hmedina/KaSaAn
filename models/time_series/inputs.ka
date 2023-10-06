@@ -1,5 +1,5 @@
-// "uuid" : "114466891"
-%def: "seed" "110283574"
+// "uuid" : "974460868"
+%def: "seed" "65445387"
 %def: "dumpIfDeadlocked" "true"
 %def: "maxConsecutiveClash" "3"
 %def: "progressBarSize" "70"
@@ -39,7 +39,7 @@ A(n[1/.]), C(m[1/.]) @ 1
 /*5*/%mod: ([E] = 600) do $SNAPSHOT ("snap_".[E].".ka"); $STOP ; repeat [false]
 
 %init: 100 A(n[.] m[.])
-%init: 100 B(n[.] m[.])
-%init: 100 C(n[.] m[.])
+%init: 150 B(n[.] m[.])
+%init: 200 C(n[.] m[.])
 
 %mod: [E] = 600 do $STOP;
