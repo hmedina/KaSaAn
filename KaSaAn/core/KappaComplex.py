@@ -2,8 +2,10 @@
 """Contains `KappaComplex`, a class to represents a list of agents chained into a larger entity, and the `embed_and_map`
 function."""
 
+import xml.etree.ElementTree as ET
 import re
 import networkx as nx
+from pathlib import Path
 from collections import deque
 from typing import Deque, Dict, List, Set, Tuple, Union
 
@@ -229,6 +231,16 @@ class KappaComplex(KappaMultiAgentGraph):
         cx_data.insert(2, {'networkAttributes': cx_network_attributes})
         return cx_data
 
+    def to_graphml(self, outfile: Union[Path, str, None]) -> ET.ElementTree:
+        """Returns an XML ElementTree with a GraphML representation of the complex, using GraphML's ports for
+         binding sites. If an output file is given, object is serialized to that file instead."""
+        this_tree = self._kappa_to_graphml()
+        if outfile is not None:
+            ET.indent(this_tree, space='\t')
+            this_tree.write(outfile, encoding='UTF-8', xml_declaration=True, method='xml')
+        else:
+            return this_tree
+
 
 class NetMap():
     """Class for representing network maps, used for automorphism checking."""
@@ -254,9 +266,11 @@ class NetMap():
         origin_n, image_n = zip(*self.node_map)
         if len(self.edge_map) > 0:
             origin_e, image_e = zip(*self.edge_map)
-            own_hash = hash((tuple(sorted(origin_n)), tuple(sorted(image_n)), tuple(sorted(origin_e)), tuple(sorted(image_e))))
+            own_hash = hash(
+                (tuple(sorted(origin_n)), tuple(sorted(image_n)), tuple(sorted(origin_e)), tuple(sorted(image_e))))
         else:
-            own_hash = hash((tuple(sorted(origin_n)), tuple(sorted(image_n)), None, None))
+            own_hash = hash(
+                (tuple(sorted(origin_n)), tuple(sorted(image_n)), None, None))
         return own_hash
 
 
