@@ -63,7 +63,7 @@ Bond state truth table
 
     def __init__(self, expression: str):
         self._raw_expression: str
-        self._port_name: str
+        self.name: str
         self._present_bond_state: str
         self._bond_operand: str
         self._future_bond_state: str
@@ -85,7 +85,7 @@ Bond state truth table
         if not g:
             raise PortParseError('Invalid port declaration <' + expression + '>')
         # assuming it parsed, assign capturing groups to variables
-        self._port_name = g.group(1)
+        self.name = g.group(1)
         # figure out what type of bond operation is being performed
         self._present_bond_state = g.group(5)
         if g.group(6):                                                  # if there's an operation
@@ -128,7 +128,7 @@ Bond state truth table
             self._future_int_state = ''
         # canonicalize the kappa expression
         self._kappa_expression = \
-            self._port_name + \
+            self.name + \
             '[' + self._present_bond_state + self._bond_operand + self._future_bond_state + ']' + \
             '{' + self._present_int_state + self._int_operand + self._future_int_state + '}'
 
@@ -150,7 +150,7 @@ Bond state truth table
         else:
             satisfied = False
             # site name satisfied?
-            if self._port_name == query._port_name:
+            if self.name == query.name:
                 # first check if internal state satisfied,
                 # then check if bond state satisfied
                 if query._present_int_state == '#':
@@ -161,7 +161,7 @@ Bond state truth table
 
     def get_port_name(self) -> str:
         """Returns a string with the port's name."""
-        return self._port_name
+        return self.name
 
     def get_port_int_state(self) -> str:
         """Returns a string with the port's internal state."""
@@ -226,7 +226,7 @@ class KappaCounter(KappaEntity):
 
     def __init__(self, expression: str):
         self._raw_expression: str
-        self._counter_name: str
+        self.name: str
         self._current_state: str
         self._counter_operand: str
         self._counter_delta: str
@@ -239,18 +239,18 @@ class KappaCounter(KappaEntity):
         if not g:
             raise CounterParseError('Invalid counter declaration <' + expression + '>')
         # assign capturing groups to variables
-        self._counter_name = g.group(1)
+        self.name = g.group(1)
         self._current_state = g.group(2)
         self._counter_operand = g.group(3) if g.group(3) else ''
         self._counter_delta = g.group(4) if g.group(4) else ''
         # canonicalize the kappa expression
         self._kappa_expression = \
-            self._counter_name + \
+            self.name + \
             '{' + self._current_state + self._counter_operand + self._counter_delta + '}'
 
     def get_counter_name(self) -> str:
         """Returns a string with the counter's name."""
-        return self._counter_name
+        return self.name
 
     def get_counter_state(self) -> str:
         """Returns a string with the counter's value expression, including the delta if specified."""
