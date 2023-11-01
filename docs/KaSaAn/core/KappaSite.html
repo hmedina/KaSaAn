@@ -92,7 +92,7 @@ Bond state truth table
 
     def __init__(self, expression: str):
         self._raw_expression: str
-        self._port_name: str
+        self.name: str
         self._present_bond_state: str
         self._bond_operand: str
         self._future_bond_state: str
@@ -114,7 +114,7 @@ Bond state truth table
         if not g:
             raise PortParseError(&#39;Invalid port declaration &lt;&#39; + expression + &#39;&gt;&#39;)
         # assuming it parsed, assign capturing groups to variables
-        self._port_name = g.group(1)
+        self.name = g.group(1)
         # figure out what type of bond operation is being performed
         self._present_bond_state = g.group(5)
         if g.group(6):                                                  # if there&#39;s an operation
@@ -157,7 +157,7 @@ Bond state truth table
             self._future_int_state = &#39;&#39;
         # canonicalize the kappa expression
         self._kappa_expression = \
-            self._port_name + \
+            self.name + \
             &#39;[&#39; + self._present_bond_state + self._bond_operand + self._future_bond_state + &#39;]&#39; + \
             &#39;{&#39; + self._present_int_state + self._int_operand + self._future_int_state + &#39;}&#39;
 
@@ -179,7 +179,7 @@ Bond state truth table
         else:
             satisfied = False
             # site name satisfied?
-            if self._port_name == query._port_name:
+            if self.name == query.name:
                 # first check if internal state satisfied,
                 # then check if bond state satisfied
                 if query._present_int_state == &#39;#&#39;:
@@ -190,7 +190,7 @@ Bond state truth table
 
     def get_port_name(self) -&gt; str:
         &#34;&#34;&#34;Returns a string with the port&#39;s name.&#34;&#34;&#34;
-        return self._port_name
+        return self.name
 
     def get_port_int_state(self) -&gt; str:
         &#34;&#34;&#34;Returns a string with the port&#39;s internal state.&#34;&#34;&#34;
@@ -255,7 +255,7 @@ class KappaCounter(KappaEntity):
 
     def __init__(self, expression: str):
         self._raw_expression: str
-        self._counter_name: str
+        self.name: str
         self._current_state: str
         self._counter_operand: str
         self._counter_delta: str
@@ -268,18 +268,18 @@ class KappaCounter(KappaEntity):
         if not g:
             raise CounterParseError(&#39;Invalid counter declaration &lt;&#39; + expression + &#39;&gt;&#39;)
         # assign capturing groups to variables
-        self._counter_name = g.group(1)
+        self.name = g.group(1)
         self._current_state = g.group(2)
         self._counter_operand = g.group(3) if g.group(3) else &#39;&#39;
         self._counter_delta = g.group(4) if g.group(4) else &#39;&#39;
         # canonicalize the kappa expression
         self._kappa_expression = \
-            self._counter_name + \
+            self.name + \
             &#39;{&#39; + self._current_state + self._counter_operand + self._counter_delta + &#39;}&#39;
 
     def get_counter_name(self) -&gt; str:
         &#34;&#34;&#34;Returns a string with the counter&#39;s name.&#34;&#34;&#34;
-        return self._counter_name
+        return self.name
 
     def get_counter_state(self) -&gt; str:
         &#34;&#34;&#34;Returns a string with the counter&#39;s value expression, including the delta if specified.&#34;&#34;&#34;
@@ -341,7 +341,7 @@ def _bond_state_satisfaction(query_port: KappaPort, target_port: KappaPort) -&gt
 
     def __init__(self, expression: str):
         self._raw_expression: str
-        self._counter_name: str
+        self.name: str
         self._current_state: str
         self._counter_operand: str
         self._counter_delta: str
@@ -354,18 +354,18 @@ def _bond_state_satisfaction(query_port: KappaPort, target_port: KappaPort) -&gt
         if not g:
             raise CounterParseError(&#39;Invalid counter declaration &lt;&#39; + expression + &#39;&gt;&#39;)
         # assign capturing groups to variables
-        self._counter_name = g.group(1)
+        self.name = g.group(1)
         self._current_state = g.group(2)
         self._counter_operand = g.group(3) if g.group(3) else &#39;&#39;
         self._counter_delta = g.group(4) if g.group(4) else &#39;&#39;
         # canonicalize the kappa expression
         self._kappa_expression = \
-            self._counter_name + \
+            self.name + \
             &#39;{&#39; + self._current_state + self._counter_operand + self._counter_delta + &#39;}&#39;
 
     def get_counter_name(self) -&gt; str:
         &#34;&#34;&#34;Returns a string with the counter&#39;s name.&#34;&#34;&#34;
-        return self._counter_name
+        return self.name
 
     def get_counter_state(self) -&gt; str:
         &#34;&#34;&#34;Returns a string with the counter&#39;s value expression, including the delta if specified.&#34;&#34;&#34;
@@ -415,7 +415,7 @@ def _bond_state_satisfaction(query_port: KappaPort, target_port: KappaPort) -&gt
 </summary>
 <pre><code class="python">def get_counter_name(self) -&gt; str:
     &#34;&#34;&#34;Returns a string with the counter&#39;s name.&#34;&#34;&#34;
-    return self._counter_name</code></pre>
+    return self.name</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaSite.KappaCounter.get_counter_state"><code class="name flex">
@@ -563,7 +563,7 @@ Bond state truth table
 
     def __init__(self, expression: str):
         self._raw_expression: str
-        self._port_name: str
+        self.name: str
         self._present_bond_state: str
         self._bond_operand: str
         self._future_bond_state: str
@@ -585,7 +585,7 @@ Bond state truth table
         if not g:
             raise PortParseError(&#39;Invalid port declaration &lt;&#39; + expression + &#39;&gt;&#39;)
         # assuming it parsed, assign capturing groups to variables
-        self._port_name = g.group(1)
+        self.name = g.group(1)
         # figure out what type of bond operation is being performed
         self._present_bond_state = g.group(5)
         if g.group(6):                                                  # if there&#39;s an operation
@@ -628,7 +628,7 @@ Bond state truth table
             self._future_int_state = &#39;&#39;
         # canonicalize the kappa expression
         self._kappa_expression = \
-            self._port_name + \
+            self.name + \
             &#39;[&#39; + self._present_bond_state + self._bond_operand + self._future_bond_state + &#39;]&#39; + \
             &#39;{&#39; + self._present_int_state + self._int_operand + self._future_int_state + &#39;}&#39;
 
@@ -650,7 +650,7 @@ Bond state truth table
         else:
             satisfied = False
             # site name satisfied?
-            if self._port_name == query._port_name:
+            if self.name == query.name:
                 # first check if internal state satisfied,
                 # then check if bond state satisfied
                 if query._present_int_state == &#39;#&#39;:
@@ -661,7 +661,7 @@ Bond state truth table
 
     def get_port_name(self) -&gt; str:
         &#34;&#34;&#34;Returns a string with the port&#39;s name.&#34;&#34;&#34;
-        return self._port_name
+        return self.name
 
     def get_port_int_state(self) -&gt; str:
         &#34;&#34;&#34;Returns a string with the port&#39;s internal state.&#34;&#34;&#34;
@@ -856,7 +856,7 @@ patterns or usages.</p></div>
 </summary>
 <pre><code class="python">def get_port_name(self) -&gt; str:
     &#34;&#34;&#34;Returns a string with the port&#39;s name.&#34;&#34;&#34;
-    return self._port_name</code></pre>
+    return self.name</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaSite.KappaPort.has_bond_operation"><code class="name flex">

@@ -739,7 +739,16 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
         cx_data = self._kappa_to_cytoscape_cx()
         cx_network_attributes = [{&#39;n&#39;: &#39;name&#39;, &#39;v&#39;: &#39;network&#39;}]
         cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
-        return cx_data</code></pre>
+        return cx_data
+
+    def to_graphml(self, outfile: Union[Path, str, None]) -&gt; ET.ElementTree:
+        &#34;&#34;&#34;Returns an XML ElementTree with a GraphML representation of the complex, using GraphML&#39;s ports for
+         binding sites. If an output file is given, object is indented &amp; serialized to that file.&#34;&#34;&#34;
+        this_tree = self._kappa_to_graphml()
+        if outfile is not None:
+            ET.indent(this_tree, space=&#39;\t&#39;)
+            this_tree.write(outfile, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
+        return this_tree</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -987,6 +996,26 @@ json.dump(my_cx, out_file)
     cx_network_attributes = [{&#39;n&#39;: &#39;name&#39;, &#39;v&#39;: &#39;network&#39;}]
     cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
     return cx_data</code></pre>
+</details>
+</dd>
+<dt id="KaSaAn.core.KappaComplex.to_graphml"><code class="name flex">
+<span>def <span class="ident">to_graphml</span></span>(<span>self, outfile: Union[pathlib.Path, str, ForwardRef(None)]) ‑> xml.etree.ElementTree.ElementTree</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns an XML ElementTree with a GraphML representation of the complex, using GraphML's ports for
+binding sites. If an output file is given, object is indented &amp; serialized to that file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_graphml(self, outfile: Union[Path, str, None]) -&gt; ET.ElementTree:
+    &#34;&#34;&#34;Returns an XML ElementTree with a GraphML representation of the complex, using GraphML&#39;s ports for
+     binding sites. If an output file is given, object is indented &amp; serialized to that file.&#34;&#34;&#34;
+    this_tree = self._kappa_to_graphml()
+    if outfile is not None:
+        ET.indent(this_tree, space=&#39;\t&#39;)
+        this_tree.write(outfile, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
+    return this_tree</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.to_networkx"><code class="name flex">
@@ -1981,7 +2010,7 @@ in coordinate-space units.</p></div>
 
     def __init__(self, expression: str):
         self._raw_expression: str
-        self._counter_name: str
+        self.name: str
         self._current_state: str
         self._counter_operand: str
         self._counter_delta: str
@@ -1994,18 +2023,18 @@ in coordinate-space units.</p></div>
         if not g:
             raise CounterParseError(&#39;Invalid counter declaration &lt;&#39; + expression + &#39;&gt;&#39;)
         # assign capturing groups to variables
-        self._counter_name = g.group(1)
+        self.name = g.group(1)
         self._current_state = g.group(2)
         self._counter_operand = g.group(3) if g.group(3) else &#39;&#39;
         self._counter_delta = g.group(4) if g.group(4) else &#39;&#39;
         # canonicalize the kappa expression
         self._kappa_expression = \
-            self._counter_name + \
+            self.name + \
             &#39;{&#39; + self._current_state + self._counter_operand + self._counter_delta + &#39;}&#39;
 
     def get_counter_name(self) -&gt; str:
         &#34;&#34;&#34;Returns a string with the counter&#39;s name.&#34;&#34;&#34;
-        return self._counter_name
+        return self.name
 
     def get_counter_state(self) -&gt; str:
         &#34;&#34;&#34;Returns a string with the counter&#39;s value expression, including the delta if specified.&#34;&#34;&#34;
@@ -2055,7 +2084,7 @@ in coordinate-space units.</p></div>
 </summary>
 <pre><code class="python">def get_counter_name(self) -&gt; str:
     &#34;&#34;&#34;Returns a string with the counter&#39;s name.&#34;&#34;&#34;
-    return self._counter_name</code></pre>
+    return self.name</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaCounter.get_counter_state"><code class="name flex">
@@ -2203,7 +2232,7 @@ Bond state truth table
 
     def __init__(self, expression: str):
         self._raw_expression: str
-        self._port_name: str
+        self.name: str
         self._present_bond_state: str
         self._bond_operand: str
         self._future_bond_state: str
@@ -2225,7 +2254,7 @@ Bond state truth table
         if not g:
             raise PortParseError(&#39;Invalid port declaration &lt;&#39; + expression + &#39;&gt;&#39;)
         # assuming it parsed, assign capturing groups to variables
-        self._port_name = g.group(1)
+        self.name = g.group(1)
         # figure out what type of bond operation is being performed
         self._present_bond_state = g.group(5)
         if g.group(6):                                                  # if there&#39;s an operation
@@ -2268,7 +2297,7 @@ Bond state truth table
             self._future_int_state = &#39;&#39;
         # canonicalize the kappa expression
         self._kappa_expression = \
-            self._port_name + \
+            self.name + \
             &#39;[&#39; + self._present_bond_state + self._bond_operand + self._future_bond_state + &#39;]&#39; + \
             &#39;{&#39; + self._present_int_state + self._int_operand + self._future_int_state + &#39;}&#39;
 
@@ -2290,7 +2319,7 @@ Bond state truth table
         else:
             satisfied = False
             # site name satisfied?
-            if self._port_name == query._port_name:
+            if self.name == query.name:
                 # first check if internal state satisfied,
                 # then check if bond state satisfied
                 if query._present_int_state == &#39;#&#39;:
@@ -2301,7 +2330,7 @@ Bond state truth table
 
     def get_port_name(self) -&gt; str:
         &#34;&#34;&#34;Returns a string with the port&#39;s name.&#34;&#34;&#34;
-        return self._port_name
+        return self.name
 
     def get_port_int_state(self) -&gt; str:
         &#34;&#34;&#34;Returns a string with the port&#39;s internal state.&#34;&#34;&#34;
@@ -2496,7 +2525,7 @@ patterns or usages.</p></div>
 </summary>
 <pre><code class="python">def get_port_name(self) -&gt; str:
     &#34;&#34;&#34;Returns a string with the port&#39;s name.&#34;&#34;&#34;
-    return self._port_name</code></pre>
+    return self.name</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaPort.has_bond_operation"><code class="name flex">
@@ -2938,7 +2967,16 @@ markedly slower performance with multi-threading than without. Case-specific, yo
                                  {&#39;n&#39;: &#39;event&#39;, &#39;v&#39;: self.get_snapshot_event()},
                                  {&#39;n&#39;: &#39;UUID&#39;, &#39;v&#39;: self.get_snapshot_uuid()}]
         cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
-        return cx_data</code></pre>
+        return cx_data
+
+    def to_graphml(self, outfile: Union[pathlib.Path, str, None]) -&gt; ET.ElementTree:
+        &#34;&#34;&#34;Returns an XML ElementTree with a GraphML representation of the snapshot, using GraphML&#39;s ports for
+         binding sites. If an output file is given, object is indented &amp; serialized to that file.&#34;&#34;&#34;
+        this_tree = self._kappa_to_graphml()
+        if outfile is not None:
+            ET.indent(this_tree, space=&#39;\t&#39;)
+            this_tree.write(outfile, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
+        return this_tree</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -3492,6 +3530,26 @@ along with their abundance in the snapshot.</p></div>
     return cx_data</code></pre>
 </details>
 </dd>
+<dt id="KaSaAn.core.KappaSnapshot.to_graphml"><code class="name flex">
+<span>def <span class="ident">to_graphml</span></span>(<span>self, outfile: Union[pathlib.Path, str, ForwardRef(None)]) ‑> xml.etree.ElementTree.ElementTree</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns an XML ElementTree with a GraphML representation of the snapshot, using GraphML's ports for
+binding sites. If an output file is given, object is indented &amp; serialized to that file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_graphml(self, outfile: Union[pathlib.Path, str, None]) -&gt; ET.ElementTree:
+    &#34;&#34;&#34;Returns an XML ElementTree with a GraphML representation of the snapshot, using GraphML&#39;s ports for
+     binding sites. If an output file is given, object is indented &amp; serialized to that file.&#34;&#34;&#34;
+    this_tree = self._kappa_to_graphml()
+    if outfile is not None:
+        ET.indent(this_tree, space=&#39;\t&#39;)
+        this_tree.write(outfile, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
+    return this_tree</code></pre>
+</details>
+</dd>
 <dt id="KaSaAn.core.KappaSnapshot.to_networkx"><code class="name flex">
 <span>def <span class="ident">to_networkx</span></span>(<span>self) ‑> networkx.classes.multigraph.MultiGraph</span>
 </code></dt>
@@ -3671,6 +3729,7 @@ identifiers as well as the kappa identifiers.</p></div>
 <li><code><a title="KaSaAn.core.KappaComplex.get_number_of_embeddings_of_complex" href="#KaSaAn.core.KappaComplex.get_number_of_embeddings_of_complex">get_number_of_embeddings_of_complex</a></code></li>
 <li><code><a title="KaSaAn.core.KappaComplex.get_size_of_complex" href="#KaSaAn.core.KappaComplex.get_size_of_complex">get_size_of_complex</a></code></li>
 <li><code><a title="KaSaAn.core.KappaComplex.to_cytoscape_cx" href="#KaSaAn.core.KappaComplex.to_cytoscape_cx">to_cytoscape_cx</a></code></li>
+<li><code><a title="KaSaAn.core.KappaComplex.to_graphml" href="#KaSaAn.core.KappaComplex.to_graphml">to_graphml</a></code></li>
 <li><code><a title="KaSaAn.core.KappaComplex.to_networkx" href="#KaSaAn.core.KappaComplex.to_networkx">to_networkx</a></code></li>
 </ul>
 </li>
@@ -3747,6 +3806,7 @@ identifiers as well as the kappa identifiers.</p></div>
 <li><code><a title="KaSaAn.core.KappaSnapshot.get_total_mass" href="#KaSaAn.core.KappaSnapshot.get_total_mass">get_total_mass</a></code></li>
 <li><code><a title="KaSaAn.core.KappaSnapshot.get_value_of_token" href="#KaSaAn.core.KappaSnapshot.get_value_of_token">get_value_of_token</a></code></li>
 <li><code><a title="KaSaAn.core.KappaSnapshot.to_cytoscape_cx" href="#KaSaAn.core.KappaSnapshot.to_cytoscape_cx">to_cytoscape_cx</a></code></li>
+<li><code><a title="KaSaAn.core.KappaSnapshot.to_graphml" href="#KaSaAn.core.KappaSnapshot.to_graphml">to_graphml</a></code></li>
 <li><code><a title="KaSaAn.core.KappaSnapshot.to_networkx" href="#KaSaAn.core.KappaSnapshot.to_networkx">to_networkx</a></code></li>
 </ul>
 </li>
