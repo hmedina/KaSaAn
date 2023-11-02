@@ -129,34 +129,34 @@ class KappaMultiAgentGraph(KappaEntity):
 
         # define & add attributes for typing & naming & identifying agents
         attr_node_name = ET.SubElement(tree.getroot(), 'key')
-        attr_node_name.set('id', 'n0')
         attr_node_name.set('for', 'node')
+        attr_node_name.set('id', 'AgentType')
         attr_node_name.set('attr.name', 'AgentType')
         attr_node_name.set('attr.type', 'string')
         attr_node_expr = ET.SubElement(tree.getroot(), 'key')
-        attr_node_expr.set('id', 'n1')
         attr_node_expr.set('for', 'node')
+        attr_node_expr.set('id', 'AgentExpression')
         attr_node_expr.set('attr.name', 'AgentExpression')
         attr_node_expr.set('attr.type', 'string')
         attr_node_ident = ET.SubElement(tree.getroot(), 'key')
-        attr_node_ident.set('id', 'n2')
         attr_node_ident.set('for', 'node')
+        attr_node_ident.set('id', 'AgentIdentifier')
         attr_node_ident.set('attr.name', 'AgentIdentifier')
         attr_node_ident.set('attr.type', 'int')
         attr_node_color = ET.SubElement(tree.getroot(), 'key')
-        attr_node_color.set('id', 'n3')
         attr_node_color.set('for', 'node')
+        attr_node_color.set('id', 'NodeColor')
         attr_node_color.set('attr.name', 'color')
         attr_node_color.set('attr.type', 'string')
         # define & add attributes for typing bonds
         attr_bond_type = ET.SubElement(tree.getroot(), 'key')
-        attr_bond_type.set('id', 'e0')
         attr_bond_type.set('for', 'edge')
+        attr_bond_type.set('id', 'BondType')
         attr_bond_type.set('attr.name', 'BondType')
         attr_bond_type.set('attr.type', 'string')
         attr_bond_local_id = ET.SubElement(tree.getroot(), 'key')
-        attr_bond_local_id.set('id', 'e1')
         attr_bond_local_id.set('for', 'edge')
+        attr_bond_local_id.set('id', 'LocalIdentifier')
         attr_bond_local_id.set('attr.name', 'LocalIdentifier')
         attr_bond_local_id.set('attr.type', 'int')
         # define & add graph sub-tree
@@ -181,16 +181,20 @@ class KappaMultiAgentGraph(KappaEntity):
             n_degree = this_net.degree(n_id)
             new_node.set('parse.indegree', str(n_degree))
             new_node.set('parse.outdegree', str(n_degree))
+            # set element with kappa expression as description
             node_desc = ET.SubElement(new_node, 'desc')
             node_desc.text = str(n_data['kappa'])
+            # set element with AgentType
             node_data_name = ET.SubElement(new_node, 'data')
-            node_data_name.set('key', 'n0')
+            node_data_name.set('key', 'AgentType')
             node_data_name.text = n_data['kappa'].get_agent_name()
+            # set element with AgentExpression
             node_data_expr = ET.SubElement(new_node, 'data')
-            node_data_expr.set('key', 'n1')
+            node_data_expr.set('key', 'AgentExpression')
             node_data_expr.text = str(n_data['kappa'])
+            # set element with AgentIdentifier
             node_data_id = ET.SubElement(new_node, 'data')
-            node_data_id.set('key', 'n2')
+            node_data_id.set('key', 'AgentIdentifier')
             node_data_id.text = str(n_id)
             # If there is a color eligible from the supplied scheme,
             # use the first one.
@@ -198,7 +202,7 @@ class KappaMultiAgentGraph(KappaEntity):
                 match_colors = [k_col for k_exp, k_col in node_coloring.items() if k_exp in n_data['kappa']]
                 if len(match_colors) > 0:
                     node_data_color = ET.SubElement(new_node, 'data')
-                    node_data_color.set('key', 'n3')
+                    node_data_color.set('key', 'NodeColor')
                     node_data_color.text = match_colors[0]
             for some_site in n_data['kappa'].get_agent_signature():
                 new_port = ET.SubElement(new_node, 'port')
@@ -213,11 +217,13 @@ class KappaMultiAgentGraph(KappaEntity):
             new_edge.set('target', 'n{}'.format(e_target))
             new_edge.set('sourceport', e_data['bond type'].site_one)    # this works because kappa bonds
             new_edge.set('targetport', e_data['bond type'].site_two)    # are oriented, ergo ordered
+            # set element with BondType
             new_bond_type = ET.SubElement(new_edge, 'data')
-            new_bond_type.set('key', 'e0')
+            new_bond_type.set('key', 'BondType')
             new_bond_type.text = str(e_data['bond type'])
+            # set element with LocalIdentifier
             new_bond_id = ET.SubElement(new_edge, 'data')
-            new_bond_id.set('key', 'e1')
+            new_bond_id.set('key', 'LocalIdentifier')
             new_bond_id.text = e_data['bond id']
             edge_counter += 1
         return tree
