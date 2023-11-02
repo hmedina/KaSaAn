@@ -91,7 +91,7 @@ class KappaAgent(KappaEntity):
 
     def __contains__(self, item) -> bool:
         # type parsing: try to make it an Agent, if that fails try a Site, if that tails, raise exception
-        if (not type(item) is KappaPort) and (not type(item) is KappaCounter) and (not type(item) is KappaAgent):
+        if (type(item) is not KappaPort) and (type(item) is not KappaCounter) and (type(item) is not KappaAgent):
             try:
                 try:
                     try:
@@ -124,7 +124,7 @@ class KappaAgent(KappaEntity):
         """Overwriting the base clase's method to properly compare identifiers. Relying on the kappa expression as a
         simple string resulted in incorrect behavior: `x10:A()` was sorted before `x9:A()`, yielding incorrect bond
         orientations."""
-        if not type(other) is KappaAgent:
+        if type(other) is not KappaAgent:
             other = KappaAgent(other)
         if (self.get_agent_identifier() is not None) & (other.get_agent_identifier() is not None):
             if self.get_agent_identifier() == other.get_agent_identifier():

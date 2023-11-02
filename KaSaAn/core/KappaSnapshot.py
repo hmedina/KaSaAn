@@ -52,9 +52,9 @@ class KappaSnapshot(KappaMultiAgentGraph):
         self._snapshot_uuid: str
         self._snapshot_time: float
         # initialization of structures
-        if type(snapshot_file) == str:
+        if isinstance(snapshot_file, str):
             self._file_name = os.path.split(snapshot_file)[1]
-        elif type(snapshot_file) == pathlib.PosixPath or type(snapshot_file) == pathlib.WindowsPath:
+        elif isinstance(snapshot_file, pathlib.PosixPath) or isinstance(snapshot_file, pathlib.WindowsPath):
             self._file_name = str(snapshot_file)
         else:
             raise ValueError(
@@ -181,7 +181,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
     def get_abundance_of_agent(self, query_agent) -> int:
         """Returns an integer with the abundance of the given agent. Supports passing a string with the agent
         expression, or an instance of a KappaAgent. Supports passing agents with signature, e.g. `Bob(site{state})`."""
-        if type(query_agent) is not KappaAgent:
+        if not isinstance(query_agent, KappaAgent):
             query_agent = KappaAgent(query_agent)
         abundance = 0
         for cx, cx_ab in self.get_all_complexes_and_abundances():
@@ -201,7 +201,7 @@ at a time; however my regular usage shows marginal gains in some cases, negligib
 markedly slower performance with multi-threading than without. Case-specific, your milage may vary.
         """
         # if given string, attempt to cast
-        if type(query_pattern) is str:
+        if isinstance(query_pattern, str):
             try:
                 try:
                     query_pattern = KappaAgent(query_pattern)
@@ -210,9 +210,9 @@ markedly slower performance with multi-threading than without. Case-specific, yo
             except ComplexParseError:
                 raise ValueError('Could not parse input <{}> as KappaAgent nor KappaComplex'.format(query_pattern))
         # once cast, proceed
-        if type(query_pattern) is KappaAgent:
+        if isinstance(query_pattern, KappaAgent):
             return tuple([self.get_abundance_of_agent(query_pattern)] * 2)
-        elif type(query_pattern) is KappaComplex:
+        elif isinstance(query_pattern, KappaComplex):
             abundances_all = np.zeros(len(self.get_all_complexes()))
             abundances_unique = np.zeros(len(self.get_all_complexes()))
             if not multi_thread:
@@ -320,7 +320,7 @@ markedly slower performance with multi-threading than without. Case-specific, yo
     def get_value_of_token(self, query) -> Union[None, float]:
         """Returns the value of a token."""
         # make it a KappaToken, if it's not one already
-        if not type(query) is KappaToken:
+        if not isinstance(query, KappaToken):
             q = KappaToken(query)
         else:
             q = query

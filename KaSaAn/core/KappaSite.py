@@ -136,11 +136,11 @@ Bond state truth table
         """"""
 
         # we can't satisfy ports with counters
-        if type(query) is KappaCounter:
+        if isinstance(query, KappaCounter):
             raise PortParseError('Can not check for containment of supplied counter <' + query +
                                  '> in port <' + self._kappa_expression + '>')
         # make it a KappaPort if it's not one already
-        elif not type(query) is KappaPort:
+        elif not isinstance(query, KappaPort):
             query = KappaPort(query)
         # check if item is satisfied by self, Kappa-wise
         if self._int_operand or self._bond_operand:                     # if self has an operation, issue warning

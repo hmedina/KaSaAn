@@ -33,7 +33,7 @@ class KappaEntity(ABC):
     def __eq__(self, other) -> bool:
         # as the kappa_expression has been canonicalized, it is sufficient for equality testing
         # the bulk of this method is just type-checking
-        if type(other) is str:
+        if isinstance(other, str):
             # if other is a string, make it into an instance of my class
             other = self.__class__(other)
             return True if self._kappa_expression == other._kappa_expression else False
@@ -52,7 +52,7 @@ class KappaEntity(ABC):
 
     def __lt__(self, other) -> bool:
         # make it a Kappa-whatever-this-is if it's not one already
-        if not type(other) is type(self):
+        if type(other) is not type(self):
             other = self.__class__(other)
         # as kappa_expression have been canonicalized, they're sufficient for comparison testing (i.e. alphabetically)
         return True if self._kappa_expression < other._kappa_expression else False

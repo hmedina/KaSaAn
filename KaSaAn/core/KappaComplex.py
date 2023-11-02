@@ -117,7 +117,7 @@ class KappaComplex(KappaMultiAgentGraph):
         """Returns the number of embeddings the query agent has on the KappaComplex. For the 'truth table' of site
         nomenclature, see `KappaPort`."""
         # type the query into an Agent, if it's not one already
-        if not type(query) is KappaAgent:
+        if not isinstance(query, KappaAgent):
             q_agent = KappaAgent(query)
         else:
             q_agent = query
@@ -132,7 +132,7 @@ class KappaComplex(KappaMultiAgentGraph):
         """Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
         the symmetry adjustment and report number of raw embeddings. See the `embed_and_map` function for examples and
         advanced usage."""
-        if not type(query) is KappaComplex:
+        if not isinstance(query, KappaComplex):
             q_complex = KappaComplex(query)
         else:
             q_complex = query
@@ -146,9 +146,9 @@ class KappaComplex(KappaMultiAgentGraph):
         """Wrapper for the two specialized functions, for agent and complex. Optional parameter to not perform
         the symmetry adjustment and report the number of raw embeddings. See the `embed_and_map` function for examples
         and advanced usage."""
-        if type(query) is KappaAgent:
+        if isinstance(query, KappaAgent):
             return self.get_number_of_embeddings_of_agent(query)
-        elif type(query) is KappaComplex:
+        elif isinstance(query, KappaComplex):
             return self.get_number_of_embeddings_of_complex(query, symmetry_adjust)
         else:
             try:
