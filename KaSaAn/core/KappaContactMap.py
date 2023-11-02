@@ -2,6 +2,7 @@
 """Contains `KappaContactMap`, class for representing and fine-tuning the layout of a contact map."""
 
 import colorsys
+from pathlib import Path
 import random
 import re
 import matplotlib as mpl
@@ -13,7 +14,7 @@ from matplotlib.collections import PatchCollection
 import networkx as nx
 import networkx.drawing.layout as nxl
 import numpy as np
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Union
 
 
 valid_graph_layouts = {
@@ -47,7 +48,7 @@ def _default_site_colors(number_of_sites) -> list:
     return color_list
 
 
-def _file_name_to_string_list(contact_map_file_name: str) -> List[str]:
+def _file_name_to_string_list(contact_map_file_name: Union[str, Path]) -> List[str]:
     """Read an "inputs.ka" style file containing contact map data, process into a clean list of 1-agent strings."""
     with open(contact_map_file_name, 'r') as cmf:
         raw_expression = cmf.read()
@@ -343,7 +344,7 @@ class KappaContactMap:
 >>> plt.tight_layout()
 >>> plt.show()
     """
-    def __init__(self, file_name: str):
+    def __init__(self, file_name: Union[str, Path]):
         # type internal structures
         self._raw_string_list: List[str]
         self._parsed_kappa: Dict[str: dict]
