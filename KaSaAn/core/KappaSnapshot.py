@@ -9,7 +9,7 @@ import networkx as nx
 import numpy as np
 import pathlib
 import xml.etree.ElementTree as ET
-from typing import List, Set, ItemsView, Dict, Tuple, Union
+from typing import List, Optional, Set, ItemsView, Dict, Tuple, Union
 
 from .KappaMultiAgentGraph import KappaMultiAgentGraph
 from .KappaComplex import KappaComplex, embed_and_map
@@ -401,10 +401,11 @@ markedly slower performance with multi-threading than without. Case-specific, yo
         cx_data.insert(2, {'networkAttributes': cx_network_attributes})
         return cx_data
 
-    def to_graphml(self, outfile: Union[pathlib.Path, str, None]) -> ET.ElementTree:
+    def to_graphml(self, outfile: Union[pathlib.Path, str, None], node_coloring: Optional[Dict[KappaAgent, any]]) -> ET.ElementTree:
         """Returns an XML ElementTree with a GraphML representation of the snapshot, using GraphML's ports for
-         binding sites. If an output file is given, object is indented & serialized to that file."""
-        this_tree = self._kappa_to_graphml()
+         binding sites. If an output file is given, object is indented & serialized to that file.
+         Optional argument `node_coloring` colorizes by single-agent patterns."""
+        this_tree = self._kappa_to_graphml(node_coloring)
         if outfile is not None:
             ET.indent(this_tree, space='\t')
             this_tree.write(outfile, encoding='UTF-8', xml_declaration=True, method='xml')

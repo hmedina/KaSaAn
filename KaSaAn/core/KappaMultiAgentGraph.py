@@ -2,10 +2,11 @@
 """Contains the parent class to `KappaSnapshot` and `KappaComplex`, with shared methods."""
 
 from abc import abstractmethod
-from typing import List, Dict
+from typing import List, Dict, Optional
 import networkx as nx
 import xml.etree.ElementTree as ET
 
+from .KappaAgent import KappaAgent
 from .KappaBond import KappaBond
 from .KappaEntity import KappaEntity
 
@@ -113,10 +114,11 @@ class KappaMultiAgentGraph(KappaEntity):
         ]
         return cx_data
 
-    def _kappa_to_graphml(self) -> ET.ElementTree:
+    def _kappa_to_graphml(self, node_coloring: Optional[Dict[KappaAgent, any]] = None) -> ET.ElementTree:
         """Builds the a GraphML representation, ultimately exported as an XML file.
          This method relies on `self.to_netowrkx()`, which is realized for KappaSnapshot
-         and KappaComplex objects."""
+         and KappaComplex objects.
+         Optional argument `node_coloring` colorizes by single-agent patterns."""
 
         graphml_root = ET.Element('graphml', attrib={
             'xmlns': "http://graphml.graphdrawing.org/xmlns",
@@ -136,11 +138,16 @@ class KappaMultiAgentGraph(KappaEntity):
         attr_node_expr.set('for', 'node')
         attr_node_expr.set('attr.name', 'AgentExpression')
         attr_node_expr.set('attr.type', 'string')
-        attr_node_expr = ET.SubElement(tree.getroot(), 'key')
-        attr_node_expr.set('id', 'n2')
-        attr_node_expr.set('for', 'node')
-        attr_node_expr.set('attr.name', 'AgentIdentifier')
-        attr_node_expr.set('attr.type', 'int')
+        attr_node_ident = ET.SubElement(tree.getroot(), 'key')
+        attr_node_ident.set('id', 'n2')
+        attr_node_ident.set('for', 'node')
+        attr_node_ident.set('attr.name', 'AgentIdentifier')
+        attr_node_ident.set('attr.type', 'int')
+        attr_node_color = ET.SubElement(tree.getroot(), 'key')
+        attr_node_color.set('id', 'n3')
+        attr_node_color.set('for', 'node')
+        attr_node_color.set('attr.name', 'color')
+        attr_node_color.set('attr.type', 'string')
         # define & add attributes for typing bonds
         attr_bond_type = ET.SubElement(tree.getroot(), 'key')
         attr_bond_type.set('id', 'e0')
@@ -185,6 +192,14 @@ class KappaMultiAgentGraph(KappaEntity):
             node_data_id = ET.SubElement(new_node, 'data')
             node_data_id.set('key', 'n2')
             node_data_id.text = str(n_id)
+            # If there is a color eligible from the supplied scheme,
+            # use the first one.
+            if node_coloring is not None:
+                match_colors = [k_col for k_exp, k_col in node_coloring.items() if k_exp in n_data['kappa']]
+                if len(match_colors) > 0:
+                    node_data_color = ET.SubElement(new_node, 'data')
+                    node_data_color.set('key', 'n3')
+                    node_data_color.text = match_colors[0]
             for some_site in n_data['kappa'].get_agent_signature():
                 new_port = ET.SubElement(new_node, 'port')
                 new_port.set('name', some_site.name)
