@@ -231,14 +231,18 @@ class KappaComplex(KappaMultiAgentGraph):
         cx_data.insert(2, {'networkAttributes': cx_network_attributes})
         return cx_data
 
-    def to_graphml(self, outfile: Union[Path, str, None], node_coloring: Optional[Dict[KappaAgent, any]]) -> ET.ElementTree:
+    def to_graphml(self, outfile: Union[Path, str, None] = None, node_coloring: Optional[Dict[KappaAgent, any]] = None) -> ET.ElementTree:
         """Returns an XML ElementTree with a GraphML representation of the complex, using GraphML's ports for
          binding sites. If an output file is given, object is indented & serialized to that file.
          Optional argument `node_coloring` colorizes by single-agent patterns."""
         this_tree = self._kappa_to_graphml(node_coloring)
         if outfile is not None:
             ET.indent(this_tree, space='\t')
-            this_tree.write(outfile, encoding='UTF-8', xml_declaration=True, method='xml')
+            if isinstance(outfile, str):
+                this_tree.write(outfile, encoding='UTF-8', xml_declaration=True, method='xml')
+            elif isinstance(outfile, Path):
+                with outfile.open('wb') as f:
+                    this_tree.write(file_or_filename=f, encoding='UTF-8', xml_declaration=True, method='xml')
         return this_tree
 
 

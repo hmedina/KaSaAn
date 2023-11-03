@@ -3,6 +3,7 @@
 
 from abc import abstractmethod
 from typing import List, Dict, Optional
+import matplotlib.colors as mpco
 import networkx as nx
 import xml.etree.ElementTree as ET
 
@@ -201,12 +202,20 @@ class KappaMultiAgentGraph(KappaEntity):
             if node_coloring is not None:
                 match_colors = [k_col for k_exp, k_col in node_coloring.items() if k_exp in n_data['kappa']]
                 if len(match_colors) > 0:
+                    chosen_color = match_colors[0]
                     node_data_color = ET.SubElement(new_node, 'data')
                     node_data_color.set('key', 'NodeColor')
-                    node_data_color.text = match_colors[0]
-            for some_site in n_data['kappa'].get_agent_signature():
+                    if isinstance(chosen_color, str):
+                        node_data_color.text = chosen_color
+                    elif mpco.is_color_like(chosen_color):
+                        node_data_color.text = mpco.to_hex(chosen_color)
+                    else:
+                        raise ValueError("I don't know how to serialize type {} of {}".format(type(chosen_color), chosen_color))
+            for some_ix, some_site in enumerate(n_data['kappa'].get_agent_ports()):
                 new_port = ET.SubElement(new_node, 'port')
-                new_port.set('name', some_site.name)
+                new_port.set('name', str(some_ix))   # type NMTOKEN is more constrained than Kappa's Unicode, so the "name", which serves as an identifier, is just the index in the agent's signature
+                new_description = ET.SubElement(new_port, 'desc')
+                new_description.text = str(some_site)
         # edge iteration
         edge_counter = 0    # non-id'd graphs do not have global edge identifiers
         for e_source, e_target, e_data in this_net.edges(data=True):
@@ -215,8 +224,12 @@ class KappaMultiAgentGraph(KappaEntity):
             new_edge.set('directed', 'false')
             new_edge.set('source', 'n{}'.format(e_source))
             new_edge.set('target', 'n{}'.format(e_target))
-            new_edge.set('sourceport', e_data['bond type'].site_one)    # this works because kappa bonds
-            new_edge.set('targetport', e_data['bond type'].site_two)    # are oriented, ergo ordered
+            port_source = this_net.nodes[e_source]['kappa'].get_port(e_data['bond type'].site_one)
+            port_target = this_net.nodes[e_target]['kappa'].get_port(e_data['bond type'].site_two)
+            port_ix_source = this_net.nodes[e_source]['kappa'].get_agent_ports().index(port_source)
+            port_ix_target = this_net.nodes[e_target]['kappa'].get_agent_ports().index(port_target)
+            new_edge.set('sourceport', str(port_ix_source))
+            new_edge.set('targetport', str(port_ix_target))
             # set element with BondType
             new_bond_type = ET.SubElement(new_edge, 'data')
             new_bond_type.set('key', 'BondType')
