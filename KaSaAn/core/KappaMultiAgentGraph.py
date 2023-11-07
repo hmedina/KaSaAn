@@ -120,6 +120,20 @@ class KappaMultiAgentGraph(KappaEntity):
          This method relies on `self.to_netowrkx()`, which is realized for KappaSnapshot
          and KappaComplex objects.
          Optional argument `node_coloring` colorizes by single-agent patterns."""
+        
+        def _colorize_for_node(node_kappa) -> str:
+            """Deal with agent color: ideally one, possibly multiple, maybe none"""
+            if node_coloring is not None:
+                match_colors = [k_col for k_exp, k_col in node_coloring.items() if k_exp in node_kappa]
+                if len(match_colors) > 0:
+                    chosen_color = match_colors[0]
+                    if isinstance(chosen_color, str):
+                        return chosen_color
+                    elif mpco.is_color_like(chosen_color):
+                        return mpco.to_hex(chosen_color)
+                    else:
+                        Warning("I don't know how to serialize type {} of {}, returning empty string".format(type(chosen_color), chosen_color))
+                        return ''
 
         graphml_root = ET.Element('graphml', attrib={
             'xmlns': "http://graphml.graphdrawing.org/xmlns",
@@ -128,115 +142,86 @@ class KappaMultiAgentGraph(KappaEntity):
             "http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"})
         tree = ET.ElementTree(graphml_root)
 
-        # define & add attributes for typing & naming & identifying agents
-        attr_node_name = ET.SubElement(tree.getroot(), 'key')
-        attr_node_name.set('for', 'node')
-        attr_node_name.set('id', 'AgentType')
-        attr_node_name.set('attr.name', 'AgentType')
-        attr_node_name.set('attr.type', 'string')
-        attr_node_expr = ET.SubElement(tree.getroot(), 'key')
-        attr_node_expr.set('for', 'node')
-        attr_node_expr.set('id', 'AgentExpression')
-        attr_node_expr.set('attr.name', 'AgentExpression')
-        attr_node_expr.set('attr.type', 'string')
-        attr_node_ident = ET.SubElement(tree.getroot(), 'key')
-        attr_node_ident.set('for', 'node')
-        attr_node_ident.set('id', 'AgentIdentifier')
-        attr_node_ident.set('attr.name', 'AgentIdentifier')
-        attr_node_ident.set('attr.type', 'int')
-        attr_node_color = ET.SubElement(tree.getroot(), 'key')
-        attr_node_color.set('for', 'node')
-        attr_node_color.set('id', 'NodeColor')
-        attr_node_color.set('attr.name', 'color')
-        attr_node_color.set('attr.type', 'string')
-        # define & add attributes for typing bonds
-        attr_bond_type = ET.SubElement(tree.getroot(), 'key')
-        attr_bond_type.set('for', 'edge')
-        attr_bond_type.set('id', 'BondType')
-        attr_bond_type.set('attr.name', 'BondType')
-        attr_bond_type.set('attr.type', 'string')
-        attr_bond_local_id = ET.SubElement(tree.getroot(), 'key')
-        attr_bond_local_id.set('for', 'edge')
-        attr_bond_local_id.set('id', 'LocalIdentifier')
-        attr_bond_local_id.set('attr.name', 'LocalIdentifier')
-        attr_bond_local_id.set('attr.type', 'int')
-        # define & add graph sub-tree
-        graph_root = ET.SubElement(tree.getroot(), 'graph')
-        graph_root.set('id', 'G')
-        graph_root.set('edgedefault', 'undirected')
-        graph_root.set('parse.nodeids', 'canonical')
-        graph_root.set('parse.edgeids', 'canonical')
-        graph_root.set('parse.order', 'nodesfirst')
+        # define & add attributes for typing & naming & identifying agents & bonds
+        data_keys = [
+            ('node', 'AgentType', 'string'),
+            ('node', 'AgentExpression', 'string'),
+            ('node', 'AgentIdentifier', 'int'),
+            ('node', 'NodeColor', 'string'),
+            ('edge', 'BondType', 'string'),
+            ('edge', 'LocalIdentifier', 'int')
+        ]
+        for key_domain, key_id, key_type in data_keys:
+            tree.getroot().append(ET.Element('key', attrib={
+                'for': key_domain, 'id': key_id, 'attr.name': key_id, 'attr.type': key_type
+            }))
 
         this_net = self.to_networkx()
-        # annotations for eficient parsing: parse.maxindegree & parse.maxoutdegree & parse.nodes & parse.edges
         max_degree = len(nx.degree_histogram(this_net))
-        graph_root.set('parse.maxindegree', str(max_degree))
-        graph_root.set('parse.maxoutdegree', str(max_degree))
-        graph_root.set('parse.nodes', str(this_net.order()))
-        graph_root.set('parse.edges', str(this_net.size(weight=None)))
+
+        # define & add graph sub-tree, with meta-data for efficient parsing
+        tree.getroot().append(ET.Element('graph', attrib={
+            'id': 'G',
+            'edgedefault': 'undirected',
+            'parse.nodeids': 'canonical',
+            'parse.edgeids': 'canonical',
+            'parse.order': 'nodesfirst',
+            'parse.maxindegree': str(max_degree),
+            'parse.maxoutdegree': str(max_degree),
+            'parse.nodes': str(this_net.order()),
+            'parse.edges': str(this_net.size(weight=None))
+        }))
+        graph_root = tree.find('./graph')
+
         # node iteration
         for n_id, n_data in this_net.nodes.items():
-            new_node = ET.SubElement(graph_root, 'node')
-            new_node.set('id', 'n{}'.format(n_id))
             n_degree = this_net.degree(n_id)
-            new_node.set('parse.indegree', str(n_degree))
-            new_node.set('parse.outdegree', str(n_degree))
-            # set element with kappa expression as description
-            node_desc = ET.SubElement(new_node, 'desc')
-            node_desc.text = str(n_data['kappa'])
-            # set element with AgentType
-            node_data_name = ET.SubElement(new_node, 'data')
-            node_data_name.set('key', 'AgentType')
-            node_data_name.text = n_data['kappa'].get_agent_name()
-            # set element with AgentExpression
-            node_data_expr = ET.SubElement(new_node, 'data')
-            node_data_expr.set('key', 'AgentExpression')
-            node_data_expr.text = str(n_data['kappa'])
-            # set element with AgentIdentifier
-            node_data_id = ET.SubElement(new_node, 'data')
-            node_data_id.set('key', 'AgentIdentifier')
-            node_data_id.text = str(n_id)
-            # If there is a color eligible from the supplied scheme,
-            # use the first one.
-            if node_coloring is not None:
-                match_colors = [k_col for k_exp, k_col in node_coloring.items() if k_exp in n_data['kappa']]
-                if len(match_colors) > 0:
-                    chosen_color = match_colors[0]
-                    node_data_color = ET.SubElement(new_node, 'data')
-                    node_data_color.set('key', 'NodeColor')
-                    if isinstance(chosen_color, str):
-                        node_data_color.text = chosen_color
-                    elif mpco.is_color_like(chosen_color):
-                        node_data_color.text = mpco.to_hex(chosen_color)
-                    else:
-                        raise ValueError("I don't know how to serialize type {} of {}".format(type(chosen_color), chosen_color))
+            new_node = ET.Element('node', attrib={'id': 'n{}'.format(n_id), 'parse.indegree': str(n_degree), 'parse.outdegree': str(n_degree)})
+            
+            # metadata for nodes
+            node_meta = [
+                ('desc', None, n_data['kappa']),
+                ('data', 'AgentType', n_data['kappa'].get_agent_name()),
+                ('data', 'AgentExpression', n_data['kappa']),
+                ('data', 'AgentIdentifier', n_id),
+                ('data', 'NodeColor', _colorize_for_node(n_data['kappa']))
+            ]
+            for n_class, key_name, payload in node_meta:
+                node_annot = ET.Element(n_class) if key_name is None else ET.Element(n_class, attrib={'key': key_name})
+                node_annot.text = str(payload)
+                new_node.append(node_annot)
+            graph_root.append(new_node)
+
+            # generate ports from KappaPorts
             for some_ix, some_site in enumerate(n_data['kappa'].get_agent_ports()):
-                new_port = ET.SubElement(new_node, 'port')
-                new_port.set('name', str(some_ix))   # type NMTOKEN is more constrained than Kappa's Unicode, so the "name", which serves as an identifier, is just the index in the agent's signature
-                new_description = ET.SubElement(new_port, 'desc')
-                new_description.text = str(some_site)
+                # type NMTOKEN is more constrained than Kappa's Unicode,
+                # so the "name", which serves as an identifier, is just the index in the agent's signature
+                new_port = ET.Element('port', attrib={'name': str(some_ix)})
+                port_desc = ET.SubElement(new_port, 'desc')
+                port_desc.text = str(some_site)
+                new_node.append(new_port)
+        
         # edge iteration
         edge_counter = 0    # non-id'd graphs do not have global edge identifiers
         for e_source, e_target, e_data in this_net.edges(data=True):
-            new_edge = ET.SubElement(graph_root, 'edge')
-            new_edge.set('id', 'edge{}'.format(edge_counter))
-            new_edge.set('directed', 'false')
-            new_edge.set('source', 'n{}'.format(e_source))
-            new_edge.set('target', 'n{}'.format(e_target))
-            port_source = this_net.nodes[e_source]['kappa'].get_port(e_data['bond type'].site_one)
-            port_target = this_net.nodes[e_target]['kappa'].get_port(e_data['bond type'].site_two)
-            port_ix_source = this_net.nodes[e_source]['kappa'].get_agent_ports().index(port_source)
-            port_ix_target = this_net.nodes[e_target]['kappa'].get_agent_ports().index(port_target)
-            new_edge.set('sourceport', str(port_ix_source))
-            new_edge.set('targetport', str(port_ix_target))
-            # set element with BondType
-            new_bond_type = ET.SubElement(new_edge, 'data')
-            new_bond_type.set('key', 'BondType')
-            new_bond_type.text = str(e_data['bond type'])
-            # set element with LocalIdentifier
-            new_bond_id = ET.SubElement(new_edge, 'data')
-            new_bond_id.set('key', 'LocalIdentifier')
-            new_bond_id.text = e_data['bond id']
+            port_ix_source = this_net.nodes[e_source]['kappa'].get_agent_ports().index(this_net.nodes[e_source]['kappa'].get_port(e_data['bond type'].site_one))
+            port_ix_target = this_net.nodes[e_target]['kappa'].get_agent_ports().index(this_net.nodes[e_target]['kappa'].get_port(e_data['bond type'].site_two))
+            new_edge = ET.Element('edge', attrib={
+                'id': 'edge{}'.format(edge_counter),
+                'directed': 'false',
+                'source': 'n{}'.format(e_source),
+                'target': 'n{}'.format(e_target),
+                'sourceport': str(port_ix_source),
+                'targetport': str(port_ix_target)
+            })
+            
+            # metadata for edges
+            edge_meta = [
+                ('BondType', e_data['bond type']),
+                ('LocalIdentifier', e_data['bond id'])
+            ]
+            for key_name, payload in edge_meta:
+                edge_annot = ET.SubElement(new_edge, ET.Element('data', attrib={'key': key_name}))
+                edge_annot.text = str(payload)
             edge_counter += 1
         return tree

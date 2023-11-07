@@ -406,6 +406,22 @@ markedly slower performance with multi-threading than without. Case-specific, yo
          binding sites. If an output file is given, object is indented & serialized to that file.
          Optional argument `node_coloring` colorizes by single-agent patterns."""
         this_tree = self._kappa_to_graphml(node_coloring)
+
+        # add snapshot-specific metadata
+        graph_root = this_tree.find(path='./graph')
+        snap_meta = [
+            ('SnapshotName', self.get_snapshot_file_name()),
+            ('SnapshotTime', self.get_snapshot_time()),
+            ('SnapshotEvent', self.get_snapshot_event()),
+            ('SnapshotUUID', self.get_snapshot_uuid())
+        ]
+        for key_id, payload in snap_meta:   # keep index 0; we keep inserting at the head
+            key_node = ET.Element('key', attrib={'for': 'graph', 'id': key_id, 'attr.name': key_id, 'attr.type': 'string'})
+            this_tree.getroot().insert(0, key_node)
+            data_node = ET.Element('data', attrib={'key': key_id})
+            data_node.text = str(payload)
+            graph_root.insert(0, data_node)
+        # serialization
         if outfile is not None:
             ET.indent(this_tree, space='\t')
             if isinstance(outfile, str):
