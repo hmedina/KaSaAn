@@ -8,7 +8,9 @@ import matplotlib.pyplot as plt
 import numpy
 import warnings
 from operator import itemgetter
-from typing import Dict, List, Tuple, Set
+from typing import Dict, List, Tuple, Set, Union
+
+from KaSaAn.core import KappaAgent
 
 from ..functions.agent_color_assignment import colorize_observables
 from ..core import KappaComplex, KappaSnapshot
@@ -61,7 +63,7 @@ def _make_figure(s_times, p_matrix, observable_set: Set[KappaComplex],
     return fig
 
 
-def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[KappaComplex] = None) -> Tuple[float, dict]:
+def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[Union[KappaAgent, KappaComplex]] = None) -> Tuple[float, Dict[Union[KappaAgent, KappaComplex], int]]:
     """Helper function to process snapshots and extract an arbitrary compositon."""
     snap = KappaSnapshot(snapshot_name)
     big_o_mers = snap.get_largest_complexes()
@@ -74,7 +76,7 @@ def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[KappaCom
     lc_complex, _ = big_o_mers[0]
     # filter out agents if requested
     if patterns_requested:
-        filtered_composition = {}
+        filtered_composition: Dict[Union[KappaAgent, KappaComplex], int] = {}
         for ka_pattern in patterns_requested:
             filtered_composition[ka_pattern] = lc_complex.get_number_of_embeddings(ka_pattern)
         lc_composition = filtered_composition
@@ -84,8 +86,10 @@ def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[KappaCom
 
 
 def snapshot_list_to_plot_matrix(
-        snapshot_names, patterns_requested: Dict = None, thread_number: int = 1,
-        stack_order: str = list(_stacked_plot_methods.keys())[0]) -> Tuple[List[float], numpy.ndarray, List[KappaComplex]]:
+        snapshot_names: List[str],
+        patterns_requested: Dict = None,
+        thread_number: int = 1,
+        stack_order: str = list(_stacked_plot_methods.keys())[0]) -> Tuple[List[float], numpy.ndarray, List[Union[KappaAgent, KappaComplex]]]:
     """See file under `KaSaAn.scripts` for usage."""
 
     if stack_order not in _stacked_plot_methods.keys():
@@ -95,7 +99,7 @@ def snapshot_list_to_plot_matrix(
     snap_times = []
     holding_struct = {}
     if patterns_requested:
-        pattern_keys: Set[KappaComplex] = patterns_requested.keys()
+        pattern_keys: Set[Union[KappaAgent, KappaComplex]] = patterns_requested.keys()
     else:
         pattern_keys = None
     # iterate over the snapshots
