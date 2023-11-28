@@ -214,14 +214,15 @@ class KappaMultiAgentGraph(KappaEntity):
                 'sourceport': str(port_ix_source),
                 'targetport': str(port_ix_target)
             })
-            
+            graph_root.append(new_edge)
             # metadata for edges
             edge_meta = [
                 ('BondType', e_data['bond type']),
                 ('LocalIdentifier', e_data['bond id'])
             ]
             for key_name, payload in edge_meta:
-                edge_annot = ET.SubElement(new_edge, ET.Element('data', attrib={'key': key_name}))
+                edge_annot = ET.Element('data', attrib={'key': key_name})
                 edge_annot.text = str(payload)
+                new_edge.append(edge_annot)
             edge_counter += 1
         return tree
