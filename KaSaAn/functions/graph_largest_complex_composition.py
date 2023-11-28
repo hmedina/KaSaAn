@@ -89,7 +89,10 @@ def snapshot_list_to_plot_matrix(
         snapshot_names: List[str],
         patterns_requested: Dict = None,
         thread_number: int = 1,
-        stack_order: str = list(_stacked_plot_methods.keys())[0]) -> Tuple[List[float], numpy.ndarray, List[Union[KappaAgent, KappaComplex]]]:
+        stack_order: str = list(_stacked_plot_methods.keys())[0]) -> Tuple[
+            List[float],
+            numpy.ndarray,
+            List[Union[KappaAgent, KappaComplex, Union[KappaAgent, KappaComplex]]]]:
     """See file under `KaSaAn.scripts` for usage."""
 
     if stack_order not in _stacked_plot_methods.keys():
