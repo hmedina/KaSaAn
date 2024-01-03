@@ -23,7 +23,7 @@ classifiers = [
 dependencies = [
     "matplotlib >= 3.7",
 	"numpy >= 1.16",
-    "scipi >= 1.10",
+    "scipy >= 1.11",
 	"squarify >= 0.3.0",
 	"networkx >= 3.0"
 ]
