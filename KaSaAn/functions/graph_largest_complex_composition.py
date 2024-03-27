@@ -132,10 +132,24 @@ def snapshot_list_to_plot_matrix(
     # obtain and sort the superset of patterns; used for defining the number of lines to plot
     # a pattern may not have been present in a snapshot, so we need to fill in a zero at some
     # point for that specific snapshot time
+    # in cases where the requested patterns contain KappaAgents and KappaComplexes, the list
+    # can't be sorted at once, so they are sorted separately, then concatenated
     all_patterns = set()
     for compo in lc_compositions:
         all_patterns.update(set(compo.keys()))
-    all_patterns = sorted(all_patterns)
+    if any(isinstance(n, KappaAgent) for n in all_patterns) and any(isinstance(n, KappaComplex) for n in all_patterns):
+        agent_patterns = []
+        complex_patterns = []
+        for some_p in all_patterns:
+            if isinstance(some_p, KappaAgent):
+                agent_patterns.append(some_p)
+            elif isinstance(some_p, KappaComplex):
+                complex_patterns.append(some_p)
+            else:
+                raise ValueError('Unexpected type {} from color scheme! Expected KappaAgent or KappaComplex'.format(type(some_p)))
+        all_patterns = sorted(agent_patterns) + sorted(complex_patterns)
+    else:
+        all_patterns = sorted(all_patterns)
 
     # create matrix for plotting, with alphabetical agent sorting
     plot_matrix = numpy.full([len(all_patterns), len(lc_compositions)], numpy.nan, dtype=int)
