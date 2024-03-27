@@ -4,14 +4,15 @@ Get the catalytic potential per snapshot for a series.
 
 ``` {.text}
 usage: kappa_catalytic_potential [-h] [-d DIRECTORY] -e ENZYME_NAME -s SUBSTRATE_NAME [-v] [-o OUTPUT_FILE] [-p SNAPSHOT_PATTERN] [-ts TEXT_SIZE]
-[-h]                Show detailed help.
-[-d DIRECTORY]      Directory containing the snapshots.
--e ENZYME_NAME      Name of the first agent.
--s SUBSTRATE_NAME   Name of the second agent.
-[-v]                If set, print additional information to standard output.
-[-o OUTPUT_FILE]    If specified, save to file; else print to standard output.
--p SNAPSHOT_PREFIX  The prefix by which the snapshots are named.
-[-ts TEXT_SIZE]     Override default size for text, in points.
+[-h]                            Show detailed help.
+[-d DIRECTORY]                  Directory containing the snapshots.
+-e ENZYME_NAME                  Name of the first agent.
+-s SUBSTRATE_NAME               Name of the second agent.
+[-v]                            If set, print additional information to standard output.
+[-o OUTPUT_FILE]                If specified, save to file; else print to standard output.
+-p SNAPSHOT_PREFIX              The prefix by which the snapshots are named.
+[-ts TEXT_SIZE]                 Override default size for text, in points.
+[--text_instead_of_paths]       Output text elements instead of paths; embeds used glyphs
 ```
 """
 
@@ -50,10 +51,15 @@ def main(args=None):
                         help='Pattern by which the snapshots are named; e.g. <snap_4.ka> would have <snap_*.ka>.')
     parser.add_argument('-ts', '--text_size', type=int,
                         help="If given, set point size for all text elements, overriding MatPlotLib's default.")
+    parser.add_argument('--text_instead_of_paths', action='store_true',
+                        help='If set, figure will embed used glyphs and export text elements, instead of rendering the'
+                             ' glyphs into paths. Only supported for PDF export.')
 
     args = parser.parse_args()
     if args.text_size:
         mpl.rcParams['font.size'] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams['pdf.fonttype'] = 42
 
     data = get_potential_of_folder(args.directory, args.enzyme_name, args.substrate_name,
                                    args.verbose, args.snapshot_pattern)

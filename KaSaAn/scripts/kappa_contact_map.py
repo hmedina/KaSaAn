@@ -12,6 +12,7 @@ kappa_contact_map [-h] [-i INPUT_FILE_NAME] [-fs WIDTH HEIGHT] [-o OUTPUT_FILE_N
 [--summarize_flagpole]      Summarizes state-only sites as a numeric annotation.
 [--keep_axes_ticks]         Show the X & Y axes ticks.
 [-ts TEXT_SIZE]             Override default size for text, in points.
+[--text_instead_of_paths]   Output text elements instead of paths; embeds used glyphs
 ```
 """
 
@@ -58,10 +59,15 @@ def main():
                         ' for manual agent placement.')
     parser.add_argument('-ts', '--text_size', type=int,
                         help="If given, set point size for all text elements, overriding MatPlotLib's default.")
+    parser.add_argument('--text_instead_of_paths', action='store_true',
+                        help='If set, figure will embed used glyphs and export text elements, instead of rendering the'
+                             ' glyphs into paths. Only supported for PDF export.')
     args = parser.parse_args()
 
     if args.text_size:
         mpl.rcParams['font.size'] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams['pdf.fonttype'] = 42
 
     this_cm = KappaContactMap(args.input_file_name)
     fig, ax = plt.subplots(figsize=args.fig_size, layout='constrained')

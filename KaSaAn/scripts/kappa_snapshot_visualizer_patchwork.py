@@ -4,14 +4,15 @@ Visualize a kappa snapshot using a plain graph.
 
 ``` {.text}
 usage: kappa_snapshot_visualizer_patchwork [-h] -sf SNAPSHOT_FILE [-cs COLORING_SCHEME] [-vm {all,mass,count,size}] [-of OUTPUT_FILE] [-fs WIDTH HEIGHT] [-dpi DOTS_PER_INCH] [-ts TEXT_SIZE]
-[-h]                        Show detailed help.
--sf SNAPSHOT_FILE_NAME      Name of snapshot to visualize.
-[-cs FILE_NAME]             File specifying a coloring scheme.
-[-vm [all|mass|count|size]] How to scale area; default plots all three.
-[-of OUTPUT_FILE]           The common file name for saving figures; shown if not given.
-[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
-[-dpi DOTS_PER_INCH]        Resolution of the figure.
-[-ts TEXT_SIZE]             Override default size for text, in points.
+[-h]                            Show detailed help.
+-sf SNAPSHOT_FILE_NAME          Name of snapshot to visualize.
+[-cs FILE_NAME]                 File specifying a coloring scheme.
+[-vm [all|mass|count|size]]     How to scale area; default plots all three.
+[-of OUTPUT_FILE]               The common file name for saving figures; shown if not given.
+[-fs WIDTH HEIGHT]              Size of the resulting figure, in inches.
+[-dpi DOTS_PER_INCH]            Resolution of the figure.
+[-ts TEXT_SIZE]                 Override default size for text, in points.
+[--text_instead_of_paths]       Output text elements instead of paths; embeds used glyphs
 ```
 
 For example:
@@ -63,11 +64,16 @@ def main(args=None):
                         help='Resolution of the figure, specified as dots per inch.')
     parser.add_argument('-ts', '--text_size', type=int,
                         help="If given, set point size for all text elements, overriding MatPlotLib's default.")
+    parser.add_argument('--text_instead_of_paths', action='store_true',
+                        help='If set, figure will embed used glyphs and export text elements, instead of rendering the'
+                             ' glyphs into paths. Only supported for PDF export.')
 
     args = parser.parse_args()
 
     if args.text_size:
         mpl.rcParams['font.size'] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams['pdf.fonttype'] = 42
 
     # for user-defined coloring schemes, read the dictionary from a file, convert keys to KappaAgent
     if args.coloring_scheme:

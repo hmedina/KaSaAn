@@ -27,6 +27,7 @@ usage: kappa_observable_plotter [-h] [-i INPUT_FILE_NAME] [-o OUTPUT_FILE_NAME] 
                                     outside left upper, outside right upper,
                                     outside left lower, outside right lower
 [--legend_ncol LEGEND_NCOL]     Number of columns for the legend.
+[--text_instead_of_paths]       Output text elements instead of paths; embeds used glyphs
 ```
 """
 
@@ -91,10 +92,15 @@ def main():
                         help='Override location of the legend. Options prefixed with <outside> plot outside the axes.')
     parser.add_argument('--legend_ncol', type=int, default=1,
                         help='Number of columns for the legend.')
+    parser.add_argument('--text_instead_of_paths', action='store_true',
+                        help='If set, figure will embed used glyphs and export text elements, instead of rendering the'
+                             ' glyphs into paths. Only supported for PDF export.')
     args = parser.parse_args()
 
     if args.text_size:
         mpl.rcParams['font.size'] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams['pdf.fonttype'] = 42
 
     this_data = observable_file_reader(args.input_file_name)
 

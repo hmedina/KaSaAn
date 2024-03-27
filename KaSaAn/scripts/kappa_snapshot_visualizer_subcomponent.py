@@ -4,17 +4,18 @@ Visualize a set of complexes from a kappa snapshot as plain graphs.
 
 ``` {.text}
 usage: kappa_snapshot_visualizer_subcomponent [-h] -sf SNAPSHOT_FILE_NAME [-s [SIZES ...]] [-cs COLORING_SCHEME] [-p [HIGHLIGHT_PATTERNS ...]] [-of OUTPUT_FILE] [-fs WIDTH HEIGHT] [-ns NODE_SIZE] [-ew EDGE_WIDTH] [-d] [-ts TEXT_SIZE]
-[-h]                        Show detailed help.
--sf SNAPSHOT_FILE_NAME      Name of snapshot to visualize.
-[-s [...]]                  Complex sizes to be viewed. Biggest if not given.
-[-cs COLORING_SCHEME]       File specifying a coloring scheme.
-[-p [...]]                  Patterns to highlight.
-[-of OUTPUT_FILE]           The common file name for saving figures; shown if not given.
-[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
-[-ns NODE_SIZE]             Size of nodes; default of 300 as used by NetworkX.
-[-ew EDGE_WIDTH]            Width of edges; default of 1.0 as used by NetworkX.
-[-d]                        Print to standard output the size distribution.
-[-ts TEXT_SIZE]             Override default size for text, in points.
+[-h]                            Show detailed help.
+-sf SNAPSHOT_FILE_NAME          Name of snapshot to visualize.
+[-s [...]]                      Complex sizes to be viewed. Biggest if not given.
+[-cs COLORING_SCHEME]           File specifying a coloring scheme.
+[-p [...]]                      Patterns to highlight.
+[-of OUTPUT_FILE]               The common file name for saving figures; shown if not given.
+[-fs WIDTH HEIGHT]              Size of the resulting figure, in inches.
+[-ns NODE_SIZE]                 Size of nodes; default of 300 as used by NetworkX.
+[-ew EDGE_WIDTH]                Width of edges; default of 1.0 as used by NetworkX.
+[-d]                            Print to standard output the size distribution.
+[-ts TEXT_SIZE]                 Override default size for text, in points.
+[--text_instead_of_paths]       Output text elements instead of paths; embeds used glyphs
 ```
 """
 
@@ -64,10 +65,15 @@ def main():
                         help='If given, program will print to std-out the size distribution in the snapshot.')
     parser.add_argument('-ts', '--text_size', type=int,
                         help="If given, set point size for all text elements, overriding MatPlotLib's default.")
+    parser.add_argument('--text_instead_of_paths', action='store_true',
+                        help='If set, figure will embed used glyphs and export text elements, instead of rendering the'
+                             ' glyphs into paths. Only supported for PDF export.')
     args = parser.parse_args()
 
     if args.text_size:
         mpl.rcParams['font.size'] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams['pdf.fonttype'] = 42
 
     # render graph
     figure_list = render_complexes_as_plain_graph(snapshot_file_name=args.snapshot_file_name,

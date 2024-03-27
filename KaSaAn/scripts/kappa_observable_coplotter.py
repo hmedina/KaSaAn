@@ -27,6 +27,7 @@ usage: kappa_observable_coplotter [-h] -p PATTERN [-vi VARIABLE_BY_INDEX] [-vn V
                                     outside left upper, outside right upper,
                                     outside left lower, outside right lower
 [--legend_ncol LEGEND_NCOL]     Number of columns for the legend.
+[--text_instead_of_paths]       Output text elements instead of paths; embeds used glyphs
 ```
 """
 
@@ -88,10 +89,15 @@ def main():
                         help='Number of columns for the legend.')
     parser.add_argument('-ts', '--text_size', type=int,
                         help="If given, set point size for all text elements, overriding MatPlotLib's default.")
+    parser.add_argument('--text_instead_of_paths', action='store_true',
+                        help='If set, figure will embed used glyphs and export text elements, instead of rendering the'
+                             ' glyphs into paths. Only supported for PDF export.')
     args = parser.parse_args()
 
     if args.text_size:
         mpl.rcParams['font.size'] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams['pdf.fonttype'] = 42
 
     fig, ax = plt.subplots(figsize=args.figure_size, layout='constrained')
     observable_coplot_axis_annotator(target_axis=ax,
