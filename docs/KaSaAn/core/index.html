@@ -169,7 +169,7 @@ __all__ = [&#39;KappaSnapshot&#39;, &#39;KappaComplex&#39;,
 
     def __contains__(self, item) -&gt; bool:
         # type parsing: try to make it an Agent, if that fails try a Site, if that tails, raise exception
-        if (not type(item) is KappaPort) and (not type(item) is KappaCounter) and (not type(item) is KappaAgent):
+        if (type(item) is not KappaPort) and (type(item) is not KappaCounter) and (type(item) is not KappaAgent):
             try:
                 try:
                     try:
@@ -202,7 +202,7 @@ __all__ = [&#39;KappaSnapshot&#39;, &#39;KappaComplex&#39;,
         &#34;&#34;&#34;Overwriting the base clase&#39;s method to properly compare identifiers. Relying on the kappa expression as a
         simple string resulted in incorrect behavior: `x10:A()` was sorted before `x9:A()`, yielding incorrect bond
         orientations.&#34;&#34;&#34;
-        if not type(other) is KappaAgent:
+        if type(other) is not KappaAgent:
             other = KappaAgent(other)
         if (self.get_agent_identifier() is not None) &amp; (other.get_agent_identifier() is not None):
             if self.get_agent_identifier() == other.get_agent_identifier():
@@ -627,7 +627,7 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
         &#34;&#34;&#34;Returns the number of embeddings the query agent has on the KappaComplex. For the &#39;truth table&#39; of site
         nomenclature, see `KappaPort`.&#34;&#34;&#34;
         # type the query into an Agent, if it&#39;s not one already
-        if not type(query) is KappaAgent:
+        if not isinstance(query, KappaAgent):
             q_agent = KappaAgent(query)
         else:
             q_agent = query
@@ -642,7 +642,7 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
         &#34;&#34;&#34;Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
         the symmetry adjustment and report number of raw embeddings. See the `embed_and_map` function for examples and
         advanced usage.&#34;&#34;&#34;
-        if not type(query) is KappaComplex:
+        if not isinstance(query, KappaComplex):
             q_complex = KappaComplex(query)
         else:
             q_complex = query
@@ -656,9 +656,9 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
         &#34;&#34;&#34;Wrapper for the two specialized functions, for agent and complex. Optional parameter to not perform
         the symmetry adjustment and report the number of raw embeddings. See the `embed_and_map` function for examples
         and advanced usage.&#34;&#34;&#34;
-        if type(query) is KappaAgent:
+        if isinstance(query, KappaAgent):
             return self.get_number_of_embeddings_of_agent(query)
-        elif type(query) is KappaComplex:
+        elif isinstance(query, KappaComplex):
             return self.get_number_of_embeddings_of_complex(query, symmetry_adjust)
         else:
             try:
@@ -741,13 +741,18 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
         cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
         return cx_data
 
-    def to_graphml(self, outfile: Union[Path, str, None]) -&gt; ET.ElementTree:
+    def to_graphml(self, outfile: Union[Path, str, None] = None, node_coloring: Optional[Dict[KappaAgent, any]] = None) -&gt; ET.ElementTree:
         &#34;&#34;&#34;Returns an XML ElementTree with a GraphML representation of the complex, using GraphML&#39;s ports for
-         binding sites. If an output file is given, object is indented &amp; serialized to that file.&#34;&#34;&#34;
-        this_tree = self._kappa_to_graphml()
+         binding sites. If an output file is given, object is indented &amp; serialized to that file.
+         Optional argument `node_coloring` colorizes by single-agent patterns.&#34;&#34;&#34;
+        this_tree = self._kappa_to_graphml(node_coloring)
         if outfile is not None:
             ET.indent(this_tree, space=&#39;\t&#39;)
-            this_tree.write(outfile, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
+            if isinstance(outfile, str):
+                this_tree.write(outfile, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
+            elif isinstance(outfile, Path):
+                with outfile.open(&#39;wb&#39;) as f:
+                    this_tree.write(file_or_filename=f, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
         return this_tree</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -892,9 +897,9 @@ and advanced usage.</p></div>
     &#34;&#34;&#34;Wrapper for the two specialized functions, for agent and complex. Optional parameter to not perform
     the symmetry adjustment and report the number of raw embeddings. See the `embed_and_map` function for examples
     and advanced usage.&#34;&#34;&#34;
-    if type(query) is KappaAgent:
+    if isinstance(query, KappaAgent):
         return self.get_number_of_embeddings_of_agent(query)
-    elif type(query) is KappaComplex:
+    elif isinstance(query, KappaComplex):
         return self.get_number_of_embeddings_of_complex(query, symmetry_adjust)
     else:
         try:
@@ -920,7 +925,7 @@ nomenclature, see <code><a title="KaSaAn.core.KappaPort" href="#KaSaAn.core.Kapp
     &#34;&#34;&#34;Returns the number of embeddings the query agent has on the KappaComplex. For the &#39;truth table&#39; of site
     nomenclature, see `KappaPort`.&#34;&#34;&#34;
     # type the query into an Agent, if it&#39;s not one already
-    if not type(query) is KappaAgent:
+    if not isinstance(query, KappaAgent):
         q_agent = KappaAgent(query)
     else:
         q_agent = query
@@ -947,7 +952,7 @@ advanced usage.</p></div>
     &#34;&#34;&#34;Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
     the symmetry adjustment and report number of raw embeddings. See the `embed_and_map` function for examples and
     advanced usage.&#34;&#34;&#34;
-    if not type(query) is KappaComplex:
+    if not isinstance(query, KappaComplex):
         q_complex = KappaComplex(query)
     else:
         q_complex = query
@@ -999,22 +1004,28 @@ json.dump(my_cx, out_file)
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.to_graphml"><code class="name flex">
-<span>def <span class="ident">to_graphml</span></span>(<span>self, outfile: Union[pathlib.Path, str, ForwardRef(None)]) ‑> xml.etree.ElementTree.ElementTree</span>
+<span>def <span class="ident">to_graphml</span></span>(<span>self, outfile: Union[pathlib.Path, str, ForwardRef(None)] = None, node_coloring: Optional[Dict[KaSaAn.core.KappaAgent.KappaAgent, <built-in function any>]] = None) ‑> xml.etree.ElementTree.ElementTree</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns an XML ElementTree with a GraphML representation of the complex, using GraphML's ports for
-binding sites. If an output file is given, object is indented &amp; serialized to that file.</p></div>
+binding sites. If an output file is given, object is indented &amp; serialized to that file.
+Optional argument <code>node_coloring</code> colorizes by single-agent patterns.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def to_graphml(self, outfile: Union[Path, str, None]) -&gt; ET.ElementTree:
+<pre><code class="python">def to_graphml(self, outfile: Union[Path, str, None] = None, node_coloring: Optional[Dict[KappaAgent, any]] = None) -&gt; ET.ElementTree:
     &#34;&#34;&#34;Returns an XML ElementTree with a GraphML representation of the complex, using GraphML&#39;s ports for
-     binding sites. If an output file is given, object is indented &amp; serialized to that file.&#34;&#34;&#34;
-    this_tree = self._kappa_to_graphml()
+     binding sites. If an output file is given, object is indented &amp; serialized to that file.
+     Optional argument `node_coloring` colorizes by single-agent patterns.&#34;&#34;&#34;
+    this_tree = self._kappa_to_graphml(node_coloring)
     if outfile is not None:
         ET.indent(this_tree, space=&#39;\t&#39;)
-        this_tree.write(outfile, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
+        if isinstance(outfile, str):
+            this_tree.write(outfile, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
+        elif isinstance(outfile, Path):
+            with outfile.open(&#39;wb&#39;) as f:
+                this_tree.write(file_or_filename=f, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
     return this_tree</code></pre>
 </details>
 </dd>
@@ -1087,7 +1098,7 @@ snapshots, or when combining graphs.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap"><code class="flex name class">
 <span>class <span class="ident">KappaContactMap</span></span>
-<span>(</span><span>file_name: str)</span>
+<span>(</span><span>file_name: Union[str, pathlib.Path])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represent a contact map. Initializer expects a format like that found in the KaSim witness files, <code>inputs.ka</code>,
@@ -1141,7 +1152,7 @@ and is designed to read in from said files. Example usage:</p>
 &gt;&gt;&gt; plt.tight_layout()
 &gt;&gt;&gt; plt.show()
     &#34;&#34;&#34;
-    def __init__(self, file_name: str):
+    def __init__(self, file_name: Union[str, Path]):
         # type internal structures
         self._raw_string_list: List[str]
         self._parsed_kappa: Dict[str: dict]
@@ -2305,11 +2316,11 @@ Bond state truth table
         &#34;&#34;&#34;&#34;&#34;&#34;
 
         # we can&#39;t satisfy ports with counters
-        if type(query) is KappaCounter:
+        if isinstance(query, KappaCounter):
             raise PortParseError(&#39;Can not check for containment of supplied counter &lt;&#39; + query +
                                  &#39;&gt; in port &lt;&#39; + self._kappa_expression + &#39;&gt;&#39;)
         # make it a KappaPort if it&#39;s not one already
-        elif not type(query) is KappaPort:
+        elif not isinstance(query, KappaPort):
             query = KappaPort(query)
         # check if item is satisfied by self, Kappa-wise
         if self._int_operand or self._bond_operand:                     # if self has an operation, issue warning
@@ -2577,7 +2588,7 @@ matching is the embedding, see <code><a title="KaSaAn.core.KappaPort.embeds_in" 
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot"><code class="flex name class">
 <span>class <span class="ident">KappaSnapshot</span></span>
-<span>(</span><span>snapshot_file: Union[pathlib.Path, str])</span>
+<span>(</span><span>snapshot_file: Union[str, pathlib.Path])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class for representing Kappa snapshots. A snapshot contains a dictionary, where the kappa expression
@@ -2620,9 +2631,9 @@ of the <code>Dict()</code> class', but with more informative names for Kappa ent
         self._snapshot_uuid: str
         self._snapshot_time: float
         # initialization of structures
-        if type(snapshot_file) == str:
+        if isinstance(snapshot_file, str):
             self._file_name = os.path.split(snapshot_file)[1]
-        elif type(snapshot_file) == pathlib.PosixPath or type(snapshot_file) == pathlib.WindowsPath:
+        elif isinstance(snapshot_file, pathlib.PosixPath) or isinstance(snapshot_file, pathlib.WindowsPath):
             self._file_name = str(snapshot_file)
         else:
             raise ValueError(
@@ -2749,7 +2760,7 @@ of the <code>Dict()</code> class', but with more informative names for Kappa ent
     def get_abundance_of_agent(self, query_agent) -&gt; int:
         &#34;&#34;&#34;Returns an integer with the abundance of the given agent. Supports passing a string with the agent
         expression, or an instance of a KappaAgent. Supports passing agents with signature, e.g. `Bob(site{state})`.&#34;&#34;&#34;
-        if type(query_agent) is not KappaAgent:
+        if not isinstance(query_agent, KappaAgent):
             query_agent = KappaAgent(query_agent)
         abundance = 0
         for cx, cx_ab in self.get_all_complexes_and_abundances():
@@ -2769,7 +2780,7 @@ at a time; however my regular usage shows marginal gains in some cases, negligib
 markedly slower performance with multi-threading than without. Case-specific, your milage may vary.
         &#34;&#34;&#34;
         # if given string, attempt to cast
-        if type(query_pattern) is str:
+        if isinstance(query_pattern, str):
             try:
                 try:
                     query_pattern = KappaAgent(query_pattern)
@@ -2778,9 +2789,9 @@ markedly slower performance with multi-threading than without. Case-specific, yo
             except ComplexParseError:
                 raise ValueError(&#39;Could not parse input &lt;{}&gt; as KappaAgent nor KappaComplex&#39;.format(query_pattern))
         # once cast, proceed
-        if type(query_pattern) is KappaAgent:
+        if isinstance(query_pattern, KappaAgent):
             return tuple([self.get_abundance_of_agent(query_pattern)] * 2)
-        elif type(query_pattern) is KappaComplex:
+        elif isinstance(query_pattern, KappaComplex):
             abundances_all = np.zeros(len(self.get_all_complexes()))
             abundances_unique = np.zeros(len(self.get_all_complexes()))
             if not multi_thread:
@@ -2888,7 +2899,7 @@ markedly slower performance with multi-threading than without. Case-specific, yo
     def get_value_of_token(self, query) -&gt; Union[None, float]:
         &#34;&#34;&#34;Returns the value of a token.&#34;&#34;&#34;
         # make it a KappaToken, if it&#39;s not one already
-        if not type(query) is KappaToken:
+        if not isinstance(query, KappaToken):
             q = KappaToken(query)
         else:
             q = query
@@ -2969,13 +2980,34 @@ markedly slower performance with multi-threading than without. Case-specific, yo
         cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
         return cx_data
 
-    def to_graphml(self, outfile: Union[pathlib.Path, str, None]) -&gt; ET.ElementTree:
+    def to_graphml(self, outfile: Union[pathlib.Path, str, None] = None, node_coloring: Optional[Dict[KappaAgent, any]] = None) -&gt; ET.ElementTree:
         &#34;&#34;&#34;Returns an XML ElementTree with a GraphML representation of the snapshot, using GraphML&#39;s ports for
-         binding sites. If an output file is given, object is indented &amp; serialized to that file.&#34;&#34;&#34;
-        this_tree = self._kappa_to_graphml()
+         binding sites. If an output file is given, object is indented &amp; serialized to that file.
+         Optional argument `node_coloring` colorizes by single-agent patterns.&#34;&#34;&#34;
+        this_tree = self._kappa_to_graphml(node_coloring)
+
+        # add snapshot-specific metadata
+        graph_root = this_tree.find(path=&#39;./graph&#39;)
+        snap_meta = [
+            (&#39;SnapshotName&#39;, self.get_snapshot_file_name()),
+            (&#39;SnapshotTime&#39;, self.get_snapshot_time()),
+            (&#39;SnapshotEvent&#39;, self.get_snapshot_event()),
+            (&#39;SnapshotUUID&#39;, self.get_snapshot_uuid())
+        ]
+        for key_id, payload in snap_meta:   # keep index 0; we keep inserting at the head
+            key_node = ET.Element(&#39;key&#39;, attrib={&#39;for&#39;: &#39;graph&#39;, &#39;id&#39;: key_id, &#39;attr.name&#39;: key_id, &#39;attr.type&#39;: &#39;string&#39;})
+            this_tree.getroot().insert(0, key_node)
+            data_node = ET.Element(&#39;data&#39;, attrib={&#39;key&#39;: key_id})
+            data_node.text = str(payload)
+            graph_root.insert(0, data_node)
+        # serialization
         if outfile is not None:
             ET.indent(this_tree, space=&#39;\t&#39;)
-            this_tree.write(outfile, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
+            if isinstance(outfile, str):
+                this_tree.write(outfile, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
+            elif isinstance(outfile, pathlib.Path):
+                with outfile.open(&#39;wb&#39;) as f:
+                    this_tree.write(file_or_filename=f, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
         return this_tree</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -2999,7 +3031,7 @@ expression, or an instance of a KappaAgent. Supports passing agents with signatu
 <pre><code class="python">def get_abundance_of_agent(self, query_agent) -&gt; int:
     &#34;&#34;&#34;Returns an integer with the abundance of the given agent. Supports passing a string with the agent
     expression, or an instance of a KappaAgent. Supports passing agents with signature, e.g. `Bob(site{state})`.&#34;&#34;&#34;
-    if type(query_agent) is not KappaAgent:
+    if not isinstance(query_agent, KappaAgent):
         query_agent = KappaAgent(query_agent)
     abundance = 0
     for cx, cx_ab in self.get_all_complexes_and_abundances():
@@ -3035,7 +3067,7 @@ at a time; however my regular usage shows marginal gains in some cases, negligib
 markedly slower performance with multi-threading than without. Case-specific, your milage may vary.
         &#34;&#34;&#34;
         # if given string, attempt to cast
-        if type(query_pattern) is str:
+        if isinstance(query_pattern, str):
             try:
                 try:
                     query_pattern = KappaAgent(query_pattern)
@@ -3044,9 +3076,9 @@ markedly slower performance with multi-threading than without. Case-specific, yo
             except ComplexParseError:
                 raise ValueError(&#39;Could not parse input &lt;{}&gt; as KappaAgent nor KappaComplex&#39;.format(query_pattern))
         # once cast, proceed
-        if type(query_pattern) is KappaAgent:
+        if isinstance(query_pattern, KappaAgent):
             return tuple([self.get_abundance_of_agent(query_pattern)] * 2)
-        elif type(query_pattern) is KappaComplex:
+        elif isinstance(query_pattern, KappaComplex):
             abundances_all = np.zeros(len(self.get_all_complexes()))
             abundances_unique = np.zeros(len(self.get_all_complexes()))
             if not multi_thread:
@@ -3483,7 +3515,7 @@ along with their abundance in the snapshot.</p></div>
 <pre><code class="python">def get_value_of_token(self, query) -&gt; Union[None, float]:
     &#34;&#34;&#34;Returns the value of a token.&#34;&#34;&#34;
     # make it a KappaToken, if it&#39;s not one already
-    if not type(query) is KappaToken:
+    if not isinstance(query, KappaToken):
         q = KappaToken(query)
     else:
         q = query
@@ -3531,22 +3563,44 @@ along with their abundance in the snapshot.</p></div>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.to_graphml"><code class="name flex">
-<span>def <span class="ident">to_graphml</span></span>(<span>self, outfile: Union[pathlib.Path, str, ForwardRef(None)]) ‑> xml.etree.ElementTree.ElementTree</span>
+<span>def <span class="ident">to_graphml</span></span>(<span>self, outfile: Union[pathlib.Path, str, ForwardRef(None)] = None, node_coloring: Optional[Dict[KaSaAn.core.KappaAgent.KappaAgent, <built-in function any>]] = None) ‑> xml.etree.ElementTree.ElementTree</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns an XML ElementTree with a GraphML representation of the snapshot, using GraphML's ports for
-binding sites. If an output file is given, object is indented &amp; serialized to that file.</p></div>
+binding sites. If an output file is given, object is indented &amp; serialized to that file.
+Optional argument <code>node_coloring</code> colorizes by single-agent patterns.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def to_graphml(self, outfile: Union[pathlib.Path, str, None]) -&gt; ET.ElementTree:
+<pre><code class="python">def to_graphml(self, outfile: Union[pathlib.Path, str, None] = None, node_coloring: Optional[Dict[KappaAgent, any]] = None) -&gt; ET.ElementTree:
     &#34;&#34;&#34;Returns an XML ElementTree with a GraphML representation of the snapshot, using GraphML&#39;s ports for
-     binding sites. If an output file is given, object is indented &amp; serialized to that file.&#34;&#34;&#34;
-    this_tree = self._kappa_to_graphml()
+     binding sites. If an output file is given, object is indented &amp; serialized to that file.
+     Optional argument `node_coloring` colorizes by single-agent patterns.&#34;&#34;&#34;
+    this_tree = self._kappa_to_graphml(node_coloring)
+
+    # add snapshot-specific metadata
+    graph_root = this_tree.find(path=&#39;./graph&#39;)
+    snap_meta = [
+        (&#39;SnapshotName&#39;, self.get_snapshot_file_name()),
+        (&#39;SnapshotTime&#39;, self.get_snapshot_time()),
+        (&#39;SnapshotEvent&#39;, self.get_snapshot_event()),
+        (&#39;SnapshotUUID&#39;, self.get_snapshot_uuid())
+    ]
+    for key_id, payload in snap_meta:   # keep index 0; we keep inserting at the head
+        key_node = ET.Element(&#39;key&#39;, attrib={&#39;for&#39;: &#39;graph&#39;, &#39;id&#39;: key_id, &#39;attr.name&#39;: key_id, &#39;attr.type&#39;: &#39;string&#39;})
+        this_tree.getroot().insert(0, key_node)
+        data_node = ET.Element(&#39;data&#39;, attrib={&#39;key&#39;: key_id})
+        data_node.text = str(payload)
+        graph_root.insert(0, data_node)
+    # serialization
     if outfile is not None:
         ET.indent(this_tree, space=&#39;\t&#39;)
-        this_tree.write(outfile, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
+        if isinstance(outfile, str):
+            this_tree.write(outfile, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
+        elif isinstance(outfile, pathlib.Path):
+            with outfile.open(&#39;wb&#39;) as f:
+                this_tree.write(file_or_filename=f, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
     return this_tree</code></pre>
 </details>
 </dd>

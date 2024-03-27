@@ -117,7 +117,7 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
             patch_color = color_scheme[ka_agent] if ka_agent in color_scheme else &#39;#00000000&#39;
             legend_entries.append(mpatches.Patch(label=patch_label, color=patch_color))
         ax.legend(handles=legend_entries,
-                  title=(r&#39;{} {}, size$={}$&#39;.format(abund,
+                  title=(&#39;{} {}, size {}&#39;.format(abund,
                                                     &#39;copies&#39; if abund &gt; 1 else &#39;copy&#39;,
                                                     c_kappa.get_size_of_complex())))
     fig_list.append(fig_all)
@@ -147,7 +147,7 @@ def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: Li
                 patch_color = color_scheme[KappaAgent(kappa_query.get_agent_name())]
                 legend_entry = mpatches.Patch(label=patch_label, color=patch_color)
                 ax.legend(handles=[legend_entry],
-                          title=(r&#39;{} {}, size$={}$&#39;.format(abund,
+                          title=(&#39;{} {}, size {}&#39;.format(abund,
                                                             &#39;copies&#39; if abund &gt; 1 else &#39;copy&#39;,
                                                             c_kappa.get_size_of_complex())))
             fig_list.append(fig_patt)
@@ -247,7 +247,7 @@ certain patterns. See file under <code><a title="KaSaAn.scripts" href="../script
             patch_color = color_scheme[ka_agent] if ka_agent in color_scheme else &#39;#00000000&#39;
             legend_entries.append(mpatches.Patch(label=patch_label, color=patch_color))
         ax.legend(handles=legend_entries,
-                  title=(r&#39;{} {}, size$={}$&#39;.format(abund,
+                  title=(&#39;{} {}, size {}&#39;.format(abund,
                                                     &#39;copies&#39; if abund &gt; 1 else &#39;copy&#39;,
                                                     c_kappa.get_size_of_complex())))
     fig_list.append(fig_all)
@@ -277,7 +277,7 @@ certain patterns. See file under <code><a title="KaSaAn.scripts" href="../script
                 patch_color = color_scheme[KappaAgent(kappa_query.get_agent_name())]
                 legend_entry = mpatches.Patch(label=patch_label, color=patch_color)
                 ax.legend(handles=[legend_entry],
-                          title=(r&#39;{} {}, size$={}$&#39;.format(abund,
+                          title=(&#39;{} {}, size {}&#39;.format(abund,
                                                             &#39;copies&#39; if abund &gt; 1 else &#39;copy&#39;,
                                                             c_kappa.get_size_of_complex())))
             fig_list.append(fig_patt)

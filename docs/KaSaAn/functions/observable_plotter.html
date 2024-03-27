@@ -28,14 +28,15 @@
 </summary>
 <pre><code class="python">#!/usr/bin/env python3
 
-from typing import List, Tuple
+from pathlib import Path
+from typing import List, Optional, Tuple, Union
 import ast
 import csv
 import matplotlib.axes as mpa
 import numpy as np
 
 
-def observable_file_reader(file_name: str = &#39;data.csv&#39;) -&gt; Tuple[list, np.ndarray]:
+def observable_file_reader(file_name: Union[str, Path] = &#39;data.csv&#39;) -&gt; Tuple[list, np.ndarray]:
     &#34;&#34;&#34;Function parses a kappa output file, e.g. &lt;data.csv&gt;, and returns the legend and numeric data.&#34;&#34;&#34;
     # read the header, skipping UUID and command recipe, extract legend entries
     with open(file_name, &#39;r&#39;, newline=&#39;&#39;) as csv_file:
@@ -49,7 +50,7 @@ def observable_file_reader(file_name: str = &#39;data.csv&#39;) -&gt; Tuple[list
 
 
 def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndarray],
-                                   vars_indexes: List[int], vars_names: List[str], vars_exprs: List[str],
+                                   vars_indexes: Optional[List[int]], vars_names: Optional[List[str]], vars_exprs: Optional[List[str]],
                                    axis_x_log: bool = False, axis_y_log: bool = False,
                                    diff_toggle: bool = False, add_legend: bool = True) -&gt; mpa.Axes:
     &#34;&#34;&#34;Function plots a parsed kappa output file, e.g. &lt;data.csv&gt;, and returns a matplotlib figure object. See file
@@ -153,7 +154,7 @@ def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndar
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="KaSaAn.functions.observable_plotter.observable_file_reader"><code class="name flex">
-<span>def <span class="ident">observable_file_reader</span></span>(<span>file_name: str = 'data.csv') ‑> Tuple[list, numpy.ndarray]</span>
+<span>def <span class="ident">observable_file_reader</span></span>(<span>file_name: Union[str, pathlib.Path] = 'data.csv') ‑> Tuple[list, numpy.ndarray]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Function parses a kappa output file, e.g. <data.csv>, and returns the legend and numeric data.</p></div>
@@ -161,7 +162,7 @@ def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndar
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def observable_file_reader(file_name: str = &#39;data.csv&#39;) -&gt; Tuple[list, np.ndarray]:
+<pre><code class="python">def observable_file_reader(file_name: Union[str, Path] = &#39;data.csv&#39;) -&gt; Tuple[list, np.ndarray]:
     &#34;&#34;&#34;Function parses a kappa output file, e.g. &lt;data.csv&gt;, and returns the legend and numeric data.&#34;&#34;&#34;
     # read the header, skipping UUID and command recipe, extract legend entries
     with open(file_name, &#39;r&#39;, newline=&#39;&#39;) as csv_file:
@@ -175,7 +176,7 @@ def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndar
 </details>
 </dd>
 <dt id="KaSaAn.functions.observable_plotter.observable_list_axis_annotator"><code class="name flex">
-<span>def <span class="ident">observable_list_axis_annotator</span></span>(<span>obs_axis: matplotlib.axes._axes.Axes, data: Tuple[list, numpy.ndarray], vars_indexes: List[int], vars_names: List[str], vars_exprs: List[str], axis_x_log: bool = False, axis_y_log: bool = False, diff_toggle: bool = False, add_legend: bool = True) ‑> matplotlib.axes._axes.Axes</span>
+<span>def <span class="ident">observable_list_axis_annotator</span></span>(<span>obs_axis: matplotlib.axes._axes.Axes, data: Tuple[list, numpy.ndarray], vars_indexes: Optional[List[int]], vars_names: Optional[List[str]], vars_exprs: Optional[List[str]], axis_x_log: bool = False, axis_y_log: bool = False, diff_toggle: bool = False, add_legend: bool = True) ‑> matplotlib.axes._axes.Axes</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Function plots a parsed kappa output file, e.g. <data.csv>, and returns a matplotlib figure object. See file
@@ -185,7 +186,7 @@ under <code><a title="KaSaAn.scripts" href="../scripts/index.html">KaSaAn.script
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def observable_list_axis_annotator(obs_axis: mpa.Axes, data: Tuple[list, np.ndarray],
-                                   vars_indexes: List[int], vars_names: List[str], vars_exprs: List[str],
+                                   vars_indexes: Optional[List[int]], vars_names: Optional[List[str]], vars_exprs: Optional[List[str]],
                                    axis_x_log: bool = False, axis_y_log: bool = False,
                                    diff_toggle: bool = False, add_legend: bool = True) -&gt; mpa.Axes:
     &#34;&#34;&#34;Function plots a parsed kappa output file, e.g. &lt;data.csv&gt;, and returns a matplotlib figure object. See file

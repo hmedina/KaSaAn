@@ -36,7 +36,9 @@ import matplotlib.pyplot as plt
 import numpy
 import warnings
 from operator import itemgetter
-from typing import Dict, List, Tuple, Set
+from typing import Dict, List, Tuple, Set, Union
+
+from KaSaAn.core import KappaAgent
 
 from ..functions.agent_color_assignment import colorize_observables
 from ..core import KappaComplex, KappaSnapshot
@@ -89,7 +91,7 @@ def _make_figure(s_times, p_matrix, observable_set: Set[KappaComplex],
     return fig
 
 
-def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[KappaComplex] = None) -&gt; Tuple[float, dict]:
+def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[Union[KappaAgent, KappaComplex]] = None) -&gt; Tuple[float, Dict[Union[KappaAgent, KappaComplex], int]]:
     &#34;&#34;&#34;Helper function to process snapshots and extract an arbitrary compositon.&#34;&#34;&#34;
     snap = KappaSnapshot(snapshot_name)
     big_o_mers = snap.get_largest_complexes()
@@ -102,7 +104,7 @@ def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[KappaCom
     lc_complex, _ = big_o_mers[0]
     # filter out agents if requested
     if patterns_requested:
-        filtered_composition = {}
+        filtered_composition: Dict[Union[KappaAgent, KappaComplex], int] = {}
         for ka_pattern in patterns_requested:
             filtered_composition[ka_pattern] = lc_complex.get_number_of_embeddings(ka_pattern)
         lc_composition = filtered_composition
@@ -112,8 +114,13 @@ def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[KappaCom
 
 
 def snapshot_list_to_plot_matrix(
-        snapshot_names, patterns_requested: Dict = None, thread_number: int = 1,
-        stack_order: str = list(_stacked_plot_methods.keys())[0]) -&gt; Tuple[List[float], numpy.ndarray, List[KappaComplex]]:
+        snapshot_names: List[str],
+        patterns_requested: Dict = None,
+        thread_number: int = 1,
+        stack_order: str = list(_stacked_plot_methods.keys())[0]) -&gt; Tuple[
+            List[float],
+            numpy.ndarray,
+            List[Union[KappaAgent, KappaComplex, Union[KappaAgent, KappaComplex]]]]:
     &#34;&#34;&#34;See file under `KaSaAn.scripts` for usage.&#34;&#34;&#34;
 
     if stack_order not in _stacked_plot_methods.keys():
@@ -123,7 +130,7 @@ def snapshot_list_to_plot_matrix(
     snap_times = []
     holding_struct = {}
     if patterns_requested:
-        pattern_keys: Set[KappaComplex] = patterns_requested.keys()
+        pattern_keys: Set[Union[KappaAgent, KappaComplex]] = patterns_requested.keys()
     else:
         pattern_keys = None
     # iterate over the snapshots
@@ -153,10 +160,24 @@ def snapshot_list_to_plot_matrix(
     # obtain and sort the superset of patterns; used for defining the number of lines to plot
     # a pattern may not have been present in a snapshot, so we need to fill in a zero at some
     # point for that specific snapshot time
+    # in cases where the requested patterns contain KappaAgents and KappaComplexes, the list
+    # can&#39;t be sorted at once, so they are sorted separately, then concatenated
     all_patterns = set()
     for compo in lc_compositions:
         all_patterns.update(set(compo.keys()))
-    all_patterns = sorted(all_patterns)
+    if any(isinstance(n, KappaAgent) for n in all_patterns) and any(isinstance(n, KappaComplex) for n in all_patterns):
+        agent_patterns = []
+        complex_patterns = []
+        for some_p in all_patterns:
+            if isinstance(some_p, KappaAgent):
+                agent_patterns.append(some_p)
+            elif isinstance(some_p, KappaComplex):
+                complex_patterns.append(some_p)
+            else:
+                raise ValueError(&#39;Unexpected type {} from color scheme! Expected KappaAgent or KappaComplex&#39;.format(type(some_p)))
+        all_patterns = sorted(agent_patterns) + sorted(complex_patterns)
+    else:
+        all_patterns = sorted(all_patterns)
 
     # create matrix for plotting, with alphabetical agent sorting
     plot_matrix = numpy.full([len(all_patterns), len(lc_compositions)], numpy.nan, dtype=int)
@@ -200,7 +221,7 @@ def snapshot_list_to_plot_matrix(
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="KaSaAn.functions.graph_largest_complex_composition.process_snapshot_helper"><code class="name flex">
-<span>def <span class="ident">process_snapshot_helper</span></span>(<span>snapshot_name: str, patterns_requested: Set[KaSaAn.core.KappaComplex.KappaComplex] = None) ‑> Tuple[float, dict]</span>
+<span>def <span class="ident">process_snapshot_helper</span></span>(<span>snapshot_name: str, patterns_requested: Set[Union[KaSaAn.core.KappaAgent.KappaAgent, KaSaAn.core.KappaComplex.KappaComplex]] = None) ‑> Tuple[float, Dict[Union[KaSaAn.core.KappaAgent.KappaAgent, KaSaAn.core.KappaComplex.KappaComplex], int]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper function to process snapshots and extract an arbitrary compositon.</p></div>
@@ -208,7 +229,7 @@ def snapshot_list_to_plot_matrix(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[KappaComplex] = None) -&gt; Tuple[float, dict]:
+<pre><code class="python">def process_snapshot_helper(snapshot_name: str, patterns_requested: Set[Union[KappaAgent, KappaComplex]] = None) -&gt; Tuple[float, Dict[Union[KappaAgent, KappaComplex], int]]:
     &#34;&#34;&#34;Helper function to process snapshots and extract an arbitrary compositon.&#34;&#34;&#34;
     snap = KappaSnapshot(snapshot_name)
     big_o_mers = snap.get_largest_complexes()
@@ -221,7 +242,7 @@ def snapshot_list_to_plot_matrix(
     lc_complex, _ = big_o_mers[0]
     # filter out agents if requested
     if patterns_requested:
-        filtered_composition = {}
+        filtered_composition: Dict[Union[KappaAgent, KappaComplex], int] = {}
         for ka_pattern in patterns_requested:
             filtered_composition[ka_pattern] = lc_complex.get_number_of_embeddings(ka_pattern)
         lc_composition = filtered_composition
@@ -231,7 +252,7 @@ def snapshot_list_to_plot_matrix(
 </details>
 </dd>
 <dt id="KaSaAn.functions.graph_largest_complex_composition.snapshot_list_to_plot_matrix"><code class="name flex">
-<span>def <span class="ident">snapshot_list_to_plot_matrix</span></span>(<span>snapshot_names, patterns_requested: Dict = None, thread_number: int = 1, stack_order: str = 'first_in_first_out') ‑> Tuple[List[float], numpy.ndarray, List[KaSaAn.core.KappaComplex.KappaComplex]]</span>
+<span>def <span class="ident">snapshot_list_to_plot_matrix</span></span>(<span>snapshot_names: List[str], patterns_requested: Dict = None, thread_number: int = 1, stack_order: str = 'first_in_first_out') ‑> Tuple[List[float], numpy.ndarray, List[Union[KaSaAn.core.KappaAgent.KappaAgent, KaSaAn.core.KappaComplex.KappaComplex]]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>See file under <code><a title="KaSaAn.scripts" href="../scripts/index.html">KaSaAn.scripts</a></code> for usage.</p></div>
@@ -240,8 +261,13 @@ def snapshot_list_to_plot_matrix(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def snapshot_list_to_plot_matrix(
-        snapshot_names, patterns_requested: Dict = None, thread_number: int = 1,
-        stack_order: str = list(_stacked_plot_methods.keys())[0]) -&gt; Tuple[List[float], numpy.ndarray, List[KappaComplex]]:
+        snapshot_names: List[str],
+        patterns_requested: Dict = None,
+        thread_number: int = 1,
+        stack_order: str = list(_stacked_plot_methods.keys())[0]) -&gt; Tuple[
+            List[float],
+            numpy.ndarray,
+            List[Union[KappaAgent, KappaComplex, Union[KappaAgent, KappaComplex]]]]:
     &#34;&#34;&#34;See file under `KaSaAn.scripts` for usage.&#34;&#34;&#34;
 
     if stack_order not in _stacked_plot_methods.keys():
@@ -251,7 +277,7 @@ def snapshot_list_to_plot_matrix(
     snap_times = []
     holding_struct = {}
     if patterns_requested:
-        pattern_keys: Set[KappaComplex] = patterns_requested.keys()
+        pattern_keys: Set[Union[KappaAgent, KappaComplex]] = patterns_requested.keys()
     else:
         pattern_keys = None
     # iterate over the snapshots
@@ -281,10 +307,24 @@ def snapshot_list_to_plot_matrix(
     # obtain and sort the superset of patterns; used for defining the number of lines to plot
     # a pattern may not have been present in a snapshot, so we need to fill in a zero at some
     # point for that specific snapshot time
+    # in cases where the requested patterns contain KappaAgents and KappaComplexes, the list
+    # can&#39;t be sorted at once, so they are sorted separately, then concatenated
     all_patterns = set()
     for compo in lc_compositions:
         all_patterns.update(set(compo.keys()))
-    all_patterns = sorted(all_patterns)
+    if any(isinstance(n, KappaAgent) for n in all_patterns) and any(isinstance(n, KappaComplex) for n in all_patterns):
+        agent_patterns = []
+        complex_patterns = []
+        for some_p in all_patterns:
+            if isinstance(some_p, KappaAgent):
+                agent_patterns.append(some_p)
+            elif isinstance(some_p, KappaComplex):
+                complex_patterns.append(some_p)
+            else:
+                raise ValueError(&#39;Unexpected type {} from color scheme! Expected KappaAgent or KappaComplex&#39;.format(type(some_p)))
+        all_patterns = sorted(agent_patterns) + sorted(complex_patterns)
+    else:
+        all_patterns = sorted(all_patterns)
 
     # create matrix for plotting, with alphabetical agent sorting
     plot_matrix = numpy.full([len(all_patterns), len(lc_compositions)], numpy.nan, dtype=int)

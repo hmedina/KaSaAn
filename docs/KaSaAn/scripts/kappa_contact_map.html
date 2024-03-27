@@ -32,6 +32,7 @@
 [--summarize_flagpole]      Summarizes state-only sites as a numeric annotation.
 [--keep_axes_ticks]         Show the X &amp; Y axes ticks.
 [-ts TEXT_SIZE]             Override default size for text, in points.
+[--text_instead_of_paths]   Output text elements instead of paths; embeds used glyphs
 </code></pre>
 <details class="source">
 <summary>
@@ -51,6 +52,7 @@ kappa_contact_map [-h] [-i INPUT_FILE_NAME] [-fs WIDTH HEIGHT] [-o OUTPUT_FILE_N
 [--summarize_flagpole]      Summarizes state-only sites as a numeric annotation.
 [--keep_axes_ticks]         Show the X &amp; Y axes ticks.
 [-ts TEXT_SIZE]             Override default size for text, in points.
+[--text_instead_of_paths]   Output text elements instead of paths; embeds used glyphs
 ```
 &#34;&#34;&#34;
 
@@ -97,10 +99,15 @@ def main():
                         &#39; for manual agent placement.&#39;)
     parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
                         help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
+    parser.add_argument(&#39;--text_instead_of_paths&#39;, action=&#39;store_true&#39;,
+                        help=&#39;If set, figure will embed used glyphs and export text elements, instead of rendering the&#39;
+                             &#39; glyphs into paths. Only supported for PDF export.&#39;)
     args = parser.parse_args()
 
     if args.text_size:
         mpl.rcParams[&#39;font.size&#39;] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams[&#39;pdf.fonttype&#39;] = 42
 
     this_cm = KappaContactMap(args.input_file_name)
     fig, ax = plt.subplots(figsize=args.fig_size, layout=&#39;constrained&#39;)
@@ -457,10 +464,15 @@ if __name__ == &#39;__main__&#39;:
                         &#39; for manual agent placement.&#39;)
     parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
                         help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
+    parser.add_argument(&#39;--text_instead_of_paths&#39;, action=&#39;store_true&#39;,
+                        help=&#39;If set, figure will embed used glyphs and export text elements, instead of rendering the&#39;
+                             &#39; glyphs into paths. Only supported for PDF export.&#39;)
     args = parser.parse_args()
 
     if args.text_size:
         mpl.rcParams[&#39;font.size&#39;] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams[&#39;pdf.fonttype&#39;] = 42
 
     this_cm = KappaContactMap(args.input_file_name)
     fig, ax = plt.subplots(figsize=args.fig_size, layout=&#39;constrained&#39;)

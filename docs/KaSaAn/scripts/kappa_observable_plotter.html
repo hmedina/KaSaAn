@@ -47,6 +47,7 @@
                                     outside left upper, outside right upper,
                                     outside left lower, outside right lower
 [--legend_ncol LEGEND_NCOL]     Number of columns for the legend.
+[--text_instead_of_paths]       Output text elements instead of paths; embeds used glyphs
 </code></pre>
 <details class="source">
 <summary>
@@ -81,6 +82,7 @@ usage: kappa_observable_plotter [-h] [-i INPUT_FILE_NAME] [-o OUTPUT_FILE_NAME] 
                                     outside left upper, outside right upper,
                                     outside left lower, outside right lower
 [--legend_ncol LEGEND_NCOL]     Number of columns for the legend.
+[--text_instead_of_paths]       Output text elements instead of paths; embeds used glyphs
 ```
 &#34;&#34;&#34;
 
@@ -145,10 +147,15 @@ def main():
                         help=&#39;Override location of the legend. Options prefixed with &lt;outside&gt; plot outside the axes.&#39;)
     parser.add_argument(&#39;--legend_ncol&#39;, type=int, default=1,
                         help=&#39;Number of columns for the legend.&#39;)
+    parser.add_argument(&#39;--text_instead_of_paths&#39;, action=&#39;store_true&#39;,
+                        help=&#39;If set, figure will embed used glyphs and export text elements, instead of rendering the&#39;
+                             &#39; glyphs into paths. Only supported for PDF export.&#39;)
     args = parser.parse_args()
 
     if args.text_size:
         mpl.rcParams[&#39;font.size&#39;] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams[&#39;pdf.fonttype&#39;] = 42
 
     this_data = observable_file_reader(args.input_file_name)
 
@@ -256,10 +263,15 @@ if __name__ == &#39;__main__&#39;:
                         help=&#39;Override location of the legend. Options prefixed with &lt;outside&gt; plot outside the axes.&#39;)
     parser.add_argument(&#39;--legend_ncol&#39;, type=int, default=1,
                         help=&#39;Number of columns for the legend.&#39;)
+    parser.add_argument(&#39;--text_instead_of_paths&#39;, action=&#39;store_true&#39;,
+                        help=&#39;If set, figure will embed used glyphs and export text elements, instead of rendering the&#39;
+                             &#39; glyphs into paths. Only supported for PDF export.&#39;)
     args = parser.parse_args()
 
     if args.text_size:
         mpl.rcParams[&#39;font.size&#39;] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams[&#39;pdf.fonttype&#39;] = 42
 
     this_data = observable_file_reader(args.input_file_name)
 

@@ -24,30 +24,31 @@
 <section id="section-intro">
 <p>Plot the compostion of the giant component in time from a set of snapshots located in a directory.</p>
 <pre><code class="language-text">usage: kappa_snapshot_largest_complex_time [-h] [-d DIRECTORY] [-p PATTERN] [-cs COLORING_SCHEME] [-o OUTPUT_NAME] [-fs WIDTH HEIGHT] [--lin_log] [--log_lin] [--log_log] [--un_stacked] [-mt MULTI_THREAD] [-ts TEXT_SIZE]
-[-h]                    Show detailed help.
-[-d DIRECTORY]          Directory where snapshots are stored, default is &lt;.&gt;
-[-p PATTERN]            Pattern that groups desired snapshots names; default 'snap*.ka'.
-[-cs FILE]              Optional file containing a dictionary with color scheme to use for species composition. E.g.
-                        &lt;{&quot;Bob&quot;: #fff, &quot;Mary&quot;: #999, &quot;Sue&quot;: #222}&gt;, where the color can be anything converable to a
-                        color by MatPlotLib (e.g. RGB[A] tuples, hex-strings, XKCD colors...). Supports KappaAgents,
-                        with or without agent signature, as well as KappaComplexes. If not provided, the sum formula
-                        will be displayed (arbitrary colors per agent, discarding agent signature).
-[-o OUTPUT_NAME]        The common file name for saving figures; shown if not given.
-[-fs WIDTH HEIGHT]      Size of the resulting figure, in inches.
-[--lin_log]             If specified, produce an additional plot with linear X-axis and logarithmic Y-axis.
-[--log_lin]             If specified, produce an additional plot with logarithmic X-axis and linear Y-axis.
-[--log_log]             If specified, produce an additional plot with logarithmic X-axis and logarithmic Y-axis.
-[--un_stacked]          If given, produce regular non-stacked plot.
-[--mt THREADS]          Launch multiple threads for reading snapshots. Safe, but always less performant: WIP.
-[-ts TEXT_SIZE]         Override default size for text, in points.
-[--stack_method] {...}  The order of elements in the stackplot. Choices are:
-                        first_in_first_out:     Patterns are plotted in the order in which they are encountered while reading snapshots.
-                        interleaved_initial:    Patterns are plotted alternating large and small abundances, as measured in the first snapshot.
-                        interleaved_final:      Patterns are plotted alternating large and small abundances, as measured in the final snapshot.
-                        ascending_initial:      Patterns are plotted in ascending abundances, as measured in the first snapshot.
-                        ascending_final:        Patterns are plotted in ascending abundances, as measured in the final snapshot.
-                        descending_initial:     Patterns are plotted in descending abundances, as measured in the first snapshot.
-                        descending_final:       Patterns are plotted in descending abundances, as measured in the final snapshot.
+[-h]                        Show detailed help.
+[-d DIRECTORY]              Directory where snapshots are stored, default is &lt;.&gt;
+[-p PATTERN]                Pattern that groups desired snapshots names; default 'snap*.ka'.
+[-cs FILE]                  Optional file containing a dictionary with color scheme to use for species composition. E.g.
+                            &lt;{&quot;Bob&quot;: #fff, &quot;Mary&quot;: #999, &quot;Sue&quot;: #222}&gt;, where the color can be anything converable to a
+                            color by MatPlotLib (e.g. RGB[A] tuples, hex-strings, XKCD colors...). Supports KappaAgents,
+                            with or without agent signature, as well as KappaComplexes. If not provided, the sum formula
+                            will be displayed (arbitrary colors per agent, discarding agent signature).
+[-o OUTPUT_NAME]            The common file name for saving figures; shown if not given.
+[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
+[--lin_log]                 If specified, produce an additional plot with linear X-axis and logarithmic Y-axis.
+[--log_lin]                 If specified, produce an additional plot with logarithmic X-axis and linear Y-axis.
+[--log_log]                 If specified, produce an additional plot with logarithmic X-axis and logarithmic Y-axis.
+[--un_stacked]              If given, produce regular non-stacked plot.
+[--mt THREADS]              Launch multiple threads for reading snapshots. Safe, but always less performant: WIP.
+[-ts TEXT_SIZE]             Override default size for text, in points.
+[--stack_method] {...}      The order of elements in the stackplot. Choices are:
+                                first_in_first_out:     Patterns are plotted in the order in which they are encountered while reading snapshots.
+                                interleaved_initial:    Patterns are plotted alternating large and small abundances, as measured in the first snapshot.
+                                interleaved_final:      Patterns are plotted alternating large and small abundances, as measured in the final snapshot.
+                                ascending_initial:      Patterns are plotted in ascending abundances, as measured in the first snapshot.
+                                ascending_final:        Patterns are plotted in ascending abundances, as measured in the final snapshot.
+                                descending_initial:     Patterns are plotted in descending abundances, as measured in the first snapshot.
+                                descending_final:       Patterns are plotted in descending abundances, as measured in the final snapshot.
+[--text_instead_of_paths]   Output text elements instead of paths; embeds used glyphs
 </code></pre>
 <details class="source">
 <summary>
@@ -59,36 +60,38 @@ Plot the compostion of the giant component in time from a set of snapshots locat
 
 ``` {.text}
 usage: kappa_snapshot_largest_complex_time [-h] [-d DIRECTORY] [-p PATTERN] [-cs COLORING_SCHEME] [-o OUTPUT_NAME] [-fs WIDTH HEIGHT] [--lin_log] [--log_lin] [--log_log] [--un_stacked] [-mt MULTI_THREAD] [-ts TEXT_SIZE]
-[-h]                    Show detailed help.
-[-d DIRECTORY]          Directory where snapshots are stored, default is &lt;.&gt;
-[-p PATTERN]            Pattern that groups desired snapshots names; default &#39;snap*.ka&#39;.
-[-cs FILE]              Optional file containing a dictionary with color scheme to use for species composition. E.g.
-                        &lt;{&#34;Bob&#34;: #fff, &#34;Mary&#34;: #999, &#34;Sue&#34;: #222}&gt;, where the color can be anything converable to a
-                        color by MatPlotLib (e.g. RGB[A] tuples, hex-strings, XKCD colors...). Supports KappaAgents,
-                        with or without agent signature, as well as KappaComplexes. If not provided, the sum formula
-                        will be displayed (arbitrary colors per agent, discarding agent signature).
-[-o OUTPUT_NAME]        The common file name for saving figures; shown if not given.
-[-fs WIDTH HEIGHT]      Size of the resulting figure, in inches.
-[--lin_log]             If specified, produce an additional plot with linear X-axis and logarithmic Y-axis.
-[--log_lin]             If specified, produce an additional plot with logarithmic X-axis and linear Y-axis.
-[--log_log]             If specified, produce an additional plot with logarithmic X-axis and logarithmic Y-axis.
-[--un_stacked]          If given, produce regular non-stacked plot.
-[--mt THREADS]          Launch multiple threads for reading snapshots. Safe, but always less performant: WIP.
-[-ts TEXT_SIZE]         Override default size for text, in points.
-[--stack_method] {...}  The order of elements in the stackplot. Choices are:
-                        first_in_first_out:     Patterns are plotted in the order in which they are encountered while reading snapshots.
-                        interleaved_initial:    Patterns are plotted alternating large and small abundances, as measured in the first snapshot.
-                        interleaved_final:      Patterns are plotted alternating large and small abundances, as measured in the final snapshot.
-                        ascending_initial:      Patterns are plotted in ascending abundances, as measured in the first snapshot.
-                        ascending_final:        Patterns are plotted in ascending abundances, as measured in the final snapshot.
-                        descending_initial:     Patterns are plotted in descending abundances, as measured in the first snapshot.
-                        descending_final:       Patterns are plotted in descending abundances, as measured in the final snapshot.
+[-h]                        Show detailed help.
+[-d DIRECTORY]              Directory where snapshots are stored, default is &lt;.&gt;
+[-p PATTERN]                Pattern that groups desired snapshots names; default &#39;snap*.ka&#39;.
+[-cs FILE]                  Optional file containing a dictionary with color scheme to use for species composition. E.g.
+                            &lt;{&#34;Bob&#34;: #fff, &#34;Mary&#34;: #999, &#34;Sue&#34;: #222}&gt;, where the color can be anything converable to a
+                            color by MatPlotLib (e.g. RGB[A] tuples, hex-strings, XKCD colors...). Supports KappaAgents,
+                            with or without agent signature, as well as KappaComplexes. If not provided, the sum formula
+                            will be displayed (arbitrary colors per agent, discarding agent signature).
+[-o OUTPUT_NAME]            The common file name for saving figures; shown if not given.
+[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
+[--lin_log]                 If specified, produce an additional plot with linear X-axis and logarithmic Y-axis.
+[--log_lin]                 If specified, produce an additional plot with logarithmic X-axis and linear Y-axis.
+[--log_log]                 If specified, produce an additional plot with logarithmic X-axis and logarithmic Y-axis.
+[--un_stacked]              If given, produce regular non-stacked plot.
+[--mt THREADS]              Launch multiple threads for reading snapshots. Safe, but always less performant: WIP.
+[-ts TEXT_SIZE]             Override default size for text, in points.
+[--stack_method] {...}      The order of elements in the stackplot. Choices are:
+                                first_in_first_out:     Patterns are plotted in the order in which they are encountered while reading snapshots.
+                                interleaved_initial:    Patterns are plotted alternating large and small abundances, as measured in the first snapshot.
+                                interleaved_final:      Patterns are plotted alternating large and small abundances, as measured in the final snapshot.
+                                ascending_initial:      Patterns are plotted in ascending abundances, as measured in the first snapshot.
+                                ascending_final:        Patterns are plotted in ascending abundances, as measured in the final snapshot.
+                                descending_initial:     Patterns are plotted in descending abundances, as measured in the first snapshot.
+                                descending_final:       Patterns are plotted in descending abundances, as measured in the final snapshot.
+[--text_instead_of_paths]   Output text elements instead of paths; embeds used glyphs
 ```
 &#34;&#34;&#34;
 
 import argparse
 import ast
 import matplotlib as mpl
+import matplotlib.colors as mpco
 import matplotlib.pyplot as plt
 from pathlib import Path
 from KaSaAn.core.KappaError import ComplexParseError, AgentParseError
@@ -138,12 +141,17 @@ def main():
                         &#39; 1, so a single-threaded for-loop.&#39;)
     parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
                         help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
-    parser.add_argument(&#39;--stack_method&#39;, choices=_stacked_plot_methods.keys(), type=str,
+    parser.add_argument(&#39;--stack_method&#39;, choices=_stacked_plot_methods.keys(), type=str, default=next(iter(_stacked_plot_methods)),
                         help=&#39;\n&#39;.join([&#39;{}:\t{}&#39;.format(k, v) for k, v in _stacked_plot_methods.items()]))
+    parser.add_argument(&#39;--text_instead_of_paths&#39;, action=&#39;store_true&#39;,
+                        help=&#39;If set, figure will embed used glyphs and export text elements, instead of rendering the&#39;
+                             &#39; glyphs into paths. Only supported for PDF export.&#39;)
     args = parser.parse_args()
 
     if args.text_size:
         mpl.rcParams[&#39;font.size&#39;] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams[&#39;pdf.fonttype&#39;] = 42
 
     # for user-defined coloring schemes, read the dictionary from a file, convert keys
     # Since single-agents can be interpreted as KappaComplexes, and that preserves sorting &amp; comparisons, we cast
@@ -153,11 +161,15 @@ def main():
         with open(args.coloring_scheme, &#39;r&#39;) as cs_file:
             coloring_scheme_raw = ast.literal_eval(cs_file.read())
             for key, value in coloring_scheme_raw.items():
+                if mpco.is_color_like(value):
+                    this_color = value
+                else:
+                    this_color = mpco.to_hex(eval(value))
                 try:
-                    coloring_scheme[KappaAgent(key)] = value
+                    coloring_scheme[KappaAgent(key)] = this_color
                 except AgentParseError:
                     try:
-                        coloring_scheme[KappaComplex(key)] = value
+                        coloring_scheme[KappaComplex(key)] = this_color
                     except ComplexParseError:
                         raise ValueError(&#39;Could not parse {} as a KappaComplex nor a KappaAgent&#39;.format(key))
     else:
@@ -260,12 +272,17 @@ the subset of patterns specified.</p></div>
                         &#39; 1, so a single-threaded for-loop.&#39;)
     parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
                         help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
-    parser.add_argument(&#39;--stack_method&#39;, choices=_stacked_plot_methods.keys(), type=str,
+    parser.add_argument(&#39;--stack_method&#39;, choices=_stacked_plot_methods.keys(), type=str, default=next(iter(_stacked_plot_methods)),
                         help=&#39;\n&#39;.join([&#39;{}:\t{}&#39;.format(k, v) for k, v in _stacked_plot_methods.items()]))
+    parser.add_argument(&#39;--text_instead_of_paths&#39;, action=&#39;store_true&#39;,
+                        help=&#39;If set, figure will embed used glyphs and export text elements, instead of rendering the&#39;
+                             &#39; glyphs into paths. Only supported for PDF export.&#39;)
     args = parser.parse_args()
 
     if args.text_size:
         mpl.rcParams[&#39;font.size&#39;] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams[&#39;pdf.fonttype&#39;] = 42
 
     # for user-defined coloring schemes, read the dictionary from a file, convert keys
     # Since single-agents can be interpreted as KappaComplexes, and that preserves sorting &amp; comparisons, we cast
@@ -275,11 +292,15 @@ the subset of patterns specified.</p></div>
         with open(args.coloring_scheme, &#39;r&#39;) as cs_file:
             coloring_scheme_raw = ast.literal_eval(cs_file.read())
             for key, value in coloring_scheme_raw.items():
+                if mpco.is_color_like(value):
+                    this_color = value
+                else:
+                    this_color = mpco.to_hex(eval(value))
                 try:
-                    coloring_scheme[KappaAgent(key)] = value
+                    coloring_scheme[KappaAgent(key)] = this_color
                 except AgentParseError:
                     try:
-                        coloring_scheme[KappaComplex(key)] = value
+                        coloring_scheme[KappaComplex(key)] = this_color
                     except ComplexParseError:
                         raise ValueError(&#39;Could not parse {} as a KappaComplex nor a KappaAgent&#39;.format(key))
     else:

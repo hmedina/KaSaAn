@@ -24,14 +24,15 @@
 <section id="section-intro">
 <p>Get the catalytic potential per snapshot for a series.</p>
 <pre><code class="language-text">usage: kappa_catalytic_potential [-h] [-d DIRECTORY] -e ENZYME_NAME -s SUBSTRATE_NAME [-v] [-o OUTPUT_FILE] [-p SNAPSHOT_PATTERN] [-ts TEXT_SIZE]
-[-h]                Show detailed help.
-[-d DIRECTORY]      Directory containing the snapshots.
--e ENZYME_NAME      Name of the first agent.
--s SUBSTRATE_NAME   Name of the second agent.
-[-v]                If set, print additional information to standard output.
-[-o OUTPUT_FILE]    If specified, save to file; else print to standard output.
--p SNAPSHOT_PREFIX  The prefix by which the snapshots are named.
-[-ts TEXT_SIZE]     Override default size for text, in points.
+[-h]                            Show detailed help.
+[-d DIRECTORY]                  Directory containing the snapshots.
+-e ENZYME_NAME                  Name of the first agent.
+-s SUBSTRATE_NAME               Name of the second agent.
+[-v]                            If set, print additional information to standard output.
+[-o OUTPUT_FILE]                If specified, save to file; else print to standard output.
+-p SNAPSHOT_PREFIX              The prefix by which the snapshots are named.
+[-ts TEXT_SIZE]                 Override default size for text, in points.
+[--text_instead_of_paths]       Output text elements instead of paths; embeds used glyphs
 </code></pre>
 <details class="source">
 <summary>
@@ -43,14 +44,15 @@ Get the catalytic potential per snapshot for a series.
 
 ``` {.text}
 usage: kappa_catalytic_potential [-h] [-d DIRECTORY] -e ENZYME_NAME -s SUBSTRATE_NAME [-v] [-o OUTPUT_FILE] [-p SNAPSHOT_PATTERN] [-ts TEXT_SIZE]
-[-h]                Show detailed help.
-[-d DIRECTORY]      Directory containing the snapshots.
--e ENZYME_NAME      Name of the first agent.
--s SUBSTRATE_NAME   Name of the second agent.
-[-v]                If set, print additional information to standard output.
-[-o OUTPUT_FILE]    If specified, save to file; else print to standard output.
--p SNAPSHOT_PREFIX  The prefix by which the snapshots are named.
-[-ts TEXT_SIZE]     Override default size for text, in points.
+[-h]                            Show detailed help.
+[-d DIRECTORY]                  Directory containing the snapshots.
+-e ENZYME_NAME                  Name of the first agent.
+-s SUBSTRATE_NAME               Name of the second agent.
+[-v]                            If set, print additional information to standard output.
+[-o OUTPUT_FILE]                If specified, save to file; else print to standard output.
+-p SNAPSHOT_PREFIX              The prefix by which the snapshots are named.
+[-ts TEXT_SIZE]                 Override default size for text, in points.
+[--text_instead_of_paths]       Output text elements instead of paths; embeds used glyphs
 ```
 &#34;&#34;&#34;
 
@@ -89,10 +91,15 @@ def main(args=None):
                         help=&#39;Pattern by which the snapshots are named; e.g. &lt;snap_4.ka&gt; would have &lt;snap_*.ka&gt;.&#39;)
     parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
                         help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
+    parser.add_argument(&#39;--text_instead_of_paths&#39;, action=&#39;store_true&#39;,
+                        help=&#39;If set, figure will embed used glyphs and export text elements, instead of rendering the&#39;
+                             &#39; glyphs into paths. Only supported for PDF export.&#39;)
 
     args = parser.parse_args()
     if args.text_size:
         mpl.rcParams[&#39;font.size&#39;] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams[&#39;pdf.fonttype&#39;] = 42
 
     data = get_potential_of_folder(args.directory, args.enzyme_name, args.substrate_name,
                                    args.verbose, args.snapshot_pattern)
@@ -162,10 +169,15 @@ is the sum of the catalytic potentials over all the constituent species.</p></di
                         help=&#39;Pattern by which the snapshots are named; e.g. &lt;snap_4.ka&gt; would have &lt;snap_*.ka&gt;.&#39;)
     parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
                         help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
+    parser.add_argument(&#39;--text_instead_of_paths&#39;, action=&#39;store_true&#39;,
+                        help=&#39;If set, figure will embed used glyphs and export text elements, instead of rendering the&#39;
+                             &#39; glyphs into paths. Only supported for PDF export.&#39;)
 
     args = parser.parse_args()
     if args.text_size:
         mpl.rcParams[&#39;font.size&#39;] = args.text_size
+    if args.text_instead_of_paths:
+        plt.rcParams[&#39;pdf.fonttype&#39;] = 42
 
     data = get_potential_of_folder(args.directory, args.enzyme_name, args.substrate_name,
                                    args.verbose, args.snapshot_pattern)
