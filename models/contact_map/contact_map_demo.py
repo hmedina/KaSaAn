@@ -16,7 +16,7 @@ my_contact_map.rotate_all_sites_of('Baz', -180)
 my_contact_map.rotate_all_sites_of('Fitz', 30)
 my_contact_map.rotate_all_sites_of('Bar', -10)
 
-my_contact_map.draw(ax, draw_state_flagpole=True)
+my_contact_map.draw(ax, draw_state_flagpole=True, bond_width=1)
 ax.axis('off')
 plt.tight_layout()
 

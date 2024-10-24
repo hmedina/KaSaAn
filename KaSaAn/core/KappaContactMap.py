@@ -208,7 +208,7 @@ def _define_bond_spline_points(bond_type_dict, init_graphic_struct) -> dict:
     return graphic_bond_points
 
 
-def _create_spline(point_dict: dict, bond_width=3) -> mpp.PathPatch:
+def _create_spline(point_dict: dict, spline_width: int = 3) -> mpp.PathPatch:
     """Create a spline object."""
     path_data = [
         (matplotlib.path.Path.MOVETO, (point_dict['a_x'], point_dict['a_y'])),
@@ -219,7 +219,7 @@ def _create_spline(point_dict: dict, bond_width=3) -> mpp.PathPatch:
     # ax.plot([Ax,Bx,Cx,Dx],[Ay,By,Cy,Dy],'ro') #draw the spline's control points
     spline_codes, spline_vertices = zip(*path_data)
     path = matplotlib.path.Path(vertices=spline_vertices, codes=spline_codes)
-    spline = mpp.PathPatch(path, edgecolor='k', facecolor='none', linewidth=bond_width)
+    spline = mpp.PathPatch(path, edgecolor='k', facecolor='none', linewidth=spline_width)
     return spline
 
 
@@ -478,13 +478,13 @@ class KappaContactMap:
             self._agent_graphics[agent_name]['flagpole_loc']['width'] = new_size / old_ratio
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True):
+    def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True, bond_width: int = 3):
         """Draw the contact map onto the supplied axis. If `draw_state_flagpole` is `True`, the flagpole will display
         all internal state data. If `False`, it will only display a summary with the number of sites omitted. By
         default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents
         would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10])."""
         # draw splines
-        spline_list = [_create_spline(bond_entry) for bond_entry in self._bond_spline_points.values()]
+        spline_list = [_create_spline(bond_entry, bond_width) for bond_entry in self._bond_spline_points.values()]
         target_axis.add_collection(PatchCollection(spline_list, match_original=True))
         # draw wedges: sites and flagpole
         agent_backs = _list_agent_backgrounds(self._agent_graphics)
