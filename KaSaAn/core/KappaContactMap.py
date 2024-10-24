@@ -208,7 +208,7 @@ def _define_bond_spline_points(bond_type_dict, init_graphic_struct) -> dict:
     return graphic_bond_points
 
 
-def _create_spline(point_dict: dict, spline_width: int = 3) -> mpp.PathPatch:
+def _create_spline(point_dict: dict, spline_width: float = 3) -> mpp.PathPatch:
     """Create a spline object."""
     path_data = [
         (matplotlib.path.Path.MOVETO, (point_dict['a_x'], point_dict['a_y'])),
@@ -478,7 +478,7 @@ class KappaContactMap:
             self._agent_graphics[agent_name]['flagpole_loc']['width'] = new_size / old_ratio
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True, bond_width: int = 3):
+    def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True, bond_width: float = 3):
         """Draw the contact map onto the supplied axis. If `draw_state_flagpole` is `True`, the flagpole will display
         all internal state data. If `False`, it will only display a summary with the number of sites omitted. By
         default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents

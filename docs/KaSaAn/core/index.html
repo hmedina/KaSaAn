@@ -1286,7 +1286,7 @@ and is designed to read in from said files. Example usage:</p>
             self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;width&#39;] = new_size / old_ratio
         self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)
 
-    def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True, bond_width: int = 3):
+    def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True, bond_width: float = 3):
         &#34;&#34;&#34;Draw the contact map onto the supplied axis. If `draw_state_flagpole` is `True`, the flagpole will display
         all internal state data. If `False`, it will only display a summary with the number of sites omitted. By
         default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents
@@ -1549,7 +1549,7 @@ and is designed to read in from said files. Example usage:</p>
 <h3>Methods</h3>
 <dl>
 <dt id="KaSaAn.core.KappaContactMap.draw"><code class="name flex">
-<span>def <span class="ident">draw</span></span>(<span>self, target_axis: matplotlib.axes._axes.Axes, draw_state_flagpole: bool = True, bond_width: int = 3)</span>
+<span>def <span class="ident">draw</span></span>(<span>self, target_axis: matplotlib.axes._axes.Axes, draw_state_flagpole: bool = True, bond_width: float = 3)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Draw the contact map onto the supplied axis. If <code>draw_state_flagpole</code> is <code>True</code>, the flagpole will display
@@ -1560,7 +1560,7 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True, bond_width: int = 3):
+<pre><code class="python">def draw(self, target_axis: mpa.Axes, draw_state_flagpole: bool = True, bond_width: float = 3):
     &#34;&#34;&#34;Draw the contact map onto the supplied axis. If `draw_state_flagpole` is `True`, the flagpole will display
     all internal state data. If `False`, it will only display a summary with the number of sites omitted. By
     default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents
