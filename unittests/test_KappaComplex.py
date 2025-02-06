@@ -284,3 +284,20 @@ class TestKappaComplex(unittest.TestCase):
         nm_2.node_map.add((0, 60))
         nm_2.node_map.add((1, 17))
         self.assertEqual(nm_2, _traverse_from(kq.to_networkx(), kc_b.to_networkx(), 0, 60))
+        # testing against issue with simple rings and polymers
+        polymer = KappaComplex('x5:Axin(DIX-head[.] DIX-tail[3]), x6:Dvl(DIX-head[3] DIX-tail[2]), x7:Axin(DIX-head[2] DIX-tail[1]), x8:Dvl(DIX-head[1] DIX-tail[.])')
+        pattern_lin = KappaComplex('Dvl(DIX-tail[0]), Axin(DIX-head[0], DIX-tail[1]), Dvl(DIX-head[1])')
+        pattern_cyc = KappaComplex('x0:Axin(DIX-head[1], DIX-tail[2]), x1:Dvl(DIX-head[2], DIX-tail[1])')
+        nm_3 = NetMap()
+        nm_3.edge_map.add((1, 1))
+        nm_3.edge_map.add((0, 2))
+        nm_3.node_map.add((0, 7))
+        nm_3.node_map.add((1, 8))
+        nm_3.node_map.add((2, 6))
+        self.assertEqual(nm_3, _traverse_from(pattern_lin.to_networkx(), polymer.to_networkx(), 0, 7))
+        self.assertEqual([], _traverse_from(pattern_cyc.to_networkx(), polymer.to_networkx(), 0, 5))
+        self.assertEqual([], _traverse_from(pattern_cyc.to_networkx(), polymer.to_networkx(), 0, 7))
+        self.assertEqual([], _traverse_from(pattern_cyc.to_networkx(), polymer.to_networkx(), 1, 6))
+        self.assertEqual([], _traverse_from(pattern_cyc.to_networkx(), polymer.to_networkx(), 1, 8))
+
+

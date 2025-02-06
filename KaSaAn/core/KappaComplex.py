@@ -285,10 +285,18 @@ def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> Tuple[List
     >>> from KaSaAn.core.KappaComplex import embed_and_map, KappaComplex
     >>> my_comp = KappaComplex('Bob(h[10], t[11]), Bob(h[11], t[12]), Bob(h[12], t[10])')
     >>> maps_all, maps_unique = embed_and_map(my_comp, my_comp)
-    >>> maps_all
-    [[(0, 0), (2, 2), (1, 1)], [(0, 1), (2, 0), (1, 2)], [(0, 2), (2, 1), (1, 0)]]
-    >>> maps_unique
-    [[(0, 0), (2, 2), (1, 1)]]
+    >>> print('\n\n'.join([str(item) for item in maps_all]))
+    Nodes: 1 -> 1, 2 -> 2, 0 -> 0
+    Edges: 10 -> 10, 12 -> 12, 11 -> 11
+
+    Nodes: 0 -> 1, 1 -> 2, 2 -> 0
+    Edges: 11 -> 12, 12 -> 10, 10 -> 11
+
+    Nodes: 1 -> 0, 0 -> 2, 2 -> 1
+    Edges: 12 -> 11, 10 -> 12, 11 -> 10
+    >>> print('\n\n'.join([str(item) for item in maps_unique]))
+    Nodes: 1 -> 1, 2 -> 2, 0 -> 0
+    Edges: 10 -> 10, 12 -> 12, 11 -> 11
 
     There are three ways of satisfying the query in the target, and these rotations inflate the number of "embeddings".
     However, the set of identifiers making up the image of the query in the target is the same for these three:
@@ -355,12 +363,8 @@ def _traverse_from(query_net: nx.MultiGraph, target_net: nx.MultiGraph, q_start:
     network_map = NetMap()
     while node_stack:
         q_node, t_node = node_stack.pop()
-        if q_node in nodes_visited:
-            node_matched = True             # if we visited this node already, and it got added to the queue,
-            edge_matched = True             # it must have passed both of these checks
-        else:
-            node_matched: bool = _node_match(query_net, target_net, q_node, t_node)
-            edge_matched: bool = _edge_match(query_net, target_net, q_node, t_node)
+        node_matched: bool = _node_match(query_net, target_net, q_node, t_node)
+        edge_matched: bool = _edge_match(query_net, target_net, q_node, t_node)
         if node_matched and edge_matched:
             # prepare for next iteration:
             #  add nodes of query, mapped to their images in target, to the node map;
