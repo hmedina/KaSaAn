@@ -62,6 +62,13 @@ Fine grained control is exposed through the various methods of the `KappaContact
 
 ## Installation
 
+<tl;dr>
+```
+pip install git+https://github.com/hmedina/KaSaAn.git
+```
+
+### Editable? Local download?
+
 To install from a freshly downloaded copy, where `[dir]` contains the `pyproject.toml` file:
 ```
 pip install [dir]
