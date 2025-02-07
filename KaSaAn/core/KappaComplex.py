@@ -204,8 +204,17 @@ class KappaComplex(KappaMultiAgentGraph):
                                                site_one=dangle_bond_dict[bond]['site name'],
                                                agent_two=agent.get_agent_name(),
                                                site_two=second_terminus)
-                    paired_bond_list.append((dangle_bond_dict[bond]['agent id'], agent_global_id,
-                                             {'bond id': bond, 'bond type': this_bond_type}))
+                    paired_bond_list.append(
+                        (
+                            dangle_bond_dict[bond]['agent id'],
+                            agent_global_id,
+                            int(bond),
+                            {
+                                'bond id': bond,
+                                'bond type': this_bond_type,
+                                'agent one id': dangle_bond_dict[bond]['agent id'],
+                                'agent two id': agent_global_id
+                                }))
                     del dangle_bond_dict[bond]
                 else:
                     dangle_bond_dict[bond] = {'agent id': agent_global_id,
@@ -255,27 +264,87 @@ class NetMap():
     """List of tuples, holding the edge index of one network that matches the edge index in the other."""
 
     def __init__(self):
-        self.node_map = set()
-        self.edge_map = set()
+        self._mapped_query_nodes = set()
+        self._mapped_target_nodes = set()
+        self._node_map: Set[Tuple[int, int]] = set()
+        self._edge_map: Set[Tuple[int, int]] = set()
 
     def __str__(self) -> str:
-        nodes: str = ', '.join(['{} -> {}'.format(a, b) for a, b in self.node_map])
-        edges: str = ', '.join(['{} -> {}'.format(a, b) for a, b in self.edge_map])
+        nodes: str = ', '.join(['{} -> {}'.format(a, b) for a, b in self._node_map])
+        edges: str = ', '.join(['{} -> {}'.format(a, b) for a, b in self._edge_map])
         return 'Nodes: {}\nEdges: {}'.format(nodes, edges)
 
     def __eq__(self, other) -> bool:
         return True if self.__hash__() == other.__hash__() else False
 
     def __hash__(self) -> int:
-        origin_n, image_n = zip(*self.node_map)
-        if len(self.edge_map) > 0:
-            origin_e, image_e = zip(*self.edge_map)
+        origin_n, image_n = zip(*self._node_map)
+        if len(self._edge_map) > 0:
+            origin_e, image_e = zip(*self._edge_map)
             own_hash = hash(
                 (tuple(sorted(origin_n)), tuple(sorted(image_n)), tuple(sorted(origin_e)), tuple(sorted(image_e))))
         else:
             own_hash = hash(
                 (tuple(sorted(origin_n)), tuple(sorted(image_n)), None, None))
         return own_hash
+    
+    def can_node_map(self, query_ix: int, target_ix: int) -> bool:
+        """
+        Try to map the query's index to the target's index. Nodes can not be mapped to more than one image, but with 
+        parallel edges in linear co-polymers, a cyclic dimer can edge-match and node-match. This method guards against 
+        that by enforcing the check that no agents can map to more than one other.
+        """
+        if query_ix in self._mapped_query_nodes or target_ix in self._mapped_target_nodes:
+            return False
+        else:
+            self._mapped_query_nodes.add(query_ix)
+            self._mapped_target_nodes.add(target_ix)
+            self._node_map.add((query_ix, target_ix))
+            return True
+    
+    def adjacency_check(self, query_net: nx.MultiGraph, target_net: nx.MultiGraph) -> bool:
+        """
+        For every edge, ergo pair of node indexes, that map from the query to the target graphs, verify the node maps
+        correctly. This allows distinguishing cyclic dimers from linear polymeric species, which can't be done at the
+        local level of bonds types.
+        """
+        node_mapping = {}
+        for (q_edge_ix, t_edge_ix) in self._edge_map:
+            # since we can't just "get edge 98" without specifying origin and destination (networkX's edge keys are not unique
+            # nor serve as identifiers <sigh>), we iterate and match the data block
+            for item in query_net.edges(data='bond id'):
+                if item[2]==str(q_edge_ix):
+                    q_origin = item[0]
+                    q_destin = item[1]
+                    q_bond_type = query_net.adj[q_origin][q_destin][q_edge_ix]['bond type']
+                    break
+            for item in target_net.edges(data='bond id'):
+                if item[2]==str(t_edge_ix):
+                    t_origin = item[0]
+                    t_destin = item[1]
+                    t_bond_type = target_net.adj[t_origin][t_destin][t_edge_ix]['bond type']
+                    break
+            if q_bond_type == t_bond_type:
+                pass
+                # print('Mapping edge {} -> {} means nodes {} -> {} and {} -> {}'.format(q_edge_ix, t_edge_ix, q_origin, t_origin, q_destin, t_destin))
+            elif q_bond_type == t_bond_type.reverse():
+                swap = t_origin
+                t_origin = t_destin
+                t_destin = swap
+                # print('Mapping edge {} -> {} means nodes {} -> {} and {} -> {} (corrected)'.format(q_edge_ix, t_edge_ix, q_origin, t_origin, q_destin, t_destin))
+            # break if a node has already been mapped to something else; can't have one node mapped to two
+            if q_origin in node_mapping:
+                if node_mapping[q_origin] != t_origin:
+                    return False
+            else:
+                node_mapping[q_origin] = t_origin
+            if q_destin in node_mapping:
+                if node_mapping[q_destin] != t_destin:
+                    return False
+            else:
+                node_mapping[q_destin] = t_destin
+        return True
+
 
 
 def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -> Tuple[List[NetMap], Set[NetMap]]:
@@ -367,26 +436,31 @@ def _traverse_from(query_net: nx.MultiGraph, target_net: nx.MultiGraph, q_start:
         edge_matched: bool = _edge_match(query_net, target_net, q_node, t_node)
         if node_matched and edge_matched:
             # prepare for next iteration:
+            #  guard against agents being double-mapped in co-polymer & rings scenario, then
             #  add nodes of query, mapped to their images in target, to the node map;
             #  add neighbors of query, mapped to their images in target;
             #  add their respective bonds, mapped to their images in target, to the edge map
-            network_map.node_map.add((q_node, t_node))
-            nodes_visited.add(q_node)
-            for _, q_neighbor, q_data in query_net.edges(q_node, data=True):
-                q_type: KappaBond = q_data['bond type'] if q_node < q_neighbor else q_data['bond type'].reverse()
-                q_id = int(q_data['bond id'])
-                for _, t_neighbor, t_data in target_net.edges(t_node, data=True):
-                    t_type: KappaBond = t_data['bond type'] if t_node < t_neighbor else t_data['bond type'].reverse()
-                    t_id = int(t_data['bond id'])
-                    if q_type == t_type:
-                        if q_id not in edges_followed:     # cycle prevention
-                            edges_followed.add(q_id)
-                            network_map.edge_map.add((q_id, t_id))
-                            valid_hop = HopData([q_neighbor, t_neighbor])
-                            node_stack.append(valid_hop)
+            valid_node_map = network_map.can_node_map(q_node, t_node)
+            if valid_node_map:
+                nodes_visited.add(q_node)
+                for _, q_neighbor, q_data in query_net.edges(q_node, data=True):
+                    q_type: KappaBond = q_data['bond type'] if q_node < q_neighbor else q_data['bond type'].reverse()
+                    q_id = int(q_data['bond id'])
+                    for _, t_neighbor, t_data in target_net.edges(t_node, data=True):
+                        t_type: KappaBond = t_data['bond type'] if t_node < t_neighbor else t_data['bond type'].reverse()
+                        t_id = int(t_data['bond id'])
+                        if q_type == t_type:
+                            if q_id not in edges_followed:     # cycle prevention
+                                edges_followed.add(q_id)
+                                network_map._edge_map.add((q_id, t_id))
+                                valid_hop = HopData([q_neighbor, t_neighbor])
+                                node_stack.append(valid_hop)
         else:
             return []
-    return network_map
+    if network_map.adjacency_check(query_net, target_net):
+        return network_map
+    else:
+        return []
 
 
 def _node_match(query_net: nx.MultiGraph, target_net: nx.MultiGraph, query_node: int, target_node: int) -> bool:

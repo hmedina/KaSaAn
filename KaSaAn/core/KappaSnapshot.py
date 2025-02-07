@@ -51,6 +51,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
         self._snapshot_event: int
         self._snapshot_uuid: str
         self._snapshot_time: float
+        self._total_mass: int = 0
         # initialization of structures
         if isinstance(snapshot_file, str):
             self._file_name = os.path.split(snapshot_file)[1]
@@ -104,6 +105,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
                     # assign the complex as a key to the dictionary
                     self._complexes[species] = abundance
                     self._known_sizes.append(size)
+                    self._total_mass += size * abundance
                     # define identifier -> complex map
                     for identifier in species.get_agent_identifiers():
                         self._identifier_complex_map[identifier] = species
@@ -121,6 +123,11 @@ class KappaSnapshot(KappaMultiAgentGraph):
                 raise SnapshotParseError(
                     'Complex and token parse failed in file {}, line said:\n{}'.format(
                         self._file_name, entry))
+        # identifier set sanity check
+        if not bool(self._identifier_complex_map):
+            pass    # empty dictionaries evaluate to False; no idents means no checking
+        elif len(self._identifier_complex_map) != self._total_mass:
+            raise RuntimeError('Mismatch! Found {} identifiers, but {} total agent mass'.format(len(self._identifier_complex_map), self._total_mass))
         # canonicalize the kappa expression: tokens
         self._kappa_expression = '\n'.join(['%init: ' + str(float(tk.get_token_operation())) + ' ' + tk.get_token_name()
                                             for tk in self._tokens.values()])
@@ -173,10 +180,7 @@ class KappaSnapshot(KappaMultiAgentGraph):
 
     def get_total_mass(self) -> int:
         """Returns an integer with the total mass of the snapshot, measured in number of agents."""
-        total_mass = 0
-        for i_complex, i_abundance in self._complexes.items():
-            total_mass += i_complex.get_size_of_complex() * i_abundance
-        return total_mass
+        return self._total_mass
 
     def get_abundance_of_agent(self, query_agent) -> int:
         """Returns an integer with the abundance of the given agent. Supports passing a string with the agent
@@ -340,24 +344,20 @@ markedly slower performance with multi-threading than without. Case-specific, yo
         """Returns a list with all the agent identifiers held in the snapshot."""
         return list(self._identifier_complex_map.keys())
 
-    def get_complex_of_agent(self, query_identifier: int) -> Union[KappaComplex, None]:
+    def get_complex_of_agent(self, query_identifier: int) -> Optional[KappaComplex]:
         """Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
         should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
         be identical, and identifiers are unique and stable throughout the simulation."""
         if query_identifier in self._identifier_complex_map:
             return self._identifier_complex_map[query_identifier]
         else:
-            Warning('Returnin None; identifier {} not present in snapshot {}'.format(
-                query_identifier, self.get_snapshot_file_name()))
             return None
 
-    def get_agent_from_identifier(self, ident: int) -> Union[KappaAgent, None]:
+    def get_agent_from_identifier(self, ident: int) -> Optional[KappaAgent]:
         """Returns the KappaAgent associated with the given identifier, if any."""
         if ident in self._identifier_complex_map:
             return self.get_complex_of_agent(ident).get_agent_from_identifier(ident)
         else:
-            Warning('Returnin None; identifier {} not present in snapshot {}'.format(
-                ident, self.get_snapshot_file_name()))
             return None
 
     def to_networkx(self) -> nx.MultiGraph:
