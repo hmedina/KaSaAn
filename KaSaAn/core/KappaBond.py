@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Contains `KappaBond`, a class to represent the typed information of a realized bond (i.e. two paired stubs)."""
 
+from typing import Self
 from .KappaEntity import KappaEntity
 
 
@@ -12,7 +13,8 @@ one of each type of bond; consider
 `Bob(tail[1]), Bob(head[1], tail[2]), Bob(head[2])`
 
 the middle Bob will have two bonds, one of each type `Bob.tail..head.Bob` and `Bob.head..tail.Bob`. Equality testing
-respects orientation, whereas inclusion testing ignores orientation."""
+respects orientation, whereas inclusion testing ignores orientation.
+    """
 
     def __init__(self, agent_one: str, site_one: str, agent_two: str, site_two: str):
         self._kappa_expression: str
@@ -42,8 +44,8 @@ respects orientation, whereas inclusion testing ignores orientation."""
         else:
             return False
 
-    def reverse(self):
-        """Returns a KappaBond object with the agent & site pairs in reverse.
+    def reverse(self) -> Self:
+        """Returns a new KappaBond object with the agent & site pairs in reverse.
         >>> from KaSaAn.core import KappaBond
         >>> foo = KappaBond('Bob', 'head', 'Bob', 'tail')
         >>> foo.reverse()

@@ -4,10 +4,10 @@
 
 [project]
 name = "KaSaAn"
-version = "0.5.1"
+version = "0.5.2"
 description = "API and some convenience scripts for analyzing Kappa expressions."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = {file = "LICENSE"}
 authors = [
     {name = "Hector Medina"},
