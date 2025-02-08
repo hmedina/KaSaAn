@@ -9,8 +9,8 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 from networkx.drawing.nx_agraph import graphviz_layout
 from typing import Dict, List, Tuple
-from ..core import KappaSnapshot, KappaComplex, KappaAgent
-from .agent_color_assignment import colorize_observables
+from KaSaAn.core import KappaSnapshot, KappaComplex, KappaAgent
+from KaSaAn.functions import colorize_observables
 
 
 def render_complexes_as_plain_graph(snapshot_file_name: str, sizes_requested: List[int], highlight_patterns: List[str],

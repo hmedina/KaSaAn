@@ -8,12 +8,11 @@ import matplotlib.colors
 import matplotlib.pyplot
 from typing import Any, Dict, Set, Union
 
-from ..core.KappaAgent import KappaAgent
-from ..core.KappaComplex import KappaComplex
+from KaSaAn.core import KappaAgent, KappaComplex
 
 
 def colorize_observables(object_set: Set[Union[KappaAgent, KappaComplex]]) -> Dict[Union[KappaAgent, KappaComplex], Any]:
-    """Generate & associate colors; supports KappaAgent or KappaComplex as keys in the dictonnary."""
+    """Generate & associate colors; supports KappaAgent or KappaComplex as keys in the dictionary."""
     num_agents = len(object_set)
     object_colors = {}
     # Use built-in palettes: for 10 or less use the default colors

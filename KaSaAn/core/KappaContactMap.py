@@ -234,7 +234,7 @@ def _list_binding_wedges(agent_graphic_struct: dict) -> List[mpp.Wedge]:
     return wedge_list
 
 
-def _list_agent_backgrounds(agent_graphic_struct: dict) -> list[mpp.Circle]:
+def _list_agent_backgrounds(agent_graphic_struct: dict) -> List[mpp.Circle]:
     """Create a list of circles to be backgrounds for the central space in an agent."""
     circle_list = []
     for agent_name in agent_graphic_struct.keys():
@@ -321,24 +321,21 @@ def _draw_flagpole(agent_graphic_struct: dict, figure_axis: mpa.Axes, detailed_t
 
 
 class KappaContactMap:
-    """Represent a contact map. Initializer expects a format like that found in the KaSim witness files, `inputs.ka`,
-    and is designed to read in from said files. Example usage:
+    """
+Represent a contact map. Initializer expects a format like that found in the KaSim witness files, `inputs.ka`, and is 
+designed to read in from said files. Example usage:
 >>> import matplotlib.pyplot as plt
 >>> from KaSaAn.core import KappaContactMap
-
 >>> my_contact_map = KappaContactMap('inputs.ka')
 >>> fig, ax = plt.subplots(figsize=(6, 6))
-
 >>> my_contact_map.move_agent_to('Fitz', 5, 5)
 >>> my_contact_map.move_agent_to('Foo', 10, 15)
 >>> my_contact_map.move_agent_to('Bar', 12.5, 2.5)
 >>> my_contact_map.move_agent_to('Baz', 0, 12.5)
-
 >>> my_contact_map.rotate_all_sites_of('Foo', 190)
 >>> my_contact_map.rotate_all_sites_of('Baz', -180)
 >>> my_contact_map.rotate_all_sites_of('Fitz', 30)
 >>> my_contact_map.rotate_all_sites_of('Bar', -10)
-
 >>> my_contact_map.draw(ax, draw_state_flagpole=True)
 >>> ax.axis('off')
 >>> plt.tight_layout()
@@ -375,11 +372,11 @@ class KappaContactMap:
         if self._agent_graphics[agent_name]['flagpole_sites']:
             self._agent_graphics[agent_name]['flagpole_loc']['center'] = wedge_center
 
-    def get_agent_names(self) -> list[str]:
+    def get_agent_names(self) -> List[str]:
         """Returns the list of agent names in this contact map."""
         return list(self._parsed_kappa.keys())
 
-    def get_binding_site_names_of(self, agent_name: str) -> list[str]:
+    def get_binding_site_names_of(self, agent_name: str) -> List[str]:
         """Returns the list of names for the binding sites belonging to an agent."""
         if agent_name not in self._agent_graphics.keys():
             raise ValueError(
@@ -501,7 +498,7 @@ class KappaContactMap:
         target_axis.autoscale()
         target_axis.set_aspect('equal')
 
-    def _derive_multigraph(self) -> nx.classes.multigraph:
+    def _derive_multigraph(self) -> nx.MultiGraph:
         """Derive a multigraph representation of this contact map, with sites as nodes bound to their parent agent."""
         net = nx.MultiGraph()
         # each agent becomes a connected graph

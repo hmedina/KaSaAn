@@ -36,12 +36,11 @@ import matplotlib.colors
 import matplotlib.pyplot
 from typing import Any, Dict, Set, Union
 
-from ..core.KappaAgent import KappaAgent
-from ..core.KappaComplex import KappaComplex
+from KaSaAn.core import KappaAgent, KappaComplex
 
 
 def colorize_observables(object_set: Set[Union[KappaAgent, KappaComplex]]) -&gt; Dict[Union[KappaAgent, KappaComplex], Any]:
-    &#34;&#34;&#34;Generate &amp; associate colors; supports KappaAgent or KappaComplex as keys in the dictonnary.&#34;&#34;&#34;
+    &#34;&#34;&#34;Generate &amp; associate colors; supports KappaAgent or KappaComplex as keys in the dictionary.&#34;&#34;&#34;
     num_agents = len(object_set)
     object_colors = {}
     # Use built-in palettes: for 10 or less use the default colors
@@ -94,13 +93,13 @@ def sanity_check_agent_colors(agents_found: Set[KappaAgent], color_scheme: Dict[
 <span>def <span class="ident">colorize_observables</span></span>(<span>object_set: Set[Union[KaSaAn.core.KappaAgent.KappaAgent, KaSaAn.core.KappaComplex.KappaComplex]]) ‑> Dict[Union[KaSaAn.core.KappaAgent.KappaAgent, KaSaAn.core.KappaComplex.KappaComplex], Any]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Generate &amp; associate colors; supports KappaAgent or KappaComplex as keys in the dictonnary.</p></div>
+<div class="desc"><p>Generate &amp; associate colors; supports KappaAgent or KappaComplex as keys in the dictionary.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def colorize_observables(object_set: Set[Union[KappaAgent, KappaComplex]]) -&gt; Dict[Union[KappaAgent, KappaComplex], Any]:
-    &#34;&#34;&#34;Generate &amp; associate colors; supports KappaAgent or KappaComplex as keys in the dictonnary.&#34;&#34;&#34;
+    &#34;&#34;&#34;Generate &amp; associate colors; supports KappaAgent or KappaComplex as keys in the dictionary.&#34;&#34;&#34;
     num_agents = len(object_set)
     object_colors = {}
     # Use built-in palettes: for 10 or less use the default colors

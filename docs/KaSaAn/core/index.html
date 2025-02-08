@@ -32,14 +32,15 @@
 &#34;&#34;&#34;This is the core API. These sub-modules contain the classes used to analyze Kappa expressions.&#34;&#34;&#34;
 
 from .KappaSnapshot import KappaSnapshot
-from .KappaComplex import KappaComplex
+from .KappaComplex import KappaComplex, NetMap, embed_and_map
 from .KappaBond import KappaBond
 from .KappaAgent import KappaAgent, KappaToken
 from .KappaSite import KappaPort, KappaCounter
 from .KappaContactMap import KappaContactMap
 from .KappaRule import KappaRule
 
-__all__ = [&#39;KappaSnapshot&#39;, &#39;KappaComplex&#39;,
+__all__ = [&#39;KappaSnapshot&#39;,
+           &#39;KappaComplex&#39;, &#39;NetMap&#39;, &#39;embed_and_map&#39;,
            &#39;KappaBond&#39;, &#39;KappaAgent&#39;, &#39;KappaToken&#39;,
            &#39;KappaCounter&#39;, &#39;KappaPort&#39;,
            &#39;KappaContactMap&#39;]</code></pre>
@@ -73,6 +74,109 @@ __all__ = [&#39;KappaSnapshot&#39;, &#39;KappaComplex&#39;,
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="KaSaAn.core.embed_and_map"><code class="name flex">
+<span>def <span class="ident">embed_and_map</span></span>(<span>ka_query: KaSaAn.core.KappaComplex.KappaComplex, ka_target: KaSaAn.core.KappaComplex.KappaComplex) ‑> Tuple[List[KaSaAn.core.KappaComplex.NetMap], Set[KaSaAn.core.KappaComplex.NetMap]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates all the embeddings of <code>ka_query</code> into <code>ka_target</code>. First element is the list of all mappings,
+while second is the set of automorphism-corrected mappings. For a rotational symmetry:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core.KappaComplex import embed_and_map, KappaComplex
+&gt;&gt;&gt; my_comp = KappaComplex('Bob(h[10], t[11]), Bob(h[11], t[12]), Bob(h[12], t[10])')
+&gt;&gt;&gt; maps_all, maps_unique = embed_and_map(my_comp, my_comp)
+&gt;&gt;&gt; print(maps_all[0])
+Nodes: 1 -&gt; 1, 2 -&gt; 2, 0 -&gt; 0
+Edges: 10 -&gt; 10, 12 -&gt; 12, 11 -&gt; 11
+&gt;&gt;&gt; print(maps_all[1])
+Nodes: 0 -&gt; 1, 1 -&gt; 2, 2 -&gt; 0
+Edges: 11 -&gt; 12, 12 -&gt; 10, 10 -&gt; 11
+&gt;&gt;&gt; print(maps_all[2])
+Nodes: 1 -&gt; 0, 0 -&gt; 2, 2 -&gt; 1
+Edges: 12 -&gt; 11, 10 -&gt; 12, 11 -&gt; 10
+&gt;&gt;&gt; print(maps_unique)
+Nodes: 1 -&gt; 1, 2 -&gt; 2, 0 -&gt; 0
+Edges: 10 -&gt; 10, 12 -&gt; 12, 11 -&gt; 11
+</code></pre>
+<p>There are three ways of satisfying the query in the target, and these rotations inflate the number of "embeddings".
+However, the set of identifiers making up the image of the query in the target is the same for these three:
+<code>(0, 2, 1)</code>, <code>(1, 0, 2)</code>, and <code>(2, 1, 0)</code> are equivalent, and so the target contains only one copy of the query.
+These dual-purpose interpretation of the "embedding" concept yields a function that returns both.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def embed_and_map(ka_query: KappaComplex, ka_target: KappaComplex) -&gt; Tuple[List[NetMap], Set[NetMap]]:
+    &#34;&#34;&#34;
+Calculates all the embeddings of `ka_query` into `ka_target`. First element is the list of all mappings,
+while second is the set of automorphism-corrected mappings. For a rotational symmetry:
+&gt;&gt;&gt; from KaSaAn.core.KappaComplex import embed_and_map, KappaComplex
+&gt;&gt;&gt; my_comp = KappaComplex(&#39;Bob(h[10], t[11]), Bob(h[11], t[12]), Bob(h[12], t[10])&#39;)
+&gt;&gt;&gt; maps_all, maps_unique = embed_and_map(my_comp, my_comp)
+&gt;&gt;&gt; print(maps_all[0])
+Nodes: 1 -&gt; 1, 2 -&gt; 2, 0 -&gt; 0
+Edges: 10 -&gt; 10, 12 -&gt; 12, 11 -&gt; 11
+&gt;&gt;&gt; print(maps_all[1])
+Nodes: 0 -&gt; 1, 1 -&gt; 2, 2 -&gt; 0
+Edges: 11 -&gt; 12, 12 -&gt; 10, 10 -&gt; 11
+&gt;&gt;&gt; print(maps_all[2])
+Nodes: 1 -&gt; 0, 0 -&gt; 2, 2 -&gt; 1
+Edges: 12 -&gt; 11, 10 -&gt; 12, 11 -&gt; 10
+&gt;&gt;&gt; print(maps_unique)
+Nodes: 1 -&gt; 1, 2 -&gt; 2, 0 -&gt; 0
+Edges: 10 -&gt; 10, 12 -&gt; 12, 11 -&gt; 11
+
+There are three ways of satisfying the query in the target, and these rotations inflate the number of &#34;embeddings&#34;.
+However, the set of identifiers making up the image of the query in the target is the same for these three:
+`(0, 2, 1)`, `(1, 0, 2)`, and `(2, 1, 0)` are equivalent, and so the target contains only one copy of the query.
+These dual-purpose interpretation of the &#34;embedding&#34; concept yields a function that returns both.
+    &#34;&#34;&#34;
+    # litany of short circuits
+    if ka_query.get_size_of_complex() &gt; ka_target.get_size_of_complex():    # not enough agents
+        return ([], [])
+    if ka_query.get_number_of_bonds() &gt; ka_target.get_number_of_bonds():    # not enough bonds
+        return ([], [])
+    query_comp = ka_query.get_complex_composition()
+    target_comp = ka_target.get_complex_composition()
+    if not set(query_comp) &lt;= set(target_comp):                             # query agent(s) not present in target
+        return ([], [])
+    for agent_type, query_abundance in query_comp.items():
+        if agent_type not in target_comp:                                   # query agent missing in target
+            return ([], [])
+        if target_comp[agent_type] &lt; query_abundance:                       # target sum formula too small
+            return ([], [])
+    # start from the least abundant type, get their node indexes in query network and target network;
+    # from the &lt;&lt;query is improper subset of target&gt;&gt; check above, all of query&#39;s are in target by type, so query&#39;s
+    # minimum must be a type in common; moreover all query&#39;s type abundances are equal or greater in target, so if
+    # a type is the minimum in query, its abundance will also be either *the*, or just *a*, minimum in target
+    common_min: KappaAgent = next(iter(query_comp))
+    query_network = ka_query.to_networkx()
+    target_network = ka_target.to_networkx()
+    if not nx.is_connected(query_network):
+        raise ValueError(&#39;Error: query is not a connected graph.&#39;)
+    if not nx.is_connected(target_network):
+        raise ValueError(&#39;Error: target is not a connected graph.&#39;)
+    common_min_q: List[int] = []
+    for node_id in query_network.nodes:
+        if common_min in query_network.nodes[node_id][&#39;kappa&#39;]:
+            common_min_q.append(node_id)
+    common_min_t: List[int] = []
+    for node_id in target_network.nodes:
+        if common_min in target_network.nodes[node_id][&#39;kappa&#39;]:
+            common_min_t.append(node_id)
+    # embark on systematic traversal
+    query_start_node = common_min_q[0]
+    maps_all: List[NetMap] = []
+    maps_distinct:  Set[NetMap] = set()
+    for target_start_node in common_min_t:
+        map_found = _traverse_from(query_network, target_network, query_start_node, target_start_node)
+        if map_found:
+            maps_all.append(map_found)
+            maps_distinct.add(map_found)
+    return maps_all, maps_distinct</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -444,7 +548,8 @@ one of each type of bond; consider
 `Bob(tail[1]), Bob(head[1], tail[2]), Bob(head[2])`
 
 the middle Bob will have two bonds, one of each type `Bob.tail..head.Bob` and `Bob.head..tail.Bob`. Equality testing
-respects orientation, whereas inclusion testing ignores orientation.&#34;&#34;&#34;
+respects orientation, whereas inclusion testing ignores orientation.
+    &#34;&#34;&#34;
 
     def __init__(self, agent_one: str, site_one: str, agent_two: str, site_two: str):
         self._kappa_expression: str
@@ -474,8 +579,8 @@ respects orientation, whereas inclusion testing ignores orientation.&#34;&#34;&#
         else:
             return False
 
-    def reverse(self):
-        &#34;&#34;&#34;Returns a KappaBond object with the agent &amp; site pairs in reverse.
+    def reverse(self) -&gt; Self:
+        &#34;&#34;&#34;Returns a new KappaBond object with the agent &amp; site pairs in reverse.
         &gt;&gt;&gt; from KaSaAn.core import KappaBond
         &gt;&gt;&gt; foo = KappaBond(&#39;Bob&#39;, &#39;head&#39;, &#39;Bob&#39;, &#39;tail&#39;)
         &gt;&gt;&gt; foo.reverse()
@@ -491,10 +596,10 @@ respects orientation, whereas inclusion testing ignores orientation.&#34;&#34;&#
 <h3>Methods</h3>
 <dl>
 <dt id="KaSaAn.core.KappaBond.reverse"><code class="name flex">
-<span>def <span class="ident">reverse</span></span>(<span>self)</span>
+<span>def <span class="ident">reverse</span></span>(<span>self) ‑> Self</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a KappaBond object with the agent &amp; site pairs in reverse.</p>
+<div class="desc"><p>Returns a new KappaBond object with the agent &amp; site pairs in reverse.</p>
 <pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core import KappaBond
 &gt;&gt;&gt; foo = KappaBond('Bob', 'head', 'Bob', 'tail')
 &gt;&gt;&gt; foo.reverse()
@@ -504,8 +609,8 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def reverse(self):
-    &#34;&#34;&#34;Returns a KappaBond object with the agent &amp; site pairs in reverse.
+<pre><code class="python">def reverse(self) -&gt; Self:
+    &#34;&#34;&#34;Returns a new KappaBond object with the agent &amp; site pairs in reverse.
     &gt;&gt;&gt; from KaSaAn.core import KappaBond
     &gt;&gt;&gt; foo = KappaBond(&#39;Bob&#39;, &#39;head&#39;, &#39;Bob&#39;, &#39;tail&#39;)
     &gt;&gt;&gt; foo.reverse()
@@ -714,8 +819,17 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
                                                site_one=dangle_bond_dict[bond][&#39;site name&#39;],
                                                agent_two=agent.get_agent_name(),
                                                site_two=second_terminus)
-                    paired_bond_list.append((dangle_bond_dict[bond][&#39;agent id&#39;], agent_global_id,
-                                             {&#39;bond id&#39;: bond, &#39;bond type&#39;: this_bond_type}))
+                    paired_bond_list.append(
+                        (
+                            dangle_bond_dict[bond][&#39;agent id&#39;],
+                            agent_global_id,
+                            int(bond),
+                            {
+                                &#39;bond id&#39;: bond,
+                                &#39;bond type&#39;: this_bond_type,
+                                &#39;agent one id&#39;: dangle_bond_dict[bond][&#39;agent id&#39;],
+                                &#39;agent two id&#39;: agent_global_id
+                                }))
                     del dangle_bond_dict[bond]
                 else:
                     dangle_bond_dict[bond] = {&#39;agent id&#39;: agent_global_id,
@@ -887,7 +1001,7 @@ of times that agent appears in this complex.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Wrapper for the two specialized functions, for agent and complex. Optional parameter to not perform
-the symmetry adjustment and report the number of raw embeddings. See the <code>embed_and_map</code> function for examples
+the symmetry adjustment and report the number of raw embeddings. See the <code><a title="KaSaAn.core.embed_and_map" href="#KaSaAn.core.embed_and_map">embed_and_map()</a></code> function for examples
 and advanced usage.</p></div>
 <details class="source">
 <summary>
@@ -942,7 +1056,7 @@ nomenclature, see <code><a title="KaSaAn.core.KappaPort" href="#KaSaAn.core.Kapp
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
-the symmetry adjustment and report number of raw embeddings. See the <code>embed_and_map</code> function for examples and
+the symmetry adjustment and report number of raw embeddings. See the <code><a title="KaSaAn.core.embed_and_map" href="#KaSaAn.core.embed_and_map">embed_and_map()</a></code> function for examples and
 advanced usage.</p></div>
 <details class="source">
 <summary>
@@ -1078,8 +1192,17 @@ snapshots, or when combining graphs.</p></div>
                                            site_one=dangle_bond_dict[bond][&#39;site name&#39;],
                                            agent_two=agent.get_agent_name(),
                                            site_two=second_terminus)
-                paired_bond_list.append((dangle_bond_dict[bond][&#39;agent id&#39;], agent_global_id,
-                                         {&#39;bond id&#39;: bond, &#39;bond type&#39;: this_bond_type}))
+                paired_bond_list.append(
+                    (
+                        dangle_bond_dict[bond][&#39;agent id&#39;],
+                        agent_global_id,
+                        int(bond),
+                        {
+                            &#39;bond id&#39;: bond,
+                            &#39;bond type&#39;: this_bond_type,
+                            &#39;agent one id&#39;: dangle_bond_dict[bond][&#39;agent id&#39;],
+                            &#39;agent two id&#39;: agent_global_id
+                            }))
                 del dangle_bond_dict[bond]
             else:
                 dangle_bond_dict[bond] = {&#39;agent id&#39;: agent_global_id,
@@ -1101,25 +1224,21 @@ snapshots, or when combining graphs.</p></div>
 <span>(</span><span>file_name: Union[str, pathlib.Path])</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Represent a contact map. Initializer expects a format like that found in the KaSim witness files, <code>inputs.ka</code>,
-and is designed to read in from said files. Example usage:</p>
+<div class="desc"><p>Represent a contact map. Initializer expects a format like that found in the KaSim witness files, <code>inputs.ka</code>, and is
+designed to read in from said files. Example usage:</p>
 <pre><code class="language-python-repl">&gt;&gt;&gt; import matplotlib.pyplot as plt
 &gt;&gt;&gt; from KaSaAn.core import KappaContactMap
-</code></pre>
-<pre><code class="language-python-repl">&gt;&gt;&gt; my_contact_map = KappaContactMap('inputs.ka')
+&gt;&gt;&gt; my_contact_map = KappaContactMap('inputs.ka')
 &gt;&gt;&gt; fig, ax = plt.subplots(figsize=(6, 6))
-</code></pre>
-<pre><code class="language-python-repl">&gt;&gt;&gt; my_contact_map.move_agent_to('Fitz', 5, 5)
+&gt;&gt;&gt; my_contact_map.move_agent_to('Fitz', 5, 5)
 &gt;&gt;&gt; my_contact_map.move_agent_to('Foo', 10, 15)
 &gt;&gt;&gt; my_contact_map.move_agent_to('Bar', 12.5, 2.5)
 &gt;&gt;&gt; my_contact_map.move_agent_to('Baz', 0, 12.5)
-</code></pre>
-<pre><code class="language-python-repl">&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Foo', 190)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Foo', 190)
 &gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Baz', -180)
 &gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Fitz', 30)
 &gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Bar', -10)
-</code></pre>
-<pre><code class="language-python-repl">&gt;&gt;&gt; my_contact_map.draw(ax, draw_state_flagpole=True)
+&gt;&gt;&gt; my_contact_map.draw(ax, draw_state_flagpole=True)
 &gt;&gt;&gt; ax.axis('off')
 &gt;&gt;&gt; plt.tight_layout()
 &gt;&gt;&gt; plt.show()
@@ -1129,24 +1248,21 @@ and is designed to read in from said files. Example usage:</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class KappaContactMap:
-    &#34;&#34;&#34;Represent a contact map. Initializer expects a format like that found in the KaSim witness files, `inputs.ka`,
-    and is designed to read in from said files. Example usage:
+    &#34;&#34;&#34;
+Represent a contact map. Initializer expects a format like that found in the KaSim witness files, `inputs.ka`, and is 
+designed to read in from said files. Example usage:
 &gt;&gt;&gt; import matplotlib.pyplot as plt
 &gt;&gt;&gt; from KaSaAn.core import KappaContactMap
-
 &gt;&gt;&gt; my_contact_map = KappaContactMap(&#39;inputs.ka&#39;)
 &gt;&gt;&gt; fig, ax = plt.subplots(figsize=(6, 6))
-
 &gt;&gt;&gt; my_contact_map.move_agent_to(&#39;Fitz&#39;, 5, 5)
 &gt;&gt;&gt; my_contact_map.move_agent_to(&#39;Foo&#39;, 10, 15)
 &gt;&gt;&gt; my_contact_map.move_agent_to(&#39;Bar&#39;, 12.5, 2.5)
 &gt;&gt;&gt; my_contact_map.move_agent_to(&#39;Baz&#39;, 0, 12.5)
-
 &gt;&gt;&gt; my_contact_map.rotate_all_sites_of(&#39;Foo&#39;, 190)
 &gt;&gt;&gt; my_contact_map.rotate_all_sites_of(&#39;Baz&#39;, -180)
 &gt;&gt;&gt; my_contact_map.rotate_all_sites_of(&#39;Fitz&#39;, 30)
 &gt;&gt;&gt; my_contact_map.rotate_all_sites_of(&#39;Bar&#39;, -10)
-
 &gt;&gt;&gt; my_contact_map.draw(ax, draw_state_flagpole=True)
 &gt;&gt;&gt; ax.axis(&#39;off&#39;)
 &gt;&gt;&gt; plt.tight_layout()
@@ -1183,11 +1299,11 @@ and is designed to read in from said files. Example usage:</p>
         if self._agent_graphics[agent_name][&#39;flagpole_sites&#39;]:
             self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;center&#39;] = wedge_center
 
-    def get_agent_names(self) -&gt; list[str]:
+    def get_agent_names(self) -&gt; List[str]:
         &#34;&#34;&#34;Returns the list of agent names in this contact map.&#34;&#34;&#34;
         return list(self._parsed_kappa.keys())
 
-    def get_binding_site_names_of(self, agent_name: str) -&gt; list[str]:
+    def get_binding_site_names_of(self, agent_name: str) -&gt; List[str]:
         &#34;&#34;&#34;Returns the list of names for the binding sites belonging to an agent.&#34;&#34;&#34;
         if agent_name not in self._agent_graphics.keys():
             raise ValueError(
@@ -1309,7 +1425,7 @@ and is designed to read in from said files. Example usage:</p>
         target_axis.autoscale()
         target_axis.set_aspect(&#39;equal&#39;)
 
-    def _derive_multigraph(self) -&gt; nx.classes.multigraph:
+    def _derive_multigraph(self) -&gt; nx.MultiGraph:
         &#34;&#34;&#34;Derive a multigraph representation of this contact map, with sites as nodes bound to their parent agent.&#34;&#34;&#34;
         net = nx.MultiGraph()
         # each agent becomes a connected graph
@@ -1585,7 +1701,7 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.get_agent_names"><code class="name flex">
-<span>def <span class="ident">get_agent_names</span></span>(<span>self) ‑> list[str]</span>
+<span>def <span class="ident">get_agent_names</span></span>(<span>self) ‑> List[str]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the list of agent names in this contact map.</p></div>
@@ -1593,13 +1709,13 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_agent_names(self) -&gt; list[str]:
+<pre><code class="python">def get_agent_names(self) -&gt; List[str]:
     &#34;&#34;&#34;Returns the list of agent names in this contact map.&#34;&#34;&#34;
     return list(self._parsed_kappa.keys())</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.get_binding_site_names_of"><code class="name flex">
-<span>def <span class="ident">get_binding_site_names_of</span></span>(<span>self, agent_name: str) ‑> list[str]</span>
+<span>def <span class="ident">get_binding_site_names_of</span></span>(<span>self, agent_name: str) ‑> List[str]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the list of names for the binding sites belonging to an agent.</p></div>
@@ -1607,7 +1723,7 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_binding_site_names_of(self, agent_name: str) -&gt; list[str]:
+<pre><code class="python">def get_binding_site_names_of(self, agent_name: str) -&gt; List[str]:
     &#34;&#34;&#34;Returns the list of names for the binding sites belonging to an agent.&#34;&#34;&#34;
     if agent_name not in self._agent_graphics.keys():
         raise ValueError(
@@ -2630,6 +2746,7 @@ of the <code>Dict()</code> class', but with more informative names for Kappa ent
         self._snapshot_event: int
         self._snapshot_uuid: str
         self._snapshot_time: float
+        self._total_mass: int = 0
         # initialization of structures
         if isinstance(snapshot_file, str):
             self._file_name = os.path.split(snapshot_file)[1]
@@ -2683,6 +2800,7 @@ of the <code>Dict()</code> class', but with more informative names for Kappa ent
                     # assign the complex as a key to the dictionary
                     self._complexes[species] = abundance
                     self._known_sizes.append(size)
+                    self._total_mass += size * abundance
                     # define identifier -&gt; complex map
                     for identifier in species.get_agent_identifiers():
                         self._identifier_complex_map[identifier] = species
@@ -2700,6 +2818,11 @@ of the <code>Dict()</code> class', but with more informative names for Kappa ent
                 raise SnapshotParseError(
                     &#39;Complex and token parse failed in file {}, line said:\n{}&#39;.format(
                         self._file_name, entry))
+        # identifier set sanity check
+        if not bool(self._identifier_complex_map):
+            pass    # empty dictionaries evaluate to False; no idents means no checking
+        elif len(self._identifier_complex_map) != self._total_mass:
+            raise RuntimeError(&#39;Mismatch! Found {} identifiers, but {} total agent mass&#39;.format(len(self._identifier_complex_map), self._total_mass))
         # canonicalize the kappa expression: tokens
         self._kappa_expression = &#39;\n&#39;.join([&#39;%init: &#39; + str(float(tk.get_token_operation())) + &#39; &#39; + tk.get_token_name()
                                             for tk in self._tokens.values()])
@@ -2752,10 +2875,7 @@ of the <code>Dict()</code> class', but with more informative names for Kappa ent
 
     def get_total_mass(self) -&gt; int:
         &#34;&#34;&#34;Returns an integer with the total mass of the snapshot, measured in number of agents.&#34;&#34;&#34;
-        total_mass = 0
-        for i_complex, i_abundance in self._complexes.items():
-            total_mass += i_complex.get_size_of_complex() * i_abundance
-        return total_mass
+        return self._total_mass
 
     def get_abundance_of_agent(self, query_agent) -&gt; int:
         &#34;&#34;&#34;Returns an integer with the abundance of the given agent. Supports passing a string with the agent
@@ -2919,24 +3039,20 @@ markedly slower performance with multi-threading than without. Case-specific, yo
         &#34;&#34;&#34;Returns a list with all the agent identifiers held in the snapshot.&#34;&#34;&#34;
         return list(self._identifier_complex_map.keys())
 
-    def get_complex_of_agent(self, query_identifier: int) -&gt; Union[KappaComplex, None]:
+    def get_complex_of_agent(self, query_identifier: int) -&gt; Optional[KappaComplex]:
         &#34;&#34;&#34;Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
         should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
         be identical, and identifiers are unique and stable throughout the simulation.&#34;&#34;&#34;
         if query_identifier in self._identifier_complex_map:
             return self._identifier_complex_map[query_identifier]
         else:
-            Warning(&#39;Returnin None; identifier {} not present in snapshot {}&#39;.format(
-                query_identifier, self.get_snapshot_file_name()))
             return None
 
-    def get_agent_from_identifier(self, ident: int) -&gt; Union[KappaAgent, None]:
+    def get_agent_from_identifier(self, ident: int) -&gt; Optional[KappaAgent]:
         &#34;&#34;&#34;Returns the KappaAgent associated with the given identifier, if any.&#34;&#34;&#34;
         if ident in self._identifier_complex_map:
             return self.get_complex_of_agent(ident).get_agent_from_identifier(ident)
         else:
-            Warning(&#39;Returnin None; identifier {} not present in snapshot {}&#39;.format(
-                ident, self.get_snapshot_file_name()))
             return None
 
     def to_networkx(self) -&gt; nx.MultiGraph:
@@ -3119,13 +3235,11 @@ markedly slower performance with multi-threading than without. Case-specific, yo
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_agent_from_identifier(self, ident: int) -&gt; Union[KappaAgent, None]:
+<pre><code class="python">def get_agent_from_identifier(self, ident: int) -&gt; Optional[KappaAgent]:
     &#34;&#34;&#34;Returns the KappaAgent associated with the given identifier, if any.&#34;&#34;&#34;
     if ident in self._identifier_complex_map:
         return self.get_complex_of_agent(ident).get_agent_from_identifier(ident)
     else:
-        Warning(&#39;Returnin None; identifier {} not present in snapshot {}&#39;.format(
-            ident, self.get_snapshot_file_name()))
         return None</code></pre>
 </details>
 </dd>
@@ -3249,15 +3363,13 @@ be identical, and identifiers are unique and stable throughout the simulation.</
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_complex_of_agent(self, query_identifier: int) -&gt; Union[KappaComplex, None]:
+<pre><code class="python">def get_complex_of_agent(self, query_identifier: int) -&gt; Optional[KappaComplex]:
     &#34;&#34;&#34;Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
     should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
     be identical, and identifiers are unique and stable throughout the simulation.&#34;&#34;&#34;
     if query_identifier in self._identifier_complex_map:
         return self._identifier_complex_map[query_identifier]
     else:
-        Warning(&#39;Returnin None; identifier {} not present in snapshot {}&#39;.format(
-            query_identifier, self.get_snapshot_file_name()))
         return None</code></pre>
 </details>
 </dd>
@@ -3497,10 +3609,7 @@ along with their abundance in the snapshot.</p></div>
 </summary>
 <pre><code class="python">def get_total_mass(self) -&gt; int:
     &#34;&#34;&#34;Returns an integer with the total mass of the snapshot, measured in number of agents.&#34;&#34;&#34;
-    total_mass = 0
-    for i_complex, i_abundance in self._complexes.items():
-        total_mass += i_complex.get_size_of_complex() * i_abundance
-    return total_mass</code></pre>
+    return self._total_mass</code></pre>
 </details>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_value_of_token"><code class="name flex">
@@ -3723,6 +3832,312 @@ identifiers as well as the kappa identifiers.</p></div>
 </dd>
 </dl>
 </dd>
+<dt id="KaSaAn.core.NetMap"><code class="flex name class">
+<span>class <span class="ident">NetMap</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class for representing network maps. The class does not store the networks it maps, only the indexes for edges and
+nodes. For a simple view, it can be printed as a string. For advanced &amp; verbose view with network information, see
+<code><a title="KaSaAn.core.NetMap.pretty_format" href="#KaSaAn.core.NetMap.pretty_format">NetMap.pretty_format()</a></code>.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core.KappaComplex import _traverse_from, KappaComplex, NetMap
+&gt;&gt;&gt; pattern_cyc_a = KappaComplex('x0:Axin(DIX-head[1], DIX-tail[20]), x1:Dvl(DIX-head[20], DIX-tail[1])').to_networkx()
+&gt;&gt;&gt; pattern_cyc_b = KappaComplex('x99:Dvl(DIX-head[100], DIX-tail[2]), x100:Axin(DIX-head[2], DIX-tail[100])').to_networkx()
+&gt;&gt;&gt; some_map: NetMap = _traverse_from(pattern_cyc_a, pattern_cyc_b, 0, 100)
+&gt;&gt;&gt; print(some_map)
+Nodes: 1 -&gt; 99, 0 -&gt; 100
+Edges: 1 -&gt; 2, 20 -&gt; 100
+&gt;&gt;&gt; print(some_map.pretty_format(pattern_cyc_a, pattern_cyc_b))
+## Node mapping
+┌─  x1:Dvl(DIX-head[20]{#} DIX-tail[1]{#})
+└&gt; x99:Dvl(DIX-head[100]{#} DIX-tail[2]{#})
+┌─   x0:Axin(DIX-head[1]{#} DIX-tail[20]{#})
+└&gt; x100:Axin(DIX-head[2]{#} DIX-tail[100]{#})
+## Edge mapping
+┌─   x0:Axin(DIX-head[1])  &lt;──&gt;  x1:Dvl(DIX-tail[1])
+└&gt; x100:Axin(DIX-head[2])  &lt;─&gt;  x99:Dvl(DIX-tail[2])
+┌─   x0:Axin(DIX-tail[ 20])  &lt;──&gt;  x1:Dvl(DIX-head[ 20])
+└&gt; x100:Axin(DIX-tail[100])  &lt;─&gt;  x99:Dvl(DIX-head[100])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NetMap():
+    &#34;&#34;&#34;
+Class for representing network maps. The class does not store the networks it maps, only the indexes for edges and 
+nodes. For a simple view, it can be printed as a string. For advanced &amp; verbose view with network information, see 
+`NetMap.pretty_format()`.
+&gt;&gt;&gt; from KaSaAn.core.KappaComplex import _traverse_from, KappaComplex, NetMap
+&gt;&gt;&gt; pattern_cyc_a = KappaComplex(&#39;x0:Axin(DIX-head[1], DIX-tail[20]), x1:Dvl(DIX-head[20], DIX-tail[1])&#39;).to_networkx()
+&gt;&gt;&gt; pattern_cyc_b = KappaComplex(&#39;x99:Dvl(DIX-head[100], DIX-tail[2]), x100:Axin(DIX-head[2], DIX-tail[100])&#39;).to_networkx()
+&gt;&gt;&gt; some_map: NetMap = _traverse_from(pattern_cyc_a, pattern_cyc_b, 0, 100)
+&gt;&gt;&gt; print(some_map)
+Nodes: 1 -&gt; 99, 0 -&gt; 100
+Edges: 1 -&gt; 2, 20 -&gt; 100
+&gt;&gt;&gt; print(some_map.pretty_format(pattern_cyc_a, pattern_cyc_b))
+## Node mapping
+┌─  x1:Dvl(DIX-head[20]{#} DIX-tail[1]{#})
+└&gt; x99:Dvl(DIX-head[100]{#} DIX-tail[2]{#})
+┌─   x0:Axin(DIX-head[1]{#} DIX-tail[20]{#})
+└&gt; x100:Axin(DIX-head[2]{#} DIX-tail[100]{#})
+## Edge mapping
+┌─   x0:Axin(DIX-head[1])  &lt;──&gt;  x1:Dvl(DIX-tail[1])
+└&gt; x100:Axin(DIX-head[2])  &lt;─&gt;  x99:Dvl(DIX-tail[2])
+┌─   x0:Axin(DIX-tail[ 20])  &lt;──&gt;  x1:Dvl(DIX-head[ 20])
+└&gt; x100:Axin(DIX-tail[100])  &lt;─&gt;  x99:Dvl(DIX-head[100])
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        self._mapped_query_nodes = set()
+        self._mapped_target_nodes = set()
+        self.node_map: Set[Tuple[int, int]] = set()
+        &#34;&#34;&#34;Set of tuples, holding the node indexes that matched from query to target networks.&#34;&#34;&#34;
+        self.edge_map: Set[Tuple[int, int]] = set()
+        &#34;&#34;&#34;Set of tuples, holding the edge indexes that matched from query to target networks.&#34;&#34;&#34;
+
+    def __str__(self) -&gt; str:
+        nodes: str = &#39;, &#39;.join([&#39;{} -&gt; {}&#39;.format(a, b) for a, b in self.node_map])
+        edges: str = &#39;, &#39;.join([&#39;{} -&gt; {}&#39;.format(a, b) for a, b in self.edge_map])
+        return &#39;Nodes: {}\nEdges: {}&#39;.format(nodes, edges)
+
+    def __eq__(self, other) -&gt; bool:
+        return True if self.__hash__() == other.__hash__() else False
+
+    def __hash__(self) -&gt; int:
+        origin_n, image_n = zip(*self.node_map)
+        if len(self.edge_map) &gt; 0:
+            origin_e, image_e = zip(*self.edge_map)
+            own_hash = hash(
+                (tuple(sorted(origin_n)), tuple(sorted(image_n)), tuple(sorted(origin_e)), tuple(sorted(image_e))))
+        else:
+            own_hash = hash(
+                (tuple(sorted(origin_n)), tuple(sorted(image_n)), None, None))
+        return own_hash
+    
+    def _can_node_map(self, query_ix: int, target_ix: int) -&gt; bool:
+        &#34;&#34;&#34;
+        Try to map the query&#39;s index to the target&#39;s index. Nodes can not be mapped to more than one image, but with 
+        parallel edges in linear co-polymers, a cyclic dimer can edge-match and node-match. This method guards against 
+        that by enforcing the check that no agents can map to more than one other.
+        &#34;&#34;&#34;
+        if query_ix in self._mapped_query_nodes or target_ix in self._mapped_target_nodes:
+            return False
+        else:
+            self._mapped_query_nodes.add(query_ix)
+            self._mapped_target_nodes.add(target_ix)
+            self.node_map.add((query_ix, target_ix))
+            return True
+    
+    def _adjacency_check(self, query_net: nx.MultiGraph, target_net: nx.MultiGraph) -&gt; bool:
+        &#34;&#34;&#34;
+        For every edge, ergo pair of node indexes, that map from the query to the target graphs, verify the node maps
+        correctly. This allows distinguishing cyclic dimers from linear polymeric species, which can&#39;t be done at the
+        local level of bonds types.
+        &#34;&#34;&#34;
+        node_mapping = {}
+        for (q_edge_ix, t_edge_ix) in self.edge_map:
+            # since we can&#39;t just &#34;get edge 98&#34; without specifying origin and destination (networkX&#39;s edge keys are not unique
+            # nor serve as identifiers &lt;sigh&gt;), we iterate and match the data block
+            for item in query_net.edges(data=&#39;bond id&#39;):
+                if item[2]==str(q_edge_ix):
+                    q_origin = item[0]
+                    q_destin = item[1]
+                    q_bond_type = query_net.adj[q_origin][q_destin][q_edge_ix][&#39;bond type&#39;]
+                    break
+            for item in target_net.edges(data=&#39;bond id&#39;):
+                if item[2]==str(t_edge_ix):
+                    t_origin = item[0]
+                    t_destin = item[1]
+                    t_bond_type = target_net.adj[t_origin][t_destin][t_edge_ix][&#39;bond type&#39;]
+                    break
+            if q_bond_type == t_bond_type:
+                pass
+                # print(&#39;Mapping edge {} -&gt; {} means nodes {} -&gt; {} and {} -&gt; {}&#39;.format(q_edge_ix, t_edge_ix, q_origin, t_origin, q_destin, t_destin))
+            elif q_bond_type == t_bond_type.reverse():
+                swap = t_origin
+                t_origin = t_destin
+                t_destin = swap
+                # print(&#39;Mapping edge {} -&gt; {} means nodes {} -&gt; {} and {} -&gt; {} (corrected)&#39;.format(q_edge_ix, t_edge_ix, q_origin, t_origin, q_destin, t_destin))
+            # break if a node has already been mapped to something else; can&#39;t have one node mapped to two
+            if q_origin in node_mapping:
+                if node_mapping[q_origin] != t_origin:
+                    return False
+            else:
+                node_mapping[q_origin] = t_origin
+            if q_destin in node_mapping:
+                if node_mapping[q_destin] != t_destin:
+                    return False
+            else:
+                node_mapping[q_destin] = t_destin
+        return True
+    
+    def pretty_format(self, query_net: nx.MultiGraph, target_net: nx.MultiGraph) -&gt; str:
+        &#34;&#34;&#34;
+        Format prettily the map with network data.
+        &gt;&gt;&gt; from KaSaAn.core.KappaComplex import _traverse_from, KappaComplex
+        &gt;&gt;&gt; pattern_cyc_a = KappaComplex(&#39;x0:Axin(DIX-head[1], DIX-tail[20]), x1:Dvl(DIX-head[20], DIX-tail[1])&#39;).to_networkx()
+        &gt;&gt;&gt; pattern_cyc_b = KappaComplex(&#39;x99:Dvl(DIX-head[100], DIX-tail[2]), x100:Axin(DIX-head[2], DIX-tail[100])&#39;).to_networkx()
+        &gt;&gt;&gt; some_map = _traverse_from(pattern_cyc_a, pattern_cyc_b, 0, 100)
+        &gt;&gt;&gt; print(some_map.pretty_format(pattern_cyc_a, pattern_cyc_b))
+        ## Node mapping
+        ┌─  x1:Dvl(DIX-head[20]{#} DIX-tail[1]{#})
+        └&gt; x99:Dvl(DIX-head[100]{#} DIX-tail[2]{#})
+        ┌─   x0:Axin(DIX-head[1]{#} DIX-tail[20]{#})
+        └&gt; x100:Axin(DIX-head[2]{#} DIX-tail[100]{#})
+        ## Edge mapping
+        ┌─   x0:Axin(DIX-head[1])  &lt;──&gt;  x1:Dvl(DIX-tail[1])
+        └&gt; x100:Axin(DIX-head[2])  &lt;─&gt;  x99:Dvl(DIX-tail[2])
+        ┌─   x0:Axin(DIX-tail[ 20])  &lt;──&gt;  x1:Dvl(DIX-head[ 20])
+        └&gt; x100:Axin(DIX-tail[100])  &lt;─&gt;  x99:Dvl(DIX-head[100])
+        &#34;&#34;&#34;
+        # generate node mapping string list
+        output_string_list = [&#39;## Node mapping&#39;]
+        for node_q, node_t in self.node_map:
+            ka_agent_q = query_net.nodes[node_q][&#39;kappa&#39;]
+            ka_agent_t = target_net.nodes[node_t][&#39;kappa&#39;]
+            ag1_pad = &#39; &#39; * len(str(node_t))    # attention: one agent&#39;s index size
+            ag2_pad = &#39; &#39; * len(str(node_q))    # informs &gt;the other&#39;s&lt; padding
+            l_1 = &#39;┌─&#39; + ag1_pad + &#39;{ka}&#39;.format(ka=ka_agent_q)
+            l_2 = &#39;└&gt;&#39; + ag2_pad + &#39;{ka}&#39;.format(ka=ka_agent_t)
+            output_string_list.append(l_1 + &#39;\n&#39; + l_2)
+        # generate edge mapping string list
+        output_string_list.append(&#39;## Edge mapping&#39;)
+        for edge_q, edge_t in self.edge_map:
+            for item in query_net.edges(data=&#39;bond id&#39;):
+                if item[2]==str(edge_q):
+                    q_origin = item[0]
+                    q_destin = item[1]
+                    q_bond_type:KappaBond = query_net.adj[q_origin][q_destin][edge_q][&#39;bond type&#39;]
+                    break
+            for item in target_net.edges(data=&#39;bond id&#39;):
+                if item[2]==str(edge_t):
+                    t_origin = item[0]
+                    t_destin = item[1]
+                    t_bond_type:KappaBond = target_net.adj[t_origin][t_destin][edge_t][&#39;bond type&#39;]
+                    break
+            if q_bond_type == t_bond_type.reverse():
+                swap = t_origin
+                t_origin = t_destin
+                t_destin = swap
+                t_bond_type = t_bond_type.reverse()
+            l_a_ag1_pad = &#39; &#39; * len(str(t_origin))
+            l_b_ag1_pad = &#39; &#39; * len(str(q_origin))
+            l_a_ag2_pad = &#39;─&#39; * len(str(t_destin))
+            l_b_ag2_pad = &#39;─&#39; * len(str(q_destin))
+            edge_pad = len(str(max(edge_q, edge_t)))
+            l_a_agent_1 = &#39;x{q_origin}:{origin_agent}({origin_site}[{i:{width}}])&#39;.format(q_origin=q_origin, origin_agent=q_bond_type.agent_one, origin_site=q_bond_type.site_one, i=edge_q, width=edge_pad)
+            l_a_agent_2 = &#39;x{q_destin}:{destin_agent}({destin_site}[{i:{width}}])&#39;.format(q_destin=q_destin, destin_agent=q_bond_type.agent_two, destin_site=q_bond_type.site_two, i=edge_q, width=edge_pad)
+            l_b_agent_1 = &#39;x{t_origin}:{origin_agent}({origin_site}[{i:{width}}])&#39;.format(t_origin=t_origin, origin_agent=t_bond_type.agent_one, origin_site=t_bond_type.site_one, i=edge_t, width=edge_pad)
+            l_b_agent_2 = &#39;x{t_destin}:{destin_agent}({destin_site}[{i:{width}}])&#39;.format(t_destin=t_destin, destin_agent=t_bond_type.agent_two, destin_site=t_bond_type.site_two, i=edge_t, width=edge_pad)
+            line_a = &#39;┌─&#39; + l_a_ag1_pad + l_a_agent_1 + &#39;  &lt;&#39; + l_a_ag2_pad + &#39;&gt;  &#39; + l_a_agent_2
+            line_b = &#39;└&gt;&#39; + l_b_ag1_pad + l_b_agent_1 + &#39;  &lt;&#39; + l_b_ag2_pad + &#39;&gt;  &#39; + l_b_agent_2
+            output_string_list.append(line_a + &#39;\n&#39; + line_b)
+        return &#39;\n&#39;.join(output_string_list)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="KaSaAn.core.NetMap.edge_map"><code class="name">var <span class="ident">edge_map</span></code></dt>
+<dd>
+<div class="desc"><p>Set of tuples, holding the edge indexes that matched from query to target networks.</p></div>
+</dd>
+<dt id="KaSaAn.core.NetMap.node_map"><code class="name">var <span class="ident">node_map</span></code></dt>
+<dd>
+<div class="desc"><p>Set of tuples, holding the node indexes that matched from query to target networks.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="KaSaAn.core.NetMap.pretty_format"><code class="name flex">
+<span>def <span class="ident">pretty_format</span></span>(<span>self, query_net: networkx.classes.multigraph.MultiGraph, target_net: networkx.classes.multigraph.MultiGraph) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Format prettily the map with network data.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core.KappaComplex import _traverse_from, KappaComplex
+&gt;&gt;&gt; pattern_cyc_a = KappaComplex('x0:Axin(DIX-head[1], DIX-tail[20]), x1:Dvl(DIX-head[20], DIX-tail[1])').to_networkx()
+&gt;&gt;&gt; pattern_cyc_b = KappaComplex('x99:Dvl(DIX-head[100], DIX-tail[2]), x100:Axin(DIX-head[2], DIX-tail[100])').to_networkx()
+&gt;&gt;&gt; some_map = _traverse_from(pattern_cyc_a, pattern_cyc_b, 0, 100)
+&gt;&gt;&gt; print(some_map.pretty_format(pattern_cyc_a, pattern_cyc_b))
+## Node mapping
+┌─  x1:Dvl(DIX-head[20]{#} DIX-tail[1]{#})
+└&gt; x99:Dvl(DIX-head[100]{#} DIX-tail[2]{#})
+┌─   x0:Axin(DIX-head[1]{#} DIX-tail[20]{#})
+└&gt; x100:Axin(DIX-head[2]{#} DIX-tail[100]{#})
+## Edge mapping
+┌─   x0:Axin(DIX-head[1])  &lt;──&gt;  x1:Dvl(DIX-tail[1])
+└&gt; x100:Axin(DIX-head[2])  &lt;─&gt;  x99:Dvl(DIX-tail[2])
+┌─   x0:Axin(DIX-tail[ 20])  &lt;──&gt;  x1:Dvl(DIX-head[ 20])
+└&gt; x100:Axin(DIX-tail[100])  &lt;─&gt;  x99:Dvl(DIX-head[100])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pretty_format(self, query_net: nx.MultiGraph, target_net: nx.MultiGraph) -&gt; str:
+    &#34;&#34;&#34;
+    Format prettily the map with network data.
+    &gt;&gt;&gt; from KaSaAn.core.KappaComplex import _traverse_from, KappaComplex
+    &gt;&gt;&gt; pattern_cyc_a = KappaComplex(&#39;x0:Axin(DIX-head[1], DIX-tail[20]), x1:Dvl(DIX-head[20], DIX-tail[1])&#39;).to_networkx()
+    &gt;&gt;&gt; pattern_cyc_b = KappaComplex(&#39;x99:Dvl(DIX-head[100], DIX-tail[2]), x100:Axin(DIX-head[2], DIX-tail[100])&#39;).to_networkx()
+    &gt;&gt;&gt; some_map = _traverse_from(pattern_cyc_a, pattern_cyc_b, 0, 100)
+    &gt;&gt;&gt; print(some_map.pretty_format(pattern_cyc_a, pattern_cyc_b))
+    ## Node mapping
+    ┌─  x1:Dvl(DIX-head[20]{#} DIX-tail[1]{#})
+    └&gt; x99:Dvl(DIX-head[100]{#} DIX-tail[2]{#})
+    ┌─   x0:Axin(DIX-head[1]{#} DIX-tail[20]{#})
+    └&gt; x100:Axin(DIX-head[2]{#} DIX-tail[100]{#})
+    ## Edge mapping
+    ┌─   x0:Axin(DIX-head[1])  &lt;──&gt;  x1:Dvl(DIX-tail[1])
+    └&gt; x100:Axin(DIX-head[2])  &lt;─&gt;  x99:Dvl(DIX-tail[2])
+    ┌─   x0:Axin(DIX-tail[ 20])  &lt;──&gt;  x1:Dvl(DIX-head[ 20])
+    └&gt; x100:Axin(DIX-tail[100])  &lt;─&gt;  x99:Dvl(DIX-head[100])
+    &#34;&#34;&#34;
+    # generate node mapping string list
+    output_string_list = [&#39;## Node mapping&#39;]
+    for node_q, node_t in self.node_map:
+        ka_agent_q = query_net.nodes[node_q][&#39;kappa&#39;]
+        ka_agent_t = target_net.nodes[node_t][&#39;kappa&#39;]
+        ag1_pad = &#39; &#39; * len(str(node_t))    # attention: one agent&#39;s index size
+        ag2_pad = &#39; &#39; * len(str(node_q))    # informs &gt;the other&#39;s&lt; padding
+        l_1 = &#39;┌─&#39; + ag1_pad + &#39;{ka}&#39;.format(ka=ka_agent_q)
+        l_2 = &#39;└&gt;&#39; + ag2_pad + &#39;{ka}&#39;.format(ka=ka_agent_t)
+        output_string_list.append(l_1 + &#39;\n&#39; + l_2)
+    # generate edge mapping string list
+    output_string_list.append(&#39;## Edge mapping&#39;)
+    for edge_q, edge_t in self.edge_map:
+        for item in query_net.edges(data=&#39;bond id&#39;):
+            if item[2]==str(edge_q):
+                q_origin = item[0]
+                q_destin = item[1]
+                q_bond_type:KappaBond = query_net.adj[q_origin][q_destin][edge_q][&#39;bond type&#39;]
+                break
+        for item in target_net.edges(data=&#39;bond id&#39;):
+            if item[2]==str(edge_t):
+                t_origin = item[0]
+                t_destin = item[1]
+                t_bond_type:KappaBond = target_net.adj[t_origin][t_destin][edge_t][&#39;bond type&#39;]
+                break
+        if q_bond_type == t_bond_type.reverse():
+            swap = t_origin
+            t_origin = t_destin
+            t_destin = swap
+            t_bond_type = t_bond_type.reverse()
+        l_a_ag1_pad = &#39; &#39; * len(str(t_origin))
+        l_b_ag1_pad = &#39; &#39; * len(str(q_origin))
+        l_a_ag2_pad = &#39;─&#39; * len(str(t_destin))
+        l_b_ag2_pad = &#39;─&#39; * len(str(q_destin))
+        edge_pad = len(str(max(edge_q, edge_t)))
+        l_a_agent_1 = &#39;x{q_origin}:{origin_agent}({origin_site}[{i:{width}}])&#39;.format(q_origin=q_origin, origin_agent=q_bond_type.agent_one, origin_site=q_bond_type.site_one, i=edge_q, width=edge_pad)
+        l_a_agent_2 = &#39;x{q_destin}:{destin_agent}({destin_site}[{i:{width}}])&#39;.format(q_destin=q_destin, destin_agent=q_bond_type.agent_two, destin_site=q_bond_type.site_two, i=edge_q, width=edge_pad)
+        l_b_agent_1 = &#39;x{t_origin}:{origin_agent}({origin_site}[{i:{width}}])&#39;.format(t_origin=t_origin, origin_agent=t_bond_type.agent_one, origin_site=t_bond_type.site_one, i=edge_t, width=edge_pad)
+        l_b_agent_2 = &#39;x{t_destin}:{destin_agent}({destin_site}[{i:{width}}])&#39;.format(t_destin=t_destin, destin_agent=t_bond_type.agent_two, destin_site=t_bond_type.site_two, i=edge_t, width=edge_pad)
+        line_a = &#39;┌─&#39; + l_a_ag1_pad + l_a_agent_1 + &#39;  &lt;&#39; + l_a_ag2_pad + &#39;&gt;  &#39; + l_a_agent_2
+        line_b = &#39;└&gt;&#39; + l_b_ag1_pad + l_b_agent_1 + &#39;  &lt;&#39; + l_b_ag2_pad + &#39;&gt;  &#39; + l_b_agent_2
+        output_string_list.append(line_a + &#39;\n&#39; + line_b)
+    return &#39;\n&#39;.join(output_string_list)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 </dl>
 </section>
 </article>
@@ -3744,6 +4159,11 @@ identifiers as well as the kappa identifiers.</p></div>
 <li><code><a title="KaSaAn.core.KappaMultiAgentGraph" href="KappaMultiAgentGraph.html">KaSaAn.core.KappaMultiAgentGraph</a></code></li>
 <li><code><a title="KaSaAn.core.KappaRule" href="KappaRule.html">KaSaAn.core.KappaRule</a></code></li>
 <li><code><a title="KaSaAn.core.KappaSite" href="KappaSite.html">KaSaAn.core.KappaSite</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="KaSaAn.core.embed_and_map" href="#KaSaAn.core.embed_and_map">embed_and_map</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
@@ -3869,6 +4289,14 @@ identifiers as well as the kappa identifiers.</p></div>
 <ul class="">
 <li><code><a title="KaSaAn.core.KappaToken.get_token_name" href="#KaSaAn.core.KappaToken.get_token_name">get_token_name</a></code></li>
 <li><code><a title="KaSaAn.core.KappaToken.get_token_operation" href="#KaSaAn.core.KappaToken.get_token_operation">get_token_operation</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="KaSaAn.core.NetMap" href="#KaSaAn.core.NetMap">NetMap</a></code></h4>
+<ul class="">
+<li><code><a title="KaSaAn.core.NetMap.edge_map" href="#KaSaAn.core.NetMap.edge_map">edge_map</a></code></li>
+<li><code><a title="KaSaAn.core.NetMap.node_map" href="#KaSaAn.core.NetMap.node_map">node_map</a></code></li>
+<li><code><a title="KaSaAn.core.NetMap.pretty_format" href="#KaSaAn.core.NetMap.pretty_format">pretty_format</a></code></li>
 </ul>
 </li>
 </ul>

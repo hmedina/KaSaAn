@@ -39,9 +39,8 @@ from matplotlib.collections import PatchCollection
 from operator import itemgetter
 from typing import List, Dict, Tuple, Any
 
-from ..core.KappaSnapshot import KappaSnapshot
-from ..core.KappaAgent import KappaAgent
-from .agent_color_assignment import sanity_check_agent_colors, colorize_observables
+from KaSaAn.core import KappaSnapshot, KappaAgent
+from KaSaAn.functions import sanity_check_agent_colors, colorize_observables
 
 
 def process_snapshot(snapshot: KappaSnapshot) -&gt; List[dict]:
