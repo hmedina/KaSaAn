@@ -281,8 +281,10 @@ Edges: 1 -> 2, 20 -> 100
     """
 
     def __init__(self):
-        self._mapped_query_nodes = set()
-        self._mapped_target_nodes = set()
+        self.mapped_nodes_query: Set[int] = set()
+        """Set of integers, holding the indexes of the nodes from the query pattern that have been matched (i.e. all)."""
+        self.mapped_nodes_target: Set[int] = set()
+        """Set of integers, holding the indexes of the nodes from the target object that have been matched."""
         self.node_map: Set[Tuple[int, int]] = set()
         """Set of tuples, holding the node indexes that matched from query to target networks."""
         self.edge_map: Set[Tuple[int, int]] = set()
@@ -313,11 +315,11 @@ Edges: 1 -> 2, 20 -> 100
         parallel edges in linear co-polymers, a cyclic dimer can edge-match and node-match. This method guards against 
         that by enforcing the check that no agents can map to more than one other.
         """
-        if query_ix in self._mapped_query_nodes or target_ix in self._mapped_target_nodes:
+        if query_ix in self.mapped_nodes_query or target_ix in self.mapped_nodes_target:
             return False
         else:
-            self._mapped_query_nodes.add(query_ix)
-            self._mapped_target_nodes.add(target_ix)
+            self.mapped_nodes_query.add(query_ix)
+            self.mapped_nodes_target.add(target_ix)
             self.node_map.add((query_ix, target_ix))
             return True
     
