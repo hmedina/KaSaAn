@@ -2,18 +2,32 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.5">
 <title>KaSaAn.core API documentation</title>
-<meta name="description" content="This is the core API. These sub-modules contain the classes used to analyze Kappa expressions." />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<meta name="description" content="This is the core API. These sub-modules contain the classes used to analyze Kappa expressions.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
 </head>
 <body>
 <main>
@@ -23,28 +37,6 @@
 </header>
 <section id="section-intro">
 <p>This is the core API. These sub-modules contain the classes used to analyze Kappa expressions.</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">#!/usr/bin/env python3
-
-&#34;&#34;&#34;This is the core API. These sub-modules contain the classes used to analyze Kappa expressions.&#34;&#34;&#34;
-
-from .KappaSnapshot import KappaSnapshot
-from .KappaComplex import KappaComplex, NetMap, embed_and_map
-from .KappaBond import KappaBond
-from .KappaAgent import KappaAgent, KappaToken
-from .KappaSite import KappaPort, KappaCounter
-from .KappaContactMap import KappaContactMap
-from .KappaRule import KappaRule
-
-__all__ = [&#39;KappaSnapshot&#39;,
-           &#39;KappaComplex&#39;, &#39;NetMap&#39;, &#39;embed_and_map&#39;,
-           &#39;KappaBond&#39;, &#39;KappaAgent&#39;, &#39;KappaToken&#39;,
-           &#39;KappaCounter&#39;, &#39;KappaPort&#39;,
-           &#39;KappaContactMap&#39;]</code></pre>
-</details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
@@ -77,31 +69,9 @@ __all__ = [&#39;KappaSnapshot&#39;,
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="KaSaAn.core.embed_and_map"><code class="name flex">
-<span>def <span class="ident">embed_and_map</span></span>(<span>ka_query: KaSaAn.core.KappaComplex.KappaComplex, ka_target: KaSaAn.core.KappaComplex.KappaComplex) ‑> Tuple[List[KaSaAn.core.KappaComplex.NetMap], Set[KaSaAn.core.KappaComplex.NetMap]]</span>
+<span>def <span class="ident">embed_and_map</span></span>(<span>ka_query: KaSaAn.core.KappaComplex.KappaComplex,<br>ka_target: KaSaAn.core.KappaComplex.KappaComplex) ‑> Tuple[List[KaSaAn.core.KappaComplex.NetMap], Set[KaSaAn.core.KappaComplex.NetMap]]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Calculates all the embeddings of <code>ka_query</code> into <code>ka_target</code>. First element is the list of all mappings,
-while second is the set of automorphism-corrected mappings. For a rotational symmetry:</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core.KappaComplex import embed_and_map, KappaComplex
-&gt;&gt;&gt; my_comp = KappaComplex('Bob(h[10], t[11]), Bob(h[11], t[12]), Bob(h[12], t[10])')
-&gt;&gt;&gt; maps_all, maps_unique = embed_and_map(my_comp, my_comp)
-&gt;&gt;&gt; print(maps_all[0])
-Nodes: 1 -&gt; 1, 2 -&gt; 2, 0 -&gt; 0
-Edges: 10 -&gt; 10, 12 -&gt; 12, 11 -&gt; 11
-&gt;&gt;&gt; print(maps_all[1])
-Nodes: 0 -&gt; 1, 1 -&gt; 2, 2 -&gt; 0
-Edges: 11 -&gt; 12, 12 -&gt; 10, 10 -&gt; 11
-&gt;&gt;&gt; print(maps_all[2])
-Nodes: 1 -&gt; 0, 0 -&gt; 2, 2 -&gt; 1
-Edges: 12 -&gt; 11, 10 -&gt; 12, 11 -&gt; 10
-&gt;&gt;&gt; print(maps_unique)
-Nodes: 1 -&gt; 1, 2 -&gt; 2, 0 -&gt; 0
-Edges: 10 -&gt; 10, 12 -&gt; 12, 11 -&gt; 11
-</code></pre>
-<p>There are three ways of satisfying the query in the target, and these rotations inflate the number of "embeddings".
-However, the set of identifiers making up the image of the query in the target is the same for these three:
-<code>(0, 2, 1)</code>, <code>(1, 0, 2)</code>, and <code>(2, 1, 0)</code> are equivalent, and so the target contains only one copy of the query.
-These dual-purpose interpretation of the "embedding" concept yields a function that returns both.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -175,6 +145,28 @@ These dual-purpose interpretation of the &#34;embedding&#34; concept yields a fu
             maps_distinct.add(map_found)
     return maps_all, maps_distinct</code></pre>
 </details>
+<div class="desc"><p>Calculates all the embeddings of <code>ka_query</code> into <code>ka_target</code>. First element is the list of all mappings,
+while second is the set of automorphism-corrected mappings. For a rotational symmetry:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core.KappaComplex import embed_and_map, KappaComplex
+&gt;&gt;&gt; my_comp = KappaComplex('Bob(h[10], t[11]), Bob(h[11], t[12]), Bob(h[12], t[10])')
+&gt;&gt;&gt; maps_all, maps_unique = embed_and_map(my_comp, my_comp)
+&gt;&gt;&gt; print(maps_all[0])
+Nodes: 1 -&gt; 1, 2 -&gt; 2, 0 -&gt; 0
+Edges: 10 -&gt; 10, 12 -&gt; 12, 11 -&gt; 11
+&gt;&gt;&gt; print(maps_all[1])
+Nodes: 0 -&gt; 1, 1 -&gt; 2, 2 -&gt; 0
+Edges: 11 -&gt; 12, 12 -&gt; 10, 10 -&gt; 11
+&gt;&gt;&gt; print(maps_all[2])
+Nodes: 1 -&gt; 0, 0 -&gt; 2, 2 -&gt; 1
+Edges: 12 -&gt; 11, 10 -&gt; 12, 11 -&gt; 10
+&gt;&gt;&gt; print(maps_unique)
+Nodes: 1 -&gt; 1, 2 -&gt; 2, 0 -&gt; 0
+Edges: 10 -&gt; 10, 12 -&gt; 12, 11 -&gt; 11
+</code></pre>
+<p>There are three ways of satisfying the query in the target, and these rotations inflate the number of "embeddings".
+However, the set of identifiers making up the image of the query in the target is the same for these three:
+<code>(0, 2, 1)</code>, <code>(1, 0, 2)</code>, and <code>(2, 1, 0)</code> are equivalent, and so the target contains only one copy of the query.
+These dual-purpose interpretation of the "embedding" concept yields a function that returns both.</p></div>
 </dd>
 </dl>
 </section>
@@ -186,7 +178,6 @@ These dual-purpose interpretation of the &#34;embedding&#34; concept yields a fu
 <span>(</span><span>expression: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for representing Kappa agents. I.e. <code>A(b[1])</code> or <code>A(s{a}[.] a[1] b[.])</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -370,6 +361,7 @@ These dual-purpose interpretation of the &#34;embedding&#34; concept yields a fu
             Warning(&#39;Returning None; Counter {} is not present in agent {}&#39;.format(q_name, self))
             return None</code></pre>
 </details>
+<div class="desc"><p>Class for representing Kappa agents. I.e. <code>A(b[1])</code> or <code>A(s{a}[.] a[1] b[.])</code>.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="KaSaAn.core.KappaEntity.KappaEntity" href="KappaEntity.html#KaSaAn.core.KappaEntity.KappaEntity">KappaEntity</a></li>
@@ -381,7 +373,6 @@ These dual-purpose interpretation of the &#34;embedding&#34; concept yields a fu
 <span>def <span class="ident">get_abundance_change_operation</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return the operation being performed on this agent: <code>creation</code>, <code>deletion</code>, or an empty string.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -390,13 +381,12 @@ These dual-purpose interpretation of the &#34;embedding&#34; concept yields a fu
     &#34;&#34;&#34;Return the operation being performed on this agent: `creation`, `deletion`, or an empty string.&#34;&#34;&#34;
     return self._abundance_change</code></pre>
 </details>
+<div class="desc"><p>Return the operation being performed on this agent: <code>creation</code>, <code>deletion</code>, or an empty string.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaAgent.get_agent_identifier"><code class="name flex">
-<span>def <span class="ident">get_agent_identifier</span></span>(<span>self) ‑> Optional[int]</span>
+<span>def <span class="ident">get_agent_identifier</span></span>(<span>self) ‑> int | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the agent's unique numeric identifier, if any. These are generated in snapshots in the form
-<code>x[int]:[agent name][agent signature]</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -406,12 +396,13 @@ These dual-purpose interpretation of the &#34;embedding&#34; concept yields a fu
      `x[int]:[agent name][agent signature]`&#34;&#34;&#34;
     return self._agent_identifier</code></pre>
 </details>
+<div class="desc"><p>Returns the agent's unique numeric identifier, if any. These are generated in snapshots in the form
+<code>x[int]:[agent name][agent signature]</code></p></div>
 </dd>
 <dt id="KaSaAn.core.KappaAgent.get_agent_name"><code class="name flex">
 <span>def <span class="ident">get_agent_name</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return a string with the agent's name.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -420,12 +411,12 @@ These dual-purpose interpretation of the &#34;embedding&#34; concept yields a fu
     &#34;&#34;&#34;Return a string with the agent&#39;s name.&#34;&#34;&#34;
     return self._agent_name</code></pre>
 </details>
+<div class="desc"><p>Return a string with the agent's name.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaAgent.get_agent_ports"><code class="name flex">
 <span>def <span class="ident">get_agent_ports</span></span>(<span>self) ‑> List[<a title="KaSaAn.core.KappaSite.KappaPort" href="KappaSite.html#KaSaAn.core.KappaSite.KappaPort">KappaPort</a>]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list of the agent's KappaPort components (used for bonds).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -434,12 +425,12 @@ These dual-purpose interpretation of the &#34;embedding&#34; concept yields a fu
     &#34;&#34;&#34;Returns a list of the agent&#39;s KappaPort components (used for bonds).&#34;&#34;&#34;
     return self._agent_ports</code></pre>
 </details>
+<div class="desc"><p>Returns a list of the agent's KappaPort components (used for bonds).</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaAgent.get_agent_signature"><code class="name flex">
-<span>def <span class="ident">get_agent_signature</span></span>(<span>self) ‑> List[Union[<a title="KaSaAn.core.KappaSite.KappaPort" href="KappaSite.html#KaSaAn.core.KappaSite.KappaPort">KappaPort</a>, <a title="KaSaAn.core.KappaSite.KappaCounter" href="KappaSite.html#KaSaAn.core.KappaSite.KappaCounter">KappaCounter</a>]]</span>
+<span>def <span class="ident">get_agent_signature</span></span>(<span>self) ‑> List[<a title="KaSaAn.core.KappaSite.KappaPort" href="KappaSite.html#KaSaAn.core.KappaSite.KappaPort">KappaPort</a> | <a title="KaSaAn.core.KappaSite.KappaCounter" href="KappaSite.html#KaSaAn.core.KappaSite.KappaCounter">KappaCounter</a>]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return a list of the agent's KappaPort and KappaCounter components.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -448,13 +439,12 @@ These dual-purpose interpretation of the &#34;embedding&#34; concept yields a fu
     &#34;&#34;&#34;Return a list of the agent&#39;s KappaPort and KappaCounter components.&#34;&#34;&#34;
     return self._agent_signature</code></pre>
 </details>
+<div class="desc"><p>Return a list of the agent's KappaPort and KappaCounter components.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaAgent.get_bond_identifiers"><code class="name flex">
 <span>def <span class="ident">get_bond_identifiers</span></span>(<span>self) ‑> List[str]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return the list of bonds ending/starting at this agent, e.g. for <code>A(a[.] b[1] c[2] d{a}[.])</code> these would
-be <code>['1','2']</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -464,12 +454,13 @@ be <code>['1','2']</code>.</p></div>
      be `[&#39;1&#39;,&#39;2&#39;]`.&#34;&#34;&#34;
     return self._bond_identifiers</code></pre>
 </details>
+<div class="desc"><p>Return the list of bonds ending/starting at this agent, e.g. for <code>A(a[.] b[1] c[2] d{a}[.])</code> these would
+be <code>['1','2']</code>.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaAgent.get_counter"><code class="name flex">
-<span>def <span class="ident">get_counter</span></span>(<span>self, q_name: str) ‑> Optional[<a title="KaSaAn.core.KappaSite.KappaCounter" href="KappaSite.html#KaSaAn.core.KappaSite.KappaCounter">KappaCounter</a>]</span>
+<span>def <span class="ident">get_counter</span></span>(<span>self, q_name: str) ‑> <a title="KaSaAn.core.KappaSite.KappaCounter" href="KappaSite.html#KaSaAn.core.KappaSite.KappaCounter">KappaCounter</a> | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the KappaCounter associated with the provided name.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -483,12 +474,12 @@ be <code>['1','2']</code>.</p></div>
         Warning(&#39;Returning None; Counter {} is not present in agent {}&#39;.format(q_name, self))
         return None</code></pre>
 </details>
+<div class="desc"><p>Returns the KappaCounter associated with the provided name.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaAgent.get_port"><code class="name flex">
-<span>def <span class="ident">get_port</span></span>(<span>self, q_name: str) ‑> Optional[<a title="KaSaAn.core.KappaSite.KappaPort" href="KappaSite.html#KaSaAn.core.KappaSite.KappaPort">KappaPort</a>]</span>
+<span>def <span class="ident">get_port</span></span>(<span>self, q_name: str) ‑> <a title="KaSaAn.core.KappaSite.KappaPort" href="KappaSite.html#KaSaAn.core.KappaSite.KappaPort">KappaPort</a> | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the KappaPort associated with the provided name.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -502,13 +493,12 @@ be <code>['1','2']</code>.</p></div>
         Warning(&#39;Returning None; Port {} is not present in agent {}&#39;.format(q_name, self))
         return None</code></pre>
 </details>
+<div class="desc"><p>Returns the KappaPort associated with the provided name.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaAgent.get_terminii_of_bond"><code class="name flex">
 <span>def <span class="ident">get_terminii_of_bond</span></span>(<span>self, bond_ident: str) ‑> List[str]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list of the names of the KappaSite where a given bond identifier ends. Outside of self-loops,
-this is either a 1 element list or an empty one.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -523,6 +513,8 @@ this is either a 1 element list or an empty one.</p></div>
                 name_list.append(this_port.get_port_name())
     return name_list</code></pre>
 </details>
+<div class="desc"><p>Returns a list of the names of the KappaSite where a given bond identifier ends. Outside of self-loops,
+this is either a 1 element list or an empty one.</p></div>
 </dd>
 </dl>
 </dd>
@@ -531,11 +523,6 @@ this is either a 1 element list or an empty one.</p></div>
 <span>(</span><span>agent_one: str, site_one: str, agent_two: str, site_two: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for representing kappa typed bonds. These are oriented, to guarantee an agent can only have at most
-one of each type of bond; consider</p>
-<p><code>Bob(tail[1]), Bob(head[1], tail[2]), Bob(head[2])</code></p>
-<p>the middle Bob will have two bonds, one of each type <code>Bob.tail..head.Bob</code> and <code>Bob.head..tail.Bob</code>. Equality testing
-respects orientation, whereas inclusion testing ignores orientation.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -588,6 +575,11 @@ respects orientation, whereas inclusion testing ignores orientation.
         &#34;&#34;&#34;
         return KappaBond(self.agent_two, self.site_two, self.agent_one, self.site_one)</code></pre>
 </details>
+<div class="desc"><p>Class for representing kappa typed bonds. These are oriented, to guarantee an agent can only have at most
+one of each type of bond; consider</p>
+<p><code>Bob(tail[1]), Bob(head[1], tail[2]), Bob(head[2])</code></p>
+<p>the middle Bob will have two bonds, one of each type <code>Bob.tail..head.Bob</code> and <code>Bob.head..tail.Bob</code>. Equality testing
+respects orientation, whereas inclusion testing ignores orientation.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="KaSaAn.core.KappaEntity.KappaEntity" href="KappaEntity.html#KaSaAn.core.KappaEntity.KappaEntity">KappaEntity</a></li>
@@ -599,12 +591,6 @@ respects orientation, whereas inclusion testing ignores orientation.
 <span>def <span class="ident">reverse</span></span>(<span>self) ‑> Self</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a new KappaBond object with the agent &amp; site pairs in reverse.</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core import KappaBond
-&gt;&gt;&gt; foo = KappaBond('Bob', 'head', 'Bob', 'tail')
-&gt;&gt;&gt; foo.reverse()
-KappaBond('Bob', 'tail', 'Bob', 'head')
-</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -618,6 +604,12 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
     &#34;&#34;&#34;
     return KappaBond(self.agent_two, self.site_two, self.agent_one, self.site_one)</code></pre>
 </details>
+<div class="desc"><p>Returns a new KappaBond object with the agent &amp; site pairs in reverse.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core import KappaBond
+&gt;&gt;&gt; foo = KappaBond('Bob', 'head', 'Bob', 'tail')
+&gt;&gt;&gt; foo.reverse()
+KappaBond('Bob', 'tail', 'Bob', 'head')
+</code></pre></div>
 </dd>
 </dl>
 </dd>
@@ -626,7 +618,6 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
 <span>(</span><span>expression: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for representing Kappa complexes. E.g. <code>A(b[1] s{u}[.]), B(a[1] c[2]), C(b[2] a[3]), A(c[3] s[.]{x})</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -869,6 +860,7 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
                     this_tree.write(file_or_filename=f, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
         return this_tree</code></pre>
 </details>
+<div class="desc"><p>Class for representing Kappa complexes. E.g. <code>A(b[1] s{u}[.]), B(a[1] c[2]), C(b[2] a[3]), A(c[3] s[.]{x})</code>.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="KaSaAn.core.KappaMultiAgentGraph.KappaMultiAgentGraph" href="KappaMultiAgentGraph.html#KaSaAn.core.KappaMultiAgentGraph.KappaMultiAgentGraph">KappaMultiAgentGraph</a></li>
@@ -878,10 +870,9 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
 <h3>Methods</h3>
 <dl>
 <dt id="KaSaAn.core.KappaComplex.get_agent_from_identifier"><code class="name flex">
-<span>def <span class="ident">get_agent_from_identifier</span></span>(<span>self, ident: int) ‑> Optional[KaSaAn.core.KappaAgent.KappaAgent]</span>
+<span>def <span class="ident">get_agent_from_identifier</span></span>(<span>self, ident: int) ‑> KaSaAn.core.KappaAgent.KappaAgent | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the KappaAgent associated to provided identifier, if any.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -894,12 +885,12 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
     else:
         return self._agent_by_idents[ident]</code></pre>
 </details>
+<div class="desc"><p>Returns the KappaAgent associated to provided identifier, if any.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.get_agent_identifiers"><code class="name flex">
 <span>def <span class="ident">get_agent_identifiers</span></span>(<span>self) ‑> List[int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list with the numeric agent identifiers, if any.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -908,12 +899,12 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
     &#34;&#34;&#34;Returns a list with the numeric agent identifiers, if any.&#34;&#34;&#34;
     return self._agent_by_idents.keys()</code></pre>
 </details>
+<div class="desc"><p>Returns a list with the numeric agent identifiers, if any.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.get_agent_types"><code class="name flex">
 <span>def <span class="ident">get_agent_types</span></span>(<span>self) ‑> Set[KaSaAn.core.KappaAgent.KappaAgent]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the set of agent names (or agent types) that make up the complex.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -922,13 +913,12 @@ KappaBond('Bob', 'tail', 'Bob', 'head')
     &#34;&#34;&#34;Returns the set of agent names (or agent types) that make up the complex.&#34;&#34;&#34;
     return self._agent_types</code></pre>
 </details>
+<div class="desc"><p>Returns the set of agent names (or agent types) that make up the complex.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.get_agents_of_bond"><code class="name flex">
-<span>def <span class="ident">get_agents_of_bond</span></span>(<span>self, bond_id: Union[int, str]) ‑> Optional[Tuple[KaSaAn.core.KappaAgent.KappaAgent, KaSaAn.core.KappaAgent.KappaAgent]]</span>
+<span>def <span class="ident">get_agents_of_bond</span></span>(<span>self, bond_id: int | str) ‑> Tuple[KaSaAn.core.KappaAgent.KappaAgent, KaSaAn.core.KappaAgent.KappaAgent] | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a tuple with both KappaAgents on either side of the requested bond identifier, or None if the bond
-is unkown to this complex.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -947,12 +937,13 @@ is unkown to this complex.</p></div>
     else:
         return None</code></pre>
 </details>
+<div class="desc"><p>Returns a tuple with both KappaAgents on either side of the requested bond identifier, or None if the bond
+is unkown to this complex.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.get_all_agents"><code class="name flex">
 <span>def <span class="ident">get_all_agents</span></span>(<span>self) ‑> List[KaSaAn.core.KappaAgent.KappaAgent]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list of KappaAgents, filled with agents plus their signatures, present in this complex.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -962,13 +953,12 @@ is unkown to this complex.</p></div>
     # replace commas with spaces, then split string into a list at closing parenthesis
     return self._agents</code></pre>
 </details>
+<div class="desc"><p>Returns a list of KappaAgents, filled with agents plus their signatures, present in this complex.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.get_complex_composition"><code class="name flex">
 <span>def <span class="ident">get_complex_composition</span></span>(<span>self) ‑> Dict[KaSaAn.core.KappaAgent.KappaAgent, int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number
-of times that agent appears in this complex.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -978,12 +968,13 @@ of times that agent appears in this complex.</p></div>
     of times that agent appears in this complex.&#34;&#34;&#34;
     return self._composition</code></pre>
 </details>
+<div class="desc"><p>Returns a dictionary where the key is an agent (fully qualified, not just a name), and the value the number
+of times that agent appears in this complex.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.get_number_of_bonds"><code class="name flex">
 <span>def <span class="ident">get_number_of_bonds</span></span>(<span>self) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the number of bonds in the complex.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -995,14 +986,12 @@ of times that agent appears in this complex.</p></div>
         bonds.update(agent.get_bond_identifiers())
     return len(bonds)</code></pre>
 </details>
+<div class="desc"><p>Returns the number of bonds in the complex.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.get_number_of_embeddings"><code class="name flex">
 <span>def <span class="ident">get_number_of_embeddings</span></span>(<span>self, query, symmetry_adjust: bool = True) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Wrapper for the two specialized functions, for agent and complex. Optional parameter to not perform
-the symmetry adjustment and report the number of raw embeddings. See the <code><a title="KaSaAn.core.embed_and_map" href="#KaSaAn.core.embed_and_map">embed_and_map()</a></code> function for examples
-and advanced usage.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1024,13 +1013,14 @@ and advanced usage.</p></div>
         except ComplexParseError:
             raise ValueError(&#39;Could not parse &lt;{}&gt; as a KappaAgent nor as a KappaComplex.&#39;.format(query))</code></pre>
 </details>
+<div class="desc"><p>Wrapper for the two specialized functions, for agent and complex. Optional parameter to not perform
+the symmetry adjustment and report the number of raw embeddings. See the <code><a title="KaSaAn.core.embed_and_map" href="#KaSaAn.core.embed_and_map">embed_and_map()</a></code> function for examples
+and advanced usage.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.get_number_of_embeddings_of_agent"><code class="name flex">
 <span>def <span class="ident">get_number_of_embeddings_of_agent</span></span>(<span>self, query) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the number of embeddings the query agent has on the KappaComplex. For the 'truth table' of site
-nomenclature, see <code><a title="KaSaAn.core.KappaPort" href="#KaSaAn.core.KappaPort">KappaPort</a></code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1050,14 +1040,13 @@ nomenclature, see <code><a title="KaSaAn.core.KappaPort" href="#KaSaAn.core.Kapp
             match_number += 1
     return match_number</code></pre>
 </details>
+<div class="desc"><p>Returns the number of embeddings the query agent has on the KappaComplex. For the 'truth table' of site
+nomenclature, see <code><a title="KaSaAn.core.KappaPort" href="#KaSaAn.core.KappaPort">KappaPort</a></code>.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.get_number_of_embeddings_of_complex"><code class="name flex">
 <span>def <span class="ident">get_number_of_embeddings_of_complex</span></span>(<span>self, query, symmetry_adjust: bool = True) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
-the symmetry adjustment and report number of raw embeddings. See the <code><a title="KaSaAn.core.embed_and_map" href="#KaSaAn.core.embed_and_map">embed_and_map()</a></code> function for examples and
-advanced usage.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1076,12 +1065,14 @@ advanced usage.</p></div>
     else:
         return len(total_maps)</code></pre>
 </details>
+<div class="desc"><p>Returns the number of embeddings the query complex has on the KappaComplex. Optional parameter to not perform
+the symmetry adjustment and report number of raw embeddings. See the <code><a title="KaSaAn.core.embed_and_map" href="#KaSaAn.core.embed_and_map">embed_and_map()</a></code> function for examples and
+advanced usage.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.get_size_of_complex"><code class="name flex">
 <span>def <span class="ident">get_size_of_complex</span></span>(<span>self) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the size, in agents, of this complex.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1090,16 +1081,12 @@ advanced usage.</p></div>
     &#34;&#34;&#34;Returns the size, in agents, of this complex.&#34;&#34;&#34;
     return len(self._agents)</code></pre>
 </details>
+<div class="desc"><p>Returns the size, in agents, of this complex.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.to_cytoscape_cx"><code class="name flex">
 <span>def <span class="ident">to_cytoscape_cx</span></span>(<span>self) ‑> List[Dict]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Export to a structure that, via some json encoding and dumping, can be read by Cytoscape as a CX file. Usage:</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; my_cx = my_complex.to_cytoscape_cx()
-&gt;&gt;&gt; with open('my_cx.cx', 'w') as out_file:
-json.dump(my_cx, out_file)
-</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1116,14 +1103,16 @@ json.dump(my_cx, out_file)
     cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
     return cx_data</code></pre>
 </details>
+<div class="desc"><p>Export to a structure that, via some json encoding and dumping, can be read by Cytoscape as a CX file. Usage:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; my_cx = my_complex.to_cytoscape_cx()
+&gt;&gt;&gt; with open('my_cx.cx', 'w') as out_file:
+json.dump(my_cx, out_file)
+</code></pre></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.to_graphml"><code class="name flex">
-<span>def <span class="ident">to_graphml</span></span>(<span>self, outfile: Union[pathlib.Path, str, ForwardRef(None)] = None, node_coloring: Optional[Dict[KaSaAn.core.KappaAgent.KappaAgent, <built-in function any>]] = None) ‑> xml.etree.ElementTree.ElementTree</span>
+<span>def <span class="ident">to_graphml</span></span>(<span>self,<br>outfile: pathlib._local.Path | str | None = None,<br>node_coloring: Dict[KaSaAn.core.KappaAgent.KappaAgent, <built-in function any>] | None = None) ‑> xml.etree.ElementTree.ElementTree</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns an XML ElementTree with a GraphML representation of the complex, using GraphML's ports for
-binding sites. If an output file is given, object is indented &amp; serialized to that file.
-Optional argument <code>node_coloring</code> colorizes by single-agent patterns.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1142,19 +1131,14 @@ Optional argument <code>node_coloring</code> colorizes by single-agent patterns.
                 this_tree.write(file_or_filename=f, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
     return this_tree</code></pre>
 </details>
+<div class="desc"><p>Returns an XML ElementTree with a GraphML representation of the complex, using GraphML's ports for
+binding sites. If an output file is given, object is indented &amp; serialized to that file.
+Optional argument <code>node_coloring</code> colorizes by single-agent patterns.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaComplex.to_networkx"><code class="name flex">
 <span>def <span class="ident">to_networkx</span></span>(<span>self, identifier_offset: int = 0) ‑> networkx.classes.multigraph.MultiGraph</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
-agents, edges their bonds. Nodes have an attribute dictionary where the key <code>kappa</code> holds the KappaAgent.
-Edges have an attribute dictionary where the key <code>bond id</code> holds the bond identifier from the Kappa expression.
-Node identifiers are integers, using the order of agent declaration. For a graph <code>g</code>, <code>g.nodes.data()</code> displays
-the node identifiers and their corresponding <code>KappaAgents</code>, and <code>g.edges.data()</code> displays the edges, using the
-node identifiers as well as the kappa identifiers.
-The optional parameter <code>identifier_offset</code> will offset all numeric identifiers reported; used in unlabeled
-snapshots, or when combining graphs.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1216,33 +1200,22 @@ snapshots, or when combining graphs.</p></div>
     kappa_complex_multigraph.add_edges_from(paired_bond_list)
     return kappa_complex_multigraph</code></pre>
 </details>
+<div class="desc"><p>Returns a Multigraph representation of the complex, abstracting away binding site data. Nodes represent
+agents, edges their bonds. Nodes have an attribute dictionary where the key <code>kappa</code> holds the KappaAgent.
+Edges have an attribute dictionary where the key <code>bond id</code> holds the bond identifier from the Kappa expression.
+Node identifiers are integers, using the order of agent declaration. For a graph <code>g</code>, <code>g.nodes.data()</code> displays
+the node identifiers and their corresponding <code>KappaAgents</code>, and <code>g.edges.data()</code> displays the edges, using the
+node identifiers as well as the kappa identifiers.
+The optional parameter <code>identifier_offset</code> will offset all numeric identifiers reported; used in unlabeled
+snapshots, or when combining graphs.</p></div>
 </dd>
 </dl>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap"><code class="flex name class">
 <span>class <span class="ident">KappaContactMap</span></span>
-<span>(</span><span>file_name: Union[str, pathlib.Path])</span>
+<span>(</span><span>file_name: str | pathlib._local.Path)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Represent a contact map. Initializer expects a format like that found in the KaSim witness files, <code>inputs.ka</code>, and is
-designed to read in from said files. Example usage:</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; import matplotlib.pyplot as plt
-&gt;&gt;&gt; from KaSaAn.core import KappaContactMap
-&gt;&gt;&gt; my_contact_map = KappaContactMap('inputs.ka')
-&gt;&gt;&gt; fig, ax = plt.subplots(figsize=(6, 6))
-&gt;&gt;&gt; my_contact_map.move_agent_to('Fitz', 5, 5)
-&gt;&gt;&gt; my_contact_map.move_agent_to('Foo', 10, 15)
-&gt;&gt;&gt; my_contact_map.move_agent_to('Bar', 12.5, 2.5)
-&gt;&gt;&gt; my_contact_map.move_agent_to('Baz', 0, 12.5)
-&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Foo', 190)
-&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Baz', -180)
-&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Fitz', 30)
-&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Bar', -10)
-&gt;&gt;&gt; my_contact_map.draw(ax, draw_state_flagpole=True)
-&gt;&gt;&gt; ax.axis('off')
-&gt;&gt;&gt; plt.tight_layout()
-&gt;&gt;&gt; plt.show()
-</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1662,16 +1635,31 @@ designed to read in from said files. Example usage:
                         curr_theta = np.mean(curr_thetas)
                 self.rotate_all_sites_of(n_id, desi_theta - curr_theta)</code></pre>
 </details>
+<div class="desc"><p>Represent a contact map. Initializer expects a format like that found in the KaSim witness files, <code>inputs.ka</code>, and is
+designed to read in from said files. Example usage:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; import matplotlib.pyplot as plt
+&gt;&gt;&gt; from KaSaAn.core import KappaContactMap
+&gt;&gt;&gt; my_contact_map = KappaContactMap('inputs.ka')
+&gt;&gt;&gt; fig, ax = plt.subplots(figsize=(6, 6))
+&gt;&gt;&gt; my_contact_map.move_agent_to('Fitz', 5, 5)
+&gt;&gt;&gt; my_contact_map.move_agent_to('Foo', 10, 15)
+&gt;&gt;&gt; my_contact_map.move_agent_to('Bar', 12.5, 2.5)
+&gt;&gt;&gt; my_contact_map.move_agent_to('Baz', 0, 12.5)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Foo', 190)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Baz', -180)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Fitz', 30)
+&gt;&gt;&gt; my_contact_map.rotate_all_sites_of('Bar', -10)
+&gt;&gt;&gt; my_contact_map.draw(ax, draw_state_flagpole=True)
+&gt;&gt;&gt; ax.axis('off')
+&gt;&gt;&gt; plt.tight_layout()
+&gt;&gt;&gt; plt.show()
+</code></pre></div>
 <h3>Methods</h3>
 <dl>
 <dt id="KaSaAn.core.KappaContactMap.draw"><code class="name flex">
-<span>def <span class="ident">draw</span></span>(<span>self, target_axis: matplotlib.axes._axes.Axes, draw_state_flagpole: bool = True, bond_width: float = 3)</span>
+<span>def <span class="ident">draw</span></span>(<span>self,<br>target_axis: matplotlib.axes._axes.Axes,<br>draw_state_flagpole: bool = True,<br>bond_width: float = 3)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Draw the contact map onto the supplied axis. If <code>draw_state_flagpole</code> is <code>True</code>, the flagpole will display
-all internal state data. If <code>False</code>, it will only display a summary with the number of sites omitted. By
-default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents
-would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1699,12 +1687,15 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
     target_axis.autoscale()
     target_axis.set_aspect(&#39;equal&#39;)</code></pre>
 </details>
+<div class="desc"><p>Draw the contact map onto the supplied axis. If <code>draw_state_flagpole</code> is <code>True</code>, the flagpole will display
+all internal state data. If <code>False</code>, it will only display a summary with the number of sites omitted. By
+default, agents are positioned in a square grid, spaced 10 units apart, on the 1st quadrant (e.g. four agents
+would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.get_agent_names"><code class="name flex">
 <span>def <span class="ident">get_agent_names</span></span>(<span>self) ‑> List[str]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the list of agent names in this contact map.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1713,12 +1704,12 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
     &#34;&#34;&#34;Returns the list of agent names in this contact map.&#34;&#34;&#34;
     return list(self._parsed_kappa.keys())</code></pre>
 </details>
+<div class="desc"><p>Returns the list of agent names in this contact map.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.get_binding_site_names_of"><code class="name flex">
 <span>def <span class="ident">get_binding_site_names_of</span></span>(<span>self, agent_name: str) ‑> List[str]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the list of names for the binding sites belonging to an agent.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1730,13 +1721,12 @@ would be at coordinates [0,0], [0, 10], [10, 0], and [10, 10]).</p></div>
             &#39;Unknown agent &lt;{}&gt;, known agents are: &#39;.format(agent_name) + &#39;, &#39;.join(self.get_agent_names()))
     return list(self._agent_graphics[agent_name][&#39;bnd_sites&#39;].keys())</code></pre>
 </details>
+<div class="desc"><p>Returns the list of names for the binding sites belonging to an agent.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.layout_from_graph"><code class="name flex">
 <span>def <span class="ident">layout_from_graph</span></span>(<span>self, algorithm_name: str, debug_render=False)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Attempt a graph-based layout. Valid algorithm names are found in
-the module <code>networkx.drawing.layout</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1957,12 +1947,13 @@ the module <code>networkx.drawing.layout</code>.</p></div>
                     curr_theta = np.mean(curr_thetas)
             self.rotate_all_sites_of(n_id, desi_theta - curr_theta)</code></pre>
 </details>
+<div class="desc"><p>Attempt a graph-based layout. Valid algorithm names are found in
+the module <code>networkx.drawing.layout</code>.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.move_agent_by"><code class="name flex">
 <span>def <span class="ident">move_agent_by</span></span>(<span>self, agent_name: str, delta_x: float, delta_y: float)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Move the location of an agent's center by some amount, in MatPlotLib "data units".</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1975,12 +1966,12 @@ the module <code>networkx.drawing.layout</code>.</p></div>
     self._update_center_of(agent_name)
     self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
 </details>
+<div class="desc"><p>Move the location of an agent's center by some amount, in MatPlotLib "data units".</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.move_agent_to"><code class="name flex">
 <span>def <span class="ident">move_agent_to</span></span>(<span>self, agent_name: str, new_x: float, new_y: float)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Change the location of an agent's center by specifying new coordinates, in MatPlotLib "data units".</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1993,12 +1984,12 @@ the module <code>networkx.drawing.layout</code>.</p></div>
     self._update_center_of(agent_name)
     self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
 </details>
+<div class="desc"><p>Change the location of an agent's center by specifying new coordinates, in MatPlotLib "data units".</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.reorder_sites_as"><code class="name flex">
 <span>def <span class="ident">reorder_sites_as</span></span>(<span>self, agent_name: str, desired_order: List[str])</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Reorder the sites of the given agent into the provided order.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2025,13 +2016,12 @@ the module <code>networkx.drawing.layout</code>.</p></div>
                 self.swap_sites_of(agent_name, wedge_a, wedge_b)
         final_ix -= 1</code></pre>
 </details>
+<div class="desc"><p>Reorder the sites of the given agent into the provided order.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.resize_wedges_of"><code class="name flex">
 <span>def <span class="ident">resize_wedges_of</span></span>(<span>self, agent_name: str, new_size: float)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Resize the wedges of an agent; default size grows with sqrt of agent's number of wedges, times two,
-in coordinate-space units.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2050,12 +2040,13 @@ in coordinate-space units.</p></div>
         self._agent_graphics[agent_name][&#39;flagpole_loc&#39;][&#39;width&#39;] = new_size / old_ratio
     self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
 </details>
+<div class="desc"><p>Resize the wedges of an agent; default size grows with sqrt of agent's number of wedges, times two,
+in coordinate-space units.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.rotate_all_sites_of"><code class="name flex">
 <span>def <span class="ident">rotate_all_sites_of</span></span>(<span>self, agent_name: str, degrees: float)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Rotate all the sites on an agent by this many degrees; positive rotates counter-clockwise.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2072,13 +2063,12 @@ in coordinate-space units.</p></div>
     # update
     self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
 </details>
+<div class="desc"><p>Rotate all the sites on an agent by this many degrees; positive rotates counter-clockwise.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.set_site_color_of"><code class="name flex">
 <span>def <span class="ident">set_site_color_of</span></span>(<span>self, agent_name: str, site_name: str, new_color)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color, e.g.
-<code>#0f0f0f</code> (hex RGB[A]), <code>(0.5, 0.5, 0.5)</code> (decimal RGB[A]), <code>xkcd:puke green</code> (XKCD color survey names).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2088,13 +2078,13 @@ in coordinate-space units.</p></div>
     `#0f0f0f` (hex RGB[A]), `(0.5, 0.5, 0.5)` (decimal RGB[A]), `xkcd:puke green` (XKCD color survey names).&#34;&#34;&#34;
     self._agent_graphics[agent_name][&#39;bnd_sites&#39;][site_name][&#39;facecolor&#39;] = new_color</code></pre>
 </details>
+<div class="desc"><p>Change the color of a wedge to a new color. Valid options are anything MatPlotLib accepts as a color, e.g.
+<code>#0f0f0f</code> (hex RGB[A]), <code>(0.5, 0.5, 0.5)</code> (decimal RGB[A]), <code>xkcd:puke green</code> (XKCD color survey names).</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaContactMap.swap_sites_of"><code class="name flex">
 <span>def <span class="ident">swap_sites_of</span></span>(<span>self, agent_name: str, site_1: str, site_2: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Swap the positions of two specific sites on a given agent (flagpole not eligible as it's a meta-site; use
-<code>rotate_all_sites_of</code>).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2113,6 +2103,8 @@ in coordinate-space units.</p></div>
     # update
     self._bond_spline_points = _define_bond_spline_points(self._bond_types, self._agent_graphics)</code></pre>
 </details>
+<div class="desc"><p>Swap the positions of two specific sites on a given agent (flagpole not eligible as it's a meta-site; use
+<code>rotate_all_sites_of</code>).</p></div>
 </dd>
 </dl>
 </dd>
@@ -2121,7 +2113,6 @@ in coordinate-space units.</p></div>
 <span>(</span><span>expression: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for representing counters, pseudo-Kappa sites, e.g. <code>c{=5}</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2179,6 +2170,7 @@ in coordinate-space units.</p></div>
         &#34;&#34;&#34;Returns true if this counter has an operation being performed on it.&#34;&#34;&#34;
         return True if self._counter_operand else False</code></pre>
 </details>
+<div class="desc"><p>Class for representing counters, pseudo-Kappa sites, e.g. <code>c{=5}</code>.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="KaSaAn.core.KappaEntity.KappaEntity" href="KappaEntity.html#KaSaAn.core.KappaEntity.KappaEntity">KappaEntity</a></li>
@@ -2190,7 +2182,6 @@ in coordinate-space units.</p></div>
 <span>def <span class="ident">get_counter_delta</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a string with the delta being applied to the counter's value.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2199,12 +2190,12 @@ in coordinate-space units.</p></div>
     &#34;&#34;&#34;Returns a string with the delta being applied to the counter&#39;s value.&#34;&#34;&#34;
     return self._counter_delta</code></pre>
 </details>
+<div class="desc"><p>Returns a string with the delta being applied to the counter's value.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaCounter.get_counter_name"><code class="name flex">
 <span>def <span class="ident">get_counter_name</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a string with the counter's name.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2213,12 +2204,12 @@ in coordinate-space units.</p></div>
     &#34;&#34;&#34;Returns a string with the counter&#39;s name.&#34;&#34;&#34;
     return self.name</code></pre>
 </details>
+<div class="desc"><p>Returns a string with the counter's name.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaCounter.get_counter_state"><code class="name flex">
 <span>def <span class="ident">get_counter_state</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a string with the counter's value expression, including the delta if specified.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2227,12 +2218,12 @@ in coordinate-space units.</p></div>
     &#34;&#34;&#34;Returns a string with the counter&#39;s value expression, including the delta if specified.&#34;&#34;&#34;
     return self._current_state + self._counter_operand + self._counter_delta</code></pre>
 </details>
+<div class="desc"><p>Returns a string with the counter's value expression, including the delta if specified.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaCounter.get_counter_tested_value"><code class="name flex">
 <span>def <span class="ident">get_counter_tested_value</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a string with the value being tested for the rule's application.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2241,12 +2232,12 @@ in coordinate-space units.</p></div>
     &#34;&#34;&#34;Returns a string with the value being tested for the rule&#39;s application.&#34;&#34;&#34;
     return self._current_state</code></pre>
 </details>
+<div class="desc"><p>Returns a string with the value being tested for the rule's application.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaCounter.has_operation"><code class="name flex">
 <span>def <span class="ident">has_operation</span></span>(<span>self) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns true if this counter has an operation being performed on it.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2255,6 +2246,7 @@ in coordinate-space units.</p></div>
     &#34;&#34;&#34;Returns true if this counter has an operation being performed on it.&#34;&#34;&#34;
     return True if self._counter_operand else False</code></pre>
 </details>
+<div class="desc"><p>Returns true if this counter has an operation being performed on it.</p></div>
 </dd>
 </dl>
 </dd>
@@ -2263,42 +2255,6 @@ in coordinate-space units.</p></div>
 <span>(</span><span>expression: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for representing traditional Kappa Sites, e.g. <code>s[3]</code>, <code>g[.]{b}</code>, or <code>k[_]{#}</code>.</p>
-<h2 id="what-is-an-embedding">What is an embedding?</h2>
-<p>The statement 'A contains B', or 'A in B', we interpret as meaning 'A embeds in B', specifically 'A satisfied by B',
-akin to saying 'B matches A', where 'match' is the inverse mapping to 'embed'. See <code><a title="KaSaAn.core.KappaPort.embeds_in" href="#KaSaAn.core.KappaPort.embeds_in">KappaPort.embeds_in()</a></code> and
-<code><a title="KaSaAn.core.KappaPort.matches_to" href="#KaSaAn.core.KappaPort.matches_to">KappaPort.matches_to()</a></code>
-Besides typing (e.g. can't satisfy <code><a title="KaSaAn.core.KappaPort" href="#KaSaAn.core.KappaPort">KappaPort</a></code> with a <code><a title="KaSaAn.core.KappaCounter" href="#KaSaAn.core.KappaCounter">KappaCounter</a></code>), this satisfaction requires three true components,
-the name, the internal state, and the bond state.</p>
-<p>Site names are only satisfied by equality of their string representation.</p>
-<h2 id="internal-state-truth-table">Internal State Truth Table</h2>
-<ul>
-<li><code>s{#} in s{#}</code> &lt;= True</li>
-<li><code>s{a} in s{#}</code> &lt;= False</li>
-<li><code>s{#} in s{a}</code> &lt;= True</li>
-<li><code>s{a} in s{a}</code> &lt;= True</li>
-<li><code>s{a} in s{b}</code> &lt;= False</li>
-</ul>
-<h2 id="bond-state-truth-table">Bond State Truth Table</h2>
-<ul>
-<li><code>s[#] in [#]</code> &lt;= True</li>
-<li><code>s[_] in [#]</code> &lt;= False</li>
-<li><code>s[.] in [#]</code> &lt;= False</li>
-<li><code>s[8] in [#]</code> &lt;= False</li>
-<li><code>s[#] in [_]</code> &lt;= True</li>
-<li><code>s[_] in [_]</code> &lt;= True</li>
-<li><code>s[.] in [_]</code> &lt;= False</li>
-<li><code>s[7] in [_]</code> &lt;= True</li>
-<li><code>s[#] in [.]</code> &lt;= True</li>
-<li><code>s[_] in [.]</code> &lt;= False</li>
-<li><code>s[.] in [.]</code> &lt;= True</li>
-<li><code>s[6] in [.]</code> &lt;= False</li>
-<li><code>s[#] in [5]</code> &lt;= True</li>
-<li><code>s[_] in [5]</code> &lt;= True</li>
-<li><code>s[.] in [5]</code> &lt;= False</li>
-<li><code>s[5] in [5]</code> &lt;= True</li>
-<li><code>s[3] in [4]</code> &lt;= False</li>
-</ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2510,6 +2466,42 @@ Bond state truth table
         matching is the embedding, see `KappaPort.embeds_in`.&#34;&#34;&#34;
         return query in self</code></pre>
 </details>
+<div class="desc"><p>Class for representing traditional Kappa Sites, e.g. <code>s[3]</code>, <code>g[.]{b}</code>, or <code>k[_]{#}</code>.</p>
+<h2 id="what-is-an-embedding">What is an embedding?</h2>
+<p>The statement 'A contains B', or 'A in B', we interpret as meaning 'A embeds in B', specifically 'A satisfied by B',
+akin to saying 'B matches A', where 'match' is the inverse mapping to 'embed'. See <code><a title="KaSaAn.core.KappaPort.embeds_in" href="#KaSaAn.core.KappaPort.embeds_in">KappaPort.embeds_in()</a></code> and
+<code><a title="KaSaAn.core.KappaPort.matches_to" href="#KaSaAn.core.KappaPort.matches_to">KappaPort.matches_to()</a></code>
+Besides typing (e.g. can't satisfy <code><a title="KaSaAn.core.KappaPort" href="#KaSaAn.core.KappaPort">KappaPort</a></code> with a <code><a title="KaSaAn.core.KappaCounter" href="#KaSaAn.core.KappaCounter">KappaCounter</a></code>), this satisfaction requires three true components,
+the name, the internal state, and the bond state.</p>
+<p>Site names are only satisfied by equality of their string representation.</p>
+<h2 id="internal-state-truth-table">Internal State Truth Table</h2>
+<ul>
+<li><code>s{#} in s{#}</code> &lt;= True</li>
+<li><code>s{a} in s{#}</code> &lt;= False</li>
+<li><code>s{#} in s{a}</code> &lt;= True</li>
+<li><code>s{a} in s{a}</code> &lt;= True</li>
+<li><code>s{a} in s{b}</code> &lt;= False</li>
+</ul>
+<h2 id="bond-state-truth-table">Bond State Truth Table</h2>
+<ul>
+<li><code>s[#] in [#]</code> &lt;= True</li>
+<li><code>s[_] in [#]</code> &lt;= False</li>
+<li><code>s[.] in [#]</code> &lt;= False</li>
+<li><code>s[8] in [#]</code> &lt;= False</li>
+<li><code>s[#] in [_]</code> &lt;= True</li>
+<li><code>s[_] in [_]</code> &lt;= True</li>
+<li><code>s[.] in [_]</code> &lt;= False</li>
+<li><code>s[7] in [_]</code> &lt;= True</li>
+<li><code>s[#] in [.]</code> &lt;= True</li>
+<li><code>s[_] in [.]</code> &lt;= False</li>
+<li><code>s[.] in [.]</code> &lt;= True</li>
+<li><code>s[6] in [.]</code> &lt;= False</li>
+<li><code>s[#] in [5]</code> &lt;= True</li>
+<li><code>s[_] in [5]</code> &lt;= True</li>
+<li><code>s[.] in [5]</code> &lt;= False</li>
+<li><code>s[5] in [5]</code> &lt;= True</li>
+<li><code>s[3] in [4]</code> &lt;= False</li>
+</ul></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="KaSaAn.core.KappaEntity.KappaEntity" href="KappaEntity.html#KaSaAn.core.KappaEntity.KappaEntity">KappaEntity</a></li>
@@ -2521,8 +2513,6 @@ Bond state truth table
 <span>def <span class="ident">embeds_in</span></span>(<span>self, target) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Does the self entity embed in, is satisfied by, the target entity? The inverse mapping of an embedding is the
-matching, see <code><a title="KaSaAn.core.KappaPort.matches_to" href="#KaSaAn.core.KappaPort.matches_to">KappaPort.matches_to()</a></code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2532,13 +2522,13 @@ matching, see <code><a title="KaSaAn.core.KappaPort.matches_to" href="#KaSaAn.co
     matching, see `KappaPort.matches_to`.&#34;&#34;&#34;
     return self in target</code></pre>
 </details>
+<div class="desc"><p>Does the self entity embed in, is satisfied by, the target entity? The inverse mapping of an embedding is the
+matching, see <code><a title="KaSaAn.core.KappaPort.matches_to" href="#KaSaAn.core.KappaPort.matches_to">KappaPort.matches_to()</a></code>.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaPort.get_port_bond_operation"><code class="name flex">
 <span>def <span class="ident">get_port_bond_operation</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the operation being performed on this port's bond: <code>creation</code>, <code>deletion</code>, <code>swap</code>, <code>unknown</code>, or
-an empty string for none.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2548,12 +2538,13 @@ an empty string for none.</p></div>
      an empty string for none.&#34;&#34;&#34;
     return self._bond_operation</code></pre>
 </details>
+<div class="desc"><p>Returns the operation being performed on this port's bond: <code>creation</code>, <code>deletion</code>, <code>swap</code>, <code>unknown</code>, or
+an empty string for none.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaPort.get_port_bond_state"><code class="name flex">
 <span>def <span class="ident">get_port_bond_state</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a string with the port's bond state.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2562,13 +2553,12 @@ an empty string for none.</p></div>
     &#34;&#34;&#34;Returns a string with the port&#39;s bond state.&#34;&#34;&#34;
     return self._present_bond_state + self._bond_operand + self._future_bond_state</code></pre>
 </details>
+<div class="desc"><p>Returns a string with the port's bond state.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaPort.get_port_current_bond"><code class="name flex">
 <span>def <span class="ident">get_port_current_bond</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a string with the bond state or identifier required for the rule to fire, or the state or identifier
-used in the non-rule expression.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2578,13 +2568,13 @@ used in the non-rule expression.</p></div>
     used in the non-rule expression.&#34;&#34;&#34;
     return self._present_bond_state</code></pre>
 </details>
+<div class="desc"><p>Returns a string with the bond state or identifier required for the rule to fire, or the state or identifier
+used in the non-rule expression.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaPort.get_port_current_state"><code class="name flex">
 <span>def <span class="ident">get_port_current_state</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a string with the internal state required for the rule to fire, or the state or identifier
-used in the non-rule expression.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2594,13 +2584,13 @@ used in the non-rule expression.</p></div>
     used in the non-rule expression.&#34;&#34;&#34;
     return self._present_int_state</code></pre>
 </details>
+<div class="desc"><p>Returns a string with the internal state required for the rule to fire, or the state or identifier
+used in the non-rule expression.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaPort.get_port_future_bond"><code class="name flex">
 <span>def <span class="ident">get_port_future_bond</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a string with the bond state or identifier after rule application, with an empty string for non-rule
-patterns or usages.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2610,13 +2600,13 @@ patterns or usages.</p></div>
     patterns or usages.&#34;&#34;&#34;
     return self._future_bond_state</code></pre>
 </details>
+<div class="desc"><p>Returns a string with the bond state or identifier after rule application, with an empty string for non-rule
+patterns or usages.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaPort.get_port_future_state"><code class="name flex">
 <span>def <span class="ident">get_port_future_state</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a string with the internal state after rule application, with an empty string for non-rule
-patterns or usages.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2626,12 +2616,13 @@ patterns or usages.</p></div>
     patterns or usages.&#34;&#34;&#34;
     return self._future_int_state</code></pre>
 </details>
+<div class="desc"><p>Returns a string with the internal state after rule application, with an empty string for non-rule
+patterns or usages.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaPort.get_port_int_state"><code class="name flex">
 <span>def <span class="ident">get_port_int_state</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a string with the port's internal state.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2640,12 +2631,12 @@ patterns or usages.</p></div>
     &#34;&#34;&#34;Returns a string with the port&#39;s internal state.&#34;&#34;&#34;
     return self._present_int_state + self._int_operand + self._future_int_state</code></pre>
 </details>
+<div class="desc"><p>Returns a string with the port's internal state.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaPort.get_port_name"><code class="name flex">
 <span>def <span class="ident">get_port_name</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a string with the port's name.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2654,12 +2645,12 @@ patterns or usages.</p></div>
     &#34;&#34;&#34;Returns a string with the port&#39;s name.&#34;&#34;&#34;
     return self.name</code></pre>
 </details>
+<div class="desc"><p>Returns a string with the port's name.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaPort.has_bond_operation"><code class="name flex">
 <span>def <span class="ident">has_bond_operation</span></span>(<span>self) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns <code>true</code> if the port has an operation being performed on its bond state.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2668,12 +2659,12 @@ patterns or usages.</p></div>
     &#34;&#34;&#34;Returns `true` if the port has an operation being performed on its bond state.&#34;&#34;&#34;
     return True if self._bond_operand else False</code></pre>
 </details>
+<div class="desc"><p>Returns <code>true</code> if the port has an operation being performed on its bond state.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaPort.has_state_operation"><code class="name flex">
 <span>def <span class="ident">has_state_operation</span></span>(<span>self) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns <code>true</code> if the port has an operation being performed on its internal state.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2682,14 +2673,12 @@ patterns or usages.</p></div>
     &#34;&#34;&#34;Returns `true` if the port has an operation being performed on its internal state.&#34;&#34;&#34;
     return True if self._int_operand else False</code></pre>
 </details>
+<div class="desc"><p>Returns <code>true</code> if the port has an operation being performed on its internal state.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaPort.matches_to"><code class="name flex">
 <span>def <span class="ident">matches_to</span></span>(<span>self, query) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Does the self entity match to the query entity, does it satisfy it's requirements?
-The inverse mapping of a
-matching is the embedding, see <code><a title="KaSaAn.core.KappaPort.embeds_in" href="#KaSaAn.core.KappaPort.embeds_in">KappaPort.embeds_in()</a></code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2699,17 +2688,17 @@ matching is the embedding, see <code><a title="KaSaAn.core.KappaPort.embeds_in" 
     matching is the embedding, see `KappaPort.embeds_in`.&#34;&#34;&#34;
     return query in self</code></pre>
 </details>
+<div class="desc"><p>Does the self entity match to the query entity, does it satisfy it's requirements?
+The inverse mapping of a
+matching is the embedding, see <code><a title="KaSaAn.core.KappaPort.embeds_in" href="#KaSaAn.core.KappaPort.embeds_in">KappaPort.embeds_in()</a></code>.</p></div>
 </dd>
 </dl>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot"><code class="flex name class">
 <span>class <span class="ident">KappaSnapshot</span></span>
-<span>(</span><span>snapshot_file: Union[str, pathlib.Path])</span>
+<span>(</span><span>snapshot_file: str | pathlib._local.Path)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for representing Kappa snapshots. A snapshot contains a dictionary, where the kappa expression
-serves as the key, and the abundance serves as the value. Many of the methods for this class are simple re-namings
-of the <code>Dict()</code> class', but with more informative names for Kappa entities.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3126,6 +3115,9 @@ markedly slower performance with multi-threading than without. Case-specific, yo
                     this_tree.write(file_or_filename=f, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
         return this_tree</code></pre>
 </details>
+<div class="desc"><p>Class for representing Kappa snapshots. A snapshot contains a dictionary, where the kappa expression
+serves as the key, and the abundance serves as the value. Many of the methods for this class are simple re-namings
+of the <code>Dict()</code> class', but with more informative names for Kappa entities.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="KaSaAn.core.KappaMultiAgentGraph.KappaMultiAgentGraph" href="KappaMultiAgentGraph.html#KaSaAn.core.KappaMultiAgentGraph.KappaMultiAgentGraph">KappaMultiAgentGraph</a></li>
@@ -3138,8 +3130,6 @@ markedly slower performance with multi-threading than without. Case-specific, yo
 <span>def <span class="ident">get_abundance_of_agent</span></span>(<span>self, query_agent) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns an integer with the abundance of the given agent. Supports passing a string with the agent
-expression, or an instance of a KappaAgent. Supports passing agents with signature, e.g. <code>Bob(site{state})</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3155,18 +3145,13 @@ expression, or an instance of a KappaAgent. Supports passing agents with signatu
         abundance += intra_cx_ab * cx_ab
     return abundance</code></pre>
 </details>
+<div class="desc"><p>Returns an integer with the abundance of the given agent. Supports passing a string with the agent
+expression, or an instance of a KappaAgent. Supports passing agents with signature, e.g. <code>Bob(site{state})</code>.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_abundance_of_pattern"><code class="name flex">
 <span>def <span class="ident">get_abundance_of_pattern</span></span>(<span>self, query_pattern, multi_thread: bool = False) ‑> Tuple[int, int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the number of times the pattern appears in the query, both the raw embedding number as well as
-the symmetry-corrected one. For single-agent patterns, there are no symmetry corrections needed, so the same
-value is returned twice.</p>
-<p>Optional parameter to use a multi-process pool of workers for embedding the pattern on the various
-complexes in the mixture, false by default. My intuition told me it would be faster to check multiple complexes
-at a time; however my regular usage shows marginal gains in some cases, negligible ones often, and frequently
-markedly slower performance with multi-threading than without. Case-specific, your milage may vary.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3225,12 +3210,18 @@ markedly slower performance with multi-threading than without. Case-specific, yo
         else:
             raise ValueError(&#39;Expected string, KappaAgent, or KappaComplex, got {}&#39;.format(type(query_pattern)))</code></pre>
 </details>
+<div class="desc"><p>Returns the number of times the pattern appears in the query, both the raw embedding number as well as
+the symmetry-corrected one. For single-agent patterns, there are no symmetry corrections needed, so the same
+value is returned twice.</p>
+<p>Optional parameter to use a multi-process pool of workers for embedding the pattern on the various
+complexes in the mixture, false by default. My intuition told me it would be faster to check multiple complexes
+at a time; however my regular usage shows marginal gains in some cases, negligible ones often, and frequently
+markedly slower performance with multi-threading than without. Case-specific, your milage may vary.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_agent_from_identifier"><code class="name flex">
-<span>def <span class="ident">get_agent_from_identifier</span></span>(<span>self, ident: int) ‑> Optional[KaSaAn.core.KappaAgent.KappaAgent]</span>
+<span>def <span class="ident">get_agent_from_identifier</span></span>(<span>self, ident: int) ‑> KaSaAn.core.KappaAgent.KappaAgent | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the KappaAgent associated with the given identifier, if any.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3242,12 +3233,12 @@ markedly slower performance with multi-threading than without. Case-specific, yo
     else:
         return None</code></pre>
 </details>
+<div class="desc"><p>Returns the KappaAgent associated with the given identifier, if any.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_agent_identifiers"><code class="name flex">
 <span>def <span class="ident">get_agent_identifiers</span></span>(<span>self) ‑> List[int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list with all the agent identifiers held in the snapshot.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3256,12 +3247,12 @@ markedly slower performance with multi-threading than without. Case-specific, yo
     &#34;&#34;&#34;Returns a list with all the agent identifiers held in the snapshot.&#34;&#34;&#34;
     return list(self._identifier_complex_map.keys())</code></pre>
 </details>
+<div class="desc"><p>Returns a list with all the agent identifiers held in the snapshot.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_agent_types_present"><code class="name flex">
 <span>def <span class="ident">get_agent_types_present</span></span>(<span>self) ‑> Set[KaSaAn.core.KappaAgent.KappaAgent]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a set with the types of agents present in the snapshot.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3273,12 +3264,12 @@ markedly slower performance with multi-threading than without. Case-specific, yo
         agent_types.update(key.get_agent_types())
     return agent_types</code></pre>
 </details>
+<div class="desc"><p>Returns a set with the types of agents present in the snapshot.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_all_abundances"><code class="name flex">
 <span>def <span class="ident">get_all_abundances</span></span>(<span>self) ‑> List[int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list of integers with all the abundances in the snapshot.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3287,12 +3278,12 @@ markedly slower performance with multi-threading than without. Case-specific, yo
     &#34;&#34;&#34;Returns a list of integers with all the abundances in the snapshot.&#34;&#34;&#34;
     return list(self._complexes.values())</code></pre>
 </details>
+<div class="desc"><p>Returns a list of integers with all the abundances in the snapshot.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_all_complexes"><code class="name flex">
 <span>def <span class="ident">get_all_complexes</span></span>(<span>self) ‑> List[KaSaAn.core.KappaComplex.KappaComplex]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list of <code>KappaComplexes</code> with all the complexes in the snapshot.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3301,13 +3292,12 @@ markedly slower performance with multi-threading than without. Case-specific, yo
     &#34;&#34;&#34;Returns a list of `KappaComplexes` with all the complexes in the snapshot.&#34;&#34;&#34;
     return list(self._complexes.keys())</code></pre>
 </details>
+<div class="desc"><p>Returns a list of <code>KappaComplexes</code> with all the complexes in the snapshot.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_all_complexes_and_abundances"><code class="name flex">
 <span>def <span class="ident">get_all_complexes_and_abundances</span></span>(<span>self) ‑> ItemsView[KaSaAn.core.KappaComplex.KappaComplex, int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns an iterable of tuples, where the first element is a <code><a title="KaSaAn.core.KappaComplex" href="#KaSaAn.core.KappaComplex">KappaComplex</a></code> and the second is an int with the
-abundance of the corresponding complex.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3317,13 +3307,13 @@ abundance of the corresponding complex.</p></div>
     abundance of the corresponding complex.&#34;&#34;&#34;
     return self._complexes.items()</code></pre>
 </details>
+<div class="desc"><p>Returns an iterable of tuples, where the first element is a <code><a title="KaSaAn.core.KappaComplex" href="#KaSaAn.core.KappaComplex">KappaComplex</a></code> and the second is an int with the
+abundance of the corresponding complex.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_all_sizes"><code class="name flex">
 <span>def <span class="ident">get_all_sizes</span></span>(<span>self) ‑> List[int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list of integers with all the complex sizes visible in the snapshot, one item per complex (i.e. can
-contain repeat numbers if they correspond to different complexes).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3334,12 +3324,13 @@ contain repeat numbers if they correspond to different complexes).</p></div>
     sizes = [key.get_size_of_complex() for key in self._complexes.keys()]
     return sizes</code></pre>
 </details>
+<div class="desc"><p>Returns a list of integers with all the complex sizes visible in the snapshot, one item per complex (i.e. can
+contain repeat numbers if they correspond to different complexes).</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_all_tokens_and_values"><code class="name flex">
 <span>def <span class="ident">get_all_tokens_and_values</span></span>(<span>self) ‑> Dict[str, float]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a dictionary with the tokens present in the snapshot in the form of <code>[name]:[value]</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3351,14 +3342,12 @@ contain repeat numbers if they correspond to different complexes).</p></div>
         d[item.get_token_name()] = float(item.get_token_operation())
     return d</code></pre>
 </details>
+<div class="desc"><p>Returns a dictionary with the tokens present in the snapshot in the form of <code>[name]:[value]</code>.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_complex_of_agent"><code class="name flex">
-<span>def <span class="ident">get_complex_of_agent</span></span>(<span>self, query_identifier: int) ‑> Optional[KaSaAn.core.KappaComplex.KappaComplex]</span>
+<span>def <span class="ident">get_complex_of_agent</span></span>(<span>self, query_identifier: int) ‑> KaSaAn.core.KappaComplex.KappaComplex | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
-should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
-be identical, and identifiers are unique and stable throughout the simulation.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3372,13 +3361,14 @@ be identical, and identifiers are unique and stable throughout the simulation.</
     else:
         return None</code></pre>
 </details>
+<div class="desc"><p>Returns the KappaComplex containing the supplied agent identifier. Abundances are not returned as they
+should always be numerically 1: the identifier print-out forces distinction of species that would otherwise
+be identical, and identifiers are unique and stable throughout the simulation.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_complexes_of_size"><code class="name flex">
 <span>def <span class="ident">get_complexes_of_size</span></span>(<span>self, query_size: int) ‑> List[Tuple[KaSaAn.core.KappaComplex.KappaComplex, int]]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list tuples, with complexes and their abundance, for complexes that are of the query size. For
-example, get all the dimers and their respective abundances.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3392,13 +3382,13 @@ example, get all the dimers and their respective abundances.</p></div>
             result_complexes.append((comp, abun))
     return result_complexes</code></pre>
 </details>
+<div class="desc"><p>Returns a list tuples, with complexes and their abundance, for complexes that are of the query size. For
+example, get all the dimers and their respective abundances.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_complexes_with_abundance"><code class="name flex">
 <span>def <span class="ident">get_complexes_with_abundance</span></span>(<span>self, query_abundance: int) ‑> List[KaSaAn.core.KappaComplex.KappaComplex]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list of <code>KappaComplexes</code> present in the snapshot at the queried abundance. For example, get all
-elements present in single copy.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3412,13 +3402,13 @@ elements present in single copy.</p></div>
             result_complexes.append(complex_expression)
     return result_complexes</code></pre>
 </details>
+<div class="desc"><p>Returns a list of <code>KappaComplexes</code> present in the snapshot at the queried abundance. For example, get all
+elements present in single copy.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_composition"><code class="name flex">
 <span>def <span class="ident">get_composition</span></span>(<span>self) ‑> Dict[KaSaAn.core.KappaAgent.KappaAgent, int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return a dictionary where the keys are <code>KappaAgents</code>, the types and their abundance in the snapshot. This is
-akin to the sum formula of the snapshot.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3435,13 +3425,13 @@ akin to the sum formula of the snapshot.</p></div>
             composition[agent_type] += abundance * local_abundance
     return composition</code></pre>
 </details>
+<div class="desc"><p>Return a dictionary where the keys are <code>KappaAgents</code>, the types and their abundance in the snapshot. This is
+akin to the sum formula of the snapshot.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_largest_complexes"><code class="name flex">
 <span>def <span class="ident">get_largest_complexes</span></span>(<span>self) ‑> List[Tuple[KaSaAn.core.KappaComplex.KappaComplex, int]]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list of KappaComplexes of the largest size, measured in number of constituting agents, along with
-their abundance in the snapshot.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3452,13 +3442,13 @@ their abundance in the snapshot.</p></div>
     max_known_size = max(self._known_sizes)
     return self.get_complexes_of_size(max_known_size)</code></pre>
 </details>
+<div class="desc"><p>Returns a list of KappaComplexes of the largest size, measured in number of constituting agents, along with
+their abundance in the snapshot.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_least_abundant_complexes"><code class="name flex">
 <span>def <span class="ident">get_least_abundant_complexes</span></span>(<span>self) ‑> List[KaSaAn.core.KappaComplex.KappaComplex]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the list of complexes found to be the least abundant. For example, this would be the giant component,
-or the set of largest entities.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3469,12 +3459,13 @@ or the set of largest entities.</p></div>
     min_abundance = min(self.get_all_abundances())
     return self.get_complexes_with_abundance(min_abundance)</code></pre>
 </details>
+<div class="desc"><p>Returns the list of complexes found to be the least abundant. For example, this would be the giant component,
+or the set of largest entities.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_most_abundant_complexes"><code class="name flex">
 <span>def <span class="ident">get_most_abundant_complexes</span></span>(<span>self) ‑> List[KaSaAn.core.KappaComplex.KappaComplex]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the list of complexes found to be the most abundant. These could be the monomers for example.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3484,14 +3475,12 @@ or the set of largest entities.</p></div>
     max_abundance = max(self.get_all_abundances())
     return self.get_complexes_with_abundance(max_abundance)</code></pre>
 </details>
+<div class="desc"><p>Returns the list of complexes found to be the most abundant. These could be the monomers for example.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_size_distribution"><code class="name flex">
 <span>def <span class="ident">get_size_distribution</span></span>(<span>self) ‑> Dict[int, int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a dictionary where the key is the size of a complex and the value is the amount of complexes with
-that size. For example, <code>{1:3, 4:5}</code> indicates the mixture contains only three monomers and five tetramers.
-Dictionary is sorted by increasing complex size.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3510,13 +3499,14 @@ Dictionary is sorted by increasing complex size.</p></div>
     sorted_dist = dict(sorted(size_dist.items(), key=lambda item: item[0]))
     return sorted_dist</code></pre>
 </details>
+<div class="desc"><p>Returns a dictionary where the key is the size of a complex and the value is the amount of complexes with
+that size. For example, <code>{1:3, 4:5}</code> indicates the mixture contains only three monomers and five tetramers.
+Dictionary is sorted by increasing complex size.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_smallest_complexes"><code class="name flex">
 <span>def <span class="ident">get_smallest_complexes</span></span>(<span>self) ‑> List[Tuple[KaSaAn.core.KappaComplex.KappaComplex, int]]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents,
-along with their abundance in the snapshot.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3527,12 +3517,13 @@ along with their abundance in the snapshot.</p></div>
     min_known_size = min(self._known_sizes)
     return self.get_complexes_of_size(min_known_size)</code></pre>
 </details>
+<div class="desc"><p>Returns a list of KappaComplexes with the smallest complexes, measured in number of constituting agents,
+along with their abundance in the snapshot.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_snapshot_event"><code class="name flex">
 <span>def <span class="ident">get_snapshot_event</span></span>(<span>self) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns an integer with the event number the snapshot was taken at.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3541,12 +3532,12 @@ along with their abundance in the snapshot.</p></div>
     &#34;&#34;&#34;Returns an integer with the event number the snapshot was taken at.&#34;&#34;&#34;
     return self._snapshot_event</code></pre>
 </details>
+<div class="desc"><p>Returns an integer with the event number the snapshot was taken at.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_snapshot_file_name"><code class="name flex">
 <span>def <span class="ident">get_snapshot_file_name</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a string with the name of the file this snapshot came from.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3555,12 +3546,12 @@ along with their abundance in the snapshot.</p></div>
     &#34;&#34;&#34;Returns a string with the name of the file this snapshot came from.&#34;&#34;&#34;
     return self._file_name</code></pre>
 </details>
+<div class="desc"><p>Returns a string with the name of the file this snapshot came from.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_snapshot_time"><code class="name flex">
 <span>def <span class="ident">get_snapshot_time</span></span>(<span>self) ‑> float</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a float with the time at which this snapshot was taken.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3569,12 +3560,12 @@ along with their abundance in the snapshot.</p></div>
     &#34;&#34;&#34;Returns a float with the time at which this snapshot was taken.&#34;&#34;&#34;
     return self._snapshot_time</code></pre>
 </details>
+<div class="desc"><p>Returns a float with the time at which this snapshot was taken.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_snapshot_uuid"><code class="name flex">
 <span>def <span class="ident">get_snapshot_uuid</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the UUID (universally unique identifier) of the snapshot.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3583,12 +3574,12 @@ along with their abundance in the snapshot.</p></div>
     &#34;&#34;&#34;Returns the UUID (universally unique identifier) of the snapshot.&#34;&#34;&#34;
     return self._snapshot_uuid</code></pre>
 </details>
+<div class="desc"><p>Returns the UUID (universally unique identifier) of the snapshot.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_token_names"><code class="name flex">
 <span>def <span class="ident">get_token_names</span></span>(<span>self) ‑> List[str]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the token names present in the snapshot.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3597,12 +3588,12 @@ along with their abundance in the snapshot.</p></div>
     &#34;&#34;&#34;Returns the token names present in the snapshot.&#34;&#34;&#34;
     return list(self._tokens.keys())</code></pre>
 </details>
+<div class="desc"><p>Returns the token names present in the snapshot.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_total_mass"><code class="name flex">
 <span>def <span class="ident">get_total_mass</span></span>(<span>self) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns an integer with the total mass of the snapshot, measured in number of agents.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3611,12 +3602,12 @@ along with their abundance in the snapshot.</p></div>
     &#34;&#34;&#34;Returns an integer with the total mass of the snapshot, measured in number of agents.&#34;&#34;&#34;
     return self._total_mass</code></pre>
 </details>
+<div class="desc"><p>Returns an integer with the total mass of the snapshot, measured in number of agents.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.get_value_of_token"><code class="name flex">
-<span>def <span class="ident">get_value_of_token</span></span>(<span>self, query) ‑> Optional[None]</span>
+<span>def <span class="ident">get_value_of_token</span></span>(<span>self, query) ‑> float | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the value of a token.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3636,19 +3627,12 @@ along with their abundance in the snapshot.</p></div>
         value = None
     return value</code></pre>
 </details>
+<div class="desc"><p>Returns the value of a token.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.to_cytoscape_cx"><code class="name flex">
 <span>def <span class="ident">to_cytoscape_cx</span></span>(<span>self) ‑> List[Dict]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Export to a structure that via some json encoding and dumping can be read by Cytoscape as a CX file. Usage:</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; import json
-&gt;&gt;&gt; from KaSaAn.core import KappaSnapshot
-&gt;&gt;&gt; my_snap = KappaSnapshot('some_snap.ka')
-&gt;&gt;&gt; my_cx = my_snap.to_cytoscape_cx()
-&gt;&gt;&gt; with open('my_cx.cx', 'w') as out_file:
-&gt;&gt;&gt;    json.dump(my_cx, out_file)
-</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3670,14 +3654,19 @@ along with their abundance in the snapshot.</p></div>
     cx_data.insert(2, {&#39;networkAttributes&#39;: cx_network_attributes})
     return cx_data</code></pre>
 </details>
+<div class="desc"><p>Export to a structure that via some json encoding and dumping can be read by Cytoscape as a CX file. Usage:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; import json
+&gt;&gt;&gt; from KaSaAn.core import KappaSnapshot
+&gt;&gt;&gt; my_snap = KappaSnapshot('some_snap.ka')
+&gt;&gt;&gt; my_cx = my_snap.to_cytoscape_cx()
+&gt;&gt;&gt; with open('my_cx.cx', 'w') as out_file:
+&gt;&gt;&gt;    json.dump(my_cx, out_file)
+</code></pre></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.to_graphml"><code class="name flex">
-<span>def <span class="ident">to_graphml</span></span>(<span>self, outfile: Union[pathlib.Path, str, ForwardRef(None)] = None, node_coloring: Optional[Dict[KaSaAn.core.KappaAgent.KappaAgent, <built-in function any>]] = None) ‑> xml.etree.ElementTree.ElementTree</span>
+<span>def <span class="ident">to_graphml</span></span>(<span>self,<br>outfile: pathlib._local.Path | str | None = None,<br>node_coloring: Dict[KaSaAn.core.KappaAgent.KappaAgent, <built-in function any>] | None = None) ‑> xml.etree.ElementTree.ElementTree</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns an XML ElementTree with a GraphML representation of the snapshot, using GraphML's ports for
-binding sites. If an output file is given, object is indented &amp; serialized to that file.
-Optional argument <code>node_coloring</code> colorizes by single-agent patterns.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3712,17 +3701,14 @@ Optional argument <code>node_coloring</code> colorizes by single-agent patterns.
                 this_tree.write(file_or_filename=f, encoding=&#39;UTF-8&#39;, xml_declaration=True, method=&#39;xml&#39;)
     return this_tree</code></pre>
 </details>
+<div class="desc"><p>Returns an XML ElementTree with a GraphML representation of the snapshot, using GraphML's ports for
+binding sites. If an output file is given, object is indented &amp; serialized to that file.
+Optional argument <code>node_coloring</code> colorizes by single-agent patterns.</p></div>
 </dd>
 <dt id="KaSaAn.core.KappaSnapshot.to_networkx"><code class="name flex">
 <span>def <span class="ident">to_networkx</span></span>(<span>self) ‑> networkx.classes.multigraph.MultiGraph</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent
-agents, edges their bonds. Nodes have an attribute dictionary where the key 'kappa' holds the KappaAgent.
-Edges have an attribute dictionary where the key 'bond id' holds the bond identifier from the Kappa expression.
-Node identifiers are integers, using the order of agent declaration. For a graph g, g.nodes.data() displays the
-node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
-identifiers as well as the kappa identifiers.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3751,6 +3737,12 @@ identifiers as well as the kappa identifiers.</p></div>
                                  &#39;&gt; for snapshot &lt;&#39; + self.get_snapshot_file_name() + &#39;&gt;&#39;)
     return snapshot_network</code></pre>
 </details>
+<div class="desc"><p>Returns a Multigraph representation of the snapshot, abstracting away binding site data. Nodes represent
+agents, edges their bonds. Nodes have an attribute dictionary where the key 'kappa' holds the KappaAgent.
+Edges have an attribute dictionary where the key 'bond id' holds the bond identifier from the Kappa expression.
+Node identifiers are integers, using the order of agent declaration. For a graph g, g.nodes.data() displays the
+node identifiers and their corresponding KappaAgents, and g.edges.data() displays the edges, using the node
+identifiers as well as the kappa identifiers.</p></div>
 </dd>
 </dl>
 </dd>
@@ -3759,7 +3751,6 @@ identifiers as well as the kappa identifiers.</p></div>
 <span>(</span><span>expression: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for representing Kappa tokens. I.e. <code>X</code>, or <code>ATP</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3797,6 +3788,7 @@ identifiers as well as the kappa identifiers.</p></div>
     def get_token_operation(self) -&gt; str:
         return self._token_operation</code></pre>
 </details>
+<div class="desc"><p>Class for representing Kappa tokens. I.e. <code>X</code>, or <code>ATP</code>.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="KaSaAn.core.KappaEntity.KappaEntity" href="KappaEntity.html#KaSaAn.core.KappaEntity.KappaEntity">KappaEntity</a></li>
@@ -3808,7 +3800,6 @@ identifiers as well as the kappa identifiers.</p></div>
 <span>def <span class="ident">get_token_name</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3816,12 +3807,12 @@ identifiers as well as the kappa identifiers.</p></div>
 <pre><code class="python">def get_token_name(self) -&gt; str:
     return self._token_name</code></pre>
 </details>
+<div class="desc"></div>
 </dd>
 <dt id="KaSaAn.core.KappaToken.get_token_operation"><code class="name flex">
 <span>def <span class="ident">get_token_operation</span></span>(<span>self) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3829,6 +3820,7 @@ identifiers as well as the kappa identifiers.</p></div>
 <pre><code class="python">def get_token_operation(self) -&gt; str:
     return self._token_operation</code></pre>
 </details>
+<div class="desc"></div>
 </dd>
 </dl>
 </dd>
@@ -3836,28 +3828,6 @@ identifiers as well as the kappa identifiers.</p></div>
 <span>class <span class="ident">NetMap</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for representing network maps. The class does not store the networks it maps, only the indexes for edges and
-nodes. For a simple view, it can be printed as a string. For advanced &amp; verbose view with network information, see
-<code><a title="KaSaAn.core.NetMap.pretty_format" href="#KaSaAn.core.NetMap.pretty_format">NetMap.pretty_format()</a></code>.</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core.KappaComplex import _traverse_from, KappaComplex, NetMap
-&gt;&gt;&gt; pattern_cyc_a = KappaComplex('x0:Axin(DIX-head[1], DIX-tail[20]), x1:Dvl(DIX-head[20], DIX-tail[1])').to_networkx()
-&gt;&gt;&gt; pattern_cyc_b = KappaComplex('x99:Dvl(DIX-head[100], DIX-tail[2]), x100:Axin(DIX-head[2], DIX-tail[100])').to_networkx()
-&gt;&gt;&gt; some_map: NetMap = _traverse_from(pattern_cyc_a, pattern_cyc_b, 0, 100)
-&gt;&gt;&gt; print(some_map)
-Nodes: 1 -&gt; 99, 0 -&gt; 100
-Edges: 1 -&gt; 2, 20 -&gt; 100
-&gt;&gt;&gt; print(some_map.pretty_format(pattern_cyc_a, pattern_cyc_b))
-## Node mapping
-┌─  x1:Dvl(DIX-head[20]{#} DIX-tail[1]{#})
-└&gt; x99:Dvl(DIX-head[100]{#} DIX-tail[2]{#})
-┌─   x0:Axin(DIX-head[1]{#} DIX-tail[20]{#})
-└&gt; x100:Axin(DIX-head[2]{#} DIX-tail[100]{#})
-## Edge mapping
-┌─   x0:Axin(DIX-head[1])  &lt;──&gt;  x1:Dvl(DIX-tail[1])
-└&gt; x100:Axin(DIX-head[2])  &lt;─&gt;  x99:Dvl(DIX-tail[2])
-┌─   x0:Axin(DIX-tail[ 20])  &lt;──&gt;  x1:Dvl(DIX-head[ 20])
-└&gt; x100:Axin(DIX-tail[100])  &lt;─&gt;  x99:Dvl(DIX-head[100])
-</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3888,8 +3858,10 @@ Edges: 1 -&gt; 2, 20 -&gt; 100
     &#34;&#34;&#34;
 
     def __init__(self):
-        self._mapped_query_nodes = set()
-        self._mapped_target_nodes = set()
+        self.mapped_nodes_query: Set[int] = set()
+        &#34;&#34;&#34;Set of integers, holding the indexes of the nodes from the query pattern that have been matched (i.e. all).&#34;&#34;&#34;
+        self.mapped_nodes_target: Set[int] = set()
+        &#34;&#34;&#34;Set of integers, holding the indexes of the nodes from the target object that have been matched.&#34;&#34;&#34;
         self.node_map: Set[Tuple[int, int]] = set()
         &#34;&#34;&#34;Set of tuples, holding the node indexes that matched from query to target networks.&#34;&#34;&#34;
         self.edge_map: Set[Tuple[int, int]] = set()
@@ -3920,11 +3892,11 @@ Edges: 1 -&gt; 2, 20 -&gt; 100
         parallel edges in linear co-polymers, a cyclic dimer can edge-match and node-match. This method guards against 
         that by enforcing the check that no agents can map to more than one other.
         &#34;&#34;&#34;
-        if query_ix in self._mapped_query_nodes or target_ix in self._mapped_target_nodes:
+        if query_ix in self.mapped_nodes_query or target_ix in self.mapped_nodes_target:
             return False
         else:
-            self._mapped_query_nodes.add(query_ix)
-            self._mapped_target_nodes.add(target_ix)
+            self.mapped_nodes_query.add(query_ix)
+            self.mapped_nodes_target.add(target_ix)
             self.node_map.add((query_ix, target_ix))
             return True
     
@@ -4034,28 +4006,16 @@ Edges: 1 -&gt; 2, 20 -&gt; 100
             output_string_list.append(line_a + &#39;\n&#39; + line_b)
         return &#39;\n&#39;.join(output_string_list)</code></pre>
 </details>
-<h3>Instance variables</h3>
-<dl>
-<dt id="KaSaAn.core.NetMap.edge_map"><code class="name">var <span class="ident">edge_map</span></code></dt>
-<dd>
-<div class="desc"><p>Set of tuples, holding the edge indexes that matched from query to target networks.</p></div>
-</dd>
-<dt id="KaSaAn.core.NetMap.node_map"><code class="name">var <span class="ident">node_map</span></code></dt>
-<dd>
-<div class="desc"><p>Set of tuples, holding the node indexes that matched from query to target networks.</p></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="KaSaAn.core.NetMap.pretty_format"><code class="name flex">
-<span>def <span class="ident">pretty_format</span></span>(<span>self, query_net: networkx.classes.multigraph.MultiGraph, target_net: networkx.classes.multigraph.MultiGraph) ‑> str</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Format prettily the map with network data.</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core.KappaComplex import _traverse_from, KappaComplex
+<div class="desc"><p>Class for representing network maps. The class does not store the networks it maps, only the indexes for edges and
+nodes. For a simple view, it can be printed as a string. For advanced &amp; verbose view with network information, see
+<code><a title="KaSaAn.core.NetMap.pretty_format" href="#KaSaAn.core.NetMap.pretty_format">NetMap.pretty_format()</a></code>.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core.KappaComplex import _traverse_from, KappaComplex, NetMap
 &gt;&gt;&gt; pattern_cyc_a = KappaComplex('x0:Axin(DIX-head[1], DIX-tail[20]), x1:Dvl(DIX-head[20], DIX-tail[1])').to_networkx()
 &gt;&gt;&gt; pattern_cyc_b = KappaComplex('x99:Dvl(DIX-head[100], DIX-tail[2]), x100:Axin(DIX-head[2], DIX-tail[100])').to_networkx()
-&gt;&gt;&gt; some_map = _traverse_from(pattern_cyc_a, pattern_cyc_b, 0, 100)
+&gt;&gt;&gt; some_map: NetMap = _traverse_from(pattern_cyc_a, pattern_cyc_b, 0, 100)
+&gt;&gt;&gt; print(some_map)
+Nodes: 1 -&gt; 99, 0 -&gt; 100
+Edges: 1 -&gt; 2, 20 -&gt; 100
 &gt;&gt;&gt; print(some_map.pretty_format(pattern_cyc_a, pattern_cyc_b))
 ## Node mapping
 ┌─  x1:Dvl(DIX-head[20]{#} DIX-tail[1]{#})
@@ -4068,6 +4028,31 @@ Edges: 1 -&gt; 2, 20 -&gt; 100
 ┌─   x0:Axin(DIX-tail[ 20])  &lt;──&gt;  x1:Dvl(DIX-head[ 20])
 └&gt; x100:Axin(DIX-tail[100])  &lt;─&gt;  x99:Dvl(DIX-head[100])
 </code></pre></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="KaSaAn.core.NetMap.edge_map"><code class="name">var <span class="ident">edge_map</span></code></dt>
+<dd>
+<div class="desc"><p>Set of tuples, holding the edge indexes that matched from query to target networks.</p></div>
+</dd>
+<dt id="KaSaAn.core.NetMap.mapped_nodes_query"><code class="name">var <span class="ident">mapped_nodes_query</span></code></dt>
+<dd>
+<div class="desc"><p>Set of integers, holding the indexes of the nodes from the query pattern that have been matched (i.e. all).</p></div>
+</dd>
+<dt id="KaSaAn.core.NetMap.mapped_nodes_target"><code class="name">var <span class="ident">mapped_nodes_target</span></code></dt>
+<dd>
+<div class="desc"><p>Set of integers, holding the indexes of the nodes from the target object that have been matched.</p></div>
+</dd>
+<dt id="KaSaAn.core.NetMap.node_map"><code class="name">var <span class="ident">node_map</span></code></dt>
+<dd>
+<div class="desc"><p>Set of tuples, holding the node indexes that matched from query to target networks.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="KaSaAn.core.NetMap.pretty_format"><code class="name flex">
+<span>def <span class="ident">pretty_format</span></span>(<span>self,<br>query_net: networkx.classes.multigraph.MultiGraph,<br>target_net: networkx.classes.multigraph.MultiGraph) ‑> str</span>
+</code></dt>
+<dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -4135,6 +4120,23 @@ Edges: 1 -&gt; 2, 20 -&gt; 100
         output_string_list.append(line_a + &#39;\n&#39; + line_b)
     return &#39;\n&#39;.join(output_string_list)</code></pre>
 </details>
+<div class="desc"><p>Format prettily the map with network data.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; from KaSaAn.core.KappaComplex import _traverse_from, KappaComplex
+&gt;&gt;&gt; pattern_cyc_a = KappaComplex('x0:Axin(DIX-head[1], DIX-tail[20]), x1:Dvl(DIX-head[20], DIX-tail[1])').to_networkx()
+&gt;&gt;&gt; pattern_cyc_b = KappaComplex('x99:Dvl(DIX-head[100], DIX-tail[2]), x100:Axin(DIX-head[2], DIX-tail[100])').to_networkx()
+&gt;&gt;&gt; some_map = _traverse_from(pattern_cyc_a, pattern_cyc_b, 0, 100)
+&gt;&gt;&gt; print(some_map.pretty_format(pattern_cyc_a, pattern_cyc_b))
+## Node mapping
+┌─  x1:Dvl(DIX-head[20]{#} DIX-tail[1]{#})
+└&gt; x99:Dvl(DIX-head[100]{#} DIX-tail[2]{#})
+┌─   x0:Axin(DIX-head[1]{#} DIX-tail[20]{#})
+└&gt; x100:Axin(DIX-head[2]{#} DIX-tail[100]{#})
+## Edge mapping
+┌─   x0:Axin(DIX-head[1])  &lt;──&gt;  x1:Dvl(DIX-tail[1])
+└&gt; x100:Axin(DIX-head[2])  &lt;─&gt;  x99:Dvl(DIX-tail[2])
+┌─   x0:Axin(DIX-tail[ 20])  &lt;──&gt;  x1:Dvl(DIX-head[ 20])
+└&gt; x100:Axin(DIX-tail[100])  &lt;─&gt;  x99:Dvl(DIX-head[100])
+</code></pre></div>
 </dd>
 </dl>
 </dd>
@@ -4142,7 +4144,6 @@ Edges: 1 -&gt; 2, 20 -&gt; 100
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -4295,6 +4296,8 @@ Edges: 1 -&gt; 2, 20 -&gt; 100
 <h4><code><a title="KaSaAn.core.NetMap" href="#KaSaAn.core.NetMap">NetMap</a></code></h4>
 <ul class="">
 <li><code><a title="KaSaAn.core.NetMap.edge_map" href="#KaSaAn.core.NetMap.edge_map">edge_map</a></code></li>
+<li><code><a title="KaSaAn.core.NetMap.mapped_nodes_query" href="#KaSaAn.core.NetMap.mapped_nodes_query">mapped_nodes_query</a></code></li>
+<li><code><a title="KaSaAn.core.NetMap.mapped_nodes_target" href="#KaSaAn.core.NetMap.mapped_nodes_target">mapped_nodes_target</a></code></li>
 <li><code><a title="KaSaAn.core.NetMap.node_map" href="#KaSaAn.core.NetMap.node_map">node_map</a></code></li>
 <li><code><a title="KaSaAn.core.NetMap.pretty_format" href="#KaSaAn.core.NetMap.pretty_format">pretty_format</a></code></li>
 </ul>
@@ -4305,7 +4308,7 @@ Edges: 1 -&gt; 2, 20 -&gt; 100
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.5</a>.</p>
 </footer>
 </body>
 </html>

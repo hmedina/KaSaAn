@@ -2,18 +2,32 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.5">
 <title>KaSaAn.scripts.kappa_contact_map API documentation</title>
-<meta name="description" content="Render a contact map …" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<meta name="description" content="Render a contact map …">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
 </head>
 <body>
 <main>
@@ -34,388 +48,6 @@
 [-ts TEXT_SIZE]             Override default size for text, in points.
 [--text_instead_of_paths]   Output text elements instead of paths; embeds used glyphs
 </code></pre>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">#! /usr/bin/env python3
-&#34;&#34;&#34;
-Render a contact map.
-
-```{.text}
-kappa_contact_map [-h] [-i INPUT_FILE_NAME] [-fs WIDTH HEIGHT] [-o OUTPUT_FILE_NAME] [-m {...}] [--summarize_flagpole] [--keep_axes_ticks] [-ts TEXT_SIZE]
-[-h]                        Show detailed help.
-[-i INPUT_FILE_NAME]        File with pre-computed contact map, default &lt;inputs.ka&gt;
-[-fs WIDTH HEIGHT]          Size of the resulting figure, in inches.
-[-o OUTPUT_FILE]            The common file name for saving figures; shown if not given.
-[-m {...}]                  Interpret map as a plain graph and perform layout using this method; see --help for a run-time display of available options.
-[--summarize_flagpole]      Summarizes state-only sites as a numeric annotation.
-[--keep_axes_ticks]         Show the X &amp; Y axes ticks.
-[-ts TEXT_SIZE]             Override default size for text, in points.
-[--text_instead_of_paths]   Output text elements instead of paths; embeds used glyphs
-```
-&#34;&#34;&#34;
-
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import matplotlib.text as mpt
-import matplotlib.widgets as mpw
-import warnings
-from argparse import ArgumentParser, RawTextHelpFormatter
-from pathlib import Path
-from typing import Tuple
-from KaSaAn.core import KappaContactMap
-from KaSaAn.core.KappaContactMap import valid_graph_layouts
-
-
-def main():
-    &#34;&#34;&#34;Plot a contact map taken from a witness file, e.g. `inputs.ka`&#34;&#34;&#34;
-
-    w: int = max([len(key) for key in valid_graph_layouts.keys()])    # key width, for prettier printing
-    layout_expl: str = &#39;\n&#39;.join([&#39;{:&lt;{width}}\t{}&#39;.format(n, v.__doc__.split(&#39;\n&#39;)[0], width=w)
-                                  for n, v in valid_graph_layouts.items()])
-
-    parser = ArgumentParser(description=main.__doc__, formatter_class=RawTextHelpFormatter)
-    parser.add_argument(&#39;-i&#39;, &#39;--input_file_name&#39;, type=str, default=&#39;inputs.ka&#39;,
-                        help=&#39;Name of the file containing the contact map, written in kappa by the Kappa Static&#39;
-                        &#39; Analyzer (KaSA). By default, will search for `inputs.ka`, aka the &#34;witness file&#34;.&#39;)
-    # ToDo
-    # parser.add_argument(&#39;-cs&#39;, &#39;--coloring_scheme&#39;, type=str, default=&#39;&#39;,
-    #                     help=&#39;Name of the file containing a coloring scheme for drawing the faces of the wedges that&#39;
-    #                     &#39; represent the agents.&#39;)
-    parser.add_argument(&#39;-fs&#39;, &#39;--fig_size&#39;, type=float, default=mpl.rcParams[&#39;figure.figsize&#39;], nargs=2,
-                        help=&#39;Size of the resulting figure, in inches, specified as two elements, width and height&#39;
-                        &#39; (text size is specified in points, so this affects the size of text relative to other&#39;
-                        &#39; graph elements).&#39;)
-    parser.add_argument(&#39;-o&#39;, &#39;--output_file_name&#39;, type=Path, default=None,
-                        help=&#39;Name of the file to where the figure should be saved; displayed if not specified.&#39;)
-    parser.add_argument(&#39;-m&#39;, &#39;--method&#39;, type=str, choices=list(valid_graph_layouts.keys()), default=&#39;&#39;,
-                        help=&#39;Interpret contact map as a plain graph and layout using one of these:\n&#39; + layout_expl)
-    parser.add_argument(&#39;--summarize_flagpole&#39;, action=&#39;store_true&#39;,
-                        help=&#39;If passed, summarizes state-only sites as a numeric annotation on a special wedge&#39;
-                        &#39; (the flagpole). Otherwise, these sites and their states are listed in said flagpole.&#39;)
-    parser.add_argument(&#39;--keep_axes_ticks&#39;, action=&#39;store_true&#39;,
-                        help=&#39;If given, will keep the X &amp; Y axes ticks; use this to estimate coordinates and offsets&#39;
-                        &#39; for manual agent placement.&#39;)
-    parser.add_argument(&#39;-ts&#39;, &#39;--text_size&#39;, type=int,
-                        help=&#34;If given, set point size for all text elements, overriding MatPlotLib&#39;s default.&#34;)
-    parser.add_argument(&#39;--text_instead_of_paths&#39;, action=&#39;store_true&#39;,
-                        help=&#39;If set, figure will embed used glyphs and export text elements, instead of rendering the&#39;
-                             &#39; glyphs into paths. Only supported for PDF export.&#39;)
-    args = parser.parse_args()
-
-    if args.text_size:
-        mpl.rcParams[&#39;font.size&#39;] = args.text_size
-    if args.text_instead_of_paths:
-        plt.rcParams[&#39;pdf.fonttype&#39;] = 42
-
-    this_cm = KappaContactMap(args.input_file_name)
-    fig, ax = plt.subplots(figsize=args.fig_size, layout=&#39;constrained&#39;)
-
-    if args.method != &#39;&#39;:
-        this_cm.layout_from_graph(args.method)
-    this_cm.draw(ax, draw_state_flagpole=(not args.summarize_flagpole))
-
-    if not args.keep_axes_ticks:
-        ax.axis(&#39;off&#39;)
-
-    if args.output_file_name:
-        if not args.output_file_name.parent.exists():
-            args.output_file_name.parent.mkdir(parents=True)
-        fig.savefig(args.output_file_name)
-    else:
-        def re_coord(child_space, parent_space) -&gt; Tuple[int, int, int, int]:
-            &#34;&#34;&#34;Convenience function to adjust a child space by a parent&#39;s and yield global rectangle parameters
-             of left, bottom, width, and height.&#34;&#34;&#34;
-            ch_left, ch_bottom, ch_width, ch_height = child_space
-            pr_left, pr_bottom, pr_width, pr_height = parent_space
-            new_left = pr_left + ch_left * pr_width
-            new_bottom = pr_bottom + ch_bottom * pr_height
-            new_width = pr_width * ch_width
-            new_height = pr_height * ch_height
-            return (new_left, new_bottom, new_width, new_height)
-
-        # adjust figure size to accomodate axis that holds controls
-        fig.set_figheight(args.fig_size[0] * 1.2)
-        fig.subplots_adjust(bottom=0.2)
-
-        # initialize to a sane default plot, notably for swapping; some maps may not be capable of
-        # having sites swapped at all
-        agent_names = this_cm.get_agent_names()
-        default_agent = &#39;&#39;
-        swapping_enabled = True
-        for some_agent in agent_names:
-            if len(this_cm.get_binding_site_names_of(some_agent)) &gt;= 2:
-                default_agent = some_agent
-                break
-        if default_agent == &#39;&#39;:
-            swapping_enabled = False
-
-        # main area layout &amp; sizes
-        controls_coords = [0.0, 0.0, 1.0, 1/5]      # left, bottom, width, height
-        v_p = 0.05                                  # vertical padding
-        h_p = 0.01                                  # horizontal padding
-        agent_name_coords = re_coord([0.0 + h_p, 0.7 + v_p, 0.6 - 2 * h_p, 0.3 - 2 * v_p], controls_coords)
-        move_opers_coords = re_coord([0.0 + h_p, 0.2 + v_p, 0.4 - 2 * h_p, 0.5 - 2 * v_p], controls_coords)
-        rota_opers_coords = re_coord([0.4 + h_p, 0.2 + v_p, 0.2 - 2 * h_p, 0.5 - 2 * v_p], controls_coords)
-        swap_opers_coords = re_coord([0.6 + h_p, 0.2 + v_p, 0.4 - 2 * h_p, 0.8 - 2 * v_p], controls_coords)
-        figu_opers_coords = re_coord([0.0 + h_p, 0.0 + v_p, 1.0 - 2 * h_p, 0.2 - 2 * v_p], controls_coords)
-
-        # text box to display agent name, next/prev arrows
-        ax_agent_name_prev = fig.add_axes(re_coord([0.0, 0.0, 0.1, 0.5], agent_name_coords))
-        ax_agent_name_next = fig.add_axes(re_coord([0.0, 0.5, 0.1, 0.5], agent_name_coords))
-        ax_agent_name_text = fig.add_axes(re_coord([0.1, 0.0, 0.9, 1.0], agent_name_coords))
-        t_agent_text: mpt.Text = ax_agent_name_text.text(x=0.05, y=0.5, s=default_agent, va=&#39;center_baseline&#39;,
-                                                         fontsize=&#39;xx-large&#39;)
-        ax_agent_name_text.set_xticks([])
-        ax_agent_name_text.set_yticks([])
-        button_agent_next = mpw.Button(ax_agent_name_next, &#39;&gt;&#39;)
-        button_agent_prev = mpw.Button(ax_agent_name_prev, &#39;&lt;&#39;)
-
-        class AgentNameCycler:
-            def next(self, event):
-                nonlocal site_list
-                nonlocal swapping_enabled
-                ix = agent_names.index(t_agent_text.get_text())
-                if ix == len(agent_names) - 1:
-                    i_next = 0
-                else:
-                    i_next = ix + 1
-                t_agent_text.set_text(agent_names[i_next])
-                site_list = this_cm.get_binding_site_names_of(t_agent_text.get_text())
-                if len(site_list) &gt;= 2:
-                    swapping_enabled = True
-                    t_site1_text.set_text(site_list[0])
-                    t_site2_text.set_text(site_list[1])
-                plt.draw()
-
-            def prev(self, event):
-                nonlocal site_list
-                nonlocal swapping_enabled
-                ix = agent_names.index(t_agent_text.get_text())
-                if ix == 0:
-                    i_prev = len(agent_names) - 1
-                else:
-                    i_prev = ix - 1
-                t_agent_text.set_text(agent_names[i_prev])
-                site_list = this_cm.get_binding_site_names_of(t_agent_text.get_text())
-                if len(site_list) &gt;= 2:
-                    swapping_enabled = True
-                    t_site1_text.set_text(site_list[0])
-                    t_site2_text.set_text(site_list[1])
-                plt.draw()
-
-        agent_name_callback = AgentNameCycler()
-        button_agent_next.on_clicked(agent_name_callback.next)
-        button_agent_prev.on_clicked(agent_name_callback.prev)
-
-        # move operations
-        ax_move_radios = fig.add_axes(re_coord([0.0, 0.0, 0.5, 0.5], move_opers_coords))
-        ax_move_button = fig.add_axes(re_coord([0.5, 0.0, 0.5, 0.5], move_opers_coords))
-        ax_move_x_labl = fig.add_axes(re_coord([0.0, 0.5, 0.1, 0.5], move_opers_coords))
-        ax_move_x_inpt = fig.add_axes(re_coord([0.1, 0.5, 0.4, 0.5], move_opers_coords))
-        ax_move_y_labl = fig.add_axes(re_coord([0.5, 0.5, 0.1, 0.5], move_opers_coords))
-        ax_move_y_inpt = fig.add_axes(re_coord([0.6, 0.5, 0.4, 0.5], move_opers_coords))
-
-        ax_move_x_labl.text(x=0.5, y=0.5, s=&#39;X&#39;, va=&#39;center_baseline&#39;, ha=&#39;center&#39;, fontsize=&#39;xx-large&#39;)
-        ax_move_y_labl.text(x=0.5, y=0.5, s=&#39;Y&#39;, va=&#39;center_baseline&#39;, ha=&#39;center&#39;, fontsize=&#39;xx-large&#39;)
-        ax_move_x_labl.set_xticks([])
-        ax_move_x_labl.set_yticks([])
-        ax_move_y_labl.set_xticks([])
-        ax_move_y_labl.set_yticks([])
-        text_box_move_x = mpw.TextBox(ax_move_x_inpt, label=&#39;&#39;, textalignment=&#39;left&#39;)
-        text_box_move_y = mpw.TextBox(ax_move_y_inpt, label=&#39;&#39;, textalignment=&#39;left&#39;)
-
-        move_x_val = 0.0
-        move_y_val = 0.0
-
-        # sanitize textbox input to keep only floats
-        def move_submit_x(expression):
-            nonlocal move_x_val
-            try:
-                move_x_val = float(expression)
-            except ValueError:
-                move_x_val = 0.0
-            text_box_move_x.set_val(move_x_val)
-
-        def move_submit_y(expression):
-            nonlocal move_y_val
-            try:
-                move_y_val = float(expression)
-            except ValueError:
-                move_y_val = 0.0
-            text_box_move_y.set_val(move_y_val)
-
-        text_box_move_x.on_submit(move_submit_x)
-        text_box_move_y.on_submit(move_submit_y)
-
-        radio_butt_move = mpw.RadioButtons(ax_move_radios, [&#39;To&#39;, &#39;By&#39;], active=1,
-                                           label_props={&#39;fontsize&#39;: [&#39;xx-large&#39;, &#39;xx-large&#39;]})
-
-        button_move_act = mpw.Button(ax_move_button, &#39;Move&#39;, color=&#39;#FFDCDC&#39;)
-        button_move_act.label.set_fontsize(&#39;xx-large&#39;)
-
-        def move_action(event):
-            if radio_butt_move.value_selected == &#39;To&#39;:
-                this_cm.move_agent_to(agent_name=t_agent_text.get_text(), new_x=move_x_val, new_y=move_y_val)
-            elif radio_butt_move.value_selected == &#39;By&#39;:
-                this_cm.move_agent_by(agent_name=t_agent_text.get_text(), delta_x=move_x_val, delta_y=move_y_val)
-            ax.clear()
-            this_cm.draw(ax, draw_state_flagpole=(not args.summarize_flagpole))
-            plt.draw()
-
-        button_move_act.on_clicked(move_action)
-
-        # rotate operations
-        rotate_val = 0.0
-
-        ax_rota_button = fig.add_axes(re_coord([0.0, 0.0, 1.0, 0.5], rota_opers_coords))
-        ax_rota_inputs = fig.add_axes(re_coord([0.0, 0.5, 1.0, 0.5], rota_opers_coords))
-        t_agent_rota = mpw.TextBox(ax_rota_inputs, label=&#39;&#39;, textalignment=&#39;left&#39;)
-
-        def rota_submit(expression):
-            nonlocal rotate_val
-            try:
-                rotate_val = float(expression)
-            except ValueError:
-                rotate_val = 0.0
-            t_agent_rota.set_val(rotate_val)
-
-        t_agent_rota.on_submit(rota_submit)
-
-        b_agent_rota = mpw.Button(ax_rota_button, &#39;Rotate&#39;, color=&#39;#DCFFDC&#39;)
-        b_agent_rota.label.set_fontsize(&#39;xx-large&#39;)
-
-        def rotate_action(event):
-            this_cm.rotate_all_sites_of(agent_name=t_agent_text.get_text(), degrees=rotate_val)
-            ax.clear()
-            this_cm.draw(ax, draw_state_flagpole=(not args.summarize_flagpole))
-            plt.draw()
-
-        b_agent_rota.on_clicked(rotate_action)
-
-        # swap operations
-        site_list = this_cm.get_binding_site_names_of(default_agent)
-        if len(site_list) &gt;= 2:
-            swapping_enabled = True
-
-        ax_swap_button = fig.add_axes(re_coord([0.0, 0.0, 1.0, 1/3], swap_opers_coords))
-
-        ax_swap_s1_prev = fig.add_axes(re_coord([0.0, 4/6, 0.1, 1/6], swap_opers_coords))
-        ax_swap_s1_next = fig.add_axes(re_coord([0.0, 5/6, 0.1, 1/6], swap_opers_coords))
-        ax_swap_s1_text = fig.add_axes(re_coord([0.1, 2/3, 0.9, 1/3], swap_opers_coords))
-
-        ax_swap_s2_prev = fig.add_axes(re_coord([0.0, 2/6, 0.1, 1/6], swap_opers_coords))
-        ax_swap_s2_next = fig.add_axes(re_coord([0.0, 3/6, 0.1, 1/6], swap_opers_coords))
-        ax_swap_s2_text = fig.add_axes(re_coord([0.1, 1/3, 0.9, 1/3], swap_opers_coords))
-
-        t_site1_text: mpt.Text = ax_swap_s1_text.text(x=0.05, y=0.5, va=&#39;center_baseline&#39;, fontsize=&#39;xx-large&#39;,
-                                                      s=site_list[0] if swapping_enabled else &#39;&#39;)
-        t_site2_text: mpt.Text = ax_swap_s2_text.text(x=0.05, y=0.5, va=&#39;center_baseline&#39;, fontsize=&#39;xx-large&#39;,
-                                                      s=site_list[1] if swapping_enabled else &#39;&#39;)
-        ax_swap_s1_text.set_xticks([])
-        ax_swap_s1_text.set_yticks([])
-        ax_swap_s2_text.set_xticks([])
-        ax_swap_s2_text.set_yticks([])
-
-        button_site1_next = mpw.Button(ax_swap_s1_next, &#39;&gt;&#39;)
-        button_site1_prev = mpw.Button(ax_swap_s1_prev, &#39;&lt;&#39;)
-        button_site2_next = mpw.Button(ax_swap_s2_next, &#39;&gt;&#39;)
-        button_site2_prev = mpw.Button(ax_swap_s2_prev, &#39;&lt;&#39;)
-
-        class Site1Cycler:
-            def next(self, event):
-                ix = site_list.index(t_site1_text.get_text())
-                if ix == len(site_list) - 1:
-                    i_next = 0
-                else:
-                    i_next = ix + 1
-                t_site1_text.set_text(site_list[i_next])
-                plt.draw()
-
-            def prev(self, event):
-                ix = site_list.index(t_site1_text.get_text())
-                if ix == 0:
-                    i_prev = len(site_list) - 1
-                else:
-                    i_prev = ix - 1
-                t_site1_text.set_text(site_list[i_prev])
-                plt.draw()
-
-        class Site2Cycler:
-            def next(self, event):
-                ix = site_list.index(t_site2_text.get_text())
-                if ix == len(site_list) - 1:
-                    i_next = 0
-                else:
-                    i_next = ix + 1
-                t_site2_text.set_text(site_list[i_next])
-                plt.draw()
-
-            def prev(self, event):
-                ix = site_list.index(t_site2_text.get_text())
-                if ix == 0:
-                    i_prev = len(site_list) - 1
-                else:
-                    i_prev = ix - 1
-                t_site2_text.set_text(site_list[i_prev])
-                plt.draw()
-
-        site1_callback = Site1Cycler()
-        site2_callback = Site2Cycler()
-        button_site1_next.on_clicked(site1_callback.next)
-        button_site1_prev.on_clicked(site1_callback.prev)
-        button_site2_next.on_clicked(site2_callback.next)
-        button_site2_prev.on_clicked(site2_callback.prev)
-
-        button_swap_act = mpw.Button(ax_swap_button, &#39;Swap&#39;, color=&#39;#DCDCFF&#39;)
-        button_swap_act.label.set_fontsize(&#39;xx-large&#39;)
-
-        def swap_action(event):
-            if t_site1_text.get_text() != t_site2_text.get_text():
-                this_cm.swap_sites_of(agent_name=t_agent_text.get_text(),
-                                      site_1=t_site1_text.get_text(),
-                                      site_2=t_site2_text.get_text())
-                ax.clear()
-                this_cm.draw(ax, draw_state_flagpole=(not args.summarize_flagpole))
-                plt.draw()
-            else:
-                warnings.warn(&#39;Request to swap site {} against itself was ignored.&#39;.format(t_site1_text.get_text()))
-
-        button_swap_act.on_clicked(swap_action)
-
-        # figure operations
-        ax_figure_axes_draw = fig.add_axes(re_coord([0.0, 0.0, 1/3, 1.0], figu_opers_coords))
-        ax_figure_grid_draw = fig.add_axes(re_coord([1/3, 0.0, 1/3, 1.0], figu_opers_coords))
-        ax_figure_hide_axes = fig.add_axes(re_coord([2/3, 0.0, 1/3, 1.0], figu_opers_coords))
-        button_axes_draw = mpw.Button(ax_figure_axes_draw, &#39;Draw Axes&#39;)
-        button_grid_draw = mpw.Button(ax_figure_grid_draw, &#39;Draw Grid&#39;)
-        button_axes_hide = mpw.Button(ax_figure_hide_axes, &#39;Hide Axes &amp; Grid&#39;)
-
-        def action_axes_draw(event):
-            ax.axis(&#39;on&#39;)
-            plt.draw()
-
-        def action_axes_hide(event):
-            ax.grid(visible=False)
-            ax.axis(&#39;off&#39;)
-            plt.draw()
-
-        def action_grid_draw(event):
-            ax.axis(&#39;on&#39;)
-            ax.grid(visible=True)
-            plt.draw()
-
-        button_axes_draw.on_clicked(action_axes_draw)
-        button_grid_draw.on_clicked(action_grid_draw)
-        button_axes_hide.on_clicked(action_axes_hide)
-
-        plt.show()
-
-
-if __name__ == &#39;__main__&#39;:
-    main()</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -428,7 +60,6 @@ if __name__ == &#39;__main__&#39;:
 <span>def <span class="ident">main</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Plot a contact map taken from a witness file, e.g. <code>inputs.ka</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -777,6 +408,7 @@ if __name__ == &#39;__main__&#39;:
 
         plt.show()</code></pre>
 </details>
+<div class="desc"><p>Plot a contact map taken from a witness file, e.g. <code>inputs.ka</code></p></div>
 </dd>
 </dl>
 </section>
@@ -784,7 +416,6 @@ if __name__ == &#39;__main__&#39;:
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -803,7 +434,7 @@ if __name__ == &#39;__main__&#39;:
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.5</a>.</p>
 </footer>
 </body>
 </html>
