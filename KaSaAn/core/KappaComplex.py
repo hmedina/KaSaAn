@@ -329,6 +329,12 @@ Edges: 1 -> 2, 20 -> 100
         correctly. This allows distinguishing cyclic dimers from linear polymeric species, which can't be done at the
         local level of bonds types.
         """
+        # parallel edge guard: don't satisfy a linear trimer into a cyclic dimer
+        if len(self.node_map) != query_net.number_of_nodes():
+            return False
+        if len(self.edge_map) != query_net.number_of_edges():
+            return False
+        # with size sorted, let's try to validate every bond type
         node_mapping = {}
         for (q_edge_ix, t_edge_ix) in self.edge_map:
             # since we can't just "get edge 98" without specifying origin and destination (networkX's edge keys are not unique
