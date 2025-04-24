@@ -10,6 +10,7 @@ from .KappaError import PortParseError, CounterParseError, PortSatisfactionError
 class KappaPort(KappaEntity):
     """
 Class for representing traditional Kappa Sites, e.g. `s[3]`, `g[.]{b}`, or `k[_]{#}`.
+Supports wildcards, and anonymous bond types, e.g. `s[site.Agent]`
 
 What is an embedding?
 ---------------------
@@ -57,7 +58,7 @@ Bond state truth table
     __ident = r'[_~][a-zA-Z0-9_~+-]+|[a-zA-Z][a-zA-Z0-9_~+-]*'
     __port_name_pat = r'(' + __ident + r')'
     __int_state_pat = r'(?:{(' + __ident + r'|#)(?:(/)(' + __ident + r'))?})?'
-    __bnd_state_pat = r'\[(.|_|#|\d+)(?:(/)(.|\d+))?\]'
+    __bnd_state_pat = r'\[(\.|_|#|\d+|(?:(?:' + __ident + r')\.(?:' + __ident + r')))(?:(/)(\.|\d+))?\]'
     __port_pat = r'^' + __port_name_pat + __int_state_pat + __bnd_state_pat + __int_state_pat + r'$'
     __port_pat_re = re.compile(__port_pat)
 

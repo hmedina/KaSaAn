@@ -25,12 +25,10 @@ class KappaRule(KappaEntity):
         self._kappa_expression: str
 
         # remove spaces, breaks, comments
-        digested_rule = re.sub(r'\s+|\t+|\n+', ' ', raw_expression)  # Remove line breaks, tabs, multi-spaces
-        digested_rule = re.sub(r'/\*[^*/]*\*/', '', digested_rule)   # Remove in-line comment
-        digested_rule = digested_rule.split('//')[0]                # Remove trailing comment, leading/trialing spaces
+        digested_rule = re.sub(r'\s+|\t+|\n+', ' ', raw_expression)     # Remove line breaks, tabs, multi-spaces
+        digested_rule = re.sub(r'/\*[^*/]*\*/', '', digested_rule)      # Remove in-line comment
+        digested_rule = digested_rule.split('//')[0]                    # Remove trailing comment, leading/trialing spaces
         digested_rule = digested_rule.strip()
-        if '->' in digested_rule:
-            raise RuleParseError('Rule parsing only supports edit notation, not chemical notation.')
 
         # extract rule name, Kappa pattern, rates
         rule_components = re.match(r"('.+')?\s*(.+)\s*@\s*([^{]+)\s*(?:{([^}]+)})?", digested_rule)
@@ -38,6 +36,8 @@ class KappaRule(KappaEntity):
             raise ValueError('Could not parse pattern <' + digested_rule + '> as a rule')
         self._name = rule_components.group(1).strip() if rule_components.group(1) else ''
         self._pattern = rule_components.group(2).strip() if rule_components.group(2) else ''
+        if '->' in self._pattern:
+            raise ValueError('Rule parsing only supports edit notation, not chemical notation:\n\t{}'.format(digested_rule))
         self._rate_pri = rule_components.group(3).strip() if rule_components.group(3) else ''
         self._rate_uni = rule_components.group(4).strip() if rule_components.group(4) else ''
         if self._rate_uni:

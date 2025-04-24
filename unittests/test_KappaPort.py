@@ -2,6 +2,7 @@
 
 import unittest
 from KaSaAn.core import KappaPort
+from KaSaAn.core.KappaError import PortParseError
 
 
 class TestKappaPort(unittest.TestCase):
@@ -32,17 +33,20 @@ class TestKappaPort(unittest.TestCase):
         self.assertEqual(KappaPort('_b[.]{ph}').get_port_bond_state(), '.')
         self.assertEqual(KappaPort('_b{ph}[.]').get_port_bond_state(), '.')
         self.assertEqual(KappaPort('_b[./1]{ph}').get_port_bond_state(), './1')
+        self.assertEqual(KappaPort('i[x.A]').get_port_bond_state(), 'x.A')
 
     def test_get_port_current_bond(self):
         self.assertEqual(KappaPort('_b[./1]{ph}').get_port_current_bond(), '.')
         self.assertEqual(KappaPort('_b[55/99]{ph}').get_port_current_bond(), '55')
         self.assertEqual(KappaPort('_b[99]{ph}').get_port_current_bond(), '99')
+        self.assertEqual(KappaPort('~x[x.A/.]').get_port_current_bond(), 'x.A')
 
     def test_get_port_future_bond(self):
         self.assertEqual(KappaPort('_b[./1]{ph}').get_port_future_bond(), '1')
         self.assertEqual(KappaPort('_b[99/1]{ph}').get_port_future_bond(), '1')
         self.assertEqual(KappaPort('_b[99/.]{ph}').get_port_future_bond(), '.')
         self.assertEqual(KappaPort('_b[99]{ph}').get_port_future_bond(), '')
+        self.assertEqual(KappaPort('foo[~b.~A/.]').get_port_future_bond(), '.')
 
     def test_get_port_current_state(self):
         self.assertEqual(KappaPort('bob{ph/un}[.]').get_port_current_state(), 'ph')
@@ -59,6 +63,9 @@ class TestKappaPort(unittest.TestCase):
         self.assertEqual(KappaPort('jane[1/.]').get_port_bond_operation(), 'deletion')
         self.assertEqual(KappaPort('jane[1/2]').get_port_bond_operation(), 'swap')
         self.assertEqual(KappaPort('jane[2]').get_port_bond_operation(), '')
+        self.assertEqual(KappaPort('aa[x.A/1]').get_port_bond_operation(), 'swap')
+        self.assertEqual(KappaPort('aa[x.A/.]').get_port_bond_operation(), 'deletion')
+        self.assertEqual(KappaPort('b[foo.Bar]').get_port_bond_operation(), '')
 
     def test_has_bond_operation(self):
         self.assertTrue(KappaPort('_b[./1]{ph/un}').has_bond_operation())
@@ -103,3 +110,10 @@ class TestKappaPort(unittest.TestCase):
         self.assertTrue('site[5]' in KappaPort('site[5]'))
 
         self.assertFalse('site[4]' in KappaPort('site[3]'))
+
+        self.assertRaises(PortParseError, KappaPort, 'foo[ax]')
+        self.assertFalse('foo[bar.baz]' in KappaPort('foo[ax.Ax]'))
+        self.assertTrue('foo[_]' in KappaPort('foo[ax.Ax]'))
+        self.assertTrue('foo[#]' in KappaPort('foo[ax.Ax]'))
+        self.assertTrue('foo[ax.Ax]' in KappaPort('foo[ax.Ax]'))
+        self.assertFalse('foo[3]' in KappaPort('foo[bar.Baz]'))
