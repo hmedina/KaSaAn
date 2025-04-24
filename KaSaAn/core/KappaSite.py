@@ -134,7 +134,6 @@ Bond state truth table
             '{' + self._present_int_state + self._int_operand + self._future_int_state + '}'
 
     def __contains__(self, query) -> bool:
-        """"""
 
         # we can't satisfy ports with counters
         if isinstance(query, KappaCounter):
